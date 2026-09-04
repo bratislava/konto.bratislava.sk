@@ -12,9 +12,10 @@ import { ROUTES } from '@/src/utils/routes'
  */
 
 const IdentityVerificationStatus = () => {
-  const { isSignedIn, tierStatus } = useSsrAuth()
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
   const router = useRouter()
+
+  const { isSignedIn, tierStatus } = useSsrAuth()
 
   // we need to save the WIP of the open form if navigating away form it
   const optionalFormRedirectsContext = useConditionalFormRedirects()
@@ -23,30 +24,32 @@ const IdentityVerificationStatus = () => {
     return null
   }
 
-  if (tierStatus.isIdentityVerified)
+  if (tierStatus.isIdentityVerified) {
     return (
-      <div className="flex rounded-sm bg-success-100 px-2 py-0 lg:px-3 lg:py-1.5">
+      <div className="flex items-center rounded-sm bg-success-100 px-2 py-0 lg:px-3 lg:py-1.5">
         <Typography variant="p-small" className="text-content-success-default">
-          {t('IdentityVerificationStatus.verification_status_success')}
+          {t('IdentityVerificationStatus.status.success')}
         </Typography>
       </div>
     )
+  }
 
-  if (tierStatus.isInQueue)
+  if (tierStatus.isInQueue) {
     return (
-      <div className="flex rounded-sm bg-warning-100 px-2 py-0 lg:px-3 lg:py-1.5">
+      <div className="flex items-center rounded-sm bg-warning-100 px-2 py-0 lg:px-3 lg:py-1.5">
         <Typography variant="p-small" className="text-content-warning-default">
-          {t('IdentityVerificationStatus.verification_status_in_queue')}
+          {t('IdentityVerificationStatus.status.inQueue')}
         </Typography>
       </div>
     )
+  }
 
-  if (tierStatus.isIdentityVerificationNotYetAttempted || tierStatus.isNotVerifiedIdentityCard)
+  if (tierStatus.isIdentityVerificationNotYetAttempted || tierStatus.isNotVerifiedIdentityCard) {
     return (
       <div className="flex items-center gap-1.5">
         <div className="flex items-center gap-2 rounded-sm bg-background-passive-secondary px-2 py-0 lg:px-3 lg:py-1.5">
           <Typography variant="p-small" className="text-content-passive-secondary">
-            {t('IdentityVerificationStatus.verification_status_required')}
+            {t('IdentityVerificationStatus.status.required')}
           </Typography>
         </div>
         <Button
@@ -59,10 +62,11 @@ const IdentityVerificationStatus = () => {
               : router.push(ROUTES.IDENTITY_VERIFICATION)
           }
         >
-          {t('auth.verification_url_text')}
+          {t('auth.verifyIdentity')}
         </Button>
       </div>
     )
+  }
 
   return null
 }

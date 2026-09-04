@@ -103,8 +103,9 @@ describe('NorisValidatorSubservice', () => {
       describe('valid', () => {
         it('should validate valid real estate taxes', () => {
           validNorisRealEstateTaxes.forEach((tax) => {
-            service.validateSingleNorisData(NorisRealEstateTaxSchema, tax)
-            expect(true).toBe(true)
+            expect(() =>
+              service.validateSingleNorisData(NorisRealEstateTaxSchema, tax),
+            ).not.toThrow()
           })
         })
 
@@ -170,8 +171,9 @@ describe('NorisValidatorSubservice', () => {
       describe('valid', () => {
         it('should validate valid communal waste taxes', () => {
           validNorisCommunalWasteTaxes.forEach((tax) => {
-            service.validateSingleNorisData(NorisCommunalWasteTaxSchema, tax)
-            expect(true).toBe(true)
+            expect(() =>
+              service.validateSingleNorisData(NorisCommunalWasteTaxSchema, tax),
+            ).not.toThrow()
           })
         })
 

@@ -1,5 +1,6 @@
-import { NextRouter, useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
+import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs'
 import { PaymentRedirectStateEnum, TaxType } from 'openapi-clients/tax'
 import { useEffect, useMemo } from 'react'
 
@@ -10,46 +11,22 @@ import ThankYouTile, {
 import logger from '@/src/frontend/utils/logger'
 import { ROUTES } from '@/src/utils/routes'
 
-// TODO use the nuqs library to get query params
-// example: https://github.com/bratislava/bratislava.sk/blob/master/next/src/components/sections/ArticlesSection/ArticlesAll/useArticlesFilters.tsx
-const usePaymentResultQueryParams = (router: NextRouter) => {
-  // query params are passed from nest-tax-backend/src/payment/payment.service.ts
-  // we expect status, taxType, order, year
-
-  const status = useMemo(
-    () =>
-      typeof router.query.status === 'string' &&
-      Object.values(PaymentRedirectStateEnum).includes(
-        router.query.status as PaymentRedirectStateEnum,
-      )
-        ? (router.query.status as PaymentRedirectStateEnum)
-        : PaymentRedirectStateEnum.FailedToVerify,
-    [router.query.status],
-  )
-
-  const type = useMemo(
-    () =>
-      typeof router.query.taxType === 'string' &&
-      Object.values(TaxType).includes(router.query.taxType as TaxType)
-        ? (router.query.taxType as TaxType)
-        : undefined,
-    [router.query.taxType],
-  )
-
-  const order = useMemo(
-    () =>
-      typeof router.query.order === 'string' && !Number.isNaN(Number(router.query.order))
-        ? Number(router.query.order)
-        : undefined,
-    [router.query.order],
-  )
-
-  const year = useMemo(
-    () =>
-      typeof router.query.year === 'string' && !Number.isNaN(Number(router.query.year))
-        ? Number(router.query.year)
-        : undefined,
-    [router.query.year],
+/**
+ * Query params are passed from nest-tax-backend/src/payment/payment.service.ts
+ * We expect status, taxType, order, year
+ * An unknown or missing status is treated as "failed to verify"
+ */
+const usePaymentResultQueryParams = () => {
+  const [{ status, type, order, year }] = useQueryStates(
+    {
+      status: parseAsStringEnum(Object.values(PaymentRedirectStateEnum)).withDefault(
+        PaymentRedirectStateEnum.FailedToVerify,
+      ),
+      type: parseAsStringEnum(Object.values(TaxType)),
+      order: parseAsInteger,
+      year: parseAsInteger,
+    },
+    { urlKeys: { type: 'taxType' } },
   )
 
   return { status, type, order, year }
@@ -62,12 +39,12 @@ export const usePaymentResultPropsMap = ({
   feedbackLink?: string | null
   taxDetailLink: string
 }) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const commonProps: Partial<ThankYouTileProps> = {
     isContentCentered: true,
     secondaryButton: {
-      label: t('PaymentResultPageContent.button_to_taxes'),
+      label: t('PaymentResultPageContent.buttons.toTaxes'),
       href: ROUTES.TAXES,
     },
   }
@@ -76,11 +53,11 @@ export const usePaymentResultPropsMap = ({
     [PaymentRedirectStateEnum.PaymentSuccess]: {
       ...commonProps,
       variant: 'success',
-      title: t('PaymentResultPageContent.payment_success.title'),
-      content: t('PaymentResultPageContent.payment_success.content'),
+      title: t('PaymentResultPageContent.paymentSuccess.title'),
+      content: t('PaymentResultPageContent.paymentSuccess.content'),
       primaryButton: feedbackLink
         ? {
-            label: t('PaymentResultPageContent.button_to_feedback'),
+            label: t('PaymentResultPageContent.buttons.toFeedback'),
             href: feedbackLink,
           }
         : null,
@@ -88,26 +65,26 @@ export const usePaymentResultPropsMap = ({
     [PaymentRedirectStateEnum.PaymentAlreadyPaid]: {
       ...commonProps,
       variant: 'success',
-      title: t('PaymentResultPageContent.payment_already_paid.title'),
-      content: t('PaymentResultPageContent.payment_success.content'),
+      title: t('PaymentResultPageContent.paymentAlreadyPaid.title'),
+      content: t('PaymentResultPageContent.paymentSuccess.content'),
     },
     [PaymentRedirectStateEnum.FailedToVerify]: {
       ...commonProps,
       variant: 'warning',
-      title: t('PaymentResultPageContent.payment_failed_to_verify.title'),
-      content: t('PaymentResultPageContent.payment_failed.content'),
+      title: t('PaymentResultPageContent.paymentFailedToVerify.title'),
+      content: t('PaymentResultPageContent.paymentFailed.content'),
       primaryButton: {
-        label: t('PaymentResultPageContent.button_repeat_payment'),
+        label: t('PaymentResultPageContent.buttons.repeatPayment'),
         href: taxDetailLink,
       },
     },
     [PaymentRedirectStateEnum.PaymentFailed]: {
       ...commonProps,
       variant: 'error',
-      title: t('PaymentResultPageContent.payment_failed.title'),
-      content: t('PaymentResultPageContent.payment_failed.content'),
+      title: t('PaymentResultPageContent.paymentFailed.title'),
+      content: t('PaymentResultPageContent.paymentFailed.content'),
       primaryButton: {
-        label: t('PaymentResultPageContent.button_repeat_payment'),
+        label: t('PaymentResultPageContent.buttons.repeatPayment'),
         href: taxDetailLink,
       },
     },
@@ -123,8 +100,11 @@ export const usePaymentResultPropsMap = ({
 const PaymentResultPageContent = () => {
   const { municipalChargeIdentifier } = useStrapiTaxConfig()
 
+  const { status, type, year, order } = usePaymentResultQueryParams()
+
+  // `useRouter` is used only to log the raw query params in case of a failed verification,
+  // so that we can debug the issue easily
   const router = useRouter()
-  const { status, type, year, order } = usePaymentResultQueryParams(router)
 
   useEffect(() => {
     if (status === PaymentRedirectStateEnum.FailedToVerify) {

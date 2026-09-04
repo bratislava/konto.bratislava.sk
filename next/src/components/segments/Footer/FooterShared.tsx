@@ -33,7 +33,9 @@ export const FooterSocialLinks = ({
     <>
       {socialLinks
         .map(({ url, icon, ariaLabel }, index) => {
-          if (!url) return null
+          if (!url) {
+            return null
+          }
 
           return (
             <Button
@@ -69,7 +71,7 @@ export const FooterAccessibilityLink = ({ accessibilityPageLink }: FooterFragmen
 }
 
 export const FooterCopyright = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <Typography variant="p-small" className="text-center text-content-passive-secondary">

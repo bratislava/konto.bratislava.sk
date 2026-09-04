@@ -21,20 +21,20 @@ const foSchema = {
     given_name: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:auth.fields.given_name_required' },
+      errorMessage: { minLength: 'auth.fields.givenName.required' },
     },
     family_name: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:auth.fields.family_name_required' },
+      errorMessage: { minLength: 'auth.fields.familyName.required' },
     },
     email: {
       type: 'string',
       minLength: 1,
       format: 'email',
       errorMessage: {
-        minLength: 'account:auth.fields.email_required',
-        format: 'account:auth.fields.email_format',
+        minLength: 'auth.fields.email.required',
+        format: 'auth.fields.email.format',
       },
     },
   },
@@ -52,8 +52,8 @@ const poSchema = {
       minLength: 1,
       format: 'email',
       errorMessage: {
-        minLength: 'account:auth.fields.email_required',
-        format: 'account:auth.fields.email_format',
+        minLength: 'auth.fields.email.required',
+        format: 'auth.fields.email.format',
       },
     },
   },
@@ -67,7 +67,7 @@ type Props = {
 }
 
 const UserProfileDetailsEdit = ({ formId, userAttributes, onSubmit }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const {
     name,
@@ -102,6 +102,7 @@ const UserProfileDetailsEdit = ({ formId, userAttributes, onSubmit }: Props) => 
 
   return (
     <form
+      noValidate // We use AJV validation
       id={formId}
       className="flex grow flex-col gap-6"
       onSubmit={handleSubmit(handleSubmitCallback)}
@@ -118,7 +119,7 @@ const UserProfileDetailsEdit = ({ formId, userAttributes, onSubmit }: Props) => 
                   autoCapitalize="on"
                   autoCorrect="off"
                   spellCheck="false"
-                  label={t('my_profile.profile_detail.business_name')}
+                  label={t('UserProfileDetails.businessName')}
                   {...field}
                   errorMessage={errors.given_name}
                 />
@@ -137,7 +138,7 @@ const UserProfileDetailsEdit = ({ formId, userAttributes, onSubmit }: Props) => 
                     autoCapitalize="on"
                     autoCorrect="off"
                     spellCheck="false"
-                    label={t('my_profile.profile_detail.given_name')}
+                    label={t('UserProfileDetailsEdit.givenName')}
                     {...field}
                     errorMessage={errors.given_name}
                   />
@@ -154,7 +155,7 @@ const UserProfileDetailsEdit = ({ formId, userAttributes, onSubmit }: Props) => 
                     autoCapitalize="on"
                     autoCorrect="off"
                     spellCheck="false"
-                    label={t('my_profile.profile_detail.family_name')}
+                    label={t('UserProfileDetailsEdit.familyName')}
                     {...field}
                     errorMessage={errors.family_name}
                   />
@@ -173,7 +174,8 @@ const UserProfileDetailsEdit = ({ formId, userAttributes, onSubmit }: Props) => 
               <TextField
                 isDisabled
                 isRequired
-                label={t('my_profile.profile_detail.email')}
+                label={t('UserProfileDetails.email')}
+                type="email"
                 autoComplete="username"
                 {...field}
                 errorMessage={errors.email}
@@ -187,7 +189,7 @@ const UserProfileDetailsEdit = ({ formId, userAttributes, onSubmit }: Props) => 
           hasLinkIcon={false}
           data-cy="change-email-button"
         >
-          {t('my_profile.profile_detail.email_button')}
+          {t('UserProfileDetailsEdit.emailButton')}
         </Button>
       </div>
     </form>

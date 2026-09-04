@@ -57,7 +57,6 @@ const createMockTaxPayer = (
 
   return {
     id: 1,
-    uuid: '550e8400-e29b-41d4-a716-446655440000',
     createdAt: baseDate,
     updatedAt: baseDate,
     birthNumber: '123456/789',
@@ -67,7 +66,6 @@ const createMockTaxPayer = (
           id: 1,
           createdAt: baseDate,
           updatedAt: baseDate,
-          externalId: 'ext-admin-1',
           name: 'Test Tax Administrator',
           phoneNumber: '+421123456789',
           email: 'admin@test.sk',
@@ -158,163 +156,104 @@ describe('TaxService', () => {
       expect(result.taxAdministrator).toBeNull()
     })
 
-    it('should set taxPayerWasUpdated to false when TaxPayer has same createdAt and updatedAt', async () => {
-      const mockTaxPayer = createMockTaxPayer({
-        createdAt: new Date('2025-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2025-01-01T10:00:00.000Z'), // Same as createdAt
-      })
+    // taxPayerWasUpdated is true only when updatedAt is more than 1 second after
+    // createdAt.
+    it.each([
+      {
+        scenario: 'updatedAt is the same as createdAt',
+        updatedAt: '2025-01-01T10:00:00.000Z',
+        expected: 'LOOKING_FOR_YOUR_TAX',
+      },
+      {
+        scenario: 'updatedAt is exactly 1 second after createdAt',
+        updatedAt: '2025-01-01T10:00:01.000Z',
+        expected: 'LOOKING_FOR_YOUR_TAX',
+      },
+      {
+        scenario: 'updatedAt is more than 1 second after createdAt',
+        updatedAt: '2025-01-01T10:00:02.000Z',
+        expected: 'TAX_NOT_ON_RECORD',
+      },
+      {
+        scenario: 'updatedAt is less than 1 second after createdAt',
+        updatedAt: '2025-01-01T10:00:00.500Z',
+        expected: 'LOOKING_FOR_YOUR_TAX',
+      },
+    ])(
+      'should return $expected when $scenario',
+      async ({ updatedAt, expected }) => {
+        const mockTaxPayer = createMockTaxPayer({
+          createdAt: new Date('2025-01-01T10:00:00.000Z'),
+          updatedAt: new Date(updatedAt),
+        })
 
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
-      prismaMock.tax.findMany.mockResolvedValue([])
+        prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
+        prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumberAndType(
-        '123456/789',
-        TaxType.DZN,
-      )
+        const result = await service.getListOfTaxesByBirthnumberAndType(
+          '123456/789',
+          TaxType.DZN,
+        )
 
-      expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
-    })
+        expect(result.availabilityStatus).toBe(expected)
+      },
+    )
 
-    it('should set taxPayerWasUpdated to false when updatedAt is exactly 1 second after createdAt', async () => {
-      const mockTaxPayer = createMockTaxPayer({
-        createdAt: new Date('2025-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2025-01-01T10:00:01.000Z'), // Exactly 1000ms later
-      })
+    // Empty Taxes Array Scenarios. The inclusion period is between Feb 1 and
+    // Jul 1 (exclusive), so the current date drives shouldAddCurrentYear.
+    it.each([
+      {
+        scenario: 'the current date is within the tax inclusion period',
+        now: '2025-03-01T12:00:00.000Z',
+        updatedAt: '2025-01-01T10:00:00.000Z', // not updated
+        expected: 'LOOKING_FOR_YOUR_TAX',
+      },
+      {
+        scenario: 'the current date is outside the tax inclusion period',
+        now: '2025-12-01T12:00:00.000Z',
+        updatedAt: '2025-01-01T10:00:02.000Z', // updated -> true
+        expected: 'TAX_NOT_ON_RECORD',
+      },
+      {
+        scenario: 'shouldAddCurrentYear is true and taxPayerWasUpdated is true',
+        now: '2025-03-10T12:00:00.000Z',
+        updatedAt: '2025-01-01T10:00:02.000Z',
+        expected: 'LOOKING_FOR_YOUR_TAX',
+      },
+      {
+        scenario:
+          'shouldAddCurrentYear is false and taxPayerWasUpdated is false',
+        now: '2025-12-10T12:00:00.000Z',
+        updatedAt: '2025-01-01T10:00:00.500Z',
+        expected: 'LOOKING_FOR_YOUR_TAX',
+      },
+      {
+        scenario:
+          'shouldAddCurrentYear is false and taxPayerWasUpdated is true',
+        now: '2025-12-10T12:00:00.000Z',
+        updatedAt: '2025-01-01T10:00:02.000Z',
+        expected: 'TAX_NOT_ON_RECORD',
+      },
+    ])(
+      'should return $expected when no taxes exist and $scenario',
+      async ({ now, updatedAt, expected }) => {
+        jest.setSystemTime(new Date(now))
 
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
-      prismaMock.tax.findMany.mockResolvedValue([])
+        const mockTaxPayer = createMockTaxPayer({
+          createdAt: new Date('2025-01-01T10:00:00.000Z'),
+          updatedAt: new Date(updatedAt),
+        })
+        prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
+        prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumberAndType(
-        '123456/789',
-        TaxType.DZN,
-      )
+        const result = await service.getListOfTaxesByBirthnumberAndType(
+          '123456/789',
+          TaxType.DZN,
+        )
 
-      expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
-    })
-
-    it('should set taxPayerWasUpdated to true when updatedAt is more than 1 second after createdAt', async () => {
-      const mockTaxPayer = createMockTaxPayer({
-        createdAt: new Date('2025-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2025-01-01T10:00:02.000Z'), // 2000ms later
-      })
-
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
-      prismaMock.tax.findMany.mockResolvedValue([])
-
-      const result = await service.getListOfTaxesByBirthnumberAndType(
-        '123456/789',
-        TaxType.DZN,
-      )
-
-      expect(result.availabilityStatus).toBe('TAX_NOT_ON_RECORD')
-    })
-
-    it('should set taxPayerWasUpdated to false when updatedAt is less than 1 second after createdAt', async () => {
-      const mockTaxPayer = createMockTaxPayer({
-        createdAt: new Date('2025-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2025-01-01T10:00:00.500Z'), // 500ms later
-      })
-
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
-      prismaMock.tax.findMany.mockResolvedValue([])
-
-      const result = await service.getListOfTaxesByBirthnumberAndType(
-        '123456/789',
-        TaxType.DZN,
-      )
-
-      expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
-    })
-
-    it('should set shouldAddCurrentYear to true when current date is within tax inclusion period', async () => {
-      // Within period: between Feb 1 and Jul 1 (exclusive). Use March 1st.
-      jest.setSystemTime(new Date('2025-03-01T12:00:00.000Z'))
-
-      const mockTaxPayer = createMockTaxPayer({
-        createdAt: new Date('2025-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2025-01-01T10:00:00.000Z'), // not updated
-      })
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
-      prismaMock.tax.findMany.mockResolvedValue([])
-
-      const result = await service.getListOfTaxesByBirthnumberAndType(
-        '123456/789',
-        TaxType.DZN,
-      )
-
-      // With no taxes and shouldAddCurrentYear=true => LOOKING_FOR_YOUR_TAX
-      expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
-    })
-
-    it('should set shouldAddCurrentYear to false when current date is outside tax inclusion period', async () => {
-      jest.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
-
-      const mockTaxPayer = createMockTaxPayer({
-        createdAt: new Date('2025-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2025-01-01T10:00:02.000Z'), // updated -> true
-      })
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
-      prismaMock.tax.findMany.mockResolvedValue([])
-
-      const result = await service.getListOfTaxesByBirthnumberAndType(
-        '123456/789',
-        TaxType.DZN,
-      )
-
-      expect(result.availabilityStatus).toBe('TAX_NOT_ON_RECORD')
-    })
-
-    // Empty Taxes Array Scenarios
-    it('should return LOOKING_FOR_YOUR_TAX when no taxes exist and shouldAddCurrentYear is true and taxPayerWasUpdated is true', async () => {
-      // Set within inclusion period
-      jest.setSystemTime(new Date('2025-03-10T12:00:00.000Z'))
-      const mockTaxPayer = createMockTaxPayer({
-        createdAt: new Date('2025-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2025-01-01T10:00:02.000Z'), // updated => true
-      })
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
-      prismaMock.tax.findMany.mockResolvedValue([])
-
-      const result = await service.getListOfTaxesByBirthnumberAndType(
-        '123456/789',
-        TaxType.DZN,
-      )
-      expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
-    })
-
-    it('should return LOOKING_FOR_YOUR_TAX when no taxes exist and shouldAddCurrentYear is false and taxPayerWasUpdated is false', async () => {
-      // Outside inclusion period
-      jest.setSystemTime(new Date('2025-12-10T12:00:00.000Z'))
-      const mockTaxPayer = createMockTaxPayer({
-        createdAt: new Date('2025-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2025-01-01T10:00:00.500Z'), // not updated
-      })
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
-      prismaMock.tax.findMany.mockResolvedValue([])
-
-      const result = await service.getListOfTaxesByBirthnumberAndType(
-        '123456/789',
-        TaxType.DZN,
-      )
-      expect(result.availabilityStatus).toBe('LOOKING_FOR_YOUR_TAX')
-    })
-
-    it('should return TAX_NOT_ON_RECORD status when no taxes exist and shouldAddCurrentYear is false and taxPayerWasUpdated is true', async () => {
-      // Outside inclusion period
-      jest.setSystemTime(new Date('2025-12-10T12:00:00.000Z'))
-      const mockTaxPayer = createMockTaxPayer({
-        createdAt: new Date('2025-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2025-01-01T10:00:02.000Z'), // updated
-      })
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
-      prismaMock.tax.findMany.mockResolvedValue([])
-
-      const result = await service.getListOfTaxesByBirthnumberAndType(
-        '123456/789',
-        TaxType.DZN,
-      )
-      expect(result.availabilityStatus).toBe('TAX_NOT_ON_RECORD')
-    })
+        expect(result.availabilityStatus).toBe(expected)
+      },
+    )
 
     it('should throw ForbiddenException when birth number is empty for KO tax type', async () => {
       const forbiddenExceptionSpy = jest.spyOn(
@@ -386,104 +325,59 @@ describe('TaxService', () => {
       )
     })
 
-    it('should set shouldAddCurrentYear to true when current date is within tax inclusion period for KO tax type', async () => {
-      // Within period: between Feb 1 and Jul 1 (exclusive). Use March 1st.
-      jest.setSystemTime(new Date('2025-03-01T12:00:00.000Z'))
+    it.each([
+      {
+        scenario: 'the current date is within the tax inclusion period',
+        now: '2025-03-01T12:00:00.000Z',
+        updatedAt: '2025-01-01T10:00:00.000Z', // not updated
+        expected: TaxAvailabilityStatus.LOOKING_FOR_YOUR_TAX,
+      },
+      {
+        scenario: 'the current date is outside the tax inclusion period',
+        now: '2025-12-01T12:00:00.000Z',
+        updatedAt: '2025-01-01T10:00:02.000Z', // updated -> true
+        expected: TaxAvailabilityStatus.TAX_NOT_ON_RECORD,
+      },
+      {
+        scenario: 'shouldAddCurrentYear is true and taxPayerWasUpdated is true',
+        now: '2025-03-10T12:00:00.000Z',
+        updatedAt: '2025-01-01T10:00:02.000Z',
+        expected: TaxAvailabilityStatus.LOOKING_FOR_YOUR_TAX,
+      },
+      {
+        scenario:
+          'shouldAddCurrentYear is false and taxPayerWasUpdated is false',
+        now: '2025-12-10T12:00:00.000Z',
+        updatedAt: '2025-01-01T10:00:00.500Z',
+        expected: TaxAvailabilityStatus.LOOKING_FOR_YOUR_TAX,
+      },
+      {
+        scenario:
+          'shouldAddCurrentYear is false and taxPayerWasUpdated is true',
+        now: '2025-12-10T12:00:00.000Z',
+        updatedAt: '2025-01-01T10:00:02.000Z',
+        expected: TaxAvailabilityStatus.TAX_NOT_ON_RECORD,
+      },
+    ])(
+      'should return $expected when no KO taxes exist and $scenario',
+      async ({ now, updatedAt, expected }) => {
+        jest.setSystemTime(new Date(now))
 
-      const mockTaxPayer = createMockTaxPayer({
-        createdAt: new Date('2025-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2025-01-01T10:00:00.000Z'), // not updated
-      })
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
-      prismaMock.tax.findMany.mockResolvedValue([])
+        const mockTaxPayer = createMockTaxPayer({
+          createdAt: new Date('2025-01-01T10:00:00.000Z'),
+          updatedAt: new Date(updatedAt),
+        })
+        prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
+        prismaMock.tax.findMany.mockResolvedValue([])
 
-      const result = await service.getListOfTaxesByBirthnumberAndType(
-        '123456/789',
-        TaxType.KO,
-      )
+        const result = await service.getListOfTaxesByBirthnumberAndType(
+          '123456/789',
+          TaxType.KO,
+        )
 
-      // With no taxes and shouldAddCurrentYear=true => LOOKING_FOR_YOUR_TAX
-      expect(result.availabilityStatus).toBe(
-        TaxAvailabilityStatus.LOOKING_FOR_YOUR_TAX,
-      )
-    })
-
-    it('should set shouldAddCurrentYear to false when current date is outside tax inclusion period for KO tax type', async () => {
-      jest.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
-
-      const mockTaxPayer = createMockTaxPayer({
-        createdAt: new Date('2025-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2025-01-01T10:00:02.000Z'), // updated -> true
-      })
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
-      prismaMock.tax.findMany.mockResolvedValue([])
-
-      const result = await service.getListOfTaxesByBirthnumberAndType(
-        '123456/789',
-        TaxType.KO,
-      )
-
-      expect(result.availabilityStatus).toBe(
-        TaxAvailabilityStatus.TAX_NOT_ON_RECORD,
-      )
-    })
-
-    it('should return LOOKING_FOR_YOUR_TAX when no KO taxes exist and shouldAddCurrentYear is true and taxPayerWasUpdated is true', async () => {
-      // Set within inclusion period
-      jest.setSystemTime(new Date('2025-03-10T12:00:00.000Z'))
-      const mockTaxPayer = createMockTaxPayer({
-        createdAt: new Date('2025-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2025-01-01T10:00:02.000Z'), // updated => true
-      })
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
-      prismaMock.tax.findMany.mockResolvedValue([])
-
-      const result = await service.getListOfTaxesByBirthnumberAndType(
-        '123456/789',
-        TaxType.KO,
-      )
-      expect(result.availabilityStatus).toBe(
-        TaxAvailabilityStatus.LOOKING_FOR_YOUR_TAX,
-      )
-    })
-
-    it('should return LOOKING_FOR_YOUR_TAX when no KO taxes exist and shouldAddCurrentYear is false and taxPayerWasUpdated is false', async () => {
-      // Outside inclusion period
-      jest.setSystemTime(new Date('2025-12-10T12:00:00.000Z'))
-      const mockTaxPayer = createMockTaxPayer({
-        createdAt: new Date('2025-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2025-01-01T10:00:00.500Z'), // not updated
-      })
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
-      prismaMock.tax.findMany.mockResolvedValue([])
-
-      const result = await service.getListOfTaxesByBirthnumberAndType(
-        '123456/789',
-        TaxType.KO,
-      )
-      expect(result.availabilityStatus).toBe(
-        TaxAvailabilityStatus.LOOKING_FOR_YOUR_TAX,
-      )
-    })
-
-    it('should return TAX_NOT_ON_RECORD status when no KO taxes exist and shouldAddCurrentYear is false and taxPayerWasUpdated is true', async () => {
-      // Outside inclusion period
-      jest.setSystemTime(new Date('2025-12-10T12:00:00.000Z'))
-      const mockTaxPayer = createMockTaxPayer({
-        createdAt: new Date('2025-01-01T10:00:00.000Z'),
-        updatedAt: new Date('2025-01-01T10:00:02.000Z'), // updated
-      })
-      prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
-      prismaMock.tax.findMany.mockResolvedValue([])
-
-      const result = await service.getListOfTaxesByBirthnumberAndType(
-        '123456/789',
-        TaxType.KO,
-      )
-      expect(result.availabilityStatus).toBe(
-        TaxAvailabilityStatus.TAX_NOT_ON_RECORD,
-      )
-    })
+        expect(result.availabilityStatus).toBe(expected)
+      },
+    )
 
     it('should process existing taxes and return AVAILABLE status when taxes exist', async () => {
       // Set outside inclusion period to prevent current year tax addition
@@ -1065,7 +959,7 @@ describe('TaxService', () => {
       createTestTaxAdministratorEntry({
         taxType: TaxType.KO,
         taxAdministratorId: 2,
-        taxAdministrator: { id: 2, externalId: adminExternalId },
+        taxAdministrator: { id: 2 },
       })
 
     it('should return tax detail from implementation', async () => {
@@ -1473,7 +1367,6 @@ describe('TaxService', () => {
     describe('fetchTaxData', () => {
       const mockTaxData = createTestTax({
         id: 1,
-        uuid: 'tax-uuid',
         year: 2023,
         amount: 1000,
         variableSymbol: 'VS123',
@@ -1499,7 +1392,7 @@ describe('TaxService', () => {
             createTestTaxAdministratorEntry({
               taxType: TaxType.DZN,
               taxAdministratorId: 1,
-              taxAdministrator: { id: 1, externalId: 'ext-admin-1' },
+              taxAdministrator: { id: 1 },
             }),
           ],
         }),
@@ -1533,7 +1426,7 @@ describe('TaxService', () => {
         })
         expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
           where: {
-            taxPayerId_year_type_order: {
+            taxPayerId_type_year_order: {
               year: 2023,
               taxPayerId: 1,
               type: TaxType.DZN,
@@ -1596,14 +1489,14 @@ describe('TaxService', () => {
         )
       })
 
-      it('should work with uuid as tax payer identifier', async () => {
+      it('should work with birthNumber as tax payer identifier', async () => {
         prismaMock.taxPayer.findUnique.mockResolvedValue(
           createTestTaxPayer({ id: 1 }),
         )
         prismaMock.tax.findUnique.mockResolvedValue(mockTaxData)
 
         const result = await service['fetchTaxData'](
-          { uuid: 'taxpayer-uuid' },
+          { birthNumber: '123456/789' },
           { taxPayments: true },
           2023,
           TaxType.KO,
@@ -1611,15 +1504,15 @@ describe('TaxService', () => {
         )
 
         expect(prismaMock.taxPayer.findUnique).toHaveBeenCalledWith({
-          where: { uuid: 'taxpayer-uuid' },
+          where: { birthNumber: '123456/789' },
           select: { id: true },
         })
         expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
           where: {
-            taxPayerId_year_type_order: {
-              year: 2023,
+            taxPayerId_type_year_order: {
               taxPayerId: 1,
               type: TaxType.KO,
+              year: 2023,
               order: 1,
             },
           },

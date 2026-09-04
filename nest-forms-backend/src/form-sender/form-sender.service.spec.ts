@@ -509,6 +509,9 @@ describe('FormSenderService', () => {
       jest
         .spyOn(service['formsService'], 'updateForm')
         .mockResolvedValue(mockForm)
+      jest
+        .spyOn(service['formsService'], 'transitionToQueued')
+        .mockResolvedValue(true)
       ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
         sendPossible: true,
         sendAllowedForUser: true,
@@ -597,17 +600,83 @@ describe('FormSenderService', () => {
       })
     })
 
-    it('should include form summary in form update', async () => {
+    it('should include form summary in the queued transition', async () => {
       const mockSummary = createMock<FormSummary>({ additionalInfo: 'test' })
       jest.spyOn(service, 'getFormSummaryOrThrow').mockReturnValue(mockSummary)
 
       await service.updateAndSendForm('1', {}, authUser.user)
 
+      expect(service['formsService'].transitionToQueued).toHaveBeenCalledWith(
+        '1',
+        {
+          formSummary: mockSummary,
+          formSentAt: expect.any(Date) as Date,
+          jsonVersion: mockFormDefinition.jsonVersion,
+        },
+      )
+    })
+
+    it('should verify the form is editable before updating it', async () => {
+      const checkSpy = jest.spyOn(
+        service['formsService'],
+        'checkFormBeforeSending',
+      )
+      const updateSpy = jest.spyOn(
+        service['formsService'],
+        'updateFormWithUser',
+      )
+
+      await service.updateAndSendForm('1', {}, authUser.user)
+
+      // Updating the form deletes files the form data does not reference, so the editability check
+      // must happen first. It runs again afterwards on the updated form.
+      expect(checkSpy.mock.invocationCallOrder[0]).toBeLessThan(
+        updateSpy.mock.invocationCallOrder[0],
+      )
+      expect(checkSpy).toHaveBeenCalledTimes(2)
+    })
+
+    it('should not update the form when it is no longer editable', async () => {
+      jest
+        .spyOn(service['formsService'], 'checkFormBeforeSending')
+        .mockRejectedValue(
+          new Error(FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR),
+        )
+
+      await expect(
+        service.updateAndSendForm('1', {}, authUser.user),
+      ).rejects.toThrow(FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR)
+
+      expect(service['formsService'].updateFormWithUser).not.toHaveBeenCalled()
+    })
+
+    it('should reject the send if a concurrent send already claimed the form', async () => {
+      jest
+        .spyOn(service['formsService'], 'transitionToQueued')
+        .mockResolvedValue(false)
+
+      await expect(
+        service.updateAndSendForm('1', {}, authUser.user),
+      ).rejects.toThrow(FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR)
+
+      expect(
+        service['rabbitmqClientService'].publishDelay,
+      ).not.toHaveBeenCalled()
+    })
+
+    it('should release the claim if publishing to RabbitMQ fails', async () => {
+      jest
+        .spyOn(service['rabbitmqClientService'], 'publishDelay')
+        .mockRejectedValue(new Error('RabbitMQ error'))
+
+      await expect(
+        service.updateAndSendForm('1', {}, authUser.user),
+      ).rejects.toThrow(FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT)
+
       expect(service['formsService'].updateForm).toHaveBeenCalledWith('1', {
-        state: FormState.QUEUED,
-        formSummary: mockSummary,
-        formSentAt: expect.any(Date) as Date,
-        jsonVersion: mockFormDefinition.jsonVersion,
+        state: FormState.DRAFT,
+        formSentAt: null,
+        jsonVersion: mockForm.jsonVersion,
       })
     })
 
@@ -630,7 +699,7 @@ describe('FormSenderService', () => {
           }),
           configurable: true,
         })
-        Object.defineProperty(service['baConfigService'], 'fileLimits', {
+        Object.defineProperty(service['baConfigService'], 'files', {
           get: () => ({
             maxSingleSizeGlobal: 500_000_000,
             maxCumulativeSizeGlobal: 1_000_000_000,
@@ -663,7 +732,7 @@ describe('FormSenderService', () => {
       })
 
       it('should throw if total file size exceeds global cumulative limit', async () => {
-        Object.defineProperty(service['baConfigService'], 'fileLimits', {
+        Object.defineProperty(service['baConfigService'], 'files', {
           get: () => ({
             maxSingleSizeGlobal: 500_000_000,
             maxCumulativeSizeGlobal: 200_000_000,

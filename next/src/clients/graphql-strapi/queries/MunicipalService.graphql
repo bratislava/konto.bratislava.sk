@@ -1,11 +1,13 @@
 fragment MunicipalServiceTagEntity on MunicipalServiceTag {
   documentId
   title
+  slug
 }
 
 fragment MunicipalServiceCategoryEntity on MunicipalServiceCategory {
   documentId
   title
+  slug
 }
 
 # Used to determine whether the service redirects to a landing page or to an external URL
@@ -59,6 +61,7 @@ fragment MunicipalServiceEntity on MunicipalService {
   ...MunicipalServiceCardEntity
   pageHeaderText
   moreInformationUrl
+  formButtonLabel
   form {
     ...FormWithLandingPage
   }

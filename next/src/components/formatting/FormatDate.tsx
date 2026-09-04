@@ -22,7 +22,9 @@ export const formatDate = (
   locale = 'sk',
   format: CDateFormat = 'default',
 ) => {
-  if (!isoString) return ''
+  if (!isoString) {
+    return ''
+  }
 
   const localeMapped = ({ sk: 'sk-SK', en: 'en-IE' } as const)[locale] ?? 'sk-SK'
 
@@ -32,7 +34,7 @@ export const formatDate = (
 }
 
 const FormatDate = ({ children, format = 'default' }: Props) => {
-  const { i18n } = useTranslation('account')
+  const { i18n } = useTranslation()
   const locale = i18n.language
 
   return <>{formatDate(children, locale, format)}</>

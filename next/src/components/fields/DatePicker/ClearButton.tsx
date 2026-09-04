@@ -6,15 +6,18 @@ import { DatePickerStateContext } from 'react-aria-components/DatePicker'
 // Must be rendered as descendant of RACDatePicker to access DatePickerStateContext.
 // Mirrors the ResetButton pattern in fields/RadioGroup.tsx:22.
 const ClearButton = () => {
-  const state = useContext(DatePickerStateContext)
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
-  if (!state) return null
+  const state = useContext(DatePickerStateContext)
+
+  if (!state) {
+    return null
+  }
 
   return (
     <Button
       variant="plain"
-      slot={null as never}
+      slot={null}
       onPress={() => {
         state.setValue(null)
         state.close()

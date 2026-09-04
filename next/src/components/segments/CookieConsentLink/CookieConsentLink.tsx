@@ -23,7 +23,8 @@ import { isBrowser } from '@/src/frontend/utils/general'
  */
 
 const CookieConsentLink = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const [isMissingModalOpen, setIsMissingModalOpen] = useState(false)
 
   const showCookiebotConsentBanner = () => {

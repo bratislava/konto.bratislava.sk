@@ -479,10 +479,10 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     const whereUnique: Prisma.TaxWhereUniqueInput = {
       ...(taxDefinition.isUnique
         ? {
-            taxPayerId_year_type_order: {
+            taxPayerId_type_year_order: {
               taxPayerId: taxPayer.id,
-              year,
               type: taxDefinition.type,
+              year,
               order: 1,
             },
           }

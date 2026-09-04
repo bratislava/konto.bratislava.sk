@@ -1,4 +1,5 @@
-import { forwardRef, ReactNode, Ref, useId } from 'react'
+import { InputWidthType } from 'forms-shared/generator/uiOptionsTypes'
+import { forwardRef, Ref, useId } from 'react'
 import { Group as RACGroup } from 'react-aria-components/Group'
 import { Input as RACInput } from 'react-aria-components/Input'
 import {
@@ -9,12 +10,23 @@ import {
 import cn from '@/src/utils/cn'
 
 import FieldWrapper from './_shared/FieldWrapper'
+import {
+  getInputWidthCharactersStyle,
+  getInputWidthFractionClassName,
+  inputWidthCharactersClassName,
+  isInputWidthCharacters,
+} from './_shared/inputWidth'
 import { FieldBaseProps } from './_shared/types'
 
 export interface NumberFieldProps extends RACNumberFieldProps, FieldBaseProps {
   placeholder?: string
-  endIcon?: ReactNode
   unit?: string
+  /**
+   * Width of the input, either a number of characters or a fraction of the available width.
+   * Narrows only the input, never past the available space. Label, helptext and error message keep
+   * the full width.
+   */
+  inputWidth?: InputWidthType
 }
 
 const NumberField = (
@@ -26,13 +38,14 @@ const NumberField = (
     helptextFooter,
     errorMessage,
     placeholder,
-    endIcon,
     unit,
+    inputWidth,
     ...rest
   }: NumberFieldProps,
   ref: Ref<HTMLInputElement>,
 ) => {
   const unitId = useId()
+  const isCharactersWidth = isInputWidthCharacters(inputWidth)
 
   return (
     <RACNumberField
@@ -54,7 +67,10 @@ const NumberField = (
           <RACGroup
             className={({ isFocusWithin, isInvalid, isDisabled, isHovered }) =>
               cn(
-                'flex w-full overflow-hidden rounded-lg border bg-background-passive-base base-focus-ring',
+                'flex overflow-hidden rounded-lg border bg-background-passive-base base-focus-ring',
+                // A character count must size the typing area alone, so the group shrink-wraps the
+                // input plus the unit. A fraction sizes the whole control, so it goes on the group.
+                isCharactersWidth ? 'w-fit max-w-full' : getInputWidthFractionClassName(inputWidth),
                 {
                   'border-border-active-default': !isInvalid && !isFocusWithin,
                   'border-border-active-focused': !isInvalid && isFocusWithin,
@@ -74,8 +90,10 @@ const NumberField = (
                   // Thanks to aria-describedby, screen readers will read the suffix value after announcing the label, with a short pause.
                   aria-describedby={unitId}
                   data-cy={rest.name ? `number-${rest.name}` : undefined}
+                  style={isCharactersWidth ? getInputWidthCharactersStyle(inputWidth) : undefined}
                   className={cn(
-                    'min-w-0 flex-1 bg-transparent text-size-p-small-r text-content-passive-secondary outline-hidden lg:text-size-p-small',
+                    'min-w-0 bg-transparent text-size-p-small-r text-content-passive-secondary outline-hidden lg:text-size-p-small',
+                    isCharactersWidth ? inputWidthCharactersClassName : 'flex-1',
                     'px-3 py-2 lg:px-4 lg:py-3',
                     'placeholder:text-content-passive-tertiary',
                   )}
@@ -98,30 +116,30 @@ const NumberField = (
             )}
           </RACGroup>
         ) : (
-          <div className="relative">
-            <RACInput
-              ref={ref}
-              placeholder={placeholder}
-              data-cy={rest.name ? `number-${rest.name}` : undefined}
-              className={({ isFocused, isDisabled, isInvalid }) =>
-                cn(
-                  'w-full rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary base-focus-ring outline-hidden lg:text-size-p-small',
-                  'px-3 py-2 lg:px-4 lg:py-3',
-                  'placeholder:text-content-passive-tertiary',
-                  {
-                    'border-border-active-default': !isInvalid && !isFocused,
-                    'border-border-active-focused': !isInvalid && isFocused,
-                    'border-border-error': isInvalid,
-                    'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
-                    'hover:border-border-active-hover': !isDisabled && !isInvalid && !isFocused,
-                  },
-                )
-              }
-            />
-            {endIcon ? (
-              <div className="absolute inset-y-0 right-0 flex items-center">{endIcon}</div>
-            ) : null}
-          </div>
+          <RACInput
+            ref={ref}
+            placeholder={placeholder}
+            data-cy={rest.name ? `number-${rest.name}` : undefined}
+            style={isCharactersWidth ? getInputWidthCharactersStyle(inputWidth) : undefined}
+            className={({ isFocused, isDisabled, isInvalid }) =>
+              cn(
+                'rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary base-focus-ring outline-hidden lg:text-size-p-small',
+                // Both set the width, so they are mutually exclusive
+                isCharactersWidth
+                  ? inputWidthCharactersClassName
+                  : getInputWidthFractionClassName(inputWidth),
+                'px-3 py-2 lg:px-4 lg:py-3',
+                'placeholder:text-content-passive-tertiary',
+                {
+                  'border-border-active-default': !isInvalid && !isFocused,
+                  'border-border-active-focused': !isInvalid && isFocused,
+                  'border-border-error': isInvalid,
+                  'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
+                  'hover:border-border-active-hover': !isDisabled && !isInvalid && !isFocused,
+                },
+              )
+            }
+          />
         )}
       </FieldWrapper>
     </RACNumberField>

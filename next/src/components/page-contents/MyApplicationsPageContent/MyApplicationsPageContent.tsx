@@ -7,9 +7,8 @@ import { GetFormsResponseDto } from 'openapi-clients/forms'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import MyApplicationsList, {
-  getDraftApplications,
-} from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsList'
+import { getDraftApplications } from '@/src/components/page-contents/MyApplicationsPageContent/getDraftApplications'
+import MyApplicationsList from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsList'
 import logger from '@/src/frontend/utils/logger'
 import { ApplicationsListVariant, sections } from '@/src/pages/moje-ziadosti'
 import cn from '@/src/utils/cn'
@@ -34,7 +33,9 @@ export const getTotalNumberOfApplications = async (
   getSsrAuthSession?: () => Promise<AuthSession>,
 ) => {
   const firstPage = await getDraftApplications(variant, 1, emailFormSlugs, getSsrAuthSession)
-  if (firstPage.countPages === 0) return 0
+  if (firstPage.countPages === 0) {
+    return 0
+  }
 
   const lastPage = await getDraftApplications(
     variant,
@@ -49,8 +50,8 @@ export const getTotalNumberOfApplications = async (
 const useTotalCount = (variant: ApplicationsListVariant, emailFormSlugs: string[]) => {
   const { data, refetch } = useQuery({
     // `emailFormSlugs` is stable and should be part of the key
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey: [`ApplicationsCount_${variant}`, variant],
+
+    queryKey: ['TotalNumberOfApplications', variant, emailFormSlugs],
     queryFn: () => getTotalNumberOfApplications(variant, emailFormSlugs),
   })
 
@@ -74,14 +75,15 @@ const MyApplicationsPageContent = ({
   formDefinitionSlugTitleMap,
   emailFormSlugs,
 }: MyApplicationsSectionProps) => {
-  const { t } = useTranslation('account')
-  const title = t('account_section_applications.navigation')
+  const { t } = useTranslation()
   const router = useRouter()
 
+  const title = t('MyApplicationsPageContent.title')
+
   const headerNavigationList: HeaderNavigationItemBase[] = [
-    { title: t('account_section_applications.navigation_sent'), tag: 'SENT' },
-    { title: t('account_section_applications.navigation_sending'), tag: 'SENDING' },
-    { title: t('account_section_applications.navigation_draft'), tag: 'DRAFT' },
+    { title: t('MyApplicationsPageContent.tabs.sent'), tag: 'SENT' },
+    { title: t('MyApplicationsPageContent.tabs.sending'), tag: 'SENDING' },
+    { title: t('MyApplicationsPageContent.tabs.draft'), tag: 'DRAFT' },
   ]
 
   const totalCounts = {

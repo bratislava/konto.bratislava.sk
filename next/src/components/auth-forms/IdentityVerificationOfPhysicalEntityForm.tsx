@@ -5,6 +5,7 @@ import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
+import IdentityVerificationOutageAlert from '@/src/components/auth-forms/IdentityVerificationOutageAlert'
 import TextField from '@/src/components/fields/TextField'
 import Markdown from '@/src/components/formatting/Markdown'
 import Icon from '@/src/components/icon-components/Icon'
@@ -37,20 +38,20 @@ const foSchema = {
     givenName: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:auth.fields.given_name_required' },
+      errorMessage: { minLength: 'auth.fields.givenName.required' },
     },
     familyName: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:auth.fields.family_name_required' },
+      errorMessage: { minLength: 'auth.fields.familyName.required' },
     },
     rc: {
       type: 'string',
       minLength: 1,
       format: 'rc',
       errorMessage: {
-        minLength: 'account:auth.fields.rc_required',
-        format: 'account:auth.fields.rc_format',
+        minLength: 'auth.fields.birthNumber.required',
+        format: 'auth.fields.birthNumber.format',
       },
     },
     idCard: {
@@ -58,8 +59,8 @@ const foSchema = {
       minLength: 1,
       format: 'idCard',
       errorMessage: {
-        minLength: 'account:auth.fields.id_card_required',
-        format: 'account:auth.fields.id_card_format',
+        minLength: 'auth.fields.idCard.required',
+        format: 'auth.fields.idCard.format',
       },
     },
     turnstileToken: {
@@ -75,7 +76,8 @@ const IdentityVerificationOfPhysicalEntityForm = ({
   error,
   showSkipButton = true,
 }: Props) => {
-  const { t, i18n } = useTranslation('account')
+  const { t, i18n } = useTranslation()
+
   const { redirect } = useQueryParamRedirect()
 
   const { userAttributes } = useSsrAuth()
@@ -101,12 +103,15 @@ const IdentityVerificationOfPhysicalEntityForm = ({
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
 
   useTimeout(() => {
-    if (!isBrowser() || captchaWarning === 'hide') return
+    if (!isBrowser() || captchaWarning === 'hide') {
+      return
+    }
     setCaptchaWarning('show')
   }, 3000)
 
   return (
     <form
+      noValidate // We use AJV validation
       className="flex flex-col gap-4 lg:gap-6"
       onSubmit={handleSubmit((data: IdentityVerificationOfPhysicalEntityFormData) => {
         incrementCaptchaKey()
@@ -115,10 +120,16 @@ const IdentityVerificationOfPhysicalEntityForm = ({
       })}
     >
       <Typography variant="h3" as="h1">
-        {t('auth.identity_verification.fo.init.title')}
+        {t('IdentityVerificationOfPhysicalEntityForm.title')}
       </Typography>
-      <Markdown variant="small" content={t('auth.identity_verification.fo.init.content')} />
-      <AccountErrorAlert error={error} />
+      <Markdown variant="small" content={t('IdentityVerificationOfPhysicalEntityForm.content')} />
+      {error ? (
+        <div className="flex flex-col gap-4">
+          <AccountErrorAlert error={error} />
+          {/* TODO remove this temporary alert when state registers are fixed. */}
+          <IdentityVerificationOutageAlert />
+        </div>
+      ) : null}
 
       <Controller
         name="givenName"
@@ -126,8 +137,8 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         render={({ field }) => (
           <TextField
             isRequired
-            label={t('auth.fields.given_name_label')}
-            helptext={t('auth.identity_verification.fo.init.given_name_helptext')}
+            label={t('auth.fields.givenName.label')}
+            helptext={t('IdentityVerificationOfPhysicalEntityForm.givenNameHelptext')}
             autoComplete="given-name"
             autoCapitalize="on"
             autoCorrect="off"
@@ -143,8 +154,8 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         render={({ field }) => (
           <TextField
             isRequired
-            label={t('auth.fields.family_name_label')}
-            helptext={t('auth.identity_verification.fo.init.family_name_helptext')}
+            label={t('auth.fields.familyName.label')}
+            helptext={t('IdentityVerificationOfPhysicalEntityForm.familyNameHelptext')}
             autoComplete="family-name"
             autoCapitalize="on"
             autoCorrect="off"
@@ -160,8 +171,8 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         render={({ field }) => (
           <TextField
             isRequired
-            helptext={t('auth.fields.rc_description')}
-            label={t('auth.fields.rc_label')}
+            helptext={t('auth.fields.birthNumber.helptext')}
+            label={t('auth.fields.birthNumber.label')}
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck="false"
@@ -176,8 +187,8 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         render={({ field }) => (
           <TextField
             isRequired
-            label={t('auth.fields.id_card_label')}
-            helptext={t('auth.fields.id_card_description')}
+            label={t('auth.fields.idCard.label')}
+            helptext={t('auth.fields.idCard.helptext')}
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck="false"
@@ -219,7 +230,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
             />
             {captchaWarning === 'show' && (
               <Typography variant="p-small" className="italic">
-                {t('auth.captcha_warning')}
+                {t('auth.captchaWarning')}
               </Typography>
             )}
           </>
@@ -227,7 +238,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
       />
       <div className="flex flex-col gap-3 lg:gap-4">
         <Button variant="solid" fullWidth type="submit" isLoading={isSubmitting}>
-          {t('auth.identity_verification.fo.init.submit_button_text')}
+          {t('IdentityVerificationOfPhysicalEntityForm.submit')}
         </Button>
         {showSkipButton ? (
           <Button
@@ -236,7 +247,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
             onPress={() => redirect()}
             endIcon={<Icon name="arrow-right" />}
           >
-            {t('auth.identity_verification.common.skip_verification_button_text')}
+            {t('auth.skipVerificationButton')}
           </Button>
         ) : null}
       </div>

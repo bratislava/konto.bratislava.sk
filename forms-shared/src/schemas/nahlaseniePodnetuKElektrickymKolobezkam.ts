@@ -120,7 +120,7 @@ export const nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress:
     extractFn: (formData) => {
       switch (formData.podnet.poskytovatel) {
         case 'bolt':
-          return 'boltskba@bolt.eu'
+          return 'boris.husar@bolt.eu'
         case 'dott':
           return 'joanna.kravjar@ridedott.com'
         case 'svist':

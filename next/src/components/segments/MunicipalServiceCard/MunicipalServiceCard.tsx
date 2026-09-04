@@ -36,6 +36,7 @@ import {
 } from '@/src/clients/graphql-strapi/api'
 import ServiceCard from '@/src/components/simple-components/ServiceCard'
 import { isDefined } from '@/src/frontend/utils/general'
+import { getLinkProps } from '@/src/utils/getLinkProps'
 import { ROUTES } from '@/src/utils/routes'
 
 const getIconComponent = (
@@ -118,26 +119,32 @@ type MunicipalServiceCardProps = {
 }
 
 const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const tags: string[] = [
     ...(service.form?.isTemporarilyDisabled
-      ? [t('MunicipalServiceCard.temporarily_disabled_badge')]
+      ? [t('MunicipalServiceCard.temporarilyDisabledBadge')]
       : []),
     ...service.tags.map((tag) => tag?.title).filter(isDefined),
   ]
+
+  const linkProps = {
+    ...getLinkProps({
+      label: service.buttonText,
+      url: service.href ?? ROUTES.MUNICIPAL_SERVICES_FORM(service.slug),
+    }),
+    analyticsProps: { id: `Mestské služby: ${service.title}` },
+  }
 
   return (
     <ServiceCard
       key={service.documentId}
       title={service.title}
       description={service.description}
-      buttonText={service.buttonText}
       icon={getIconComponent(service.icon, service.color)}
-      href={service.href ?? ROUTES.MUNICIPAL_SERVICES_FORM(service.slug)}
+      linkProps={linkProps}
       tags={tags}
       tagStyle={getTagStyle(service.color)}
-      analyticsProps={{ id: `Mestské služby: ${service.title}` }}
     />
   )
 }

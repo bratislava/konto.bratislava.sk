@@ -7,8 +7,9 @@ import useToast from '@/src/components/simple-components/Toast/useToast'
 import logger from '@/src/frontend/utils/logger'
 
 const ClipboardCopy = ({ copyText }: { copyText: string }) => {
+  const { t } = useTranslation()
+
   const [, copy] = useCopyToClipboard()
-  const { t } = useTranslation('account')
   const { showToast } = useToast()
 
   const handleCopy = () => {

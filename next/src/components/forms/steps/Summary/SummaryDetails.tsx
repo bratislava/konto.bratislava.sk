@@ -65,13 +65,13 @@ const FileValueComponent = ({ fileInfo }: SummaryFileValueComponentProps) => {
 }
 
 const NoneValueComponent = () => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation()
 
-  return <span>{t('summary.none_value')}</span>
+  return <span>{t('SummaryDetails.noneValue')}</span>
 }
 
 const InvalidValueComponent = () => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation()
 
   return (
     <span>
@@ -79,7 +79,7 @@ const InvalidValueComponent = () => {
         <div className="shrink-0">
           <Icon name="warning" />
         </div>
-        {t('summary.invalid_value')}
+        {t('SummaryDetails.invalidValue')}
       </div>
     </span>
   )
@@ -102,7 +102,8 @@ const ArrayComponent = ({ array, children }: SummaryArrayComponentProps) => {
 const getArrayDepth = (id: string) => id.split('_').filter((part) => part.match(/^\d+$/)).length
 
 const ArrayItemComponent = ({ arrayItem, children, hasError }: SummaryArrayItemComponentProps) => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation()
+
   const arrayDepth = getArrayDepth(arrayItem.id)
 
   if (arrayDepth === 1) {
@@ -118,7 +119,7 @@ const ArrayItemComponent = ({ arrayItem, children, hasError }: SummaryArrayItemC
             </Typography>
             {hasError && (
               <Typography variant="p-small" className="text-category-700 group-open:hidden">
-                {t('summary.contains_errors')}
+                {t('SummaryDetails.containsErrors')}
               </Typography>
             )}
           </div>

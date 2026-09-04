@@ -58,9 +58,9 @@ import {
  */
 
 const useGetContext = () => {
+  const { t } = useTranslation()
   const router = useRouter()
 
-  const { t } = useTranslation('forms')
   const { showToast } = useToast()
   // As the token is immediately removed from the URL, we need to store it in a ref.
   const sendEidTokenRef = useRef<string | null>(null)
@@ -110,13 +110,13 @@ const useGetContext = () => {
       // A special case when user submits the form, but doesn't receive the response and then tries to send the form again.
       // TODO: Use error code instead of error name from API when fixed & type
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_DRAFT_ERROR') {
+      if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_EDITABLE_ERROR') {
         setFormIsSent()
 
         return
       }
 
-      showToast({ message: t('form_send_error'), variant: 'error' })
+      showToast({ message: t('useFormSend.error'), variant: 'error' })
     },
   })
 
@@ -141,7 +141,7 @@ const useGetContext = () => {
         setRedirectingToSlovenskoSkLogin(true)
       },
       onError: () => {
-        showToast({ message: t('form_send_error'), variant: 'error' })
+        showToast({ message: t('useFormSend.error'), variant: 'error' })
       },
     })
 
@@ -169,7 +169,7 @@ const useGetContext = () => {
       // A special case when user submits the form, but doesn't receive the response and then tries to send the form again.
       // TODO: Use error code instead of error name from API when fixed & type
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_DRAFT_ERROR') {
+      if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_EDITABLE_ERROR') {
         setFormIsSent()
 
         return
@@ -185,7 +185,7 @@ const useGetContext = () => {
         },
       })
       if (fromRepeatModal) {
-        showToast({ message: t('form_send_error'), variant: 'error' })
+        showToast({ message: t('useFormSend.error'), variant: 'error' })
       }
     },
   })

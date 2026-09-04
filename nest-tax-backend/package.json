@@ -28,7 +28,7 @@
     "vulnerabilities": "pnpm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "3.1090.0",
+    "@aws-sdk/client-cognito-identity-provider": "3.1098.0",
     "@nestjs-cognito/auth": "2.5.1",
     "@nestjs/common": "11.1.28",
     "@nestjs/config": "4.0.4",
@@ -61,14 +61,14 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@bratislava/eslint-config-nest": "0.17.0",
+    "@bratislava/eslint-config-nest": "0.19.1",
     "@golevelup/ts-jest": "3.0.0",
     "@nestjs/cli": "11.0.24",
     "@nestjs/schematics": "11.1.0",
     "@nestjs/testing": "11.1.28",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
-    "@types/lodash": "4.17.24",
+    "@types/lodash": "4.17.25",
     "@types/mssql": "12.3.0",
     "@types/node": "catalog:",
     "@types/nodemailer": "8.0.0",
@@ -91,10 +91,6 @@
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
     "typescript": "6.0.3"
-  },
-  "overrides": {
-    "typescript-eslint": "8.62.1",
-    "@typescript-eslint/parser": "8.62.1"
   },
   "jest": {
     "moduleFileExtensions": [

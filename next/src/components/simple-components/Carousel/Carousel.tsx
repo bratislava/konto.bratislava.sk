@@ -37,7 +37,8 @@ const Carousel = ({
   hasVerticalPadding = true,
   showControlsOnMobile = false,
 }: CarouselProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const scrollerRef = useRef<HTMLUListElement>(null)
 
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -46,7 +47,9 @@ const Carousel = ({
 
   const scrollToItem = (index: number, instant = false) => {
     setCurrentIndex(index)
-    if (!scrollerRef.current) return
+    if (!scrollerRef.current) {
+      return
+    }
     const offset = (scrollerRef.current.scrollWidth / totalCount) * index
 
     scrollerRef.current?.scroll({

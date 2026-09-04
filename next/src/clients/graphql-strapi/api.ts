@@ -1798,6 +1798,7 @@ export type MunicipalServiceCategory = {
   municipalServices: Array<Maybe<MunicipalService>>
   municipalServices_connection?: Maybe<MunicipalServiceRelationResponseCollection>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
+  slug: Scalars['String']['output']
   title: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
@@ -1839,6 +1840,7 @@ export type MunicipalServiceCategoryFiltersInput = {
   not?: InputMaybe<MunicipalServiceCategoryFiltersInput>
   or?: InputMaybe<Array<InputMaybe<MunicipalServiceCategoryFiltersInput>>>
   publishedAt?: InputMaybe<DateTimeFilterInput>
+  slug?: InputMaybe<StringFilterInput>
   title?: InputMaybe<StringFilterInput>
   updatedAt?: InputMaybe<DateTimeFilterInput>
 }
@@ -1846,6 +1848,7 @@ export type MunicipalServiceCategoryFiltersInput = {
 export type MunicipalServiceCategoryInput = {
   municipalServices?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+  slug?: InputMaybe<Scalars['String']['input']>
   title?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -1937,6 +1940,7 @@ export type MunicipalServiceTag = {
   municipalServices: Array<Maybe<MunicipalService>>
   municipalServices_connection?: Maybe<MunicipalServiceRelationResponseCollection>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
+  slug: Scalars['String']['output']
   title: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
@@ -1978,6 +1982,7 @@ export type MunicipalServiceTagFiltersInput = {
   not?: InputMaybe<MunicipalServiceTagFiltersInput>
   or?: InputMaybe<Array<InputMaybe<MunicipalServiceTagFiltersInput>>>
   publishedAt?: InputMaybe<DateTimeFilterInput>
+  slug?: InputMaybe<StringFilterInput>
   title?: InputMaybe<StringFilterInput>
   updatedAt?: InputMaybe<DateTimeFilterInput>
 }
@@ -1985,6 +1990,7 @@ export type MunicipalServiceTagFiltersInput = {
 export type MunicipalServiceTagInput = {
   municipalServices?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+  slug?: InputMaybe<Scalars['String']['input']>
   title?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -3763,7 +3769,12 @@ export type HomepageQuery = {
       title: string
       slug: string
       href?: string | null
-      tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+      tags: Array<{
+        __typename?: 'MunicipalServiceTag'
+        documentId: string
+        title: string
+        slug: string
+      } | null>
       form?: {
         __typename?: 'Form'
         documentId: string
@@ -3792,7 +3803,12 @@ export type HomepageQuery = {
       title: string
       slug: string
       href?: string | null
-      tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+      tags: Array<{
+        __typename?: 'MunicipalServiceTag'
+        documentId: string
+        title: string
+        slug: string
+      } | null>
       form?: {
         __typename?: 'Form'
         documentId: string
@@ -4013,12 +4029,14 @@ export type MunicipalServiceTagEntityFragment = {
   __typename?: 'MunicipalServiceTag'
   documentId: string
   title: string
+  slug: string
 }
 
 export type MunicipalServiceCategoryEntityFragment = {
   __typename?: 'MunicipalServiceCategory'
   documentId: string
   title: string
+  slug: string
 }
 
 export type MunicipalServiceRedirectFragment = {
@@ -4078,7 +4096,12 @@ export type MunicipalServiceCardEntityFragment = {
   title: string
   slug: string
   href?: string | null
-  tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+  tags: Array<{
+    __typename?: 'MunicipalServiceTag'
+    documentId: string
+    title: string
+    slug: string
+  } | null>
   form?: {
     __typename?: 'Form'
     documentId: string
@@ -4102,6 +4125,7 @@ export type MunicipalServiceEntityFragment = {
   __typename?: 'MunicipalService'
   pageHeaderText?: string | null
   moreInformationUrl?: string | null
+  formButtonLabel?: string | null
   description: string
   buttonText: string
   color: Enum_Municipalservice_Color
@@ -4141,6 +4165,7 @@ export type MunicipalServiceEntityFragment = {
     __typename?: 'MunicipalServiceCategory'
     documentId: string
     title: string
+    slug: string
   } | null>
   links?: Array<{
     __typename?: 'ComponentBlocksMunicipalServiceLink'
@@ -4252,7 +4277,12 @@ export type MunicipalServiceEntityFragment = {
     | { __typename: 'Error' }
     | null
   > | null
-  tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+  tags: Array<{
+    __typename?: 'MunicipalServiceTag'
+    documentId: string
+    title: string
+    slug: string
+  } | null>
 }
 
 export type MunicipalServiceBySlugQueryVariables = Exact<{
@@ -4265,6 +4295,7 @@ export type MunicipalServiceBySlugQuery = {
     __typename?: 'MunicipalService'
     pageHeaderText?: string | null
     moreInformationUrl?: string | null
+    formButtonLabel?: string | null
     description: string
     buttonText: string
     color: Enum_Municipalservice_Color
@@ -4304,6 +4335,7 @@ export type MunicipalServiceBySlugQuery = {
       __typename?: 'MunicipalServiceCategory'
       documentId: string
       title: string
+      slug: string
     } | null>
     links?: Array<{
       __typename?: 'ComponentBlocksMunicipalServiceLink'
@@ -4415,7 +4447,12 @@ export type MunicipalServiceBySlugQuery = {
       | { __typename: 'Error' }
       | null
     > | null
-    tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+    tags: Array<{
+      __typename?: 'MunicipalServiceTag'
+      documentId: string
+      title: string
+      slug: string
+    } | null>
   } | null>
 }
 
@@ -4429,6 +4466,7 @@ export type MunicipalServicesPageQuery = {
       __typename?: 'MunicipalService'
       pageHeaderText?: string | null
       moreInformationUrl?: string | null
+      formButtonLabel?: string | null
       description: string
       buttonText: string
       color: Enum_Municipalservice_Color
@@ -4468,6 +4506,7 @@ export type MunicipalServicesPageQuery = {
         __typename?: 'MunicipalServiceCategory'
         documentId: string
         title: string
+        slug: string
       } | null>
       links?: Array<{
         __typename?: 'ComponentBlocksMunicipalServiceLink'
@@ -4579,12 +4618,18 @@ export type MunicipalServicesPageQuery = {
         | { __typename: 'Error' }
         | null
       > | null
-      tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+      tags: Array<{
+        __typename?: 'MunicipalServiceTag'
+        documentId: string
+        title: string
+        slug: string
+      } | null>
     } | null>
     servicesLegalPerson: Array<{
       __typename?: 'MunicipalService'
       pageHeaderText?: string | null
       moreInformationUrl?: string | null
+      formButtonLabel?: string | null
       description: string
       buttonText: string
       color: Enum_Municipalservice_Color
@@ -4624,6 +4669,7 @@ export type MunicipalServicesPageQuery = {
         __typename?: 'MunicipalServiceCategory'
         documentId: string
         title: string
+        slug: string
       } | null>
       links?: Array<{
         __typename?: 'ComponentBlocksMunicipalServiceLink'
@@ -4735,7 +4781,12 @@ export type MunicipalServicesPageQuery = {
         | { __typename: 'Error' }
         | null
       > | null
-      tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+      tags: Array<{
+        __typename?: 'MunicipalServiceTag'
+        documentId: string
+        title: string
+        slug: string
+      } | null>
     } | null>
   } | null
 }
@@ -5264,6 +5315,7 @@ export const MunicipalServiceTagEntityFragmentDoc = gql`
   fragment MunicipalServiceTagEntity on MunicipalServiceTag {
     documentId
     title
+    slug
   }
 `
 export const MunicipalServiceCardEntityFragmentDoc = gql`
@@ -5286,6 +5338,7 @@ export const MunicipalServiceCategoryEntityFragmentDoc = gql`
   fragment MunicipalServiceCategoryEntity on MunicipalServiceCategory {
     documentId
     title
+    slug
   }
 `
 export const MunicipalServiceLinkFragmentDoc = gql`
@@ -5463,6 +5516,7 @@ export const MunicipalServiceEntityFragmentDoc = gql`
     ...MunicipalServiceCardEntity
     pageHeaderText
     moreInformationUrl
+    formButtonLabel
     form {
       ...FormWithLandingPage
     }

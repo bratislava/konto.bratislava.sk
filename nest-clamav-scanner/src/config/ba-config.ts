@@ -60,19 +60,14 @@ export default class BaConfig {
     return {
       maxFileScanRuns: this.validatedConfig.MAX_FILE_SCAN_RUNS,
       maxFileScanRunsTimeout: this.validatedConfig.MAX_FILE_SCAN_RUNS_TIMEOUT,
-      maxFilesPerRequest: this.validatedConfig.MAX_FILES_PER_REQUEST,
-    }
-  }
-
-  get fileLimits() {
-    return {
-      maxSingleSizeGlobal: this.validatedConfig.MAX_FILE_SIZE,
     }
   }
 
   get files() {
     return {
       mimeTypeWhitelist: this.validatedConfig.MIMETYPE_WHITELIST,
+      maxSingleSizeGlobal: this.validatedConfig.MAX_FILE_SIZE,
+      maxFilesPerRequest: this.validatedConfig.MAX_FILES_PER_REQUEST,
     }
   }
 }

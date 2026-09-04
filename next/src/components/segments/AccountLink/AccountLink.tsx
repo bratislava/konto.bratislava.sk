@@ -1,9 +1,9 @@
 import url from 'node:url'
 
 import { Button, Typography } from '@bratislava/component-library'
-import { LinkProps } from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
 
+import { MLinkProps } from '@/src/components/simple-components/MLink'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -15,31 +15,32 @@ type Props = {
 }
 
 const AccountLink = ({ variant, onLoginPress: onLoginPressFromProps }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { getRouteWithRedirect } = useQueryParamRedirect()
 
   const { label, description, href, onLoginPress } = (
     {
       login: {
-        label: t('auth.links.login_link_text'),
-        description: t('auth.links.login_description'),
+        label: t('AccountLink.login.linkText'),
+        description: t('AccountLink.login.description'),
         // Standard href to login page, used when onLoginPress is undefined
         href: getRouteWithRedirect(ROUTES.LOGIN),
         onLoginPress: onLoginPressFromProps,
       },
       registration: {
-        label: t('auth.links.register_link_text'),
-        description: t('auth.links.register_description'),
+        label: t('AccountLink.register.linkText'),
+        description: t('AccountLink.register.description'),
         href: getRouteWithRedirect(ROUTES.REGISTER),
       },
       'forgotten-password': {
-        label: t('auth.links.forgotten_password_link_text'),
-        description: t('auth.links.forgotten_password_description'),
+        label: t('AccountLink.forgottenPassword.linkText'),
+        description: t('AccountLink.forgottenPassword.description'),
         href: getRouteWithRedirect(ROUTES.FORGOTTEN_PASSWORD),
       },
     } satisfies Record<
       Props['variant'],
-      { label: string; description: string; href: LinkProps['href']; onLoginPress?: () => void }
+      { label: string; description: string; href: MLinkProps['href']; onLoginPress?: () => void }
     >
   )[variant]
 

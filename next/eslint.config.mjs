@@ -87,8 +87,7 @@ export default [
           paths: [
             {
               name: 'react-aria-components',
-              message:
-                'Use subpath imports instead, e.g. react-aria-components/Button.',
+              message: 'Use subpath imports instead, e.g. react-aria-components/Button.',
             },
             {
               name: 'react-aria',
@@ -96,12 +95,17 @@ export default [
             },
             {
               name: 'react-stately',
-              message:
-                'Use subpath imports instead, e.g. react-stately/useListState.',
+              message: 'Use subpath imports instead, e.g. react-stately/useListState.',
             },
           ],
         },
       ],
+    },
+  },
+  {
+    files: ['src/components/styleguide/**'],
+    rules: {
+      'i18next/no-literal-string': 'off',
     },
   },
 ]

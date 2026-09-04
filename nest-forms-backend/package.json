@@ -79,7 +79,7 @@
     "xml2js": "0.6.2"
   },
   "devDependencies": {
-    "@bratislava/eslint-config-nest": "0.17.0",
+    "@bratislava/eslint-config-nest": "0.19.1",
     "@golevelup/ts-jest": "3.0.0",
     "@nestjs/cli": "11.0.24",
     "@nestjs/schematics": "11.1.0",
@@ -107,7 +107,7 @@
     "eslint": "9.39.4",
     "jest": "30.4.2",
     "jest-mock-extended": "4.0.1",
-    "nock": "14.0.15",
+    "nock": "14.0.16",
     "prettier": "3.8.1",
     "prisma-json-types-generator": "5.1.1",
     "rimraf": "6.1.2",

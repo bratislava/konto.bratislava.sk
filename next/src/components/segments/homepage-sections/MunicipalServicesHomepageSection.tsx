@@ -12,17 +12,17 @@ type Props = {
 }
 
 const MunicipalServicesHomepageSection = ({ services }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <SectionContainer className="py-6 lg:py-18">
       <div className="flex flex-col gap-6 lg:gap-10">
         <SectionHeader
-          title={t('account_section_services.navigation')}
+          title={t('MunicipalServicesPageContent.title')}
           titleLevel="h2"
           showMoreLink={{
             href: ROUTES.MUNICIPAL_SERVICES,
-            children: t('account_section_intro.all_services'),
+            children: t('MunicipalServicesHomepageSection.allServices'),
           }}
         />
         <ResponsiveCarousel

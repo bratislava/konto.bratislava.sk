@@ -23,7 +23,8 @@ import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 
 const useGetContext = () => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation()
+
   const { showToast } = useToast()
   const { setSignerIsDeploying } = useFormModals()
   const { formDefinition, formId, isSigned, initialSignature } = useFormContext()
@@ -36,16 +37,16 @@ const useGetContext = () => {
     onError: (error) => {
       if (error === SignerErrorType.NotInstalled) {
         showToast({
-          message: t('form_signature.error.not_installed'),
+          message: t('useFormSignature.errors.notInstalled'),
           variant: 'error',
         })
       } else if (error === SignerErrorType.LaunchFailed) {
         showToast({
-          message: t('form_signature.error.launch_failed'),
+          message: t('useFormSignature.errors.launchFailed'),
           variant: 'error',
         })
       } else {
-        showToast({ message: t('form_signature.error.generic'), variant: 'error' })
+        showToast({ message: t('useFormSignature.errors.generic'), variant: 'error' })
       }
     },
   })
@@ -68,7 +69,7 @@ const useGetContext = () => {
     // It is possible to edit the data while the signer is open.
     if (!isEqual(formDataRequest, formDataRef.current)) {
       showToast({
-        message: t('form_signature.error.data_changed'),
+        message: t('useFormSignature.errors.dataChanged'),
         variant: 'error',
       })
       handleSignatureChange(null)
@@ -102,7 +103,7 @@ const useGetContext = () => {
     onError: (error) => {
       if (isAxiosError(error) && error.response?.data?.errorName === 'BAD_REQUEST_ERROR') {
         showToast({
-          message: t('form_signature.error.validation_error', {
+          message: t('useFormSignature.errors.validationError', {
             message: error.response?.data?.message,
           }),
           variant: 'error',
@@ -110,7 +111,7 @@ const useGetContext = () => {
 
         return
       }
-      showToast({ message: t('form_signature.error.generic'), variant: 'error' })
+      showToast({ message: t('useFormSignature.errors.generic'), variant: 'error' })
     },
   })
 

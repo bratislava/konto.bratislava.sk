@@ -1,4 +1,3 @@
-/* eslint-disable i18next/no-literal-string */
 import { Typography } from '@bratislava/component-library'
 import { parseAsString, useQueryState } from 'nuqs'
 import { useState } from 'react'
@@ -18,7 +17,7 @@ const markdownShowcaseTabs = [
   { id: 'form-markdown', label: 'FormMarkdown' },
 ] as const
 
-const markdownVariants: { id: string; label: string; variant?: MarkdownProps['variant'] }[] = [
+const markdownVariants: { id: string; label: string; variant: MarkdownProps['variant'] }[] = [
   { id: 'small', label: 'Small', variant: 'small' },
   { id: 'default', label: 'Default', variant: 'default' },
   { id: 'accordion', label: 'Accordion', variant: 'accordion' },

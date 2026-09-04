@@ -26,14 +26,14 @@ const schema = {
       minLength: 1,
       format: 'email',
       errorMessage: {
-        minLength: 'account:auth.fields.email_required',
-        format: 'account:auth.fields.email_format',
+        minLength: 'auth.fields.email.required',
+        format: 'auth.fields.email.format',
       },
     },
     password: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:auth.fields.password_required' },
+      errorMessage: { minLength: 'auth.fields.password.required' },
     },
   },
   required: ['newEmail', 'password'],
@@ -44,7 +44,7 @@ const schema = {
  */
 
 const EmailChangeForm = ({ onSubmit, error }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const {
     handleSubmit,
@@ -58,14 +58,15 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
 
   return (
     <form
+      noValidate // We use AJV validation
       className="flex flex-col gap-4 lg:gap-6"
       onSubmit={handleSubmit((data: Data) => onSubmit(data.newEmail, data.password))}
       data-cy="change-email-form"
     >
       <Typography variant="h3" as="h1">
-        {t('auth.email_change_title')}
+        {t('EmailChangeForm.title')}
       </Typography>
-      <Typography variant="p-small">{t('auth.email_change_description')}</Typography>
+      <Typography variant="p-small">{t('EmailChangeForm.description')}</Typography>
       <AccountErrorAlert error={error} />
       <Controller
         name="newEmail"
@@ -73,7 +74,8 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <TextField
             isRequired
-            label={t('auth.fields.new_email_label')}
+            label={t('auth.fields.newEmail.label')}
+            type="email"
             autoComplete="email"
             autoCapitalize="none"
             autoCorrect="off"
@@ -89,7 +91,7 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <PasswordField
             isRequired
-            label={t('auth.fields.new_email_password_label')}
+            label={t('auth.fields.newEmailPassword.label')}
             {...field}
             errorMessage={errors.password}
           />
@@ -102,7 +104,7 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
         isDisabled={isSubmitting}
         data-cy="change-email-submit"
       >
-        {t('auth.email_change_submit')}
+        {t('EmailChangeForm.submit')}
       </Button>
     </form>
   )

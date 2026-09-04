@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import isArray from 'lodash/isArray'
 
 import prismaMock from '../../../test/singleton'
 import { createTestTax } from '../../__tests__/factories/tax.factory'
@@ -224,7 +223,7 @@ describe('AdminService', () => {
           parseFloat(norisDataCalled[0].SPL4_2.replace(',', '.')) +
           parseFloat(norisDataCalled[0].SPL4_3.replace(',', '.')),
       ).toEqual(parseFloat(mockNorisData.taxTotal.replace(',', '.')))
-      expect(isArray(norisDataCalled)).toBe(true)
+      expect(Array.isArray(norisDataCalled)).toBe(true)
       expect(yearCalled).toBe(1970)
       expect(optionsCalled).toStrictEqual({
         prepareOnly: false,
@@ -262,7 +261,7 @@ describe('AdminService', () => {
       expect(parseFloat(norisDataCalled[0].SPL4_4.replace(',', '.'))).not.toBe(
         0,
       )
-      expect(isArray(norisDataCalled)).toBe(true)
+      expect(Array.isArray(norisDataCalled)).toBe(true)
       expect(yearCalled).toBe(1970)
       expect(optionsCalled).toStrictEqual({
         prepareOnly: false,
@@ -385,7 +384,7 @@ describe('AdminService', () => {
 
       expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
         where: {
-          taxPayerId_year_type_order: {
+          taxPayerId_type_year_order: {
             taxPayerId: mockTaxPayer.id,
             year: mockYear,
             type: mockTaxType,
@@ -396,7 +395,7 @@ describe('AdminService', () => {
 
       expect(prismaMock.tax.delete).toHaveBeenCalledWith({
         where: {
-          taxPayerId_year_type_order: {
+          taxPayerId_type_year_order: {
             taxPayerId: mockTaxPayer.id,
             year: mockYear,
             type: mockTaxType,
@@ -478,7 +477,7 @@ describe('AdminService', () => {
 
       expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
         where: {
-          taxPayerId_year_type_order: {
+          taxPayerId_type_year_order: {
             taxPayerId: mockTaxPayer.id,
             year: mockYear,
             type: mockTaxType,
@@ -604,7 +603,7 @@ describe('AdminService', () => {
       })
 
       const expectedCompositeKey = {
-        taxPayerId_year_type_order: {
+        taxPayerId_type_year_order: {
           taxPayerId: mockTaxPayer.id,
           year: mockYear,
           type: mockTaxType,

@@ -1,4 +1,5 @@
-import { forwardRef, ReactNode, Ref } from 'react'
+import { InputWidthType } from 'forms-shared/generator/uiOptionsTypes'
+import { forwardRef, Ref } from 'react'
 import { Input as RACInput, InputProps as RACInputProps } from 'react-aria-components/Input'
 import {
   TextField as RACTextField,
@@ -8,6 +9,12 @@ import {
 import cn from '@/src/utils/cn'
 
 import FieldWrapper from './_shared/FieldWrapper'
+import {
+  getInputWidthCharactersStyle,
+  getInputWidthFractionClassName,
+  inputWidthCharactersClassName,
+  isInputWidthCharacters,
+} from './_shared/inputWidth'
 import { FieldBaseProps } from './_shared/types'
 
 export interface TextFieldProps
@@ -16,7 +23,12 @@ export interface TextFieldProps
     FieldBaseProps,
     Pick<RACInputProps, 'autoCapitalize' | 'autoCorrect' | 'spellCheck'> {
   placeholder?: string
-  endIcon?: ReactNode
+  /**
+   * Width of the input, either a number of characters or a fraction of the available width.
+   * Narrows only the input, never past the available space. Label, helptext and error message keep
+   * the full width.
+   */
+  inputWidth?: InputWidthType
 }
 
 const TextField = (
@@ -28,11 +40,11 @@ const TextField = (
     helptextFooter,
     errorMessage,
     placeholder,
-    endIcon,
     autoCapitalize,
     autoCorrect,
     spellCheck,
     autoComplete,
+    inputWidth,
     ...rest
   }: TextFieldProps,
   ref: Ref<HTMLInputElement>,
@@ -52,34 +64,36 @@ const TextField = (
       helptextFooter={helptextFooter}
       errorMessage={errorMessage}
     >
-      <div className="relative">
-        <RACInput
-          ref={ref}
-          placeholder={placeholder}
-          autoCapitalize={autoCapitalize}
-          autoCorrect={autoCorrect}
-          spellCheck={spellCheck}
-          autoComplete={autoComplete}
-          data-cy={rest.name ? `input-${rest.name}` : undefined}
-          className={({ isFocused, isDisabled, isInvalid }) =>
-            cn(
-              'w-full rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary base-focus-ring outline-hidden lg:text-size-p-small',
-              'px-3 py-2 lg:px-4 lg:py-3',
-              'placeholder:text-content-passive-tertiary',
-              {
-                'border-border-active-default': !isInvalid && !isFocused,
-                'border-border-active-focused': !isInvalid && isFocused,
-                'border-border-error': isInvalid,
-                'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
-                'hover:border-border-active-hover': !isDisabled && !isInvalid && !isFocused,
-              },
-            )
-          }
-        />
-        {endIcon ? (
-          <div className="absolute inset-y-0 right-0 flex items-center">{endIcon}</div>
-        ) : null}
-      </div>
+      <RACInput
+        ref={ref}
+        placeholder={placeholder}
+        autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        spellCheck={spellCheck}
+        autoComplete={autoComplete}
+        data-cy={rest.name ? `input-${rest.name}` : undefined}
+        style={
+          isInputWidthCharacters(inputWidth) ? getInputWidthCharactersStyle(inputWidth) : undefined
+        }
+        className={({ isFocused, isDisabled, isInvalid }) =>
+          cn(
+            'rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary base-focus-ring outline-hidden lg:text-size-p-small',
+            // Both set the width, so they are mutually exclusive
+            isInputWidthCharacters(inputWidth)
+              ? inputWidthCharactersClassName
+              : getInputWidthFractionClassName(inputWidth),
+            'px-3 py-2 lg:px-4 lg:py-3',
+            'placeholder:text-content-passive-tertiary',
+            {
+              'border-border-active-default': !isInvalid && !isFocused,
+              'border-border-active-focused': !isInvalid && isFocused,
+              'border-border-error': isInvalid,
+              'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
+              'hover:border-border-active-hover': !isDisabled && !isInvalid && !isFocused,
+            },
+          )
+        }
+      />
     </FieldWrapper>
   </RACTextField>
 )

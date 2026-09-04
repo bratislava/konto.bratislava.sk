@@ -12,7 +12,7 @@ export interface BrandProps {
 }
 
 const Brand = ({ variant, className, unlinked }: BrandProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const href = unlinked ? undefined : ROUTES.HOME
 

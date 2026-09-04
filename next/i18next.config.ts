@@ -6,18 +6,19 @@ export default defineConfig({
   locales: i18nextConfig.i18n.locales,
   extract: {
     input: 'src/**/*.{tsx,ts}',
+    // The error messages showcase only reads already existing keys, and does so with a dynamic
+    // namespace, which the extractor resolves to the default one.
+    ignore: ['src/components/styleguide/showcases/ErrorMessagesShowCase.tsx'],
     output: 'public/locales/{{language}}/{{namespace}}.json',
     sort: true,
     // makes the translation json files flat (our keys contain dots)
     keySeparator: false,
     preservePatterns: [
       // Translations in account forms (registration, login...) are thrown away during parsing. This is quick fix, how to keep them.
-      'account:auth.fields.*_format',
-      'account:auth.fields.*_required',
-      'account:towing.*_required',
-      'account:IdentityVerificationStatus.verification_status_required_alert',
-      // rjsf-errors keys are referenced dynamically (t(`format.${...}`), t(error.name)) so cannot be statically extracted.
-      'rjsf-errors:*',
+      'translation:auth.fields.*.format',
+      'translation:auth.fields.*.required',
+      'translation:Towing.*Required',
+      'translation:IdentityVerificationStatus.requiredAlert',
     ],
   },
 })

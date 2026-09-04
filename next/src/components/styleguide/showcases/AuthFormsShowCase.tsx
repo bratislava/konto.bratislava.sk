@@ -6,14 +6,18 @@ import EmailChangeForm from '@/src/components/auth-forms/EmailChangeForm'
 import EmailVerificationForm from '@/src/components/auth-forms/EmailVerificationForm'
 import ForgottenPasswordForm from '@/src/components/auth-forms/ForgottenPasswordForm'
 import IdentityVerificationOfPhysicalEntityForm from '@/src/components/auth-forms/IdentityVerificationOfPhysicalEntityForm'
-import LegalPersonVerificationPageContent from '@/src/components/auth-forms/LegalPersonVerificationPageContent'
+import IdentityVerificationOutageAlert from '@/src/components/auth-forms/IdentityVerificationOutageAlert'
+import { LegalPersonVerificationPageContentBase } from '@/src/components/auth-forms/LegalPersonVerificationPageContent'
 import LoginForm from '@/src/components/auth-forms/LoginForm'
 import NewPasswordForm from '@/src/components/auth-forms/NewPasswordForm'
 import PasswordChangeForm from '@/src/components/auth-forms/PasswordChangeForm'
 import PhoneNumberForm from '@/src/components/auth-forms/PhoneNumberForm'
 import RegisterForm from '@/src/components/auth-forms/RegisterForm'
+import { VerificationStatus } from '@/src/components/auth-forms/useVerifyEid'
+import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
 import { Stack } from '@/src/components/styleguide/Stack'
 import { AmplifyClientOAuthProvider } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
+import { ErrorWithName } from '@/src/frontend/utils/errors'
 import cn from '@/src/utils/cn'
 
 import { Wrapper } from '../Wrapper'
@@ -33,8 +37,29 @@ const mockAsyncOperation = async () => {
   )
 }
 
+const mockVerificationError = new ErrorWithName(
+  'Unsuccessful identity verification',
+  'unsuccessful-identity-verification',
+)
+
+const legalPersonVerificationStates: {
+  label: string
+  verificationStatus: VerificationStatus
+  showSkipButton?: boolean
+}[] = [
+  { label: 'init', verificationStatus: VerificationStatus.INIT },
+  {
+    label: 'init without skip button',
+    verificationStatus: VerificationStatus.INIT,
+    showSkipButton: false,
+  },
+  { label: 'redirecting to slovensko.sk', verificationStatus: VerificationStatus.REDIRECTING },
+  { label: 'verifying', verificationStatus: VerificationStatus.VERIFYING },
+  { label: 'error', verificationStatus: VerificationStatus.ERROR },
+]
+
 const stackClassname = cn(
-  'w-full items-stretch self-center rounded-none bg-background-passive-base lg:p-8 lg:w-200',
+  'w-full items-stretch self-center rounded-none bg-background-passive-base lg:w-200 lg:p-8',
 )
 
 const AuthFormsContent = () => {
@@ -113,11 +138,50 @@ const AuthFormsContent = () => {
         </Stack>
       </Wrapper>
 
-      <Wrapper direction="column" title="LegalPersonVerificationPageContent">
+      <Wrapper
+        direction="column"
+        title="IdentityVerificationOfPhysicalEntityForm - with error and outage alert"
+      >
         <Stack direction="column" className={stackClassname}>
-          <LegalPersonVerificationPageContent showSkipButton={true} />
+          <IdentityVerificationOfPhysicalEntityForm
+            onSubmit={mockSubmit}
+            error={mockVerificationError}
+          />
         </Stack>
       </Wrapper>
+
+      <Wrapper
+        direction="column"
+        title="IdentityVerificationPage - pending state with outage alert"
+      >
+        <Stack direction="column" className={stackClassname}>
+          <AccountSuccessAlert
+            variant="pending"
+            title="Prebieha overovanie"
+            description="Ospravedlňujeme sa za zdržanie. Rodné číslo a číslo dokladu ešte stále overujeme."
+            confirmLabel="Pokračovať do konta"
+            onConfirm={() => {}}
+          >
+            <IdentityVerificationOutageAlert />
+          </AccountSuccessAlert>
+        </Stack>
+      </Wrapper>
+
+      {legalPersonVerificationStates.map(({ label, verificationStatus, showSkipButton }) => (
+        <Wrapper
+          key={label}
+          direction="column"
+          title={`LegalPersonVerificationPageContent - ${label}`}
+        >
+          <Stack direction="column" className={stackClassname}>
+            <LegalPersonVerificationPageContentBase
+              verificationStatus={verificationStatus}
+              onVerify={() => {}}
+              showSkipButton={showSkipButton}
+            />
+          </Stack>
+        </Wrapper>
+      ))}
     </div>
   )
 }

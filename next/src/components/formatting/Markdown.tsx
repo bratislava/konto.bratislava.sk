@@ -46,6 +46,10 @@ const ReactMarkdown = _ReactMarkdown as (
  */
 
 const Markdown = ({ content, variant = 'default', className }: MarkdownProps) => {
+  if (!content) {
+    return null
+  }
+
   return (
     <div
       className={cn(
@@ -257,7 +261,7 @@ const Markdown = ({ content, variant = 'default', className }: MarkdownProps) =>
             ) : null,
         }}
       >
-        {content ?? ''}
+        {content}
       </ReactMarkdown>
     </div>
   )

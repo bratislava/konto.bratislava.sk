@@ -10,7 +10,8 @@ import { ROUTES } from '@/src/utils/routes'
 // TODO unify with TaxAdministratorCardWrapper
 
 const DeliveryMethodCardWrapper = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { deliveryMethod, deliveryMethodLabel, canUserChangeDeliveryMethod } =
     useGetDeliveryMethod()
 
@@ -25,7 +26,7 @@ const DeliveryMethodCardWrapper = () => {
             it is showing currently set delivery method, not the one for the year of this tax.
             IMHO if this is currently set delivery method, it should be shown in grey area
             or if it's for the year of this tax, it should be shown with same year as in title? */}
-        {t('taxes.delivery_method.info_title', { year: new Date().getFullYear() })}
+        {t('DeliveryMethodCardWrapper.title', { year: new Date().getFullYear() })}
       </Typography>
       <div
         className={cn('flex w-full grow justify-between gap-4 rounded-lg border px-4 py-3 lg:p-5')}
@@ -39,9 +40,12 @@ const DeliveryMethodCardWrapper = () => {
               <div className="pt-3 pb-2 lg:px-0">
                 <Markdown
                   variant="small"
-                  content={`${t('taxes.delivery_method.info.youCanChangeDeliveryMethodOnThisPage', {
-                    url: ROUTES.TAXES,
-                  })} \n ${t('taxes.delivery_method.info.youCanPayOnThisPage')}`}
+                  content={`${t(
+                    'DeliveryMethodCardWrapper.info.youCanChangeDeliveryMethodOnThisPage',
+                    {
+                      url: ROUTES.TAXES,
+                    },
+                  )} \n ${t('DeliveryMethodCardWrapper.info.youCanPayOnThisPage')}`}
                 />
               </div>
             )}

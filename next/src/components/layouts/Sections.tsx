@@ -3,7 +3,7 @@ import ContactsSection from '@/src/components/sections/ContactsSection'
 import DocumentsSection from '@/src/components/sections/DocumentsSection'
 import FaqsSection from '@/src/components/sections/FaqsSection'
 import RichtextSection from '@/src/components/sections/RichtextSection'
-import StepperSection from '@/src/components/sections/StepperSection'
+import StepByStepSection from '@/src/components/sections/StepByStepSection'
 import TowingSection from '@/src/components/sections/TowingSection'
 
 /**
@@ -19,7 +19,7 @@ const SectionContent = ({ section }: { section: SectionsProps['sections'][number
     case 'ComponentSectionsRichtext':
       return <RichtextSection section={section} />
     case 'ComponentSectionsStepper':
-      return <StepperSection section={section} />
+      return <StepByStepSection section={section} />
     case 'ComponentSectionsContacts':
       return <ContactsSection section={section} />
     case 'ComponentSectionsDocuments':

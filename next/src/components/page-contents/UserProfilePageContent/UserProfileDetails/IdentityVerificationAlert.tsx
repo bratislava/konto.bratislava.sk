@@ -14,17 +14,17 @@ type Props = {
  */
 
 const IdentityVerificationAlert = ({ variant }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   if (variant === 'verification-needed') {
     return (
       <Alert
-        title={t('IdentityVerificationAlert.verification_needed.title')}
-        message={t('IdentityVerificationAlert.verification_needed.message')}
+        title={t('IdentityVerificationAlert.verificationNeeded.title')}
+        message={t('IdentityVerificationAlert.verificationNeeded.message')}
         type="warning"
         buttons={[
           {
-            title: t('auth.verification_url_text'),
+            title: t('auth.verifyIdentity'),
             link: ROUTES.IDENTITY_VERIFICATION,
           },
         ]}
@@ -36,8 +36,8 @@ const IdentityVerificationAlert = ({ variant }: Props) => {
   if (variant === 'verification-in-process') {
     return (
       <Alert
-        title={t('IdentityVerificationAlert.verification_in_process.title')}
-        message={t('IdentityVerificationAlert.verification_in_process.message')}
+        title={t('IdentityVerificationAlert.verificationInProcess.title')}
+        message={t('IdentityVerificationAlert.verificationInProcess.message')}
         type="warning"
         fullWidth
       />

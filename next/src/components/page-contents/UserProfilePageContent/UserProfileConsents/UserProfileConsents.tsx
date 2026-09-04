@@ -7,7 +7,8 @@ import useToast from '@/src/components/simple-components/Toast/useToast'
 import { useGdprConsent } from '@/src/frontend/hooks/useUser'
 
 const UserProfileConsents = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { showToast } = useToast()
 
   const { isGranted, changeConsent, consentChangePending } = useGdprConsent(ConsentEnum.Marketing)
@@ -21,13 +22,13 @@ const UserProfileConsents = () => {
       onSuccess: () => {
         showToast({
           message: newValue
-            ? t('my_profile.consents.success_on_snackbar_message')
-            : t('my_profile.consents.success_off_snackbar_message'),
+            ? t('UserProfileConsents.successOnSnackbarMessage')
+            : t('UserProfileConsents.successOffSnackbarMessage'),
           variant: 'success',
         })
       },
       onError: () => {
-        showToast({ message: t('my_profile.consents.error_snackbar_message'), variant: 'error' })
+        showToast({ message: t('UserProfileConsents.errorSnackbarMessage'), variant: 'error' })
       },
     })
   }
@@ -38,8 +39,8 @@ const UserProfileConsents = () => {
         <UserProfileConsentsItem
           consent={{
             id: 'receive_information',
-            title: t('my_profile.consents.receive_information.title'),
-            text: t('my_profile.consents.receive_information.text'),
+            title: t('UserProfileConsents.receiveInformation.title'),
+            text: t('UserProfileConsents.receiveInformation.text'),
             isDisabled: consentChangePending,
             isSelected: isGranted,
           }}

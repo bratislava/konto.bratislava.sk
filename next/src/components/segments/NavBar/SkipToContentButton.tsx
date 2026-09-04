@@ -14,7 +14,7 @@ const handleSkip = () => {
 }
 
 const SkipToContentButton = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <Button

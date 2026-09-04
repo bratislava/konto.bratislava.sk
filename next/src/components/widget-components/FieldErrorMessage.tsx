@@ -15,19 +15,10 @@ const FieldErrorMessage: FC<FieldErrorMessageProps> = ({
       data-cy="error-message"
       {...errorMessageProps}
     >
-      {errorMessage.map((error, index) => {
-        // TODO: Remove this logic (ensure that the strings are properly formatted in the first place)
-        const firstCharUppercased = error.slice(0, 1).toUpperCase()
-        const restOfError = error.slice(1)
-        const lastChar = error.trim().slice(-1)
-        const lastCharIsPeriodOrEllipsis = lastChar === '.' || lastChar === '…'
-
-        return (
-          <div key={index}>
-            {`${firstCharUppercased}${restOfError}${lastCharIsPeriodOrEllipsis ? '' : '.'}`}
-          </div>
-        )
-      })}
+      {errorMessage.map((error, index) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <div key={index}>{error}</div>
+      ))}
     </div>
   ) : null
 }

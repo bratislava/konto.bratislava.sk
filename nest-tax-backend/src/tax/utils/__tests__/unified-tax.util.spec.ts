@@ -773,7 +773,7 @@ describe('UnifiedTaxUtil', () => {
         })
 
         describe('after first payment due threshold', () => {
-          it('', () => {
+          it('without payment', () => {
             const output = getTaxDetailPure({
               ...defaultInputRealEstate,
               taxPayments: [],

@@ -20,7 +20,7 @@ interface TagProps {
  */
 
 const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove }: TagProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   // STATE
   const [isHovered, setIsHovered] = useState<boolean>(false)
@@ -65,7 +65,7 @@ const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove
         <Button
           icon={<Icon name="close" className={iconClassStyles} />}
           onPress={onRemove}
-          aria-label={t('Tag.remove_button.aria')}
+          aria-label={t('Tag.aria.remove')}
           className="shrink-0"
         />
       )}

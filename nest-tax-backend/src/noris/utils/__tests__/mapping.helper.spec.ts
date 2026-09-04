@@ -69,7 +69,6 @@ describe('mapNorisToTaxPayerData', () => {
 describe('mapNorisToTaxAdministratorData', () => {
   const mockNorisData: NorisRealEstateTax = {
     vyb_email: 'admin@test.com',
-    cislo_poradace: 123,
     vyb_id: 456,
     vyb_nazov: 'Test Admin',
     vyb_telefon_prace: '123456789',
@@ -80,17 +79,10 @@ describe('mapNorisToTaxAdministratorData', () => {
 
     expect(result).toEqual({
       email: 'admin@test.com',
-      externalId: '123',
       id: 456,
       name: 'Test Admin',
       phoneNumber: '123456789',
     })
-  })
-
-  it('should convert cislo_poradace to string for externalId', () => {
-    const result = mapNorisToTaxAdministratorData(mockNorisData)
-    expect(typeof result?.externalId).toBe('string')
-    expect(result?.externalId).toBe('123')
   })
 
   it('should return undefined if vyb_id is not present', () => {
@@ -1021,7 +1013,11 @@ describe('mapNorisToCommunalWasteDatabaseDetail', () => {
     expect(result.addresses[1].containers[0].poplatok).toBe(15_050)
   })
 
-  it('should handle poplatok with zero value', () => {
+  it.each([
+    { description: 'zero value', poplatok: 0, expected: 0 },
+    { description: 'very small decimal values', poplatok: 0.01, expected: 1 },
+    { description: 'large values', poplatok: 9999.99, expected: 999_999 },
+  ])('should handle poplatok with $description', ({ poplatok, expected }) => {
     const mockData: NorisCommunalWasteTaxGrouped = {
       addresses: [
         {
@@ -1035,7 +1031,7 @@ describe('mapNorisToCommunalWasteDatabaseDetail', () => {
               pocet_nadob: 1,
               pocet_odvozov: 52,
               sadzba: 4.314,
-              poplatok: 0,
+              poplatok,
               druh_nadoby: 'N12',
             },
           ],
@@ -1045,60 +1041,6 @@ describe('mapNorisToCommunalWasteDatabaseDetail', () => {
 
     const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
 
-    expect(result.addresses[0].containers[0].poplatok).toBe(0)
-  })
-
-  it('should handle poplatok with very small decimal values', () => {
-    const mockData: NorisCommunalWasteTaxGrouped = {
-      addresses: [
-        {
-          addressDetail: {
-            street: 'Test Street',
-            orientationNumber: '1',
-          },
-          containers: [
-            {
-              objem_nadoby: 120,
-              pocet_nadob: 1,
-              pocet_odvozov: 52,
-              sadzba: 4.314,
-              poplatok: 0.01,
-              druh_nadoby: 'N12',
-            },
-          ],
-        },
-      ],
-    } as NorisCommunalWasteTaxGrouped
-
-    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
-
-    expect(result.addresses[0].containers[0].poplatok).toBe(1)
-  })
-
-  it('should handle poplatok with large values', () => {
-    const mockData: NorisCommunalWasteTaxGrouped = {
-      addresses: [
-        {
-          addressDetail: {
-            street: 'Test Street',
-            orientationNumber: '1',
-          },
-          containers: [
-            {
-              objem_nadoby: 120,
-              pocet_nadob: 1,
-              pocet_odvozov: 52,
-              sadzba: 4.314,
-              poplatok: 9999.99,
-              druh_nadoby: 'N12',
-            },
-          ],
-        },
-      ],
-    } as NorisCommunalWasteTaxGrouped
-
-    const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
-
-    expect(result.addresses[0].containers[0].poplatok).toBe(999_999)
+    expect(result.addresses[0].containers[0].poplatok).toBe(expected)
   })
 })

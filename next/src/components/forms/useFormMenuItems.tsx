@@ -13,6 +13,8 @@ type FormMenuItem = DropdownMenuItemProps & {
 }
 
 export const useFormMenuItems = (): FormMenuItem[] => {
+  const { t } = useTranslation()
+
   const {
     isReadonly,
     isDeletable,
@@ -22,14 +24,13 @@ export const useFormMenuItems = (): FormMenuItem[] => {
   } = useFormContext()
   const { exportXml, exportPdf, importXml, saveConcept, deleteConcept, exportJson, importJson } =
     useFormExportImport()
-  const { t } = useTranslation('forms')
   const { setDeleteConceptModal } = useFormModals()
 
   return [
     isReadonly
       ? null
       : {
-          title: t('menu_list.save_concept'),
+          title: t('useFormMenuItems.saveConcept'),
           icon: <Icon name="save" className="size-6" />,
 
           onPress: () => saveConcept(),
@@ -37,7 +38,7 @@ export const useFormMenuItems = (): FormMenuItem[] => {
         },
     xmlImportExportAllowed
       ? {
-          title: t('menu_list.download_xml'),
+          title: t('useFormMenuItems.downloadXml'),
           icon: <Icon name="download" className="size-6" />,
 
           onPress: () => exportXml(),
@@ -45,7 +46,7 @@ export const useFormMenuItems = (): FormMenuItem[] => {
       : null,
     pdfDownloadInMenuAllowed
       ? {
-          title: t('menu_list.pdf'),
+          title: t('useFormMenuItems.pdf'),
           icon: <Icon name="pdf" className="size-6" />,
 
           onPress: () => exportPdf(),
@@ -53,21 +54,21 @@ export const useFormMenuItems = (): FormMenuItem[] => {
       : null,
     !isReadonly && xmlImportExportAllowed
       ? {
-          title: t('menu_list.upload_xml'),
+          title: t('useFormMenuItems.uploadXml'),
           icon: <Icon name="import-export" className="size-6" />,
           onPress: importXml,
         }
       : null,
     jsonImportExportAllowed
       ? {
-          title: t('menu_list.download_json'),
+          title: t('useFormMenuItems.downloadJson'),
           icon: <Icon name="download" className="size-6" />,
           onPress: exportJson,
         }
       : null,
     !isReadonly && jsonImportExportAllowed
       ? {
-          title: t('menu_list.upload_json'),
+          title: t('useFormMenuItems.uploadJson'),
           icon: <Icon name="import-export" className="size-6" />,
           onPress: importJson,
         }
@@ -75,7 +76,7 @@ export const useFormMenuItems = (): FormMenuItem[] => {
     isDeletable
       ? null
       : {
-          title: t('menu_list.delete'),
+          title: t('useFormMenuItems.delete'),
           icon: <Icon name="bin" className="size-6" />,
           onPress: () => setDeleteConceptModal({ isOpen: true, confirmCallback: deleteConcept }),
           className: 'text-negative-700',

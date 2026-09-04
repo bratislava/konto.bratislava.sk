@@ -34,7 +34,7 @@ const schema = {
     licensePlate: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:towing.licensePlate_required' },
+      errorMessage: { minLength: 'Towing.licensePlateRequired' },
     },
     turnstileToken: {
       type: 'string',
@@ -45,7 +45,7 @@ const schema = {
 }
 
 const Towing = ({ title, text }: TowingSectionProps) => {
-  const { t, i18n } = useTranslation('account')
+  const { t, i18n } = useTranslation()
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
 
@@ -60,7 +60,9 @@ const Towing = ({ title, text }: TowingSectionProps) => {
   })
 
   useTimeout(() => {
-    if (!isBrowser() || captchaWarning === 'hide') return
+    if (!isBrowser() || captchaWarning === 'hide') {
+      return
+    }
     setCaptchaWarning('show')
   }, 3000)
 
@@ -86,13 +88,14 @@ const Towing = ({ title, text }: TowingSectionProps) => {
   })
 
   const isNotFound = isAxiosError(error) && error.response?.status === 404
-  const requestErrorMessage = error && !isNotFound ? t('towing.error') : ''
+  const requestErrorMessage = error && !isNotFound ? t('Towing.error') : ''
 
   return (
     <div className="flex flex-col gap-4">
       <SectionHeader title={title} text={text} />
 
       <form
+        noValidate // We use AJV validation
         className="flex flex-col justify-center gap-4 rounded-lg border px-5 py-6"
         onSubmit={handleSubmit((formData) => mutateAsync(formData))}
       >
@@ -101,9 +104,9 @@ const Towing = ({ title, text }: TowingSectionProps) => {
           control={control}
           render={({ field }) => (
             <SearchField
-              label={t('towing.licensePlate')}
+              label={t('Towing.licensePlate')}
               displayOptionalLabel={false}
-              helptext={t('towing.typeInInstructions')}
+              helptext={t('Towing.typeInInstructions')}
               autoCapitalize="characters"
               autoCorrect="off"
               spellCheck="false"
@@ -149,7 +152,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
 
               {captchaWarning === 'show' && (
                 <Typography variant="p-small" className="italic">
-                  {t('auth.captcha_warning')}
+                  {t('auth.captchaWarning')}
                 </Typography>
               )}
             </>
@@ -164,7 +167,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
           loadingText={t('common.searching')}
           startIcon={<Icon name="search" />}
         >
-          {t('towing.searchButton')}
+          {t('Towing.searchButton')}
         </Button>
 
         {isSuccess ? (

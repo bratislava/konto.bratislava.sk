@@ -83,6 +83,11 @@ export class FormSenderService {
     data: FormUpdateBodyDto,
     user: User,
   ): Promise<SendFormResponseDto> {
+    // The form must be verified as editable BEFORE it is updated. Updating the form deletes every
+    // file that the submitted form data does not reference, including the generated pdf-export.pdf
+    // of an already sent submission, which can never be referenced there.
+    await this.formsService.checkFormBeforeSending(formId)
+
     await this.formsService.updateFormWithUser(formId, data, user)
 
     const form = await this.formsService.checkFormBeforeSending(formId)
@@ -164,6 +169,30 @@ export class FormSenderService {
 
     const formSummary = this.getFormSummaryOrThrow(form, formDefinition)
 
+    const shouldBumpJsonVersion =
+      !this.baConfigService.featureToggles.versioning ||
+      versionCompareBumpDuringSend({
+        currentVersion: form.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
+
+    // Claim the form for sending before anything is published. The DRAFT -> QUEUED transition is
+    // conditional on the form still being editable, so of two concurrent sends only one gets
+    // through and the other is rejected instead of queueing the same submission twice.
+    const claimed = await this.formsService.transitionToQueued(form.id, {
+      formSummary,
+      formSentAt: new Date(),
+      ...(shouldBumpJsonVersion
+        ? { jsonVersion: formDefinition.jsonVersion }
+        : undefined),
+    })
+    if (!claimed) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
+        `${FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR} It is already being sent.`,
+      )
+    }
+
     this.logger.log(`Sending form ${form.id} to rabbitmq`)
     try {
       await this.rabbitmqClientService.publishDelay(
@@ -180,6 +209,13 @@ export class FormSenderService {
         10_000,
       )
     } catch (error) {
+      // Nothing was queued, so release the claim and let the user retry.
+      await this.formsService.updateForm(form.id, {
+        state: FormState.DRAFT,
+        formSentAt: null,
+        jsonVersion: form.jsonVersion,
+      })
+
       throw this.throwerErrorGuard.NotFoundException(
         FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
         `${FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
@@ -190,22 +226,6 @@ export class FormSenderService {
       )
     }
 
-    const shouldBumpJsonVersion =
-      !this.baConfigService.featureToggles.versioning ||
-      versionCompareBumpDuringSend({
-        currentVersion: form.jsonVersion,
-        latestVersion: formDefinition.jsonVersion,
-      })
-
-    // set state of form to QUEUED
-    await this.formsService.updateForm(form.id, {
-      state: FormState.QUEUED,
-      formSummary,
-      formSentAt: new Date(),
-      ...(shouldBumpJsonVersion
-        ? { jsonVersion: formDefinition.jsonVersion }
-        : undefined),
-    })
     return {
       id: form.id,
       message: 'Form was successfully queued to rabbitmq.',
@@ -345,16 +365,22 @@ export class FormSenderService {
       })
 
     // TODO rework! this is super fragile and QUEUED state was not originally meant for this
-    // just before sending to nases, update form state to QUEUED
-    // if the operation takes long, this prevents repeated sending
+    // just before sending to nases, claim the form by moving it to QUEUED
+    // the transition is conditional on the form still being editable, so a concurrent send (or a
+    // resend of the same eID token) is rejected here instead of sending the submission twice
     // sendToNasesAndUpdateState must never throw, and if it does not succeed we update the state back to DRAFT & set NASES_SEND_ERROR
-    await this.formsService.updateForm(id, {
-      state: FormState.QUEUED,
+    const claimed = await this.formsService.transitionToQueued(id, {
       formSummary,
       ...(shouldBumpJsonVersion
         ? { jsonVersion: formDefinition.jsonVersion }
         : undefined),
     })
+    if (!claimed) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
+        `${FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR} It is already being sent.`,
+      )
+    }
 
     try {
       // create a pdf image of the form, upload it to minio and at it among form files
@@ -536,7 +562,7 @@ export class FormSenderService {
     const totalFileSize = safeFiles.reduce((sum, f) => sum + f.fileSize, 0)
     const maxTotalFileSize =
       formDefinitionFiles.maxTotalFileSize ??
-      this.baConfigService.fileLimits.maxCumulativeSizeGlobal
+      this.baConfigService.files.maxCumulativeSizeGlobal
     if (totalFileSize > maxTotalFileSize) {
       throw this.throwerErrorGuard.BadRequestException(
         FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,

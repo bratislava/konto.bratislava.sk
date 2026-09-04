@@ -14,7 +14,7 @@ type TaxDataProviderProps = {
 }
 
 const useGetContext = ({ taxData }: TaxDataProviderProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
   const router = useRouter()
 
   const { showToast, closeToasts } = useToast()
@@ -36,11 +36,11 @@ const useGetContext = ({ taxData }: TaxDataProviderProps) => {
         await router.push(response.data.url)
       },
       onMutate: () => {
-        showToast({ message: t('account_section_payment.redirecting_to_payment'), variant: 'info' })
+        showToast({ message: t('useTaxData.redirectingToPayment'), variant: 'info' })
       },
       onError: (error) => {
         showToast({
-          message: t('account_section_payment.payment_redirect_error'),
+          message: t('useTaxData.paymentRedirectError'),
           variant: 'error',
         })
         logger.error(error)
@@ -66,16 +66,18 @@ const useGetContext = ({ taxData }: TaxDataProviderProps) => {
       await router.push(response.data.url)
     },
     onMutate: () => {
-      showToast({ message: t('account_section_payment.redirecting_to_payment'), variant: 'info' })
+      showToast({ message: t('useTaxData.redirectingToPayment'), variant: 'info' })
     },
     onError: (error) => {
-      showToast({ message: t('account_section_payment.payment_redirect_error'), variant: 'error' })
+      showToast({ message: t('useTaxData.paymentRedirectError'), variant: 'error' })
       logger.error(error)
     },
   })
 
   const downloadQrCodeOneTimePayment = async () => {
-    if (!taxData.oneTimePayment.qrCode) return
+    if (!taxData.oneTimePayment.qrCode) {
+      return
+    }
     const arrayBuffer = base64ToArrayBuffer(taxData.oneTimePayment.qrCode)
     downloadBlob(
       new Blob([arrayBuffer], { type: 'image/png' }),
@@ -83,7 +85,9 @@ const useGetContext = ({ taxData }: TaxDataProviderProps) => {
     )
   }
   const downloadQrCodeInstallmentPayment = async () => {
-    if (!taxData.installmentPayment.activeInstallment?.qrCode) return
+    if (!taxData.installmentPayment.activeInstallment?.qrCode) {
+      return
+    }
     const arrayBuffer = base64ToArrayBuffer(taxData.installmentPayment.activeInstallment.qrCode)
     downloadBlob(
       new Blob([arrayBuffer], { type: 'image/png' }),

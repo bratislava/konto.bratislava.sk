@@ -89,3 +89,5 @@ update)
     echo "Invalid option: $1"
     usage_fail
 esac
+
+# zstd cache compression test - no functional change

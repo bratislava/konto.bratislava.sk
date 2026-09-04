@@ -110,7 +110,7 @@ const useGetContext = () => {
       // A special case when user submits the form, but doesn't receive the response and then tries to send the form again.
       // TODO: Use error code instead of error name from API when fixed & type
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_DRAFT_ERROR') {
+      if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_EDITABLE_ERROR') {
         setFormIsSent()
 
         return
@@ -169,7 +169,7 @@ const useGetContext = () => {
       // A special case when user submits the form, but doesn't receive the response and then tries to send the form again.
       // TODO: Use error code instead of error name from API when fixed & type
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_DRAFT_ERROR') {
+      if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_EDITABLE_ERROR') {
         setFormIsSent()
 
         return

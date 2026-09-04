@@ -1,7 +1,6 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
-import IdentityVerificationOutageAlert from '@/src/components/auth-forms/IdentityVerificationOutageAlert'
 import { useVerifyEid, VerificationStatus } from '@/src/components/auth-forms/useVerifyEid'
 import Markdown from '@/src/components/formatting/Markdown'
 import Icon from '@/src/components/icon-components/Icon'
@@ -50,7 +49,6 @@ export const LegalPersonVerificationPageContentBase = ({
         content={t('LegalPersonVerificationPageContent.error.content')}
         className="text-center"
       />
-      <IdentityVerificationOutageAlert />
 
       <Button variant="solid" onPress={() => redirect()} fullWidth>
         {t('LegalPersonVerificationPageContent.error.closeButton')}

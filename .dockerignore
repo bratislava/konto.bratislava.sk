@@ -23,8 +23,9 @@
 **/*.log
 **/.DS_Store
 **/*.md
-tests/cypress/videos
-tests/cypress/screenshots
+e2e-tests/test-results
+e2e-tests/playwright-report
+e2e-tests/results
 
 # Secrets
 **/.env*

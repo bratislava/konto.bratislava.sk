@@ -47,7 +47,7 @@ pnpm run build
 pnpm run start
 ```
 
-CI does not use the commands above - the Cypress workflow builds the same Docker image as the deploy pipeline
+CI does not use the commands above - the E2E tests workflow builds the same Docker image as the deploy pipeline
 (`NEXT_BUILD_ENV=e2e`) and runs the container. To reproduce that locally:
 
 ```bash

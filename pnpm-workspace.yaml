@@ -2,6 +2,7 @@ savePrefix: ''
 
 catalog:
   '@internationalized/date': 3.12.2
+  '@playwright/test': 1.59.1
   '@react-aria/utils': 3.34.1
   '@react-stately/utils': 3.12.1
   '@react-types/shared': 3.36.0
@@ -23,6 +24,7 @@ catalog:
   react-stately: 3.48.0
 
 packages:
+  - e2e-tests
   - forms-shared
   - nest-city-account
   - nest-clamav-scanner

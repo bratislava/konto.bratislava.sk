@@ -48,6 +48,15 @@
       ],
       "outputs": []
     },
+    "city-account-e2e-tests#test": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "passThroughEnv": [
+        "E2E_BASE_URL",
+        "E2E_VIDEO"
+      ],
+      "outputs": []
+    },
     "nest-tax-backend#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]

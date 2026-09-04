@@ -17,7 +17,7 @@
 
 variable "NEXT_BUILD_ENV" {
   # Which next/.env.ci-build.<env> is baked into the Next.js image. Deploys
-  # override this per cluster and the Cypress workflow uses `e2e`; staging is
+  # override this per cluster and the E2E tests workflow uses `e2e`; staging is
   # the sensible local default.
   default = "staging"
 

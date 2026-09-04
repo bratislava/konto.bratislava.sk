@@ -7,6 +7,7 @@
     "dev": "next dev | pino-pretty -c",
     "develop": "next dev | pino-pretty -c",
     "build": "next build",
+    "sitemap-gen": "tsc --p tsconfig.sitemap.json && tsc-alias -p tsconfig.sitemap.json && next-sitemap --config next-sitemap.config.js",
     "build:analyze": "cross-env ANALYZE=true next build",
     "build:e2e": "cp .env.e2e .env.production.local && next build",
     "start": "next start",
@@ -14,6 +15,7 @@
     "lint": "eslint src",
     "lint:quiet": "npm run lint -- --quiet",
     "lint:fix": "npm run lint -- --fix",
+    "postbuild": "npm run sitemap-gen",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",
     "parse-translations": "i18next-cli extract",
@@ -77,6 +79,7 @@
     "next": "16.3.4",
     "next-i18next": "16.0.5",
     "next-plausible": "3.12.5",
+    "next-sitemap": "4.2.3",
     "nuqs": "2.8.9",
     "object-hash": "3.0.0",
     "openapi-clients": "file:../openapi-clients",
@@ -142,6 +145,7 @@
     "prettier-plugin-tailwindcss": "0.8.0",
     "tailwindcss": "4.2.4",
     "ts-node": "10.9.2",
+    "tsc-alias": "1.9.2",
     "typescript": "6.0.3"
   },
   "engines": {

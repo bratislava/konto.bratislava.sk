@@ -18,8 +18,8 @@ EXPOSE 3000
 ARG GIT_COMMIT="undefined"
 ENV GIT_COMMIT=$GIT_COMMIT
 LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
-      org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk/tree/master/next" \
-      org.opencontainers.image.licenses="EUPL-1.2"
+org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk/tree/master/next" \
+org.opencontainers.image.licenses="EUPL-1.2"
 ENTRYPOINT [ "/sbin/tini", "--" ]
 
 # used for build-base for building only
@@ -32,7 +32,7 @@ FROM base AS build-base
 # close to local development and expose missing runtime dependencies early.
 # https://github.com/bratislava/private-konto.bratislava.sk/issues/1433
 RUN --mount=type=cache,target=/build/.npm \
-    npm config set cache /build/.npm
+npm config set cache /build/.npm
 
 WORKDIR /forms-shared
 COPY --from=forms-shared / ./
@@ -47,9 +47,10 @@ COPY ./package.json ./package-lock.json ./
 
 FROM build-base AS install-prod
 ENV NPM_CONFIG_CACHE=/build/.npm
+ENV NODE_ENV=production
 RUN --mount=type=cache,target=/build/.npm \
-    npm config set cache /build/.npm \
- && npm ci --omit=dev
+npm config set cache /build/.npm \
+&& npm ci --omit=dev
 
 FROM install-prod AS build
 COPY . ./

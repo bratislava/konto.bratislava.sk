@@ -81,3 +81,9 @@ query MunicipalServiceBySlug($slug: String!) {
     ...MunicipalServiceEntity
   }
 }
+
+query MunicipalServicesStaticPaths($limit: Int = -1) {
+  municipalServices(sort: "createdAt:desc", pagination: { limit: $limit }) {
+    ...MunicipalServiceSlugEntity
+  }
+}

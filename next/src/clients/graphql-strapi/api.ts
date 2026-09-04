@@ -4456,6 +4456,20 @@ export type MunicipalServiceBySlugQuery = {
   } | null>
 }
 
+export type MunicipalServicesStaticPathsQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Int']['input']>
+}>
+
+export type MunicipalServicesStaticPathsQuery = {
+  __typename?: 'Query'
+  municipalServices: Array<{
+    __typename?: 'MunicipalService'
+    documentId: string
+    title: string
+    slug: string
+  } | null>
+}
+
 export type MunicipalServicesPageQueryVariables = Exact<{ [key: string]: never }>
 
 export type MunicipalServicesPageQuery = {
@@ -5616,6 +5630,14 @@ export const MunicipalServiceBySlugDocument = gql`
   }
   ${MunicipalServiceEntityFragmentDoc}
 `
+export const MunicipalServicesStaticPathsDocument = gql`
+  query MunicipalServicesStaticPaths($limit: Int = -1) {
+    municipalServices(sort: "createdAt:desc", pagination: { limit: $limit }) {
+      ...MunicipalServiceSlugEntity
+    }
+  }
+  ${MunicipalServiceSlugEntityFragmentDoc}
+`
 export const MunicipalServicesPageDocument = gql`
   query MunicipalServicesPage {
     municipalServicesPage {
@@ -5782,6 +5804,24 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             signal,
           }),
         'MunicipalServiceBySlug',
+        'query',
+        variables,
+      )
+    },
+    MunicipalServicesStaticPaths(
+      variables?: MunicipalServicesStaticPathsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
+    ): Promise<MunicipalServicesStaticPathsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<MunicipalServicesStaticPathsQuery>({
+            document: MunicipalServicesStaticPathsDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
+        'MunicipalServicesStaticPaths',
         'query',
         variables,
       )

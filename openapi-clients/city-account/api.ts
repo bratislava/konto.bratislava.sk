@@ -21,18 +21,15 @@ import {
   DUMMY_BASE_URL,
   assertParamExists,
   setApiKeyToObject,
-  setBasicAuthToObject,
   setBearerAuthToObject,
-  setOAuthToObject,
   setSearchParams,
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
-  replaceWithSerializableTypeIfNeeded,
 } from './common'
 import type { RequestArgs } from './base'
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
+import { BASE_PATH, BaseAPI, operationServerMap } from './base'
 
 /**
  * Status of the anonymization of user in bloomreach
@@ -863,6 +860,41 @@ export interface StoreTokensRequestDto {
    */
   authRequestId: string
 }
+export interface TicketsUserDto {
+  /**
+   * User ID
+   */
+  id: string
+  /**
+   * User email
+   */
+  email: string
+  /**
+   * Is email verified in cognito?
+   */
+  emailVerified?: string
+  /**
+   * Account type
+   */
+  accountType: CognitoUserAccountTypesEnum
+  /**
+   * Name (usually company name for legal entities)
+   */
+  name?: string
+  /**
+   * First name (given name)
+   */
+  firstName?: string
+  /**
+   * Last name (family name)
+   */
+  lastName?: string
+  /**
+   * Current verification tier of the authenticated user
+   */
+  verificationState?: CognitoUserAttributesTierEnum
+}
+
 export interface TokenRequestDto {
   /**
    * Grant type, must be \"authorization_code\"
@@ -1010,6 +1042,7 @@ export interface UpsertUserRecordClientRequestDto {
 export const UpsertUserRecordClientRequestDtoLoginClientEnum = {
   Dpb: 'DPB',
   PaasMpa: 'PAAS_MPA',
+  Tickets: 'TICKETS',
   CityAccount: 'CITY_ACCOUNT',
 } as const
 
@@ -3510,6 +3543,126 @@ export class PAASMPAApi extends BaseAPI {
   ) {
     return PAASMPAApiFp(this.configuration)
       .paasMpaControllerRegister(paasMpaRegisterRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * TicketsApi - axios parameter creator
+ */
+export const TicketsApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Returns user data for the authenticated user
+     * @summary Get user data
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ticketsControllerUserData: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/tickets/userdata`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * TicketsApi - functional programming interface
+ */
+export const TicketsApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = TicketsApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Returns user data for the authenticated user
+     * @summary Get user data
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async ticketsControllerUserData(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TicketsUserDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.ticketsControllerUserData(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['TicketsApi.ticketsControllerUserData']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * TicketsApi - factory interface
+ */
+export const TicketsApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = TicketsApiFp(configuration)
+  return {
+    /**
+     * Returns user data for the authenticated user
+     * @summary Get user data
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ticketsControllerUserData(options?: RawAxiosRequestConfig): AxiosPromise<TicketsUserDto> {
+      return localVarFp
+        .ticketsControllerUserData(options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * TicketsApi - object-oriented interface
+ */
+export class TicketsApi extends BaseAPI {
+  /**
+   * Returns user data for the authenticated user
+   * @summary Get user data
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public ticketsControllerUserData(options?: RawAxiosRequestConfig) {
+    return TicketsApiFp(this.configuration)
+      .ticketsControllerUserData(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

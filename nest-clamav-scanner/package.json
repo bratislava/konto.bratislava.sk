@@ -65,7 +65,7 @@
     "cross-env": "10.1.0",
     "dotenv": "17.4.2",
     "eslint": "9.39.4",
-    "jest": "30.4.2",
+    "jest": "30.5.1",
     "path": "0.12.7",
     "prettier": "3.6.2",
     "source-map-support": "0.5.21",

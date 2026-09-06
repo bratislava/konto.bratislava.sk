@@ -66,7 +66,7 @@
     "xml2js": "0.6.2"
   },
   "devDependencies": {
-    "@fontsource/inter": "5.2.8",
+    "@fontsource/inter": "5.3.0",
     "@rjsf/core": "6.5.2",
     "@rjsf/utils": "6.5.2",
     "@rjsf/validator-ajv8": "6.5.2",

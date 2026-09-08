@@ -1,7 +1,7 @@
 import { Typography } from '@bratislava/component-library'
 
 import Markdown from '@/src/components/formatting/Markdown'
-import FaqDisclosure from '@/src/components/segments/FaqDisclosure/FaqDisclosure'
+import FaqDisclosure from '@/src/components/segments/FaqsGroup/FaqDisclosure'
 import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure'
 import DisclosureGroup from '@/src/components/simple-components/Disclosure/DisclosureGroup'
 import DisclosureHeader from '@/src/components/simple-components/Disclosure/DisclosureHeader'
@@ -77,7 +77,7 @@ const DisclosureShowCase = () => {
               key={index}
               id={`disclosure-faq-${index}`}
               faq={item}
-              accordionTitleLevel="h3"
+              disclosureTitleLevel="h3"
             />
           ))}
         </DisclosureGroup>

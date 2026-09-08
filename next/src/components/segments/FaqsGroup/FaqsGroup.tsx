@@ -1,11 +1,11 @@
-import FaqDisclosure, { Faq } from '@/src/components/segments/FaqDisclosure/FaqDisclosure'
+import FaqDisclosure, { Faq } from '@/src/components/segments/FaqsGroup/FaqDisclosure'
 import DisclosureGroup from '@/src/components/simple-components/Disclosure/DisclosureGroup'
 import { isDefined } from '@/src/frontend/utils/general'
-import { AccordionTitleLevel } from '@/src/utils/getCardTitleLevel'
+import { DisclosureTitleLevel } from '@/src/utils/getCardTitleLevel'
 
 export type FaqsGroupProps = {
   faqs?: Faq[]
-  accordionTitleLevel?: AccordionTitleLevel
+  disclosureTitleLevel?: DisclosureTitleLevel
 }
 
 /**
@@ -13,7 +13,7 @@ export type FaqsGroupProps = {
  * Based on bratislava.sk: https://github.com/bratislava/bratislava.sk/blob/master/next/src/components/sections/FaqsSection/FaqsGroup.tsx
  */
 
-const FaqsGroup = ({ faqs, accordionTitleLevel = 'h2' }: FaqsGroupProps) => {
+const FaqsGroup = ({ faqs, disclosureTitleLevel = 'h2' }: FaqsGroupProps) => {
   return (
     <DisclosureGroup>
       {faqs?.filter(isDefined).map((faq, index) => (
@@ -21,7 +21,7 @@ const FaqsGroup = ({ faqs, accordionTitleLevel = 'h2' }: FaqsGroupProps) => {
           key={index}
           id={`disclosure-faq-${index}`}
           faq={faq}
-          accordionTitleLevel={accordionTitleLevel}
+          disclosureTitleLevel={disclosureTitleLevel}
         />
       ))}
     </DisclosureGroup>

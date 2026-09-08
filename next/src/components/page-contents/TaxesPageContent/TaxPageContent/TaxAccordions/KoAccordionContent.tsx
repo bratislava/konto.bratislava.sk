@@ -1,12 +1,9 @@
-import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { ResponseCommunalWasteTaxItemizedAddressDto } from 'openapi-clients/tax'
 import { PropsWithChildren, useRef } from 'react'
 
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
-import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure'
-import DisclosureHeader from '@/src/components/simple-components/Disclosure/DisclosureHeader'
-import DisclosurePanel from '@/src/components/simple-components/Disclosure/DisclosurePanel'
+import TaxDisclosure from '@/src/components/page-contents/TaxesPageContent/TaxPageContent/TaxAccordions/TaxDisclosure'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 import { useHorizontalScrollFade } from '@/src/utils/useHorizontalScrollFade'
@@ -104,23 +101,9 @@ const Table = ({ data }: TableDataProps) => {
 
 const KoAccordionContent = ({ title, secondTitle, data }: Props) => {
   return (
-    <Disclosure className="w-full">
-      <DisclosureHeader className="py-2 lg:py-3">
-        <div className="flex w-full justify-between pr-4">
-          <Typography variant="h5">{title}</Typography>
-
-          <Typography variant="h5" as="span" className="font-semibold">
-            {secondTitle}
-          </Typography>
-        </div>
-      </DisclosureHeader>
-
-      <DisclosurePanel>
-        <div className="flex size-full flex-col gap-6">
-          <Table data={data} />
-        </div>
-      </DisclosurePanel>
-    </Disclosure>
+    <TaxDisclosure title={title} secondTitle={secondTitle}>
+      <Table data={data} />
+    </TaxDisclosure>
   )
 }
 

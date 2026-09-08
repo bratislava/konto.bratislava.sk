@@ -1,6 +1,7 @@
 import { Typography } from '@bratislava/component-library'
 
 import Markdown from '@/src/components/formatting/Markdown'
+import FaqDisclosure from '@/src/components/segments/FaqDisclosure/FaqDisclosure'
 import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure'
 import DisclosureGroup from '@/src/components/simple-components/Disclosure/DisclosureGroup'
 import DisclosureHeader from '@/src/components/simple-components/Disclosure/DisclosureHeader'
@@ -66,6 +67,20 @@ const DisclosureShowCase = () => {
             <Markdown variant="accordion" content={styleguideMarkdownContent} />
           </DisclosurePanel>
         </Disclosure>
+      </Stack>
+
+      <Stack direction="column">
+        <Typography variant="h5">FaqDisclosure</Typography>
+        <DisclosureGroup className="w-full">
+          {items.map((item, index) => (
+            <FaqDisclosure
+              key={index}
+              id={`disclosure-faq-${index}`}
+              faq={item}
+              accordionTitleLevel="h3"
+            />
+          ))}
+        </DisclosureGroup>
       </Stack>
     </Wrapper>
   )

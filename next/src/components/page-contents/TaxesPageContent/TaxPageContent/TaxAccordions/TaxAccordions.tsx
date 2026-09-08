@@ -5,7 +5,11 @@ import { useCurrencyFromCentsFormatter } from '@/src/components/formatting/forma
 import DznAccordionContent from '@/src/components/page-contents/TaxesPageContent/TaxPageContent/TaxAccordions/DznAccordionContent'
 import KoAccordionContent from '@/src/components/page-contents/TaxesPageContent/TaxPageContent/TaxAccordions/KoAccordionContent'
 import { useTaxData } from '@/src/components/page-contents/TaxesPageContent/useTaxData'
+import DisclosureGroup from '@/src/components/simple-components/Disclosure/DisclosureGroup'
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=20611-9902&m=dev
+ */
 const TaxAccordions = () => {
   const { t } = useTranslation()
 
@@ -14,7 +18,7 @@ const TaxAccordions = () => {
 
   if (taxData.type === TaxType.Dzn) {
     return (
-      <div className="flex w-full flex-col gap-4">
+      <DisclosureGroup className="w-full">
         <DznAccordionContent
           dataType="APARTMENT"
           title={t('TaxAccordions.taxTypes.APARTMENT')}
@@ -37,13 +41,13 @@ const TaxAccordions = () => {
           )}
           data={taxData.itemizedDetail.constructionTaxDetail}
         />
-      </div>
+      </DisclosureGroup>
     )
   }
 
   if (taxData.type === TaxType.Ko) {
     return (
-      <div className="flex w-full flex-col gap-4">
+      <DisclosureGroup className="w-full">
         {taxData.itemizedDetail.addressDetail.map((item, index) => {
           return (
             <KoAccordionContent
@@ -54,7 +58,7 @@ const TaxAccordions = () => {
             />
           )
         })}
-      </div>
+      </DisclosureGroup>
     )
   }
 

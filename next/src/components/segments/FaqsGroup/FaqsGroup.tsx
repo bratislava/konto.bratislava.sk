@@ -1,12 +1,10 @@
 import { Typography } from '@bratislava/component-library'
-import { Fragment } from 'react'
 
 import Markdown from '@/src/components/formatting/Markdown'
 import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure'
 import DisclosureGroup from '@/src/components/simple-components/Disclosure/DisclosureGroup'
 import DisclosureHeader from '@/src/components/simple-components/Disclosure/DisclosureHeader'
 import DisclosurePanel from '@/src/components/simple-components/Disclosure/DisclosurePanel'
-import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { isDefined } from '@/src/frontend/utils/general'
 import { AccordionTitleLevel } from '@/src/utils/getCardTitleLevel'
 
@@ -27,22 +25,19 @@ export type FaqsGroupProps = {
 
 const FaqsGroup = ({ faqs, accordionTitleLevel = 'h2' }: FaqsGroupProps) => {
   return (
-    <DisclosureGroup className="rounded-lg border border-border-active-default bg-background-passive-base py-2">
+    <DisclosureGroup>
       {faqs?.filter(isDefined).map((faq, index) => (
-        <Fragment key={index}>
-          {index > 0 ? <HorizontalDivider className="mx-4 lg:mx-6" /> : null}
-          <Disclosure id={`disclosure-faq-${index}`}>
-            <DisclosureHeader className="p-4 ring-inset lg:px-6">
-              <Typography variant="h5" as={accordionTitleLevel}>
-                {faq.title}
-              </Typography>
-            </DisclosureHeader>
+        <Disclosure key={index} id={`disclosure-faq-${index}`}>
+          <DisclosureHeader>
+            <Typography variant="h5" as={accordionTitleLevel}>
+              {faq.title}
+            </Typography>
+          </DisclosureHeader>
 
-            <DisclosurePanel className="px-4 lg:px-6">
-              <Markdown variant="accordion" content={faq.content} />
-            </DisclosurePanel>
-          </Disclosure>
-        </Fragment>
+          <DisclosurePanel>
+            <Markdown variant="accordion" content={faq.content} />
+          </DisclosurePanel>
+        </Disclosure>
       ))}
     </DisclosureGroup>
   )

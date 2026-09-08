@@ -1,5 +1,4 @@
 import { Typography } from '@bratislava/component-library'
-import { Fragment } from 'react'
 
 import { StepperSectionFragment } from '@/src/clients/graphql-strapi/api'
 import Checklist from '@/src/components/common/StepByStep/Checklist'
@@ -9,7 +8,6 @@ import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure
 import DisclosureGroup from '@/src/components/simple-components/Disclosure/DisclosureGroup'
 import DisclosureHeader from '@/src/components/simple-components/Disclosure/DisclosureHeader'
 import DisclosurePanel from '@/src/components/simple-components/Disclosure/DisclosurePanel'
-import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { isDefined } from '@/src/frontend/utils/general'
 
 type Props = {
@@ -35,36 +33,29 @@ const StepByStep = ({ section: { title, description, checklists } }: Props) => {
     <div className="flex flex-col gap-4">
       <SectionHeader title={title} text={description} asRichtext />
 
-      <DisclosureGroup
-        defaultExpandedKeys={['disclosure-0']}
-        className="rounded-lg border border-border-active-default bg-background-passive-base py-2"
-      >
+      <DisclosureGroup defaultExpandedKeys={['disclosure-0']}>
         {checklists?.filter(isDefined).map((checklist, index) => (
-          <Fragment key={index}>
-            {index > 0 ? <HorizontalDivider className="mx-4 lg:mx-6" /> : null}
+          <Disclosure key={index} id={`disclosure-${index}`}>
+            <DisclosureHeader>
+              <div className="flex flex-row gap-3 lg:gap-4">
+                <IndexIcon index={index} />
 
-            <Disclosure id={`disclosure-${index}`}>
-              <DisclosureHeader className="p-4 ring-inset lg:px-6">
-                <div className="flex flex-row gap-3 lg:gap-4">
-                  <IndexIcon index={index} />
+                <Typography variant="h4" className="mt-1.5">
+                  {checklist.title}
+                </Typography>
+              </div>
+            </DisclosureHeader>
 
-                  <Typography variant="h4" className="mt-1.5">
-                    {checklist.title}
-                  </Typography>
-                </div>
-              </DisclosureHeader>
+            <DisclosurePanel className="lg:ml-14">
+              <div className="flex flex-col gap-6">
+                <Markdown variant="default" content={checklist.description} />
 
-              <DisclosurePanel className="px-4 lg:ml-14 lg:px-6">
-                <div className="flex flex-col gap-6">
-                  <Markdown variant="default" content={checklist.description} />
-
-                  {checklist.checklistItems ? (
-                    <Checklist checklistItems={checklist.checklistItems.filter(isDefined)} />
-                  ) : null}
-                </div>
-              </DisclosurePanel>
-            </Disclosure>
-          </Fragment>
+                {checklist.checklistItems ? (
+                  <Checklist checklistItems={checklist.checklistItems.filter(isDefined)} />
+                ) : null}
+              </div>
+            </DisclosurePanel>
+          </Disclosure>
         ))}
       </DisclosureGroup>
     </div>

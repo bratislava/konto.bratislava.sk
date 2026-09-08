@@ -5,7 +5,6 @@ import { PropsWithChildren, useRef } from 'react'
 
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure'
-import DisclosureGroup from '@/src/components/simple-components/Disclosure/DisclosureGroup'
 import DisclosureHeader from '@/src/components/simple-components/Disclosure/DisclosureHeader'
 import DisclosurePanel from '@/src/components/simple-components/Disclosure/DisclosurePanel'
 import { isDefined } from '@/src/frontend/utils/general'
@@ -105,25 +104,23 @@ const Table = ({ data }: TableDataProps) => {
 
 const KoAccordionContent = ({ title, secondTitle, data }: Props) => {
   return (
-    <DisclosureGroup className="w-full rounded-lg border border-border-active-default bg-background-passive-base py-2">
-      <Disclosure>
-        <DisclosureHeader className="px-4 py-2 ring-inset lg:px-6 lg:py-3">
-          <div className="flex w-full justify-between pr-4">
-            <Typography variant="h5">{title}</Typography>
+    <Disclosure className="w-full">
+      <DisclosureHeader className="py-2 lg:py-3">
+        <div className="flex w-full justify-between pr-4">
+          <Typography variant="h5">{title}</Typography>
 
-            <Typography variant="h5" as="span" className="font-semibold">
-              {secondTitle}
-            </Typography>
-          </div>
-        </DisclosureHeader>
+          <Typography variant="h5" as="span" className="font-semibold">
+            {secondTitle}
+          </Typography>
+        </div>
+      </DisclosureHeader>
 
-        <DisclosurePanel className="px-4 lg:px-6">
-          <div className="flex size-full flex-col gap-6">
-            <Table data={data} />
-          </div>
-        </DisclosurePanel>
-      </Disclosure>
-    </DisclosureGroup>
+      <DisclosurePanel>
+        <div className="flex size-full flex-col gap-6">
+          <Table data={data} />
+        </div>
+      </DisclosurePanel>
+    </Disclosure>
   )
 }
 

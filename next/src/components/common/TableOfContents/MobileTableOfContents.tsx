@@ -55,7 +55,7 @@ const MobileTableOfContents = ({ containerRef, headings, footerComponent, classN
   return (
     <div className={className}>
       {headings.length ? (
-        <Disclosure isExpanded={isExpanded} onExpandedChange={setExpanded}>
+        <Disclosure variant="unstyled" isExpanded={isExpanded} onExpandedChange={setExpanded}>
           <DisclosureHeader className="p-4 ring-inset">
             <TableOfContentsTitle />
           </DisclosureHeader>

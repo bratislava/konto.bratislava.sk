@@ -1,7 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import { ReactNode, useContext } from 'react'
 import { DisclosureStateContext as RACDisclosureStateContext } from 'react-aria-components/Disclosure'
-import { Heading as RACHeading } from 'react-aria-components/Heading'
 
 import Icon from '@/src/components/icon-components/Icon'
 import { disclosureStyles } from '@/src/components/simple-components/Disclosure/disclosureStyles'
@@ -22,23 +21,21 @@ const DisclosureHeader = ({ children, className }: DisclosureHeaderProps) => {
   const variant = useDisclosureVariant()
 
   return (
-    <RACHeading>
-      <Button
-        slot="trigger"
-        variant="unstyled"
-        className={cn('w-full text-left', disclosureStyles[variant].header, className)}
-      >
-        <div className="flex w-full justify-between">
-          {children}
-          <Icon
-            name="chevron-down"
-            className={cn('self-center transition-transform duration-200 ease-in-out', {
-              'rotate-180 transform': isExpanded,
-            })}
-          />
-        </div>
-      </Button>
-    </RACHeading>
+    <Button
+      slot="trigger"
+      variant="unstyled"
+      className={cn('w-full text-left', disclosureStyles[variant].header, className)}
+    >
+      <div className="flex w-full justify-between">
+        {children}
+        <Icon
+          name="chevron-down"
+          className={cn('self-center transition-transform duration-200 ease-in-out', {
+            'rotate-180 transform': isExpanded,
+          })}
+        />
+      </div>
+    </Button>
   )
 }
 

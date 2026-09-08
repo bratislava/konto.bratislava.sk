@@ -19,7 +19,9 @@ const TaxDisclosure = ({ title, secondTitle, children }: TaxDisclosureProps) => 
     <Disclosure className="w-full">
       <DisclosureHeader className="py-4">
         <div className="flex w-full justify-between pr-4">
-          <Typography variant="h5">{title}</Typography>
+          <Typography variant="h5" as="h3">
+            {title}
+          </Typography>
 
           <Typography variant="h5" as="span" className="font-semibold">
             {secondTitle}

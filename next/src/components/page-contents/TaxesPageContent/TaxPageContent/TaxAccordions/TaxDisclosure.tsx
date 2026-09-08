@@ -16,8 +16,8 @@ export type TaxDisclosureProps = PropsWithChildren<{
 
 const TaxDisclosure = ({ title, taxAmountString, children }: TaxDisclosureProps) => {
   return (
-    <Disclosure className="w-full">
-      <DisclosureHeader className="py-4">
+    <Disclosure>
+      <DisclosureHeader>
         <div className="flex w-full justify-between pr-4">
           <Typography variant="h5" as="h3">
             {title}

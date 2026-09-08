@@ -21,10 +21,9 @@ type DisclosureVariantStyles = {
 export const disclosureStyles: Record<DisclosureVariant, DisclosureVariantStyles> = {
   /** Default look - card with border, items separated by inset dividers */
   boxed: {
-    // Nore: bratislava.sk uses rounded-xl, but here it's more consistent to use rounded-lg
+    // Note: bratislava.sk uses rounded-xl, but here it's more consistent to use rounded-lg
     box: 'rounded-lg border border-border-passive-primary bg-background-passive-base py-2',
-    // Note: "px-4 py-4" instead of "p-4", so consumers can override just the vertical padding
-    header: 'px-4 py-4 ring-inset lg:px-6',
+    header: 'p-4 ring-inset lg:px-6',
     panel: 'px-4 lg:px-6',
     divider: 'mx-4 lg:mx-6',
   },

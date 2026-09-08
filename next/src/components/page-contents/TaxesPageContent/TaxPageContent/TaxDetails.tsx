@@ -34,7 +34,7 @@ const TaxDetails = () => {
   }[taxData.type]
 
   return (
-    <div className="flex w-full flex-col items-start gap-3 lg:gap-6">
+    <div className="flex w-full flex-col gap-3 lg:gap-6">
       <div className="flex w-full flex-col justify-between lg:flex-row">
         <Typography variant="h5" as="h2">
           {taxAccordionsHeader}

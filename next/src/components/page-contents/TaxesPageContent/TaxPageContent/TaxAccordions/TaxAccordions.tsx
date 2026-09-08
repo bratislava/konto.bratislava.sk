@@ -18,7 +18,7 @@ const TaxAccordions = () => {
 
   if (taxData.type === TaxType.Dzn) {
     return (
-      <DisclosureGroup className="w-full">
+      <DisclosureGroup>
         <DznAccordionContent
           dataType="APARTMENT"
           title={t('TaxAccordions.taxTypes.APARTMENT')}
@@ -49,7 +49,7 @@ const TaxAccordions = () => {
 
   if (taxData.type === TaxType.Ko) {
     return (
-      <DisclosureGroup className="w-full">
+      <DisclosureGroup>
         {taxData.itemizedDetail.addressDetail.map((item, index) => {
           return (
             <KoAccordionContent

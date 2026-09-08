@@ -36,7 +36,7 @@ const TaxDetails = () => {
   return (
     <div className="flex w-full flex-col items-start gap-3 lg:gap-6">
       <div className="flex w-full flex-col justify-between lg:flex-row">
-        <Typography variant="h5" as="p" className="font-semibold">
+        <Typography variant="h5" as="h2">
           {taxAccordionsHeader}
         </Typography>
         <Button variant="link" endIcon={<Icon name="export" />} {...taxAccordionsHeaderLinkProps} />

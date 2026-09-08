@@ -13,7 +13,7 @@ type TableHeaderDataType = TableDataType[0]
 
 type Props = {
   title: string
-  secondTitle?: string
+  taxAmountString?: string
   data: TableDataType
 }
 
@@ -99,9 +99,9 @@ const Table = ({ data }: TableDataProps) => {
   )
 }
 
-const KoAccordionContent = ({ title, secondTitle, data }: Props) => {
+const KoAccordionContent = ({ title, taxAmountString, data }: Props) => {
   return (
-    <TaxDisclosure title={title} secondTitle={secondTitle}>
+    <TaxDisclosure title={title} taxAmountString={taxAmountString}>
       <Table data={data} />
     </TaxDisclosure>
   )

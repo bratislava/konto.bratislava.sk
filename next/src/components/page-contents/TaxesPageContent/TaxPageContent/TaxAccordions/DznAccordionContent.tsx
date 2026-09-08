@@ -13,7 +13,7 @@ import { useHorizontalScrollFade } from '@/src/utils/useHorizontalScrollFade'
 
 type Props = {
   title: string
-  secondTitle?: string
+  taxAmountString?: string
   dataType: string
   data:
     | ResponseGroundTaxDetailDto[]
@@ -160,9 +160,9 @@ const Table = ({
   )
 }
 
-const DznAccordionContent = ({ title, secondTitle, dataType, data }: Props) => {
+const DznAccordionContent = ({ title, taxAmountString, dataType, data }: Props) => {
   return (
-    <TaxDisclosure title={title} secondTitle={secondTitle}>
+    <TaxDisclosure title={title} taxAmountString={taxAmountString}>
       <Table dataType={dataType} data={data} />
     </TaxDisclosure>
   )

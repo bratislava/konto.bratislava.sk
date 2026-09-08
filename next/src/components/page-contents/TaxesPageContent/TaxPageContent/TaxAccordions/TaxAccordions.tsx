@@ -22,7 +22,7 @@ const TaxAccordions = () => {
         <DznAccordionContent
           dataType="APARTMENT"
           title={t('TaxAccordions.taxTypes.APARTMENT')}
-          secondTitle={currencyFromCentsFormatter.format(
+          taxAmountString={currencyFromCentsFormatter.format(
             taxData.itemizedDetail.apartmentTotalAmount,
           )}
           data={taxData.itemizedDetail.apartmentTaxDetail}
@@ -30,13 +30,15 @@ const TaxAccordions = () => {
         <DznAccordionContent
           dataType="GROUND"
           title={t('TaxAccordions.taxTypes.GROUND')}
-          secondTitle={currencyFromCentsFormatter.format(taxData.itemizedDetail.groundTotalAmount)}
+          taxAmountString={currencyFromCentsFormatter.format(
+            taxData.itemizedDetail.groundTotalAmount,
+          )}
           data={taxData.itemizedDetail.groundTaxDetail}
         />
         <DznAccordionContent
           dataType="CONSTRUCTION"
           title={t('TaxAccordions.taxTypes.CONSTRUCTION')}
-          secondTitle={currencyFromCentsFormatter.format(
+          taxAmountString={currencyFromCentsFormatter.format(
             taxData.itemizedDetail.constructionTotalAmount,
           )}
           data={taxData.itemizedDetail.constructionTaxDetail}
@@ -53,7 +55,7 @@ const TaxAccordions = () => {
             <KoAccordionContent
               key={index}
               title={`${item.address.street} ${item.address.orientationNumber}`}
-              secondTitle={currencyFromCentsFormatter.format(item.totalAmount)}
+              taxAmountString={currencyFromCentsFormatter.format(item.totalAmount)}
               data={item.itemizedContainers}
             />
           )

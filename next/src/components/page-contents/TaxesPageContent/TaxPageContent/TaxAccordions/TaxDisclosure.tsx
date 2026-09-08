@@ -7,14 +7,14 @@ import DisclosurePanel from '@/src/components/simple-components/Disclosure/Discl
 
 export type TaxDisclosureProps = PropsWithChildren<{
   title: string
-  secondTitle?: string
+  taxAmountString?: string
 }>
 
 /**
  * Single tax disclosure item, used both in DznAccordionContent and KoAccordionContent.
  */
 
-const TaxDisclosure = ({ title, secondTitle, children }: TaxDisclosureProps) => {
+const TaxDisclosure = ({ title, taxAmountString, children }: TaxDisclosureProps) => {
   return (
     <Disclosure className="w-full">
       <DisclosureHeader className="py-4">
@@ -24,7 +24,7 @@ const TaxDisclosure = ({ title, secondTitle, children }: TaxDisclosureProps) => 
           </Typography>
 
           <Typography variant="h5" as="span" className="font-semibold">
-            {secondTitle}
+            {taxAmountString}
           </Typography>
         </div>
       </DisclosureHeader>

@@ -10,9 +10,9 @@ import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import { getDraftApplications } from '@/src/components/page-contents/MyApplicationsPageContent/getDraftApplications'
 import MyApplicationsPageContent from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsPageContent'
 import { getEmailFormSlugs } from '@/src/components/page-contents/MyApplicationsPageContent/patchApplicationFormIfNeededServer'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
-import SeoHead from '@/src/components/simple-components/SeoHead'
 
 type AccountMyApplicationsPageProps = {
   general: GeneralQuery

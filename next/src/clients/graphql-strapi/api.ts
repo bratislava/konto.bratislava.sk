@@ -4456,17 +4456,17 @@ export type MunicipalServiceBySlugQuery = {
   } | null>
 }
 
-export type MunicipalServicesStaticPathsQueryVariables = Exact<{
+export type MunicipalServicesStaticPathsForSitemapQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']['input']>
 }>
 
-export type MunicipalServicesStaticPathsQuery = {
+export type MunicipalServicesStaticPathsForSitemapQuery = {
   __typename?: 'Query'
   municipalServices: Array<{
     __typename?: 'MunicipalService'
     documentId: string
-    title: string
     slug: string
+    updatedAt?: any | null
   } | null>
 }
 
@@ -5630,13 +5630,14 @@ export const MunicipalServiceBySlugDocument = gql`
   }
   ${MunicipalServiceEntityFragmentDoc}
 `
-export const MunicipalServicesStaticPathsDocument = gql`
-  query MunicipalServicesStaticPaths($limit: Int = -1) {
+export const MunicipalServicesStaticPathsForSitemapDocument = gql`
+  query MunicipalServicesStaticPathsForSitemap($limit: Int = -1) {
     municipalServices(sort: "createdAt:desc", pagination: { limit: $limit }) {
-      ...MunicipalServiceSlugEntity
+      documentId
+      slug
+      updatedAt
     }
   }
-  ${MunicipalServiceSlugEntityFragmentDoc}
 `
 export const MunicipalServicesPageDocument = gql`
   query MunicipalServicesPage {
@@ -5808,20 +5809,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
-    MunicipalServicesStaticPaths(
-      variables?: MunicipalServicesStaticPathsQueryVariables,
+    MunicipalServicesStaticPathsForSitemap(
+      variables?: MunicipalServicesStaticPathsForSitemapQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
       signal?: RequestInit['signal'],
-    ): Promise<MunicipalServicesStaticPathsQuery> {
+    ): Promise<MunicipalServicesStaticPathsForSitemapQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<MunicipalServicesStaticPathsQuery>({
-            document: MunicipalServicesStaticPathsDocument,
+          client.request<MunicipalServicesStaticPathsForSitemapQuery>({
+            document: MunicipalServicesStaticPathsForSitemapDocument,
             variables,
             requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
             signal,
           }),
-        'MunicipalServicesStaticPaths',
+        'MunicipalServicesStaticPathsForSitemap',
         'query',
         variables,
       )

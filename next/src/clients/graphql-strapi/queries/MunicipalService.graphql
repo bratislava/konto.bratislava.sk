@@ -82,8 +82,10 @@ query MunicipalServiceBySlug($slug: String!) {
   }
 }
 
-query MunicipalServicesStaticPaths($limit: Int = -1) {
+query MunicipalServicesStaticPathsForSitemap($limit: Int = -1) {
   municipalServices(sort: "createdAt:desc", pagination: { limit: $limit }) {
-    ...MunicipalServiceSlugEntity
+    documentId
+    slug
+    updatedAt
   }
 }

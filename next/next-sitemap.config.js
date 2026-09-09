@@ -12,7 +12,9 @@ module.exports = {
   // generate paths dynamically from Strapi
   additionalPaths: async (config) => {
     const fetchMunicipalServicePaths = async () => {
-      const { municipalServices } = await strapiClient.MunicipalServicesStaticPaths({ limit: -1 })
+      const { municipalServices } = await strapiClient.MunicipalServicesStaticPathsForSitemap({
+        limit: -1,
+      })
 
       return municipalServices.map((municipalService) => ({
         loc: routes.MUNICIPAL_SERVICES_FORM(municipalService.slug),
@@ -25,7 +27,7 @@ module.exports = {
       loc: path.loc,
       changefreq: config.changefreq,
       priority: config.priority,
-      lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
+      lastmod: page.updatedAt,
       alternateRefs: config.alternateRefs ?? [],
     }))
   },

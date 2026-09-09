@@ -20,6 +20,7 @@ import pick from 'lodash/pick'
 const basePropertiesToPick = [
   'slug',
   'type',
+  'title',
   'jsonVersion',
   'schema',
   'embedded',
@@ -131,7 +132,7 @@ export type ClientLandingPageFormDefinition = Pick<
 export const makeClientLandingPageFormDefinition = (
   formDefinition: FormDefinition,
 ): ClientLandingPageFormDefinition => {
-  return pick(formDefinition, landingPagePropertiesToPick) as ClientLandingPageFormDefinition
+  return pick(formDefinition, landingPagePropertiesToPick)
 }
 
 const playgroundPropertiesToPick = [

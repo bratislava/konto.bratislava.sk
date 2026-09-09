@@ -6,6 +6,7 @@ import {
   signIn,
 } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next/pages'
 import {
   ClientInfoResponseDto,
   UpsertUserRecordClientRequestDtoLoginClientEnum,
@@ -22,6 +23,7 @@ import { GeneralContextProvider } from '@/src/components/logic/GeneralContextPro
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { Tier } from '@/src/frontend/dtos/accountDto'
 import {
   AmplifyClientOAuthProvider,
@@ -66,6 +68,7 @@ export type AuthPageCommonProps = {
 }
 
 const LoginPage = ({ general, clientInfo }: AuthPageCommonProps) => {
+  const { t } = useTranslation()
   const router = useRouter()
   const { redirect, getRedirectQueryParams, getRouteWithRedirect } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
@@ -187,13 +190,17 @@ const LoginPage = ({ general, clientInfo }: AuthPageCommonProps) => {
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
-        <PageLayout variant="auth">
-          <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 lg:gap-10">
-            <LoginForm onSubmit={onLogin} error={loginError} />
-            <HorizontalDivider />
-            <AccountLink variant="registration" />
-          </AccountContainer>
-        </PageLayout>
+        <>
+          <SeoHead title={t('LoginPage.title')} />
+
+          <PageLayout variant="auth">
+            <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 lg:gap-10">
+              <LoginForm onSubmit={onLogin} error={loginError} />
+              <HorizontalDivider />
+              <AccountLink variant="registration" />
+            </AccountContainer>
+          </PageLayout>
+        </>
       </GeneralContextProvider>
     </AmplifyClientOAuthProvider>
   )

@@ -1,4 +1,5 @@
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
+import { useTranslation } from 'next-i18next/pages'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
 
 import { strapiClient } from '@/src/clients/graphql-strapi'
@@ -9,6 +10,7 @@ import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import { getDraftApplications } from '@/src/components/page-contents/MyApplicationsPageContent/getDraftApplications'
 import MyApplicationsPageContent from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsPageContent'
 import { getEmailFormSlugs } from '@/src/components/page-contents/MyApplicationsPageContent/patchApplicationFormIfNeededServer'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
@@ -68,16 +70,22 @@ const AccountMyApplicationsPage = ({
   formDefinitionSlugTitleMap,
   emailFormSlugs,
 }: AccountMyApplicationsPageProps) => {
+  const { t } = useTranslation()
+
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout>
-        <MyApplicationsPageContent
-          selectedSection={selectedSection}
-          applications={applications}
-          formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-          emailFormSlugs={emailFormSlugs}
-        />
-      </PageLayout>
+      <>
+        <SeoHead title={t('MyApplicationsPageContent.title')} />
+
+        <PageLayout>
+          <MyApplicationsPageContent
+            selectedSection={selectedSection}
+            applications={applications}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
+            emailFormSlugs={emailFormSlugs}
+          />
+        </PageLayout>
+      </>
     </GeneralContextProvider>
   )
 }

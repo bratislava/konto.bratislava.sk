@@ -1,5 +1,6 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
+import { useTranslation } from 'next-i18next/pages'
 import { TaxControllerV2GetTaxDetailByYearV2200Response } from 'openapi-clients/tax'
 
 import {
@@ -16,6 +17,7 @@ import TaxPageContent from '@/src/components/page-contents/TaxesPageContent/TaxP
 import { StrapiTaxAdministratorProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxAdministrator'
 import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxConfig'
 import { TaxDataProvider } from '@/src/components/page-contents/TaxesPageContent/useTaxData'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { prefetchUserQuery } from '@/src/frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { convertYearToNumber } from '@/src/frontend/utils/general'
@@ -111,15 +113,21 @@ const TaxPage = ({
   strapiTaxAdministrator,
   dehydratedState,
 }: PageProps) => {
+  const { t } = useTranslation()
+
   return (
     <HydrationBoundary state={dehydratedState}>
       <GeneralContextProvider general={general}>
         <TaxDataProvider taxData={taxData}>
           <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
             <StrapiTaxAdministratorProvider strapiTaxAdministrator={strapiTaxAdministrator}>
-              <PageLayout>
-                <TaxPageContent />
-              </PageLayout>
+              <>
+                <SeoHead title={t('TaxesPageContent.title')} />
+
+                <PageLayout>
+                  <TaxPageContent />
+                </PageLayout>
+              </>
             </StrapiTaxAdministratorProvider>
           </StrapiTaxConfigProvider>
         </TaxDataProvider>

@@ -13,6 +13,7 @@ import { makeClientFormDefinition } from '@/src/components/forms/clientFormDefin
 import FormPage, { FormPageProps } from '@/src/components/forms/FormPage'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { environment } from '@/src/environment'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { handleEmbeddedFormRequest } from '@/src/frontend/utils/embeddedFormsHelpers'
@@ -144,10 +145,18 @@ export const getServerSideProps = amplifyGetServerSideProps<Props, Params>(
   },
 )
 
-const MunicipalServicesFormDetailPage = ({ general, ...props }: Props) => (
-  <GeneralContextProvider general={general}>
-    <FormPage {...props} />
-  </GeneralContextProvider>
-)
+const MunicipalServicesFormDetailPage = ({ general, formServerContext, ...props }: Props) => {
+  const title = formServerContext.formDefinition.title
+
+  return (
+    <GeneralContextProvider general={general}>
+      <>
+        <SeoHead title={title} />
+
+        <FormPage formServerContext={formServerContext} {...props} />
+      </>
+    </GeneralContextProvider>
+  )
+}
 
 export default SsrAuthProviderHOC(MunicipalServicesFormDetailPage)

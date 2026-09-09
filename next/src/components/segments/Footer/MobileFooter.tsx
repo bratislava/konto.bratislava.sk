@@ -53,7 +53,7 @@ const MobileFooter = () => {
                       {column.title}
                     </Typography>
                   </DisclosureHeader>
-                  <DisclosurePanel>
+                  <DisclosurePanel innerClassName="py-4">
                     <div className="flex flex-col gap-3">
                       <FooterColumnLinks {...column} />
                     </div>

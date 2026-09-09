@@ -59,8 +59,7 @@ const MobileTableOfContents = ({ containerRef, headings, footerComponent, classN
           <DisclosureHeader className="p-4 ring-inset">
             <TableOfContentsTitle />
           </DisclosureHeader>
-          {/* TODO remove "*:py-0" class, when our DisclosurePanel has option to disable the padding */}
-          <DisclosurePanel className="*:py-0">
+          <DisclosurePanel>
             {/* Render the divider inside the panel, so it is clipped away only once the panel is fully
             collapsed (and does not "double" with the divider above the footer when panel is closed) */}
             <HorizontalDivider />

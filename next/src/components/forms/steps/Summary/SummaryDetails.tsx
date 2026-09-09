@@ -130,8 +130,9 @@ const ArrayItemComponent = ({ arrayItem, children, hasError }: SummaryArrayItemC
             )}
           </div>
         </DisclosureHeader>
-        {/* TODO remove the "*:pt-0 *:pb-6" classes, when our DisclosurePanel has option to disable the padding */}
-        <DisclosurePanel className="px-6 *:pt-0 *:pb-6">{children}</DisclosurePanel>
+        <DisclosurePanel className="px-6" innerClassName="pb-6">
+          {children}
+        </DisclosurePanel>
       </Disclosure>
     )
   }

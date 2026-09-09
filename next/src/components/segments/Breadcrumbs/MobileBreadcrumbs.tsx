@@ -50,7 +50,7 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
       {showDetails && (
         <Disclosure variant="unstyled">
           <DisclosureHeader className="absolute top-0 right-0 -mr-4 w-fit p-4 ring-inset" />
-          <DisclosurePanel>
+          <DisclosurePanel innerClassName="py-2">
             <ol className="flex flex-col flex-wrap gap-1">
               {withHomeWithoutCurrent.map((breadcrumb, index) => (
                 // eslint-disable-next-line react/no-array-index-key

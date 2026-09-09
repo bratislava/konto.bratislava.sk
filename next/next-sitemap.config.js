@@ -1,5 +1,5 @@
 const { strapiClient } = require('./dist/clients/graphql-strapi/index')
-const { routes } = require('./dist/routes/index')
+const { ROUTES } = require('./dist/utils/routes')
 
 //  Documentation: https://www.npmjs.com/package/next-sitemap
 
@@ -17,7 +17,8 @@ module.exports = {
       })
 
       return municipalServices.map((municipalService) => ({
-        loc: routes.MUNICIPAL_SERVICES_FORM(municipalService.slug),
+        loc: ROUTES.MUNICIPAL_SERVICES_FORM(municipalService.slug),
+        updatedAt: municipalService.updatedAt,
       }))
     }
 
@@ -27,7 +28,7 @@ module.exports = {
       loc: path.loc,
       changefreq: config.changefreq,
       priority: config.priority,
-      lastmod: page.updatedAt,
+      lastmod: path.updatedAt,
       alternateRefs: config.alternateRefs ?? [],
     }))
   },

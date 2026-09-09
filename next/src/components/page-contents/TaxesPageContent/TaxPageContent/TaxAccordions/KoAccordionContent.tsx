@@ -1,13 +1,9 @@
-import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { ResponseCommunalWasteTaxItemizedAddressDto } from 'openapi-clients/tax'
 import { PropsWithChildren, useRef } from 'react'
 
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
-import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure'
-import DisclosureGroup from '@/src/components/simple-components/Disclosure/DisclosureGroup'
-import DisclosureHeader from '@/src/components/simple-components/Disclosure/DisclosureHeader'
-import DisclosurePanel from '@/src/components/simple-components/Disclosure/DisclosurePanel'
+import TaxDisclosure from '@/src/components/page-contents/TaxesPageContent/TaxPageContent/TaxAccordions/TaxDisclosure'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 import { useHorizontalScrollFade } from '@/src/utils/useHorizontalScrollFade'
@@ -17,7 +13,7 @@ type TableHeaderDataType = TableDataType[0]
 
 type Props = {
   title: string
-  secondTitle?: string
+  taxAmountString?: string
   data: TableDataType
 }
 
@@ -103,27 +99,11 @@ const Table = ({ data }: TableDataProps) => {
   )
 }
 
-const KoAccordionContent = ({ title, secondTitle, data }: Props) => {
+const KoAccordionContent = ({ title, taxAmountString, data }: Props) => {
   return (
-    <DisclosureGroup className="w-full rounded-lg border border-border-active-default bg-background-passive-base py-2">
-      <Disclosure>
-        <DisclosureHeader className="px-4 py-2 ring-inset lg:px-6 lg:py-3">
-          <div className="flex w-full justify-between pr-4">
-            <Typography variant="h5">{title}</Typography>
-
-            <Typography variant="h5" as="span" className="font-semibold">
-              {secondTitle}
-            </Typography>
-          </div>
-        </DisclosureHeader>
-
-        <DisclosurePanel className="px-4 lg:px-6">
-          <div className="flex size-full flex-col gap-6">
-            <Table data={data} />
-          </div>
-        </DisclosurePanel>
-      </Disclosure>
-    </DisclosureGroup>
+    <TaxDisclosure title={title} taxAmountString={taxAmountString}>
+      <Table data={data} />
+    </TaxDisclosure>
   )
 }
 

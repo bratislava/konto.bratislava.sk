@@ -3,6 +3,9 @@ import { useTranslation } from 'next-i18next/pages'
 
 import Icon from '@/src/components/icon-components/Icon'
 import type { BreadcrumbsProps } from '@/src/components/segments/Breadcrumbs/Breadcrumbs'
+import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure'
+import DisclosureHeader from '@/src/components/simple-components/Disclosure/DisclosureHeader'
+import DisclosurePanel from '@/src/components/simple-components/Disclosure/DisclosurePanel'
 import MLink from '@/src/components/simple-components/MLink'
 
 const goBack = () => {
@@ -33,7 +36,7 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
           >
             {t('Breadcrumbs.back')}
           </Button>
-          <div className="h-4 w-px bg-grey-300" />
+          <div className="h-4 w-px bg-border-passive-primary" />
           {last?.path ? (
             <MLink href={last.path} variant="underlined" aria-hidden className="truncate py-3 pr-4">
               {last.title}
@@ -44,34 +47,30 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
         </div>
       </div>
 
-      {/* TODO: Accordion height animation. */}
       {showDetails && (
-        <details className="group">
-          <summary className="absolute top-0 right-0 -mr-4 block cursor-pointer p-4">
-            <Icon
-              name="chevron-down"
-              className="size-5 shrink-0 transition-transform group-open:rotate-180"
-            />
-          </summary>
-          <ol className="flex flex-col flex-wrap gap-1 py-2">
-            {withHomeWithoutCurrent.map((breadcrumb, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <li className="text-size-p-tiny font-medium" key={index}>
-                {breadcrumb.path ? (
-                  <MLink href={breadcrumb.path} variant="underlined" className="flex gap-1">
-                    <Icon name="chevron-right" className="size-5 shrink-0 rotate-180" />
-                    {breadcrumb.title}
-                  </MLink>
-                ) : (
-                  <div className="flex gap-1">
-                    <Icon name="chevron-right" className="size-5 shrink-0 rotate-180" />
-                    {breadcrumb.title}
-                  </div>
-                )}
-              </li>
-            ))}
-          </ol>
-        </details>
+        <Disclosure variant="unstyled">
+          <DisclosureHeader className="absolute top-0 right-0 -mr-4 w-fit p-4 ring-inset" />
+          <DisclosurePanel innerClassName="py-2">
+            <ol className="flex flex-col flex-wrap gap-1">
+              {withHomeWithoutCurrent.map((breadcrumb, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <li className="text-size-p-tiny font-medium" key={index}>
+                  {breadcrumb.path ? (
+                    <MLink href={breadcrumb.path} variant="underlined" className="flex gap-1">
+                      <Icon name="chevron-right" className="size-5 shrink-0 rotate-180" />
+                      {breadcrumb.title}
+                    </MLink>
+                  ) : (
+                    <div className="flex gap-1">
+                      <Icon name="chevron-right" className="size-5 shrink-0 rotate-180" />
+                      {breadcrumb.title}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </DisclosurePanel>
+        </Disclosure>
       )}
     </div>
   )

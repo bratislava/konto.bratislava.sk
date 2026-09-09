@@ -44,10 +44,10 @@ const TaxPaymentMethods = () => {
 
   return (
     <div className="flex w-full flex-col gap-4 px-4 pt-4 lg:px-0 lg:pt-0">
-      <Typography variant="h5" as="p" className="font-semibold">
+      <Typography variant="h5" as="h2">
         {t('TaxPaymentMethods.title')}
       </Typography>
-      <div className="flex w-full flex-col rounded-lg border border-gray-200">
+      <div className="flex w-full flex-col rounded-lg border border-border-passive-primary">
         <TaxPaymentMethodsItem
           title={
             taxData.paidStatus === TaxStatusEnum.PartiallyPaid

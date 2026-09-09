@@ -28,7 +28,7 @@ const HelpPageContent = ({ helpPage }: Props) => {
           <SectionContainer className="pt-6 last:pb-6 lg:pt-18 lg:last:pb-18" key={category.id}>
             <div className="flex flex-col gap-6 lg:gap-8">
               <SectionHeader title={category.title} titleLevel="h2" />
-              <FaqsGroup faqs={category.items.filter(isDefined)} accordionTitleLevel="h3" />
+              <FaqsGroup faqs={category.items.filter(isDefined)} disclosureTitleLevel="h3" />
             </div>
           </SectionContainer>
         ))}

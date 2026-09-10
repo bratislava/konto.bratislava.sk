@@ -107,7 +107,7 @@ export default class NotificationsEventsService {
         ? { start: now.startOf('day'), end: now.endOf('day').add(1, 'week') }
         : {
             start: now.startOf('day').subtract(1, 'week'),
-            end: now.endOf('day'),
+            end: now.endOf('day').subtract(1, 'day'),
           }
 
     const taxInstallmentInfo = await this.getTaxInstallmentsEligibleForReminder(

@@ -179,7 +179,7 @@ describe('NotificationsEventsSubservice', () => {
         expect(windowEnd.toISOString()).toBe('2025-06-22T21:59:59.999Z') // 2025-06-22T23:59:59.999+02:00
       })
 
-      it('calls $queryRaw with PAST filter [NONE, BEFORE_DUE] and window today-7days..today', async () => {
+      it('calls $queryRaw with PAST filter [NONE, BEFORE_DUE] and window today-7days..yesterday', async () => {
         prismaMock.$queryRaw.mockResolvedValue([])
         prismaMock.tax.findMany.mockResolvedValue([])
 
@@ -197,7 +197,7 @@ describe('NotificationsEventsSubservice', () => {
         ])
         expect(yearArg).toBe(year)
         expect(windowStart.toISOString()).toBe('2025-06-07T22:00:00.000Z') // 2025-06-08T00:00:00+02:00
-        expect(windowEnd.toISOString()).toBe('2025-06-15T21:59:59.999Z') // 2025-06-15T23:59:59.999+02:00
+        expect(windowEnd.toISOString()).toBe('2025-06-14T21:59:59.999Z') // 2025-06-14T23:59:59.999+02:00
       })
     })
 

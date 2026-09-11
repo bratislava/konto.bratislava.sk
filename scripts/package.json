@@ -1,0 +1,27 @@
+{
+  "name": "repository-scripts",
+  "version": "1.0.0",
+  "description": "Repository-wide maintenance scripts: toolchain, dependency and Docker build arg version checks.",
+  "license": "EUPL-1.2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "verify-docker-bake-versions": "node verify-docker-bake-versions.ts",
+    "verify-exact-package-versions": "node verify-exact-package-versions.ts",
+    "verify-toolchain-versions": "node verify-toolchain-versions.ts"
+  },
+  "dependencies": {
+    "semver": "7.8.5",
+    "yaml": "2.9.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node24": "24.0.4",
+    "@types/node": "catalog:",
+    "@types/semver": "7.7.1",
+    "typescript": "7.0.2"
+  },
+  "volta": {
+    "extends": "../package.json"
+  }
+}

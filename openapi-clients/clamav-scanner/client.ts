@@ -8,13 +8,17 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
-export type ClamavScannerClient = ReturnType<typeof createClamavScannerClient>
+export interface ClamavScannerClient
+  extends
+    ReturnType<typeof HealthApiFactory>,
+    ReturnType<typeof ScannerApiFactory>,
+    ReturnType<typeof StatusesApiFactory> {}
 
 export const createClamavScannerClient = ({
   basePath,
   configurationParameters = {},
   axios,
-}: ClientConfig) => {
+}: ClientConfig): ClamavScannerClient => {
   const configuration = new Configuration(configurationParameters)
   const args = [configuration, basePath, axios] as const
 
@@ -22,5 +26,5 @@ export const createClamavScannerClient = ({
     ...HealthApiFactory(...args),
     ...ScannerApiFactory(...args),
     ...StatusesApiFactory(...args),
-  }
+  } satisfies ClamavScannerClient
 }

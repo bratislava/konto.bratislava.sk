@@ -1,0 +1,78 @@
+ARG NODE_VERSION
+ARG TURBO_VERSION
+FROM node:${NODE_VERSION}-slim AS base
+
+ENV TURBO_TELEMETRY_DISABLED=1
+ENV PNPM_HOME=/pnpm
+ENV PATH="/opt/pnpm:$PNPM_HOME/bin:$PATH"
+
+WORKDIR /app
+
+COPY --from=pnpm-dist /opt/pnpm /opt/pnpm
+
+FROM base AS prepare
+COPY . .
+ARG TURBO_VERSION
+RUN pnpm dlx turbo@${TURBO_VERSION} prune forms-shared --docker
+
+FROM base AS test-deps
+# Java and XML tooling for the FOP/Saxon pipeline. python3 and build-essential are
+# required only on ARM, so native Node modules can compile during the
+# `pnpm install` below.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    default-jre-headless \
+    libxml2 \
+    libxslt1.1 \
+    python3 \
+    unzip \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Apache FOP 1.1.
+RUN wget https://archive.apache.org/dist/xmlgraphics/fop/binaries/fop-1.1-bin.zip \
+    && unzip fop-1.1-bin.zip \
+    && mv fop-1.1 /opt/fop-1.1 \
+    && rm fop-1.1-bin.zip
+
+ENV FOP_JAR=/opt/fop-1.1/build/fop.jar
+ENV FOP_LIB=/opt/fop-1.1/lib
+
+# Install Saxon.
+RUN wget https://github.com/Saxonica/Saxon-HE/raw/main/12/Java/SaxonHE12-5J.zip \
+    && unzip SaxonHE12-5J.zip -d /opt/saxon \
+    && rm SaxonHE12-5J.zip
+
+ENV SAXON_JAR=/opt/saxon/saxon-he-12.5.jar
+
+# Download and setup fop.zip from slovensko.sk.
+RUN wget https://www.slovensko.sk/_img/CMS4/fop.zip \
+    && unzip fop.zip -d /opt/slovensko-fop \
+    && rm fop.zip
+
+ENV SLOVENSKO_FOP_CONF=/opt/slovensko-fop/fop.xconf
+
+# Install Playwright browsers before package files are copied so this layer only
+# changes when the Playwright version in the pnpm catalog changes. Chromium and
+# its system dependencies are large, so keeping them in a reusable cached layer
+# avoids pulling them again after ordinary package or source changes.
+ARG PLAYWRIGHT_VERSION
+RUN test -n "${PLAYWRIGHT_VERSION}" \
+    && pnpm dlx "playwright@${PLAYWRIGHT_VERSION}" install chromium --with-deps
+
+COPY --from=prepare /app/out/json/ .
+RUN pnpm install --frozen-lockfile
+
+COPY --from=prepare /app/out/full/ .
+
+WORKDIR /app/forms-shared
+
+FROM test-deps AS test-local
+CMD [ "pnpm", "run", "test:ci" ]
+
+FROM test-deps AS test-local-update
+CMD [ "pnpm", "run", "test:ci:update" ]
+
+# CI runs tests inside `docker build` so the target can be cached.
+FROM test-deps AS test
+RUN pnpm run test:ci

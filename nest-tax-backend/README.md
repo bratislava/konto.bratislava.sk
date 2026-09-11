@@ -2,46 +2,40 @@
 
 This repository contains backend code for digital real estate tax payment services (platba dane z nehnutelností) of the city of Bratislava.
 
-# Quick run
-
-If you want to run an application without installing it locally quickly, you can run it through `docker-compose`:
-
-```bash
-docker-compose up --build
-```
-
 # Local installation
 
-1. Build required shared package:
+1. Start the database:
 
 ```bash
-# Build openapi-clients
-cd ../openapi-clients/
-npm install
-npm run build
-cd ../nest-tax-backend/
+docker compose up postgres
 ```
 
-2. Install dependencies:
+2. Install dependencies for the whole workspace:
 
 ```bash
-npm install
+pnpm install
 ```
 
-- For Prisma, it comes in handy to have Prisma cli. Check if it is working on your pc:
+3. Build the shared packages this service depends on:
 
 ```bash
-npx prisma
+pnpm run build:dependencies
 ```
 
-- Migrate database and generate prisma files
+4. For Prisma, it comes in handy to have Prisma cli. Check if it is working on your pc:
+
+```bash
+pnpm exec prisma
+```
+
+5. Migrate database and generate prisma files
 
 ```
-npx prisma migrate dev
-npx prisma generate
+pnpm exec prisma migrate dev
+pnpm exec prisma generate
 ```
 
-- Check the `.env` file for your correct local database connection configuration. It looks like this:
+6. Check the `.env` file for your correct local database connection configuration. It looks like this:
 
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/mydatabase?schema=public"`
@@ -57,13 +51,13 @@ DATABASE_URL="postgresql://user:password@localhost:5432/?connect_timeout=30&sche
 
 ```bash
 # development
-npm run start
+pnpm run start
 
 # watch mode
-npm run start:dev
+pnpm run start:dev
 
 # production mode
-npm run start:prod
+pnpm run start:prod
 ```
 
 ## Test
@@ -72,10 +66,10 @@ To run tests in the repo, please use these commands:
 
 ```bash
 # unit tests
-npm run test
+pnpm run test
 
 # test coverage
-npm run test:cov
+pnpm run test:cov
 ```
 
 # Configuration Management

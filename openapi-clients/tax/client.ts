@@ -14,13 +14,19 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
-export type TaxClient = ReturnType<typeof createTaxClient>
+export interface TaxClient
+  extends
+    ReturnType<typeof AdminApiFactory>,
+    ReturnType<typeof CardPaymentReportingApiFactory>,
+    ReturnType<typeof DefaultApiFactory>,
+    ReturnType<typeof PaymentApiFactory>,
+    ReturnType<typeof TaxApiFactory> {}
 
 export const createTaxClient = ({
   basePath,
   configurationParameters = {},
   axios,
-}: ClientConfig) => {
+}: ClientConfig): TaxClient => {
   const configuration = new Configuration(configurationParameters)
   const args = [configuration, basePath, axios] as const
 
@@ -30,5 +36,5 @@ export const createTaxClient = ({
     ...DefaultApiFactory(...args),
     ...PaymentApiFactory(...args),
     ...TaxApiFactory(...args),
-  }
+  } satisfies TaxClient
 }

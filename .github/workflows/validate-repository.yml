@@ -7,8 +7,8 @@ permissions:
   contents: read
 
 jobs:
-  exact-package-versions:
-    name: Verify exact package versions
+  verify-versions:
+    name: Verify versions
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -16,10 +16,25 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v6
+      - name: Set up pnpm and Node.js
+        uses: pnpm/setup@v2
         with:
-          node-version: "24.15"
+          cache: true
+          # pnpm/setup can only run a bare `pnpm install`; this repository wants
+          # a frozen, filtered one, so it is a step of its own below.
+          install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --filter=repository-scripts
+
+      - name: Typecheck scripts
+        run: pnpm --filter=repository-scripts run typecheck
+
+      - name: Verify toolchain versions
+        run: node ./scripts/verify-toolchain-versions.ts
 
       - name: Verify exact package versions
-        run: node ./scripts/verify-exact-package-versions.mjs
+        run: node ./scripts/verify-exact-package-versions.ts
+
+      - name: Verify Docker build args
+        run: node ./scripts/verify-docker-bake-versions.ts

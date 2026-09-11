@@ -1,4 +1,4 @@
-# Should be run alongside local npm run start:dev
+# Should be run alongside local pnpm run start:dev
 # Ports are set to match .env.example and not to conflict with other konto.bratislava.sk services
 
 version: '3.8'

@@ -17,7 +17,7 @@ updates:
       - dependency-name: '@rjsf/*'
       - dependency-name: 'ajv'
       - dependency-name: 'ajv-*'
-      # `npm run generate-assets` must be executed after Tailwind update
+      # `pnpm run generate-assets` must be executed after Tailwind update
       - dependency-name: '@tailwindcss/postcss'
       - dependency-name: 'tailwindcss'
       - dependency-name: 'postcss'

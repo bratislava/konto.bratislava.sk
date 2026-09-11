@@ -21,13 +21,26 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
-export type FormsClient = ReturnType<typeof createFormsClient>
+export interface FormsClient
+  extends
+    ReturnType<typeof ADMINApiFactory>,
+    ReturnType<typeof ConvertApiFactory>,
+    ReturnType<typeof FilesApiFactory>,
+    ReturnType<typeof FormMigrationsApiFactory>,
+    ReturnType<typeof FormSenderApiFactory>,
+    ReturnType<typeof FormsApiFactory>,
+    ReturnType<typeof FormsV2ApiFactory>,
+    ReturnType<typeof GinisApiFactory>,
+    ReturnType<typeof HealthcheckApiFactory>,
+    ReturnType<typeof SignerApiFactory>,
+    ReturnType<typeof StatusesApiFactory>,
+    ReturnType<typeof WebhookApiFactory> {}
 
 export const createFormsClient = ({
   basePath,
   configurationParameters = {},
   axios,
-}: ClientConfig) => {
+}: ClientConfig): FormsClient => {
   const configuration = new Configuration(configurationParameters)
   const args = [configuration, basePath, axios] as const
 
@@ -44,5 +57,5 @@ export const createFormsClient = ({
     ...SignerApiFactory(...args),
     ...StatusesApiFactory(...args),
     ...WebhookApiFactory(...args),
-  }
+  } satisfies FormsClient
 }

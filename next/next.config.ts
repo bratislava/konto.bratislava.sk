@@ -39,9 +39,6 @@ const prepareIframeResizerScript = () => {
 const nextConfig: NextConfig = {
   i18n: i18nextConfig.i18n,
   reactStrictMode: true,
-  // Without transpiling the packages there are two instances of React, and it causes to:
-  // https://react.dev/warnings/invalid-hook-call-warning
-  transpilePackages: ['forms-shared', '@rjsf/core'],
   images: {
     // After upgrading to Next.js 16, image loading from local IP addresses is blocked.
     // In our Kubernetes setup, S3 resolves to a local IP range (10.10.x.x),
@@ -64,7 +61,8 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   outputFileTracingIncludes: {
     '/**': [
-      // tells Next to force-copy the config file into the standalone bundle for all routes, so the runtime require finds it at /home/node/app/next-i18next.config.js
+      // tells Next to force-copy the config file into the standalone bundle for all routes,
+      // so the runtime require finds it at /app/next/next-i18next.config.js
       './next-i18next.config.js',
     ],
   },

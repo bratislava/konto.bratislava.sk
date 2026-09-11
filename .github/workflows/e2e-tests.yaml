@@ -14,6 +14,20 @@ on:
       - master
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+env:
+  REGISTRY: harbor.bratislava.sk
+  REGISTRY_USERNAME: robot$github_actions
+  BAKE_FILES: |
+    docker-bake.json
+    docker-bake.hcl
+    .github/docker-bake.ci.hcl
+  IMAGE_TAG: city-account-next:e2e
+  CONTAINER_NAME: city-account-next-e2e
+  E2E_PACKAGE: city-account-e2e-tests
+
 jobs:
   dependabot-approval:
     if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
@@ -33,87 +47,130 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4
+      - name: Set up pnpm and Node.js
+        id: pnpm-setup
+        background: true
+        uses: pnpm/setup@v2
         with:
-          node-version: "24.15"
+          cache: true
+          # pnpm/setup can only run a bare `pnpm install`; the filtered, frozen
+          # one this job needs stays a backgrounded step of its own below, so it
+          # keeps overlapping the image build.
+          install: false
 
-      - name: Install and build forms-shared
-        id: forms-shared
-        working-directory: forms-shared
+      - name: Set up Docker build
+        id: docker-build-setup
         background: true
+        uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
+        with:
+          docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+          docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          harbor_registry: ${{ env.REGISTRY }}
+          harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
+          harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+          buildx_driver_opts: |
+            network=host
+
+      - name: Docker metadata
+        id: meta
+        background: true
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: ${{ env.REGISTRY }}/standalone/next
+          suffix: -e2e
+
+      - name: Set up Turborepo cache
+        id: turbo-cache
+        background: true
+        uses: ./.github/actions/setup-turborepo-cache
+        with:
+          minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
+
+      - name: Wait for pnpm and Node.js
+        wait: pnpm-setup
+
+      # The trailing `...` pulls in the workspace dependencies, which the suite
+      # needs: unlike the Cypress suite it imports `forms-shared` through its
+      # `exports` map, so the package has to be installed and built.
+      - name: Install dependencies
+        id: install-deps
+        background: true
+        run: pnpm install --frozen-lockfile --filter=konto-bratislava-sk-monorepo --filter="${E2E_PACKAGE}..."
+
+      - name: Wait for Docker and Turborepo cache setup
+        wait: [ docker-build-setup, meta, turbo-cache ]
+
+      - name: Build application image
+        uses: docker/bake-action@v7
+        with:
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: next
+          load: true
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ steps.meta.outputs.cache_from }}
+          CACHE_TO: ${{ steps.meta.outputs.cache_to }}
+          TAGS: ${{ env.IMAGE_TAG }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
+          NEXT_BUILD_ENV: e2e
+
+      - name: Start application container
         run: |
-          npm install
-          npm run build
+          docker run --detach \
+            --name "$CONTAINER_NAME" \
+            --publish 3000:3000 \
+            "$IMAGE_TAG"
 
-      - name: Install and build openapi-clients
-        id: openapi-clients
-        working-directory: openapi-clients
-        background: true
-        run: |
-          npm install
-          npm run build
-
-      - name: Install next dependencies
-        id: next-install
-        working-directory: next
-        background: true
-        run: npm install
-
-      - name: Install e2e-tests dependencies
-        id: e2e-install
-        working-directory: e2e-tests
-        background: true
-        run: npm ci
+      - name: Wait for dependency install
+        wait: install-deps
 
       - name: Install Playwright browsers
         id: playwright-browsers
         background: true
-        run: |
-          version=$(node -p "require('./e2e-tests/package.json').devDependencies['@playwright/test']")
-          npx --yes "playwright@${version}" install --with-deps chromium
+        run: pnpm --filter "$E2E_PACKAGE" exec playwright install --with-deps chromium
 
-      - name: Wait for the Next.js build inputs
-        wait: [ forms-shared, openapi-clients, next-install ]
-
-      - name: Build application
-        working-directory: next
-        run: npm run build:e2e
-
-      - name: Start application
-        id: app-server
-        working-directory: next
+      # The suite imports `forms-shared/example-forms/...`, which resolve to
+      # `dist` through the package's `exports` map, so it has to be compiled.
+      # Same Turborepo remote cache as the image build, so an unchanged package
+      # is restored rather than rebuilt.
+      - name: Build test dependencies
+        id: test-deps
         background: true
-        run: npm run start
+        run: pnpm --filter "$E2E_PACKAGE" run build:dependencies
+        env:
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
+          TURBO_TEAM: city-account
+          TURBO_TOKEN: local
 
-      # `playwright.config.ts` declares a `webServer` with `reuseExistingServer`, so it adopts the
-      # application started above rather than launching one of its own.
+      # `playwright.config.ts` declares a `webServer` with `reuseExistingServer`,
+      # so it adopts the container started above rather than launching an app
+      # of its own.
       - name: Wait for application
         run: |
           timeout 120 bash -c \
             'until curl --silent --fail --output /dev/null http://localhost:3000/api/healthcheck; do sleep 2; done'
 
       - name: Wait for the test prerequisites
-        wait: [ e2e-install, playwright-browsers ]
+        wait: [ playwright-browsers, test-deps ]
 
       - name: Run Playwright tests
-        working-directory: e2e-tests
-        run: npm test
-
-      - name: Stop application
-        cancel: app-server
+        run: pnpm --filter "$E2E_PACKAGE" run test
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v7
         if: always()
+        background: true
         with:
           name: playwright-report
           path: e2e-tests/playwright-report
           retention-days: 1
 
+      # Traces, videos and screenshots for failed tests.
       - name: Upload Playwright test results
         uses: actions/upload-artifact@v7
         if: always()
+        background: true
         with:
           name: playwright-test-results
           path: e2e-tests/test-results
@@ -122,8 +179,21 @@ jobs:
       - name: Upload JUnit results
         uses: actions/upload-artifact@v7
         if: always()
+        background: true
         with:
           name: playwright-junit
           path: e2e-tests/results
           retention-days: 1
 
+      - name: Application logs
+        if: always()
+        continue-on-error: true
+        run: docker logs "$CONTAINER_NAME"
+
+      - name: Stop application container
+        if: always()
+        continue-on-error: true
+        run: docker rm --force "$CONTAINER_NAME"
+
+      - name: Wait for uploads
+        wait-all:

@@ -4,36 +4,33 @@ End-to-end tests for the Next app, run against a locally started app and the **s
 
 ## Running
 
-### 1. Install and build the dependencies
+Unless a step says otherwise, the commands run in this directory (`e2e-tests`).
 
-`forms-shared` is a `file:` dependency that is consumed as compiled `dist`, so it has to be built
-before the suite can resolve it:
+### 1. Build the dependencies
 
 ```bash
-cd ../forms-shared && npm install && npm run build
-cd ../e2e-tests && npm install
+pnpm run build:dependencies
 ```
 
-### 2. Start the app with the e2e environment
+### 2. Start the app with the e2e environment (in the `next` directory)
 
-`next/.env.e2e` is the environment the suite expects: the staging Cognito pool, the staging forms and
-city-account backends, and `localhost` cookie storage. Both recipes below **overwrite an env file
-that probably already exists** — move yours aside first.
+`next/.env.ci-build.e2e` is the environment the suite expects: the staging Cognito pool, the staging
+forms and city-account backends, and `localhost` cookie storage. Both recipes below **overwrite an
+env file that probably already exists** — move yours aside first.
 
 A prod build is what the suite is tuned against, and it is what CI uses. A dev server compiles
 pages on first request, which makes every first visit in a test slower:
 
 ```bash
-cd next
-npm run build:e2e && npm run start
+cp .env.ci-build.e2e .env.production.local
+pnpm run build && pnpm run start
 ```
 
 A dev server also works, and is the better choice if you are changing the app as you iterate:
 
 ```bash
-cd next
-cp .env.e2e .env.development.local
-npm run dev
+cp .env.ci-build.e2e .env.development.local
+pnpm run dev
 ```
 
 The suite never starts the app itself — see the `webServer` comment in `playwright.config.ts` for
@@ -42,13 +39,13 @@ why.
 ### 3. Install Chromium (first run only)
 
 ```bash
-npx playwright install chromium
+pnpm exec playwright install chromium
 ```
 
 ### 4. Run
 
 ```bash
-npm test
+pnpm run test
 ```
 
 Useful flags: `--project=smoke|desktop|mobile`, `--grep <pattern>`, `--headed`, `--debug`,

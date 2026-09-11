@@ -30,7 +30,7 @@ describe('slovenskoSkForm', () => {
 
   beforeAll(async () => {
     slovenskoSkMetadata = await fetchSlovenskoSkMetadata()
-  })
+  }, 60000 /* The file is over 20MB and the download takes a while. */)
 
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
     describe(`${formDefinition.slug}`, () => {

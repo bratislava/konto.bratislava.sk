@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
-import { CognitoUserAccountTypesEnum } from '../../utils/global-dtos/cognito.dto'
+import { CognitoUserAccountTypesEnum } from '../../../utils/global-dtos/cognito.dto'
 
 export class DpbUserDto {
   @ApiProperty({

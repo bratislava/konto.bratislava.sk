@@ -62,7 +62,7 @@
     "@openapitools/openapi-generator-cli": "2.40.1",
     "@types/app-root-dir": "0.1.4",
     "@types/fs-extra": "11.0.4",
-    "@types/node": "24.13.3",
+    "@types/node": "24.13.4",
     "app-root-dir": "1.0.2",
     "axios": "1.18.1",
     "camelcase": "9.0.0",

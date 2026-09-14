@@ -60,12 +60,14 @@ MUNICIPAL_TAX_LOCK_MONTH=4
 MUNICIPAL_TAX_LOCK_DAY=1
 
 OAUTH2_LOGIN_URL=https://city-account-next.example.com/oauth
-OAUTH2_CLIENT_LIST=DPB,PAAS_MPA
+OAUTH2_CLIENT_LIST=DPB,PAAS_MPA,TICKETS
 OAUTH2_DPB_CLIENT_ID=dpb-client-id
 OAUTH2_DPB_CLIENT_SECRET=dpb-client-secret
 OAUTH2_DPB_ALLOWED_URIS=https://dpb.example.com/callback
 OAUTH2_PAAS_MPA_CLIENT_ID=paas-mpa-client-id
 OAUTH2_PAAS_MPA_ALLOWED_URIS=https://paas-mpa.example.com/callback
+OAUTH2_TICKETS_CLIENT_ID=tickets-client-id
+OAUTH2_TICKETS_ALLOWED_URIS=https://tickets.example.com/callback
 
 MSSQL_HOST=localhost
 MSSQL_DB=db

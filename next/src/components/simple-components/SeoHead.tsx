@@ -18,9 +18,11 @@ const SeoHead = ({ title, ogType = 'website', description }: SeoHeadProps) => {
   const { t } = useTranslation()
   const { asPath } = useRouter()
 
-  const fullUrl = `${environment.selfUrl}${asPath}`
+  const fullUrl = `${
+    environment.nodeEnv === 'production' ? 'https://konto.bratislava.sk' : environment.selfUrl
+  }${asPath}`
 
-  const metaTitle = `${title || ''} – ${t('common.bratislavaAccount')}`
+  const metaTitle = `${title || ''} - ${t('common.bratislavaAccount')}`
 
   return (
     <Head>
@@ -46,8 +48,8 @@ const SeoHead = ({ title, ogType = 'website', description }: SeoHeadProps) => {
       <meta property="og:site_name" content={t('common.bratislavaAccount')} />
 
       {/* Non-Essential, But Required for Analytics */}
-      <meta property="fb:app_id" content="your_app_id" />
-      <meta name="twitter:site" content="@website-username" />
+      {/* <meta property="fb:app_id" content="your_app_id" /> */}
+      {/* <meta name="twitter:site" content="@website-username" /> */}
     </Head>
   )
 }

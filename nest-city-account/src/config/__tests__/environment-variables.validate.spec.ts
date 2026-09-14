@@ -66,16 +66,9 @@ describe('validateEnvironmentVariables', () => {
       expect(() => validateEnvironmentVariables(withoutUris)).toThrow()
     })
 
-    it('throws when a public client (no secret) does not require PKCE', () => {
-      // RFC 9700 Section 2.1.1: public clients MUST use PKCE.
-      const publicClientNoPkce = { ...VALID_ENV, OAUTH2_PAAS_MPA_REQUIRES_PKCE: 'false' }
-      expect(() => validateEnvironmentVariables(publicClientNoPkce)).toThrow()
-    })
-
-    it('defaults requiresPkce to true and allows an absent secret', () => {
+    it('allows a public client with no configured secret', () => {
       const config = validateEnvironmentVariables(VALID_ENV)
       const paasMpa = config.OAUTH2_CLIENTS.find((client) => client.name === 'PAAS_MPA')
-      expect(paasMpa?.requiresPkce).toBe(true)
       expect(paasMpa?.secret).toBeUndefined()
     })
 

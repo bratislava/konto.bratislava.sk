@@ -9,6 +9,7 @@ import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import {
   AmplifyClientOAuthProvider,
   useOAuthGetContext,
@@ -90,34 +91,38 @@ const OAuthPage = ({ general, clientInfo, dehydratedState }: PageProps) => {
     <HydrationBoundary state={dehydratedState}>
       <AmplifyClientOAuthProvider clientInfo={clientInfo}>
         <GeneralContextProvider general={general}>
-          <PageLayout variant="auth">
-            <AccountContainer>
-              <AccountSuccessAlert
-                title={t('OAuthPage.title')}
-                {...(shouldRedirectToIdentityVerification
-                  ? {
-                      variant: 'info',
-                      description: `${t('OAuthPage.description', { email })}\n\n${t('auth.identityVerificationRequiredInfo')}`,
-                      confirmLabel: t('auth.continueToIdentityVerification'),
-                      onConfirm: () => {
-                        handleRedirectToIdentityVerification()
-                      },
-                    }
-                  : {
-                      variant: 'success',
-                      description: t('OAuthPage.description', { email }),
-                      confirmLabel: t('auth.continueToOauthOrigin', { clientTitle }),
-                      onConfirm: () => {
-                        handleOAuthContinue()
-                      },
-                    })}
-                confirmIsLoading={isLoading}
-                cancelLabel={t('OAuthPage.cancelLabel')}
-                onCancel={handleLogout}
-                cancelIsLoading={isLoading}
-              />
-            </AccountContainer>
-          </PageLayout>
+          <>
+            <SeoHead title={t('OAuthPage.title')} />
+
+            <PageLayout variant="auth">
+              <AccountContainer>
+                <AccountSuccessAlert
+                  title={t('OAuthPage.title')}
+                  {...(shouldRedirectToIdentityVerification
+                    ? {
+                        variant: 'info',
+                        description: `${t('OAuthPage.description', { email })}\n\n${t('auth.identityVerificationRequiredInfo')}`,
+                        confirmLabel: t('auth.continueToIdentityVerification'),
+                        onConfirm: () => {
+                          handleRedirectToIdentityVerification()
+                        },
+                      }
+                    : {
+                        variant: 'success',
+                        description: t('OAuthPage.description', { email }),
+                        confirmLabel: t('auth.continueToOauthOrigin', { clientTitle }),
+                        onConfirm: () => {
+                          handleOAuthContinue()
+                        },
+                      })}
+                  confirmIsLoading={isLoading}
+                  cancelLabel={t('OAuthPage.cancelLabel')}
+                  onCancel={handleLogout}
+                  cancelIsLoading={isLoading}
+                />
+              </AccountContainer>
+            </PageLayout>
+          </>
         </GeneralContextProvider>
       </AmplifyClientOAuthProvider>
     </HydrationBoundary>

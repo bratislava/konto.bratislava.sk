@@ -6,11 +6,12 @@ import { AppController } from './app.controller'
 import { AuthModule } from './auth/auth.module'
 import ClientsModule from './clients/clients.module'
 import BaConfigModule from './config/ba-config.module'
-import { DpbModule } from './dpb/dpb.module'
 import { IntegrationModule } from './integration/integration.module'
 import { NorisModule } from './noris/noris.module'
 import { OAuth2Module } from './oauth2/oauth2.module'
-import { PaasMpaModule } from './paas-mpa/paas-mpa.module'
+import { DpbModule } from './oauth2-clients/dpb/dpb.module'
+import { PaasMpaModule } from './oauth2-clients/paas-mpa/paas-mpa.module'
+import { TicketsModule } from './oauth2-clients/tickets/tickets.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { TasksModule } from './tasks/tasks.module'
 import { TowingModule } from './towing/towing.module'
@@ -35,6 +36,7 @@ import { SharedModule } from './utils/subservices/shared.module'
     OAuth2Module,
     DpbModule,
     PaasMpaModule,
+    TicketsModule,
     NorisModule,
     TowingModule,
   ],

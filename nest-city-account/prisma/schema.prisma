@@ -64,6 +64,7 @@ enum GDPRCategoryEnum {
 enum LoginClientEnum {
   DPB
   PAAS_MPA
+  TICKETS
   CITY_ACCOUNT
 }
 

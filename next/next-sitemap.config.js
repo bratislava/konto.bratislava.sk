@@ -5,7 +5,10 @@ const { ROUTES } = require('./dist/utils/routes')
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_SELF_URL,
+  siteUrl:
+    process.env.NEXT_PUBLIC_NODE_ENV === 'production'
+      ? 'https://konto.bratislava.sk'
+      : process.env.NEXT_PUBLIC_SELF_URL,
   generateRobotsTxt: false,
   changefreq: 'weekly',
   sitemapSize: 5000,
@@ -18,7 +21,7 @@ module.exports = {
 
       return municipalServices.map((municipalService) => ({
         loc: ROUTES.MUNICIPAL_SERVICES_FORM(municipalService.slug),
-        updatedAt: municipalService.updatedAt,
+        lastMod: municipalService.lastMod,
       }))
     }
 
@@ -28,7 +31,7 @@ module.exports = {
       loc: path.loc,
       changefreq: config.changefreq,
       priority: config.priority,
-      lastmod: path.updatedAt,
+      lastmod: path.lastMod,
       alternateRefs: config.alternateRefs ?? [],
     }))
   },

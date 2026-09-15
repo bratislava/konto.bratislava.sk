@@ -104,7 +104,7 @@ jobs:
           cp "$source_env_file" .env.production.local
 
       - name: Set up Docker build
-        uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
+        uses: bratislava/github-actions/.github/actions/setup-docker-build@use-zstd-compression
         with:
           docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
@@ -112,20 +112,21 @@ jobs:
           harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
           harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
-      - name: Docker metadata
-        id: meta
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+      - name: Docker build config
+        id: config
+        uses: ./.github/actions/docker-build-config
         with:
           image: ${{ inputs.image }}
           prefix: ${{ env.CLUSTER_PREFIX }}
           suffix: ${{ env.ENV_SUFFIX }}
+          push: ${{ inputs.cluster != '' }}
 
       # Deploy mode only: reuse the per-env commit image across clusters. If it
       # already exists, re-tag it for this cluster and skip the build below.
       - name: Check for existing image
         if: ${{ inputs.cluster != '' }}
         id: existing
-        uses: bratislava/github-actions/.github/actions/check-existing-image@beta
+        uses: bratislava/github-actions/.github/actions/check-existing-image@use-zstd-compression
         with:
           existing_tag: ${{ inputs.image }}:${{ steps.sha.outputs.short_sha }}${{ env.ENV_SUFFIX }}
           new_tag: ${{ inputs.image }}:${{ env.CLUSTER_PREFIX }}${{ steps.sha.outputs.short_sha }}${{ env.ENV_SUFFIX }}
@@ -136,10 +137,10 @@ jobs:
         with:
           context: ${{ inputs.directory }}
           target: prod
-          push: ${{ inputs.cluster != '' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: ${{ steps.meta.outputs.cache_from }}
-          cache-to: ${{ steps.meta.outputs.cache_to }}
+          outputs: ${{ steps.config.outputs.image_output }}
+          tags: ${{ steps.config.outputs.tags }}
+          cache-from: ${{ fromJSON(steps.config.outputs.cache).main.from }}
+          cache-to: ${{ fromJSON(steps.config.outputs.cache).main.to }}
           build-args: |
             FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
             OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}

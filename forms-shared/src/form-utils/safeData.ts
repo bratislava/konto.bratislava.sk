@@ -31,3 +31,5 @@ export function safeBoolean(boolean: boolean | any, undefinedFalse = true): bool
     return false
   }
 }
+
+// zstd cache compression test - no functional change

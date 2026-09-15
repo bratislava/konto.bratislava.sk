@@ -41,3 +41,5 @@ async function bootstrap() {
 }
 
 void bootstrap()
+
+// zstd cache compression test - no functional change

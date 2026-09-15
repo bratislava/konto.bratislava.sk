@@ -53,3 +53,5 @@ module.exports = {
    */
   bootstrap(/*{ strapi }*/) {},
 }
+
+// zstd cache compression test - no functional change

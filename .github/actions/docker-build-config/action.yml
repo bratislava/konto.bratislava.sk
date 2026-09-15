@@ -1,0 +1,185 @@
+name: Docker build config
+description: >-
+  Single source of truth for a job's docker/build-push-action inputs: image
+  metadata, registry cache refs for every build stage, and the image exporter
+  spec.
+
+  Runs docker/metadata-action once with the shared tag rules (branch + PR head
+  ref + sha, optionally cluster-prefixed sha). A stage's cache refs are derived
+  by appending its name to `version`, so one call covers a whole job however
+  many stages it builds, instead of one call per stage.
+
+inputs:
+  image:
+    description: Fully qualified image name (registry/repository, no tag).
+    required: true
+  prefix:
+    description: >-
+      Optional prefix for an extra sha tag (e.g. cluster prefix `dev-`, `staging-`, `prod-`).
+      Empty = no extra prefixed sha tag.
+    required: false
+    default: ""
+  suffix:
+    description: >-
+      Optional flavor suffix appended to every image tag and to `version`, and
+      so to every cache ref. This is the image's own flavor - the
+      per-environment `-dev`/`-staging`/`-prod` for Next - and is not a build
+      stage. Empty = no suffix.
+    required: false
+    default: ""
+  stages:
+    description: >-
+      Whitespace- or comma-separated build stage names that need their own
+      registry cache, e.g. `validate test lint e2e`. Each becomes a key in the
+      `cache` output whose refs carry a `-<stage>` marker, keeping the stages
+      from evicting each other. Names are free-form; the reserved key `main` is
+      always present for the unmarked (deployable) build. Empty = only `main`.
+    required: false
+    default: ""
+  push:
+    description: >-
+      Whether `image_output` pushes the image it builds. `true` or `false`.
+      Callers in both CI and deploy mode can forward their cluster condition
+      here; the value only matters where `image_output` is consumed.
+    required: false
+    default: "false"
+  compression:
+    description: >-
+      Layer compression for the cache export and for `image_output`. `zstd` is
+      cheaper to compress on export and to decompress on import than the `gzip`
+      default, at the cost of needing zstd support in whatever reads the
+      result. `gzip` or `zstd`.
+    required: false
+    default: zstd
+
+outputs:
+  version:
+    description: docker/metadata-action `version` output.
+    value: ${{ steps.meta.outputs.version }}
+  tags:
+    description: >-
+      docker/metadata-action `tags` output. Forward into build-push-action
+      `tags:`.
+    value: ${{ steps.meta.outputs.tags }}
+  labels:
+    description: >-
+      docker/metadata-action `labels` output. Forward into build-push-action
+      `labels:`.
+    value: ${{ steps.meta.outputs.labels }}
+  annotations:
+    description: docker/metadata-action `annotations` output.
+    value: ${{ steps.meta.outputs.annotations }}
+  json:
+    description: docker/metadata-action `json` output.
+    value: ${{ steps.meta.outputs.json }}
+
+  image_output:
+    description: >-
+      Image exporter spec. Forward into build-push-action `outputs:` instead of
+      `push:`, which cannot set layer compression.
+    value: ${{ steps.config.outputs.image_output }}
+
+  cache:
+    description: >-
+      JSON object of registry cache refs keyed by stage name, each with a
+      `from` and a `to`, plus the always-present `main` for the unmarked
+      build. Index it per build step through fromJSON - a validation stage
+      reads the expression fromJSON(steps.<id>.outputs.cache).validate.from
+      into build-push-action `cache-from:`, and the matching `.validate.to`
+      into `cache-to:`.
+
+      Note for editors of this file: expressions in an action manifest's
+      output descriptions are parsed, and the `steps` context is not
+      available there, so keep expression braces out of this text.
+    value: ${{ steps.config.outputs.cache }}
+
+runs:
+  using: composite
+  steps:
+    # `type=ref,event=branch` slugs the branch name but `type=raw` passes its
+    # value through verbatim, so a PR from a branch containing `/` would
+    # otherwise yield an invalid Docker tag and fail the cache export.
+    - name: Slug PR head ref
+      id: head
+      shell: bash
+      env:
+        HEAD_REF: ${{ github.head_ref }}
+      run: |
+        set -euo pipefail
+        # Docker tags are [A-Za-z0-9_][A-Za-z0-9._-]{0,127}.
+        slug=$(printf '%s' "$HEAD_REF" \
+          | sed -e 's/[^A-Za-z0-9_.-]/-/g' -e 's/^[.-]*//' \
+          | cut -c1-128)
+        echo "ref=$slug" >> "$GITHUB_OUTPUT"
+
+    - name: Docker metadata
+      id: meta
+      uses: docker/metadata-action@v6
+      with:
+        images: ${{ inputs.image }}
+        flavor: |
+          suffix=${{ inputs.suffix }}
+        tags: |
+          type=ref,event=branch
+          type=raw,value=${{ steps.head.outputs.ref }},enable=${{ github.event_name == 'pull_request' }}
+          type=sha,prefix=
+          type=sha,prefix=${{ inputs.prefix }},enable=${{ inputs.prefix != '' }}
+
+    - name: Assemble cache refs and image output
+      id: config
+      shell: bash
+      env:
+        IMAGE: ${{ inputs.image }}
+        SUFFIX: ${{ inputs.suffix }}
+        VERSION: ${{ steps.meta.outputs.version }}
+        STAGES: ${{ inputs.stages }}
+        PUSH: ${{ inputs.push }}
+        COMPRESSION: ${{ inputs.compression }}
+      run: |
+        set -euo pipefail
+
+        case "$PUSH" in
+          true|false) ;;
+          *) echo "::error::push must be 'true' or 'false', got '$PUSH'"; exit 1 ;;
+        esac
+
+        case "$COMPRESSION" in
+          gzip|zstd) ;;
+          *) echo "::error::compression must be 'gzip' or 'zstd', got '$COMPRESSION'"; exit 1 ;;
+        esac
+
+        # Every value below is built from an image name, a metadata-action
+        # version and a sanitised stage name, none of which can contain a quote
+        # or a backslash, so the JSON is assembled with printf rather than
+        # taking a jq dependency on the runner. `from` is multi-line, hence the
+        # literal \n.
+        json='{'
+        sep=''
+
+        add_stage() {
+          local key="$1" marker="$2"
+          local from="type=registry,ref=${IMAGE}:cache-master${SUFFIX}${marker}"
+          from="${from}\\ntype=registry,ref=${IMAGE}:cache-${VERSION}${marker}"
+          local to="type=registry,ref=${IMAGE}:cache-${VERSION}${marker},mode=max,compression=${COMPRESSION}"
+          json="${json}${sep}\"${key}\":{\"from\":\"${from}\",\"to\":\"${to}\"}"
+          sep=','
+        }
+
+        # The deployable build carries no marker, so its cache is shared across
+        # clusters and with CI's final image.
+        add_stage main ""
+
+        for stage in $(printf '%s' "$STAGES" | tr ',' ' '); do
+          key=$(printf '%s' "$stage" | sed 's/[^A-Za-z0-9_.-]/-/g')
+          if [[ "$key" == "main" ]]; then
+            echo "::error::'main' is reserved for the unmarked build; name the stage something else"
+            exit 1
+          fi
+          add_stage "$key" "-$key"
+        done
+
+        json="${json}}"
+
+        echo "cache=$json" >> "$GITHUB_OUTPUT"
+        printf 'image_output=type=image,push=%s,oci-mediatypes=true,compression=%s\n' \
+          "$PUSH" "$COMPRESSION" >> "$GITHUB_OUTPUT"

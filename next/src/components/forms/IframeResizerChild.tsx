@@ -1,15 +1,6 @@
 import type { iframeResizer } from '@iframe-resizer/child'
 import Script from 'next/script'
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
-
-import { environment } from '@/src/environment'
+import { createContext, PropsWithChildren, useContext, useEffect, useRef, useState } from 'react'
 
 const IframeResizerChildContext = createContext<iframeResizer.ParentProps | null>(null)
 
@@ -65,7 +56,7 @@ const IframeResizerChild = ({ children, enabled = false, nonce }: IframeResizerC
   return (
     <IframeResizerChildContext.Provider value={parentProps}>
       <Script
-        src={environment.iframeResizerPublicPath}
+        src={process.env.NEXT_PUBLIC_CITY_ACCOUNT_STRAPI_URL}
         async
         onLoad={handleScriptOnLoad}
         nonce={nonce}

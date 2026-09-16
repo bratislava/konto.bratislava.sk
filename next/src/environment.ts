@@ -91,10 +91,6 @@ export const environment = {
     false,
   ),
   faroSecret: assertEnv('NEXT_PUBLIC_FARO_SECRET', process.env.NEXT_PUBLIC_FARO_SECRET),
-  iframeResizerPublicPath: assertEnv(
-    'IFRAME_RESIZER_PUBLIC_PATH',
-    process.env.IFRAME_RESIZER_PUBLIC_PATH,
-  ),
   gtmId: process.env.NEXT_PUBLIC_GTM_ID,
   gtmAuth: process.env.NEXT_PUBLIC_GTM_AUTH,
   gtmPreview: process.env.NEXT_PUBLIC_GTM_PREVIEW,

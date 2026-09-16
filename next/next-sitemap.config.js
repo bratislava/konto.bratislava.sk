@@ -21,7 +21,7 @@ module.exports = {
 
       return municipalServices.map((municipalService) => ({
         loc: ROUTES.MUNICIPAL_SERVICES_FORM(municipalService.slug),
-        lastMod: municipalService.lastMod,
+        lastMod: municipalService.updatedAt,
       }))
     }
 

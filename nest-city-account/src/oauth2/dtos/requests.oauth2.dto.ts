@@ -10,7 +10,7 @@ const EXAMPLE_CLIENT_ID = 'a1b2c3d4e5f67890abcdef1234567890'
 export class AuthorizationRequestDto {
   @ApiProperty({
     description:
-      'Response type. Must be "code" for Authorization Code flow. "token" is not allowed if PKCE is required.',
+      'Response type. Must be "code" for Authorization Code flow. "token" (implicit grant) is not supported.',
     example: 'code',
     enum: ['code', 'token'],
   })
@@ -53,30 +53,28 @@ export class AuthorizationRequestDto {
   @MinLength(1)
   state?: string
 
-  @ApiPropertyOptional({
-    description:
-      'Code challenge for PKCE (RFC 7636). Optional - only required if using PKCE or if client requires it',
+  @ApiProperty({
+    description: 'Code challenge for PKCE (RFC 7636). Required - PKCE is mandatory for all clients',
     example: 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @Matches(/^[A-Za-z0-9\-._~]{43,128}$/, {
     message:
       'code_challenge must be between 43 and 128 characters and contain only A-Z, a-z, 0-9, -, _, ., and ~ (RFC 7636 Section 4.2)',
   })
-  code_challenge?: string
+  code_challenge!: string
 
-  @ApiPropertyOptional({
-    description:
-      'Code challenge method for PKCE. Optional - required if code_challenge is provided',
+  @ApiProperty({
+    description: 'Code challenge method for PKCE. Required - PKCE is mandatory for all clients',
     example: 'S256',
     enum: ['S256', 'plain'],
     default: 'S256',
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @IsIn(['S256', 'plain'], { message: 'code_challenge_method must be "S256" or "plain"' })
-  code_challenge_method?: string
+  code_challenge_method!: string
 }
 
 /**

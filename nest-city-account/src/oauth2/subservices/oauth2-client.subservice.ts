@@ -34,9 +34,6 @@ export class OAuth2Client {
   /** Grant types this client is allowed to use */
   readonly allowedGrantTypes?: string[]
 
-  /** Whether this client requires PKCE */
-  readonly requiresPkce: boolean
-
   constructor(config: {
     id: string
     secret?: string
@@ -44,7 +41,6 @@ export class OAuth2Client {
     allowedRedirectUris: string[]
     allowedScopes?: string[]
     allowedGrantTypes?: string[]
-    requiresPkce: boolean
   }) {
     this.id = config.id
     this.secret = config.secret
@@ -52,7 +48,6 @@ export class OAuth2Client {
     this.allowedRedirectUris = config.allowedRedirectUris
     this.allowedScopes = config.allowedScopes
     this.allowedGrantTypes = config.allowedGrantTypes
-    this.requiresPkce = config.requiresPkce
   }
 
   /**

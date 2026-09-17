@@ -99,7 +99,7 @@ const Table = ({ data }: TableDataProps) => {
   )
 }
 
-const KoAccordionContent = ({ title, taxAmountString, data }: Props) => {
+const KoDisclosureContent = ({ title, taxAmountString, data }: Props) => {
   return (
     <TaxDisclosure title={title} taxAmountString={taxAmountString}>
       <Table data={data} />
@@ -107,4 +107,4 @@ const KoAccordionContent = ({ title, taxAmountString, data }: Props) => {
   )
 }
 
-export default KoAccordionContent
+export default KoDisclosureContent

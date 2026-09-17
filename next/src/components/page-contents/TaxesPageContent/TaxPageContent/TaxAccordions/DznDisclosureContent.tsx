@@ -160,7 +160,7 @@ const Table = ({
   )
 }
 
-const DznAccordionContent = ({ title, taxAmountString, dataType, data }: Props) => {
+const DznDisclosureContent = ({ title, taxAmountString, dataType, data }: Props) => {
   return (
     <TaxDisclosure title={title} taxAmountString={taxAmountString}>
       <Table dataType={dataType} data={data} />
@@ -168,4 +168,4 @@ const DznAccordionContent = ({ title, taxAmountString, dataType, data }: Props) 
   )
 }
 
-export default DznAccordionContent
+export default DznDisclosureContent

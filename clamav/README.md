@@ -18,6 +18,10 @@ The service uses custom configuration files located in the `conf/` directory:
   - Configurable scan size limits
 - `freshclam.conf`: Manages virus signature database updates, important is the location of the database mirror which is our local cvdmirror in kubernetes <http://clamav-cvdmirror-database:8080>
 
+### Environment variables
+
+None. clamav is configured by the `conf/` files baked into the image, not by env vars, so there is no `.env.deploy.<cluster>` file here and no `clamav-env` config map in the cluster — see the [deployment notes](../README.md#environment-variables-and-secrets).
+
 ### Run locally
 
 1. **Prerequisite** - running `cvdmirror` -> in directory `/cvdmirror` run

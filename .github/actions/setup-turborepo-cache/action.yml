@@ -1,0 +1,32 @@
+name: Set up Turborepo cache
+description: Starts the Turborepo cache server and exposes it to Docker BuildKit.
+
+inputs:
+  minio_secret_key:
+    description: MinIO secret key for the Turborepo cache bucket.
+    required: true
+
+outputs:
+  turbo_api:
+    description: Turborepo cache API URL reachable from BuildKit.
+    # Plain loopback: the builder is created with the `network=host` driver
+    # option and the bake targets build with `network = "host"`, so a RUN step
+    # shares the runner's network namespace. Nothing has to be published or
+    # proxied, and the server can keep its default 127.0.0.1 bind.
+    value: http://127.0.0.1:8585
+
+runs:
+  using: composite
+  steps:
+    - name: Start Turborepo Cache Server
+      # One of the officialy recommended community implementations
+      # https://turborepo.dev/docs/core-concepts/remote-caching#community-implementations
+      uses: brunojppb/turbo-cache-server@4.0.12
+      env:
+        PORT: "8585"
+        S3_BUCKET_NAME: city-account-turborepo-cache
+        S3_ACCESS_KEY: city-account-turborepo-cache
+        S3_SECRET_KEY: ${{ inputs.minio_secret_key }}
+        S3_ENDPOINT: https://s3.bratislava.sk
+        S3_REGION: us-east-1
+        S3_USE_PATH_STYLE: "true"

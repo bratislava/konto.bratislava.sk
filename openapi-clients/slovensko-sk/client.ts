@@ -21,13 +21,26 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
-export type SlovenskoSkClient = ReturnType<typeof createSlovenskoSkClient>
+export interface SlovenskoSkClient
+  extends
+    ReturnType<typeof CentrlnaRadnTabuaDostupnLenPreOVMApiFactory>,
+    ReturnType<typeof DlhodobLoiskoApiFactory>,
+    ReturnType<typeof InformcieOPrihlsenomPouvateoviApiFactory>,
+    ReturnType<typeof ManamentAutentifikanchCertifiktovAdministrciaApiFactory>,
+    ReturnType<typeof ManipulciaSoSchrnkouApiFactory>,
+    ReturnType<typeof PodpisovanieApiFactory>,
+    ReturnType<typeof PrihlasovaniePomocouEIDApiFactory>,
+    ReturnType<typeof StavKomponentuMonitoringApiFactory>,
+    ReturnType<typeof UniverzlneSynchrnneRozhranieSluiebPVSApiFactory>,
+    ReturnType<typeof VyhadvanieIdenttDostupnLenPreOVMApiFactory>,
+    ReturnType<typeof ZasielaniePodanApiFactory>,
+    ReturnType<typeof ZasielaniePodanAdministrciaApiFactory> {}
 
 export const createSlovenskoSkClient = ({
   basePath,
   configurationParameters = {},
   axios,
-}: ClientConfig) => {
+}: ClientConfig): SlovenskoSkClient => {
   const configuration = new Configuration(configurationParameters)
   const args = [configuration, basePath, axios] as const
 
@@ -44,5 +57,5 @@ export const createSlovenskoSkClient = ({
     ...VyhadvanieIdenttDostupnLenPreOVMApiFactory(...args),
     ...ZasielaniePodanApiFactory(...args),
     ...ZasielaniePodanAdministrciaApiFactory(...args),
-  }
+  } satisfies SlovenskoSkClient
 }

@@ -1,7 +1,6 @@
 # Add files here to ignore them from prettier formatting
 
 yarn.lock
-package-lock.json
 .next
 next-env.d.ts
 

@@ -2,6 +2,10 @@
 
 This repository contains backend code for digital real estate tax payment services (platba dane z nehnutelností) of the city of Bratislava.
 
+## Architecture
+
+For a high-level overview of this service (modules, data model, auth, integrations, crons, deployment), see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). For workflows that span multiple konto backends, see the repo-root [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
+
 # Quick run
 
 If you want to run an application without installing it locally quickly, you can run it through `docker-compose`:

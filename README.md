@@ -54,27 +54,34 @@ Deploy specific service by creating a tag in format: `<environment>-<service-nam
 
 ### How deploys work
 
-Build and deploy share one reusable workflow per service type (`build-nest.yml`, `build-next.yml`, `build-single-image.yml`). On a PR these run in build-only mode; in `deploy.yml` they run in deploy mode (`cluster` set), which builds the service image (if an image for the current commit does not already exist in Harbor) and tags it as `<cluster>-<short-sha>`. In deploy mode the nest builds also skip the validation/test images (`skip_tests`). Once a service image is built, a matching `deploy-*` job in `deploy.yml` calls the shared `trigger-infra-deploy.yml` workflow, which dispatches `deploy.yml` in [infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration); that applies the Terragrunt module for the service (under `clusters/<cluster>/applications/konto.bratislava.sk/<service>`) on the target cluster.
+The pipeline follows the shared Bratislava deployment conventions — see
+[Deployment and releases](https://magistratba.sharepoint.com/:fl:/r/contentstorage/CSP_e7fd7f53-9abe-456a-b0e1-7cc0c63e3f1a/Document%20Library/LoopAppData/Deployment%20%26%20releases.loop?d=we29942dcbfe34648a857e7d3bfb196cf&csf=1&web=1&e=MLf6C9&nav=cz0lMkZjb250ZW50c3RvcmFnZSUyRkNTUF9lN2ZkN2Y1My05YWJlLTQ1NmEtYjBlMS03Y2MwYzYzZTNmMWEmZD1iJTIxVTNfOTU3NmFha1d3NFh6QXhqNF9Hc3RnWmNMRlhXQkR2Z2F4bHUxdEdsNGZsSnk2d2ZCeFRvWi00aXZqZ0o4ayZmPTAxWVJNMktXRzRJS002Rlk1N0pCREtRVjdIMk83M0RGV1AmYz0lMkYmYT1Mb29wQXBwJnA9JTQwZmx1aWR4JTJGbG9vcC1wYWdlLWNvbnRhaW5lciZ4PSU3QiUyMnclMjIlM0ElMjJUMFJUVUh4dFlXZHBjM1J5WVhSaVlTNXphR0Z5WlhCdmFXNTBMbU52Ylh4aUlWVXpYemsxTnpaaFlXdFhkelJZZWtGNGFqUmZSM04wWjFwalRFWllWMEpFZG1kaGVHeDFNWFJIYkRSbWJFcDVObmRtUW5oVWIxb3ROR2wyYW1kS09HdDhNREZaVWsweVMxZERRMUUyTTB4Qk5VODBOMFpHVEVVMFIwNVFTbGRLUlVoYVVRJTNEJTNEJTIyJTJDJTIyaSUyMiUzQSUyMjU1NzQyNmM4LTBmYjMtNDVhYi1iYTg1LWQ0MzZkYzMyODU1MCUyMiU3RA%3D%3D) for the overview and release rules.
+Specific to this repo:
 
-Backend images are environment-agnostic, so a single per-commit build is reused across clusters. The Next.js frontend bakes its environment into the build, so it is rebuilt (with a separate Docker cache and an `-<env>` tag suffix) for every cluster.
-
-The build and deploy plumbing (Buildx setup, registry logins, Docker tag/cache metadata, image reuse checks, and the infrastructure deploy trigger) comes from shared actions in [bratislava/github-actions](https://github.com/bratislava/github-actions).
+- `deploy.yml` maps the ref to a cluster and a service set with an inline resolve step,
+  so tag pushes and `master` pushes are handled by one workflow.
+- Build and deploy share one reusable workflow per service type (`build-nest.yml`,
+  `build-next.yml`, `build-single-image.yml`); in deploy mode the nest builds skip the
+  validation/test images (`skip_tests`).
+- The Terragrunt units live under `clusters/<cluster>/applications/konto.bratislava.sk/<service>`
+  in [infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration)
+  (clusters: `development`, `staging`, `production`).
 
 ### Environment variables and secrets
 
-Runtime configuration is split in two: **non-secret env vars live in this repo**, next to the code they configure, and **secrets live in Passbolt**. The deployment itself is still defined per cluster in [infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration), under `clusters/<cluster>/applications/konto.bratislava.sk/<service>` (clusters: `development`, `staging`, `production`).
+Non-secret env vars live in this repo, secrets live in [Passbolt](https://passbolt.bratislava.sk) —
+the conventions (the `.env.deploy.*` file format, Passbolt naming and syncing, the
+`read-only/` mirrors) are documented in
+[Environment variables & secrets](https://magistratba.sharepoint.com/:fl:/r/contentstorage/CSP_e7fd7f53-9abe-456a-b0e1-7cc0c63e3f1a/Document%20Library/LoopAppData/Environment%20variables%20%26%20Secrets.loop?d=w77387c85f8b94b50a848ccc19d3c0972&csf=1&web=1&e=C9nE81&nav=cz0lMkZjb250ZW50c3RvcmFnZSUyRkNTUF9lN2ZkN2Y1My05YWJlLTQ1NmEtYjBlMS03Y2MwYzYzZTNmMWEmZD1iJTIxVTNfOTU3NmFha1d3NFh6QXhqNF9Hc3RnWmNMRlhXQkR2Z2F4bHUxdEdsNGZsSnk2d2ZCeFRvWi00aXZqZ0o4ayZmPTAxWVJNMktXRUZQUTRIUE9QWUtCRjJRU0dNWUdPVFlDTFMmYz0lMkYmYT1Mb29wQXBwJnA9JTQwZmx1aWR4JTJGbG9vcC1wYWdlLWNvbnRhaW5lciZ4PSU3QiUyMnclMjIlM0ElMjJUMFJUVUh4dFlXZHBjM1J5WVhSaVlTNXphR0Z5WlhCdmFXNTBMbU52Ylh4aUlWVXpYemsxTnpaaFlXdFhkelJZZWtGNGFqUmZSM04wWjFwalRFWllWMEpFZG1kaGVHeDFNWFJIYkRSbWJFcDVObmRtUW5oVWIxb3ROR2wyYW1kS09HdDhNREZaVWsweVMxZERRMUUyTTB4Qk5VODBOMFpHVEVVMFIwNVFTbGRLUlVoYVVRJTNEJTNEJTIyJTJDJTIyaSUyMiUzQSUyMmEzYTI0MjIxLTBkMmUtNGUyYi1iZWEyLTQ4OTBjZGUwYTdkYiUyMiU3RA%3D%3D). Specific to this repo:
 
-**Non-secret env vars** go in `<service>/.env.deploy.<cluster>`, e.g. `nest-forms-backend/.env.deploy.staging`. On deploy the infrastructure repo reads that file from the exact commit being deployed and turns it into the `<service>-env` config map. The format is: one `KEY=VALUE` per line, blank lines and whole-line `#` comments ignored, and one surrounding pair of either `'` or `"` stripped if present (the two ends have to match; a lone quote on one side is kept as part of the value). **A value has to fit on a single line** — there is no line continuation and no escape processing, so a `#` mid-line stays part of the value. Anything multiline (a PEM key, a certificate) must either be rewritten to a single line, or land in Passbolt.
-
-**Secrets** live in [Passbolt](https://www.passbolt.com/) and are synced into the cluster by External Secrets Operator, so you need Passbolt access to change them. Every secret belongs to exactly one service: Passbolt resources are named `<cluster>/<service>/<ENV_VAR_NAME>` (e.g. `staging/nest-city-account/TURNSTILE_SECRET_KEY`) and sync into that service's `<service>-secret` Kubernetes Secret. There are no shared secret groups — a value that two services both need is stored once per service.
-
-Updating the value in Passbolt is enough — it syncs to the cluster automatically with next deploy. Same goes for **new** secret env vars, as long as they are named under an existing service. If needed, it's also possible to sync secrets without full redeployment, only with (rolling - no production downtime) application restart (ask the infra repo maintainers).
-
-A few entries go the other way: credentials Terraform generates for the databases, RabbitMQ and Redis are published *into* Passbolt as `read-only/<cluster>/<service>/<ENV_VAR_NAME>`. Those are a read-only mirror so the team can look the values up — the `read-only/` prefix is what stops External Secrets from syncing them back, and editing them in Passbolt does nothing, as the next apply reverts it.
+- **Non-secret env vars** go in `<service>/.env.deploy.<cluster>`, e.g.
+  `nest-forms-backend/.env.deploy.staging`, and become the `<service>-env` config map.
+- **Secrets** are named `<cluster>/<service>/<ENV_VAR_NAME>` in Passbolt (e.g.
+  `staging/nest-city-account/TURNSTILE_SECRET_KEY`) and sync into `<service>-secret`.
+- Credentials Terraform generates for the databases, RabbitMQ and Redis are mirrored to
+  Passbolt as `read-only/<cluster>/<service>/<ENV_VAR_NAME>` — look-up only.
 
 If you don't have Passbolt access, ask around on the konto.bratislava.sk team.
-
-If you aren't sure where a variable belongs, or need help with anything else deployment-config wise, ask the maintainers of the infrastructure repo.
 
 ### Validation and build pipelines
 

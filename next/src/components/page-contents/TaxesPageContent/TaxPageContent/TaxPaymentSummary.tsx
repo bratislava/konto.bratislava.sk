@@ -36,11 +36,11 @@ const TaxPaymentSummary = () => {
   ]
 
   return (
-    <ul className="flex w-full flex-col items-stretch rounded-lg border border-border-passive-primary bg-gray-50 px-5 py-2 lg:px-6">
+    <ul className="flex w-full flex-col items-stretch rounded-lg border border-border-passive-primary bg-background-passive-primary px-5 py-2 lg:px-6">
       {rows.map(({ label, value, valueClassName }, index) => (
         <Fragment key={index}>
           {index > 0 && <HorizontalDivider asListItem className="max-lg:hidden" />}
-          <li className="flex justify-between border-gray-200 py-1.5 lg:py-4">
+          <li className="flex justify-between border-border-passive-primary py-1.5 lg:py-4">
             <Typography variant="h5" as="span">
               {label}
             </Typography>

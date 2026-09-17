@@ -1,0 +1,294 @@
+# Docker build config
+# ===================
+#
+# One call per image-building job. It runs docker/metadata-action once with the
+# repo's tag rules and derives from that single result everything the job's
+# docker/build-push-action steps need:
+#
+#   - tags for the deployable image,
+#   - a registry cache pair (cache-from / cache-to) for every build stage,
+#   - the image exporter spec (push + layer compression).
+#
+# Usage
+# -----
+#
+#   - name: Docker build config
+#     id: config
+#     uses: ./.github/actions/docker-build-config
+#     with:
+#       image: harbor.bratislava.sk/standalone/nest-forms-backend
+#       prefix: development-          # extra `development-<sha>` deploy tag
+#       stages: validate,test,lint    # one cache per stage, plus `main`
+#       push: true
+#
+#   - name: Run unit tests
+#     uses: docker/build-push-action@v7
+#     with:
+#       target: test
+#       cache-from: ${{ fromJSON(steps.config.outputs.cache).test.from }}
+#       cache-to: ${{ fromJSON(steps.config.outputs.cache).test.to }}
+#
+#   - name: Build deploy image
+#     uses: docker/build-push-action@v7
+#     with:
+#       target: prod
+#       tags: ${{ steps.config.outputs.tags }}
+#       outputs: ${{ steps.config.outputs.image_output }}   # replaces `push:`
+#       cache-from: ${{ fromJSON(steps.config.outputs.cache).main.from }}
+#       cache-to: ${{ fromJSON(steps.config.outputs.cache).main.to }}
+#
+# What docker/metadata-action generates
+# -------------------------------------
+#
+# Tag rules, evaluated in order. Each rule that applies yields one tag; the
+# first one that applies also becomes `version`. The flavor `suffix` is
+# appended to every tag, `version` included, and every value is sanitized to
+# [A-Za-z0-9._-], so a branch `feature/foo` becomes `feature-foo`. The `raw`
+# rule is sanitized like all the others.
+#
+#   type=ref,event=branch        push to a branch     <branch><suffix>
+#   type=raw,value=<head_ref>    pull_request only    <head branch><suffix>
+#   type=sha,prefix=             always               <short sha><suffix>
+#   type=sha,prefix=<prefix>     prefix set           <prefix><short sha><suffix>
+#
+# On a pull_request the ref is `refs/pull/N/merge`, so the branch rule yields
+# nothing and the head_ref rule supplies the branch name instead. On a tag push
+# (deploys) neither applies and `version` falls back to the short sha.
+#
+# Example: image=harbor.bratislava.sk/standalone/next, prefix=staging-,
+# suffix=-staging, push to master at 1a2b3c4:
+#
+#   version: master-staging
+#   tags:    harbor.bratislava.sk/standalone/next:master-staging
+#            harbor.bratislava.sk/standalone/next:1a2b3c4-staging
+#            harbor.bratislava.sk/standalone/next:staging-1a2b3c4-staging
+#
+# How the outputs are used
+# ------------------------
+#
+# tags          Forward into build-push-action `tags:` of the deployable image.
+#               Only the image that gets pushed needs them.
+#
+# version       Keys the per-branch registry cache. Builds on the same branch
+#               reuse each other's layers; every branch falls back to the
+#               master cache.
+#
+# cache         JSON object with one entry per stage plus `main`, the unmarked
+#               deployable build. Read the entry of the stage being built:
+#
+#                 fromJSON(steps.config.outputs.cache).<stage>.from  -> cache-from:
+#                 fromJSON(steps.config.outputs.cache).<stage>.to    -> cache-to:
+#
+#               Stage refs carry a `-<stage>` marker after the version, so
+#               `cache-master-test` / `cache-<version>-test` never mix with the
+#               deployable image's `cache-master` / `cache-<version>`.
+#
+#               Example: image=IMAGE, stages="validate", pull request from
+#               feature/foo (JSON newlines shown as \n):
+#
+#                 {
+#                   "main": {
+#                     "from": "type=registry,ref=IMAGE:cache-master\ntype=registry,ref=IMAGE:cache-feature-foo",
+#                     "to":   "type=registry,ref=IMAGE:cache-feature-foo,mode=max"
+#                   },
+#                   "validate": {
+#                     "from": "type=registry,ref=IMAGE:cache-master-validate\ntype=registry,ref=IMAGE:cache-feature-foo-validate",
+#                     "to":   "type=registry,ref=IMAGE:cache-feature-foo-validate,mode=max"
+#                   }
+#                 }
+#
+# image_output  Forward into build-push-action `outputs:` instead of `push:`.
+#               `push:` is shorthand for `type=registry` and cannot set layer
+#               compression; the explicit exporter spec can:
+#
+#                 type=image,push=<push>,oci-mediatypes=true,compression=<compression>
+#
+#               oci-mediatypes=true is required for zstd layers.
+#
+# labels, annotations, json
+#               docker/metadata-action passthroughs, available when needed.
+
+name: Docker build config
+description: >-
+  Run docker/metadata-action once with the shared tag rules and emit, besides
+  its outputs, per-stage registry cache refs and the image exporter spec for
+  docker/build-push-action.
+
+inputs:
+  image:
+    description: Fully qualified image name (registry/repository, no tag).
+    required: true
+  prefix:
+    description: >-
+      Prefix for an extra sha tag, e.g. the cluster prefix `development-`.
+      Empty = no extra prefixed sha tag.
+    required: false
+    default: ""
+  suffix:
+    description: >-
+      Image flavor suffix appended to every tag, e.g. the Next.js per-environment
+      `-dev`, `-staging`, `-prod`. May only contain `A-Z a-z 0-9 . _ -`.
+      Empty = no suffix.
+    required: false
+    default: ""
+  stages:
+    description: >-
+      Build stages needing their own registry cache, comma-separated without
+      whitespace, e.g. `validate,test,lint,e2e`. Names may only contain
+      `A-Z a-z 0-9 . _ -` and become keys in the `cache` output. `main` is
+      reserved for the unmarked deployable build.
+    required: false
+    default: ""
+  push:
+    description: Whether `image_output` pushes the image (`true` or `false`).
+    required: false
+    default: "false"
+  compression:
+    description: Layer compression of the pushed image, `gzip` or `zstd`.
+    required: false
+    default: zstd
+
+outputs:
+  version:
+    description: docker/metadata-action `version` output.
+    value: ${{ steps.meta.outputs.version }}
+  tags:
+    description: >-
+      docker/metadata-action `tags` output. Forward into build-push-action
+      `tags:`.
+    value: ${{ steps.meta.outputs.tags }}
+  labels:
+    description: >-
+      docker/metadata-action `labels` output. Forward into build-push-action
+      `labels:`.
+    value: ${{ steps.meta.outputs.labels }}
+  annotations:
+    description: docker/metadata-action `annotations` output.
+    value: ${{ steps.meta.outputs.annotations }}
+  json:
+    description: docker/metadata-action `json` output.
+    value: ${{ steps.meta.outputs.json }}
+  cache:
+    description: >-
+      Registry cache refs as JSON, keyed by stage name plus `main`, each entry
+      `{from, to}`. Read with
+      `fromJSON(steps.<id>.outputs.cache).<stage>.from` / `.to` and forward
+      into build-push-action `cache-from:` / `cache-to:`.
+    value: ${{ steps.cache.outputs.cache }}
+  image_output:
+    description: >-
+      Image exporter spec. Forward into build-push-action `outputs:` in place
+      of `push:`.
+    value: ${{ steps.validate.outputs.image_output }}
+
+runs:
+  using: composite
+  steps:
+    # Fail fast on a bad input with a clear message instead of emitting a
+    # malformed exporter string or cache ref further down.
+    - name: Validate inputs
+      id: validate
+      shell: bash
+      env:
+        IMAGE: ${{ inputs.image }}
+        SUFFIX: ${{ inputs.suffix }}
+        STAGES: ${{ inputs.stages }}
+        PUSH: ${{ inputs.push }}
+        COMPRESSION: ${{ inputs.compression }}
+      run: |
+        case "$PUSH" in
+          true|false) ;;
+          *)
+            echo "::error::Invalid push '$PUSH'. Allowed values: true, false."
+            exit 1
+            ;;
+        esac
+
+        case "$COMPRESSION" in
+          gzip|zstd) ;;
+          *)
+            echo "::error::Invalid compression '$COMPRESSION'. Allowed values: gzip, zstd."
+            exit 1
+            ;;
+        esac
+
+        if [[ ! "$IMAGE" =~ ^[A-Za-z0-9._:/-]+$ ]]; then
+          echo "::error::Invalid image '$IMAGE'. Expected registry/repository without a tag."
+          exit 1
+        fi
+
+        # The suffix and every stage name end up inside cache tags, so they must
+        if [[ ! "$SUFFIX" =~ ^[A-Za-z0-9._-]*$ ]]; then
+          echo "::error::Invalid suffix '$SUFFIX'. Allowed characters: A-Z a-z 0-9 . _ -"
+          exit 1
+        fi
+
+        if [[ -n "$STAGES" && ! "$STAGES" =~ ^[A-Za-z0-9._-]+(,[A-Za-z0-9._-]+)*$ ]]; then
+          echo "::error::Invalid stages '$STAGES'. Expected comma-separated names without whitespace, e.g. 'validate,test,lint'. Allowed characters: A-Z a-z 0-9 . _ -"
+          exit 1
+        fi
+
+        IFS=',' read -ra stages <<< "$STAGES"
+        stage_list=""
+        for stage in "${stages[@]}"; do
+          if [[ "$stage" == "main" ]]; then
+            echo "::error::Stage name 'main' is reserved for the unmarked build."
+            exit 1
+          fi
+          if [[ " $stage_list " == *" $stage "* ]]; then
+            echo "::error::Duplicate stage '$stage'."
+            exit 1
+          fi
+          stage_list="$stage_list $stage"
+        done
+
+        {
+          echo "stages=${stage_list# }"
+          echo "image_output=type=image,push=$PUSH,oci-mediatypes=true,compression=$COMPRESSION"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Docker metadata
+      id: meta
+      uses: docker/metadata-action@v6
+      with:
+        images: ${{ inputs.image }}
+        flavor: |
+          suffix=${{ inputs.suffix }}
+        tags: |
+          type=ref,event=branch
+          type=raw,value=${{ github.head_ref }},enable=${{ github.event_name == 'pull_request' }}
+          type=sha,prefix=
+          type=sha,prefix=${{ inputs.prefix }},enable=${{ inputs.prefix != '' }}
+
+    # Every stage imports the master cache (cross-branch fallback) and its own
+    # per-version cache, and exports the latter. The `-<stage>` marker keeps
+    # stages apart; `main` is the unmarked deployable build. Every value was
+    # validated to tag-safe characters above, so the JSON is assembled directly.
+    - name: Resolve cache refs
+      id: cache
+      shell: bash
+      env:
+        IMAGE: ${{ inputs.image }}
+        SUFFIX: ${{ inputs.suffix }}
+        STAGES: ${{ steps.validate.outputs.stages }}
+        VERSION: ${{ steps.meta.outputs.version }}
+      run: |
+        if [[ -z "$VERSION" ]]; then
+          echo "::error::docker/metadata-action produced no version."
+          exit 1
+        fi
+
+        cache_entry() { # <key> <marker>
+          local key="$1" marker="$2"
+          local master="type=registry,ref=$IMAGE:cache-master$SUFFIX$marker"
+          local branch="type=registry,ref=$IMAGE:cache-$VERSION$marker"
+          printf '"%s":{"from":"%s\\n%s","to":"%s,mode=max"}' "$key" "$master" "$branch" "$branch"
+        }
+
+        json="$(cache_entry main "")"
+        # shellcheck disable=SC2086 # normalized, space-separated list
+        for stage in $STAGES; do
+          json="$json,$(cache_entry "$stage" "-$stage")"
+        done
+
+        echo "cache={$json}" >> "$GITHUB_OUTPUT"

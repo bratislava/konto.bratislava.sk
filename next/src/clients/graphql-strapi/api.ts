@@ -4456,6 +4456,20 @@ export type MunicipalServiceBySlugQuery = {
   } | null>
 }
 
+export type MunicipalServicesStaticPathsForSitemapQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Int']['input']>
+}>
+
+export type MunicipalServicesStaticPathsForSitemapQuery = {
+  __typename?: 'Query'
+  municipalServices: Array<{
+    __typename?: 'MunicipalService'
+    documentId: string
+    slug: string
+    updatedAt?: any | null
+  } | null>
+}
+
 export type MunicipalServicesPageQueryVariables = Exact<{ [key: string]: never }>
 
 export type MunicipalServicesPageQuery = {
@@ -5616,6 +5630,15 @@ export const MunicipalServiceBySlugDocument = gql`
   }
   ${MunicipalServiceEntityFragmentDoc}
 `
+export const MunicipalServicesStaticPathsForSitemapDocument = gql`
+  query MunicipalServicesStaticPathsForSitemap($limit: Int = -1) {
+    municipalServices(sort: "createdAt:desc", pagination: { limit: $limit }) {
+      documentId
+      slug
+      updatedAt
+    }
+  }
+`
 export const MunicipalServicesPageDocument = gql`
   query MunicipalServicesPage {
     municipalServicesPage {
@@ -5782,6 +5805,24 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             signal,
           }),
         'MunicipalServiceBySlug',
+        'query',
+        variables,
+      )
+    },
+    MunicipalServicesStaticPathsForSitemap(
+      variables?: MunicipalServicesStaticPathsForSitemapQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
+    ): Promise<MunicipalServicesStaticPathsForSitemapQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<MunicipalServicesStaticPathsForSitemapQuery>({
+            document: MunicipalServicesStaticPathsForSitemapDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
+        'MunicipalServicesStaticPathsForSitemap',
         'query',
         variables,
       )

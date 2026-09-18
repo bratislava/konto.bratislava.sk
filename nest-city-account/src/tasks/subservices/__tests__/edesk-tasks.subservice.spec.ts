@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -11,7 +12,6 @@ import {
 import { NorisEdeskService } from '../../../noris/services/noris-edesk.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { UpvsQueueService } from '../../../upvs-queue/upvs-queue.service'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { EdeskTasksSubservice } from '../edesk-tasks.subservice'
 
 const EXTERNAL_ITEMS_PROCESS_BATCH_SIZE = 500

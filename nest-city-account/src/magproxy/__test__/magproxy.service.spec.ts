@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
@@ -5,7 +6,6 @@ import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
 import ClientsService from '../../clients/clients.service'
 import BaConfigService from '../../config/ba-config.service'
 import { mockRfoResponseListOneItems } from '../../rfo-by-birthnumber/dtos/__test__/rfoResponse.mock'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { MagproxyService } from '../magproxy.service'
 
 describe('MagproxyService', () => {

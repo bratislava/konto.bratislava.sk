@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -5,7 +6,6 @@ import { expectObjectContaining } from '../../../../__tests__/jest-matchers'
 import { MagproxyService } from '../../../../magproxy/magproxy.service'
 import { PhysicalEntityService } from '../../../../physical-entity/physical-entity.service'
 import { RfoIdentityListElement } from '../../../../rfo-by-birthnumber/dtos/rfoSchema'
-import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { VerificationErrorsEnum } from '../../../verification.errors.enum'
 import { VerificationSubservice } from '../verification.subservice'
 import { VerificationDataSubservice } from '../verification-data.subservice'

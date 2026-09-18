@@ -1,3 +1,9 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { AxiosError, isAxiosError } from 'axios'
 import keyBy from 'lodash/keyBy'
@@ -17,9 +23,6 @@ import {
   VerificationErrorsEnum,
   VerificationErrorsResponseEnum,
 } from '../user-verification/verification.errors.enum'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 export type GetUpvsIdentitiesByUrisParam = {
   physicalEntityId?: string

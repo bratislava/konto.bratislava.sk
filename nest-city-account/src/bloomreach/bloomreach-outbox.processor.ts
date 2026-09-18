@@ -1,13 +1,10 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import axios, { isAxiosError } from 'axios'
 
 import BaConfigService from '../config/ba-config.service'
 import { BloomreachOutbox, BloomreachOutboxStatus, Prisma } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BloomreachBatchCommand,
   BloomreachBatchResponse,

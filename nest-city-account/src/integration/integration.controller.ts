@@ -1,3 +1,4 @@
+import { AllowList } from '@bratislava/log-nest'
 import {
   Body,
   Controller,

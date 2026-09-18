@@ -1,9 +1,8 @@
+import { ErrorEnum, ErrorFactoryService, ErrorResponseEnum } from '@bratislava/log-nest'
 import { ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { AuthGuard } from '@nestjs/passport'
 
-import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { REQUIRE_NONCE } from '../decorators/require-nonce.decorator'
 import { SIGNATURE_PUBLIC_KEY } from '../decorators/signature-public-key.decorator'
 import { SignaturePublicKey } from '../types/signature-public-key.enum'

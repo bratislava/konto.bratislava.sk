@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { AmqpConnection, Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
 import { Channel, ConsumeMessage } from 'amqplib'
@@ -24,10 +25,8 @@ import {
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
 import { CustomErrorEnums } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { rabbitmqRequeueDelay } from '../utils/handlers/rabbitmq.handlers'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { UserIdentitySubservice } from '../utils/subservices/user-identity.subservice'
 import { RABBIT_MQ } from './constants'
 import { RabbitMessageDto } from './dtos/rabbit.dto'
@@ -133,9 +132,9 @@ export class VerificationService {
       channel.reject(message, false)
       try {
         const data = JSON.parse(message.content.toString()) as RabbitMessageDto
-        const throwerErrorGuard: ThrowerErrorGuard = new ThrowerErrorGuard()
+        const errorFactoryService = new ErrorFactoryService()
         const prismaService = new PrismaService(getBaConfigInstance())
-        const cognitoSubservice = new CognitoSubservice(throwerErrorGuard, getBaConfigInstance())
+        const cognitoSubservice = new CognitoSubservice(errorFactoryService, getBaConfigInstance())
         const userTierService = new UserTierService(cognitoSubservice, prismaService)
         await userTierService.changeTier(
           data.msg.user.idUser,
@@ -144,7 +143,7 @@ export class VerificationService {
         )
 
         const bloomreachContactDatabaseService = new BloomreachContactDatabaseService(
-          throwerErrorGuard,
+          errorFactoryService,
           getBloomreachContactDatabase()
         )
 
@@ -158,7 +157,7 @@ export class VerificationService {
         const bloomreachOutboxService = new BloomreachOutboxService(
           prismaService,
           bloomreachPayloadBuilder,
-          throwerErrorGuard,
+          errorFactoryService,
           getBaConfigInstance()
         )
 

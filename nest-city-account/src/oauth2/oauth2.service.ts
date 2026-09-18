@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from 'node:crypto'
 
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import * as jwt from 'jsonwebtoken'
 
@@ -7,7 +8,6 @@ import BaConfigService from '../config/ba-config.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { decryptData, encryptData, timingSafeStringEqual } from '../utils/crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { deserializeTokenData, serializeTokenData, TokenData } from '../utils/tokenSerialization'
 import {
   AuthorizationRequestDto,

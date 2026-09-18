@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice, toLogfmt } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../prisma/prisma.service'
@@ -9,10 +10,7 @@ import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
 import { UserService } from '../user/user.service'
 import { VerificationDataForUserResponseDto } from '../user-verification/dtos/verification-response.dto'
 import { VerificationService } from '../user-verification/verification.service'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { ManuallyVerifyUserRequestDto } from './dtos/requests.admin.dto'
 import { OnlySuccessDto, UserVerifyState } from './dtos/responses.admin.dto'
 import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
@@ -73,11 +71,11 @@ export class AdminService {
 
     for (const user of cognitoUsers) {
       if (!user.sub || !user.email) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          UserErrorsEnum.COGNITO_TYPE_ERROR,
-          UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
-          toLogfmt(user)
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          console: toLogfmt(user),
+        })
       }
     }
 

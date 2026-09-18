@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -7,8 +8,6 @@ import { ConnectionPool } from 'mssql'
 import prismaMock from '../../../../test/singleton'
 import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
-import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { NorisConnectionService } from '../noris-connection.service'
 
 jest.mock('mssql', () => ({

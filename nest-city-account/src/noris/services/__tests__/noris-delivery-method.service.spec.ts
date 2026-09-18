@@ -1,8 +1,8 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { DeliveryMethod, IsInCityAccount } from '../../types/noris.enums'
 import { NorisConnectionService } from '../noris-connection.service'
 import {

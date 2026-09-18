@@ -1,11 +1,9 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { QueueItemStatusEnum } from '../generated/prisma/enums'
 import { getUpvsDeathDate, NasesService } from '../nases/nases.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { selectUriToUpdateInternal } from './upvs-queue.queries'
 
 @Injectable()

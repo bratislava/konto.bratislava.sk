@@ -1,13 +1,12 @@
 import { createPublicKey } from 'node:crypto'
 
+import { ErrorEnum, ErrorFactoryService, ErrorResponseEnum } from '@bratislava/log-nest'
 import { HttpException, Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { createVerify } from 'crypto'
 import { Strategy as CustomStrategy } from 'passport-custom'
 
 import BaConfigService from '../../config/ba-config.service'
-import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { NonceService } from '../services/nonce.service'
 import { SignaturePublicKey } from '../types/signature-public-key.enum'
 import { SignatureRequest } from '../types/signature-request.types'

@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { BloomreachContactDatabaseService } from '../../bloomreach/bloomreach-contact-database.service'
@@ -5,10 +6,6 @@ import { BloomreachOutboxService } from '../../bloomreach/bloomreach-outbox.serv
 import { CognitoUserAttributesTierEnum } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import { CognitoGetUserData, CognitoUserAttributesEnum } from '../../utils/global-dtos/cognito.dto'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { toLogfmt } from '../../utils/logging'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { UserIdentitySubservice } from '../../utils/subservices/user-identity.subservice'
 import { PaasMpaRegisterResponseDto, PaasMpaRegisterStatusEnum } from './dtos/paas-mpa.dto'
 

@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -8,7 +9,6 @@ import { ExternalEdeskCheck } from '../../generated/prisma/client'
 import { QueueItemStatusEnum } from '../../generated/prisma/enums'
 import { GetIdentitiesByUrisResult, NasesService } from '../../nases/nases.service'
 import { PrismaService } from '../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { EdeskUriUpdateService } from '../edesk-uri-update.service'
 
 describe('EdeskUriUpdateService', () => {

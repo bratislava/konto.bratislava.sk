@@ -1,9 +1,8 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
 
 import BaConfigService from '../../config/ba-config.service'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { ErrorsEnum } from './dtos/error.dto'
 
 @Injectable()
 export class HttpsGuard implements CanActivate {

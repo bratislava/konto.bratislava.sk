@@ -1,4 +1,5 @@
 // TODO - communication state to LEGAL_ENTITY
+import { ErrorFactoryService, LineLoggerSubservice, toLogfmt } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
@@ -28,10 +29,7 @@ import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   ResponseLegalPersonDataDto,
   ResponseLegalPersonDataSimpleDto,

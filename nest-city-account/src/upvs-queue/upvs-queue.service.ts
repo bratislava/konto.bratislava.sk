@@ -1,9 +1,8 @@
+import { LineLoggerSubservice, toLogfmt } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { QueueItemStatusEnum } from '../generated/prisma/enums'
 import { PrismaService } from '../prisma/prisma.service'
-import { toLogfmt } from '../utils/logging'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { EdeskBatchUpdateService } from './edesk-batch-update.service'
 import { EdeskUriUpdateService } from './edesk-uri-update.service'
 import { UrgentLookupService } from './urgent-lookup.service'

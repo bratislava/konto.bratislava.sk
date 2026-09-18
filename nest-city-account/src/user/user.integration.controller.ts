@@ -1,3 +1,4 @@
+import { AllowList } from '@bratislava/log-nest'
 import { Controller, Get, HttpCode, Param, UseGuards } from '@nestjs/common'
 import {
   ApiExtraModels,

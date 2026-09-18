@@ -1,3 +1,10 @@
+import {
+  AppLoggerMiddleware,
+  birthNumberRedactor,
+  emailRedactor,
+  NestLoggingModule,
+  SanitizationModule,
+} from '@bratislava/log-nest'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ScheduleModule } from '@nestjs/schedule'
 
@@ -17,13 +24,25 @@ import { TasksModule } from './tasks/tasks.module'
 import { TowingModule } from './towing/towing.module'
 import { UserModule } from './user/user.module'
 import { VerificationModule } from './user-verification/verification.module'
-import AppLoggerMiddleware from './utils/middlewares/logger.service'
+import alertReporting from './utils/constants/error.alerts'
 import { SharedModule } from './utils/subservices/shared.module'
 
 @Module({
   imports: [
     BaConfigModule,
     PrismaModule,
+    NestLoggingModule.forRoot({ alertReporting }),
+    SanitizationModule.forRoot({
+      redactors: [emailRedactor, birthNumberRedactor],
+      allowShape: {
+        message: true,
+        error: true,
+        statusCode: true,
+        status: true,
+        errorName: true,
+      },
+      onDisallowed: 'redact',
+    }),
     AuthModule,
     UserModule,
     VerificationModule,

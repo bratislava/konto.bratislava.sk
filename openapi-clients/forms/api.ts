@@ -368,6 +368,10 @@ export interface GetFormResponseSimpleDto {
    * Slug of the form definition
    */
   formDefinitionSlug: string
+  /**
+   * Date when the form was sent. For forms sent before this field existed, the value was backfilled manually from logs and PDF export timestamps, so it may be missing or approximate for historical forms.
+   */
+  formSentAt: string | null
 }
 
 export const GetFormResponseSimpleDtoStateEnum = {

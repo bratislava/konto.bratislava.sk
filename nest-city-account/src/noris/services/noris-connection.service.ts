@@ -24,12 +24,11 @@ export class NorisConnectionService implements OnModuleDestroy {
       await connection.close()
     } catch (error) {
       this.logger.warn(
-        this.throwerErrorGuard.BadRequestException(
-          ErrorsEnum.BAD_REQUEST_ERROR,
-          'Failed to close MSSQL connection on shutdown',
-          undefined,
-          error
-        )
+        this.errorFactoryService.BadRequestException({
+          errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+          message: 'Failed to close MSSQL connection on shutdown',
+          error,
+        })
       )
     }
   }
@@ -77,7 +76,6 @@ export class NorisConnectionService implements OnModuleDestroy {
     if (error instanceof MSSQLError) {
       const mssqlErrorDetails = {
         code: error.code,
-        message: error.message,
         name: error.name,
       }
       return `${errorMessage}: ${JSON.stringify(mssqlErrorDetails)}`
@@ -86,12 +84,11 @@ export class NorisConnectionService implements OnModuleDestroy {
   }
 
   private getNorisUrgentError(errorMessage: string, error: unknown) {
-    return this.throwerErrorGuard.InternalServerErrorException(
-      ErrorsEnum.INTERNAL_SERVER_ERROR,
-      this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
-      undefined,
-      error
-    )
+    return this.errorFactoryService.InternalServerErrorException({
+      errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+      message: this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+      error,
+    })
   }
 
   private async handleDatabaseError(error: unknown, errorMessage: string): Promise<never> {
@@ -107,12 +104,11 @@ export class NorisConnectionService implements OnModuleDestroy {
         WHERE "key" = ${NORIS_SILENT_CONNECTION_ERRORS_KEY}
       `
 
-      throw this.throwerErrorGuard.BadRequestException(
-        CustomErrorNorisTypesEnum.CONNECTION_ERROR,
-        this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
-        undefined,
-        error
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
+        message: this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+        error,
+      })
     }
 
     throw this.getNorisUrgentError(errorMessage, error)

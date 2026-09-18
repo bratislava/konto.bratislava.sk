@@ -39,12 +39,12 @@ export class BloomreachOutboxService {
       this.logger.debug(`Queued customers command for ${externalId}`)
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to queue customer tracking',
-          toLogfmt({ externalId, hasPhoneNumber: !!phoneNumber }),
-          error
-        )
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to queue customer tracking',
+          console: { externalId, hasPhoneNumber: !!phoneNumber },
+          error,
+        })
       )
     }
   }
@@ -67,11 +67,11 @@ export class BloomreachOutboxService {
 
     if (!externalId) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `No externalId for ${userType}, skipping trackConsents`,
-          toLogfmt({ userId, userType })
-        )
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `No externalId for ${userType}, skipping trackConsents`,
+          console: { userId, userType },
+        })
       )
       return
     }
@@ -88,12 +88,12 @@ export class BloomreachOutboxService {
       this.logger.debug(`Queued ${commands.length} consent events for ${userType} ${externalId}`)
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to queue consent events',
-          toLogfmt({ externalId, userType, eventCount: consents.length }),
-          error
-        )
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to queue consent events',
+          console: { externalId, userType, eventCount: consents.length },
+          error,
+        })
       )
     }
   }
@@ -119,12 +119,12 @@ export class BloomreachOutboxService {
       this.logger.debug(`Queued anonymize commands for ${externalId}`)
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to queue anonymize commands',
-          toLogfmt({ externalId }),
-          error
-        )
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to queue anonymize commands',
+          console: { externalId },
+          error,
+        })
       )
     }
   }

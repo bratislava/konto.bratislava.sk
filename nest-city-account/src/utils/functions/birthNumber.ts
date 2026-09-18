@@ -6,7 +6,8 @@ export function addSlashToBirthNumber(birthNumber: string): string {
     const errorFactoryService = new ErrorFactoryService()
     throw errorFactoryService.InternalServerErrorException({
       errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-      message: `Invalid birth number passed to addSlashToBirthNumber ${birthNumber}`,
+      message: 'Invalid birth number passed to addSlashToBirthNumber',
+      console: `anonymized invalid birthnumber: '${birthNumber.replaceAll(/\d/g, 'X')}'`,
     })
   }
   return birthNumber.includes('/')

@@ -186,11 +186,11 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     if (state) {
       if (errorResponse.state && errorResponse.state !== state) {
         this.logger.warn(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'State mismatch detected, using original request state',
-            toLogfmt({ originalState: state, errorState: errorResponse.state })
-          )
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: 'State mismatch detected, using original request state',
+            console: { originalState: state, errorState: errorResponse.state },
+          })
         )
       }
       errorResponse.state = state
@@ -308,11 +308,11 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     const validationErrors = validateSync(validationInstance, { skipMissingProperties: true })
     if (validationErrors.length > 0) {
       this.logger.warn(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to create valid OAuth2AuthorizationErrorDto',
-          toLogfmt({ validationErrors: validationErrors.map((e) => e.toString()) })
-        )
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to create valid OAuth2AuthorizationErrorDto',
+          console: { validationErrors: validationErrors.map((e) => e.toString()) },
+        })
       )
       // Fallback to a valid error
       return {
@@ -368,11 +368,11 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     const validationErrors = validateSync(validationInstance, { skipMissingProperties: true })
     if (validationErrors.length > 0) {
       this.logger.warn(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to create valid OAuth2TokenErrorDto',
-          toLogfmt({ validationErrors: validationErrors.map((e) => e.toString()) })
-        )
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to create valid OAuth2TokenErrorDto',
+          console: { validationErrors: validationErrors.map((e) => e.toString()) },
+        })
       )
       // Fallback to a valid error
       return {

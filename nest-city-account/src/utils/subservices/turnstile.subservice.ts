@@ -41,18 +41,17 @@ export class TurnstileSubservice {
     try {
       result = await this.turnstile(token)
     } catch (error) {
-      throw this.throwerErrorGuard.BadRequestException(
-        VerificationErrorsEnum.INVALID_CAPTCHA,
-        VerificationErrorsResponseEnum.INVALID_CAPTCHA,
-        undefined,
-        error
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: VerificationErrorsEnum.INVALID_CAPTCHA,
+        message: VerificationErrorsResponseEnum.INVALID_CAPTCHA,
+        error,
+      })
     }
     if (!result.success) {
-      throw this.throwerErrorGuard.BadRequestException(
-        VerificationErrorsEnum.INVALID_CAPTCHA,
-        VerificationErrorsResponseEnum.INVALID_CAPTCHA
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: VerificationErrorsEnum.INVALID_CAPTCHA,
+        message: VerificationErrorsResponseEnum.INVALID_CAPTCHA,
+      })
     }
   }
 }

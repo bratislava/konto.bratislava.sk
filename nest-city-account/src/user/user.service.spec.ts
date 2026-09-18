@@ -258,7 +258,7 @@ describe('UserService', () => {
         [CognitoUserAttributesEnum.ACCOUNT_TYPE]:
           'unknown' as unknown as CognitoUserAccountTypesEnum,
       })
-      throwerErrorGuard.UnprocessableEntityException.mockReturnValueOnce(
+      errorFactoryService.UnprocessableEntityException.mockReturnValueOnce(
         new Error('invalid account type') as never
       )
 
@@ -266,7 +266,7 @@ describe('UserService', () => {
         service.updateGdprConsent(cognitoUserData, ConsentEnum.MARKETING, true)
       ).rejects.toThrow('invalid account type')
 
-      expect(throwerErrorGuard.UnprocessableEntityException).toHaveBeenCalled()
+      expect(errorFactoryService.UnprocessableEntityException).toHaveBeenCalled()
       expect(userDataSubservice.setUserConsents).not.toHaveBeenCalled()
       expect(userDataSubservice.setLegalPersonConsents).not.toHaveBeenCalled()
     })
@@ -298,7 +298,7 @@ describe('UserService', () => {
       const cognitoUserData = cognitoUserDataFactory({
         [CognitoUserAttributesEnum.ACCOUNT_TYPE]: accountType,
       })
-      throwerErrorGuard.UnprocessableEntityException.mockReturnValueOnce(
+      errorFactoryService.UnprocessableEntityException.mockReturnValueOnce(
         new Error('invalid account type') as never
       )
 

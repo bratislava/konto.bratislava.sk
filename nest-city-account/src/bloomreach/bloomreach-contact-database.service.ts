@@ -43,12 +43,12 @@ export class BloomreachContactDatabaseService {
         /* eslint-disable-next-line no-await-in-loop -- intentional sequential retries */
         return await this.handleUpsert(email, birthNumber, ico)
       } catch (error) {
-        loggedError = this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Failed to upsert bloomreach contact on attempt: ${attempt}`,
-          toLogfmt({ email, hasBirthNumber: !!birthNumber, hasIco: !!ico, attempt }),
-          error
-        )
+        loggedError = this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Failed to upsert bloomreach contact on attempt: ${attempt}`,
+          console: { email, hasBirthNumber: !!birthNumber, hasIco: !!ico, attempt },
+          error,
+        })
         this.logger.error(loggedError.message) // this won't alert
       }
     }

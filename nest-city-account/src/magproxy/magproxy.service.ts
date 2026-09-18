@@ -66,14 +66,14 @@ export class MagproxyService {
         })
         .catch((error: unknown) => {
           if (!isAxiosError(error)) {
-            throw this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-              'Error is not an instance of AxiosError',
-              error
-            )
+            throw this.errorFactoryService.InternalServerErrorException({
+              errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+              message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+              console: 'Error is not an instance of AxiosError',
+              error,
+            })
           }
-          throw this.throwerErrorGuard.fromAxiosError(error, {
+          throw this.errorFactoryService.fromAxiosError(error, {
             errorEnumOverwrite: MagproxyErrorsEnum.RFO_ACCESS_ERROR,
             message: MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
             console: JSON.stringify(error.response?.data),
@@ -95,10 +95,10 @@ export class MagproxyService {
       )
       if (!Array.isArray(data)) {
         this.logger.error('Invalid data received (expected array), aborting.')
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          MagproxyErrorsEnum.RFO_DATA_ARRAY_EXPECTED,
-          MagproxyErrorsResponseEnum.RFO_DATA_ARRAY_EXPECTED
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: MagproxyErrorsEnum.RFO_DATA_ARRAY_EXPECTED,
+          message: MagproxyErrorsResponseEnum.RFO_DATA_ARRAY_EXPECTED,
+        })
       }
     }
 
@@ -124,18 +124,18 @@ export class MagproxyService {
       return { success: true as const, data: validatedData }
     } catch (error) {
       if (!isAxiosError(error)) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          'Error is not an instance of AxiosError',
-          error
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+          console: 'Error is not an instance of AxiosError',
+          error,
+        })
       }
       if (error.response?.status === HttpStatus.NOT_FOUND) {
         // Non-retryable error. Return failure.
         return { success: false as const, reason: MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
       }
-      throw this.throwerErrorGuard.fromAxiosError(error, {
+      throw this.errorFactoryService.fromAxiosError(error, {
         statusOverrides: {
           [HttpStatus.UNAUTHORIZED]: {
             status: HttpStatus.UNAUTHORIZED,
@@ -169,12 +169,12 @@ export class MagproxyService {
       })
       .catch((error: unknown) => {
         if (!isAxiosError(error)) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-            'Error is not an instance of AxiosError',
-            error
-          )
+          throw this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+            console: 'Error is not an instance of AxiosError',
+            error,
+          })
         }
 
         if (error.response?.status === HttpStatus.NOT_FOUND) {
@@ -182,7 +182,7 @@ export class MagproxyService {
           return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
         }
 
-        throw this.throwerErrorGuard.fromAxiosError(error, {
+        throw this.errorFactoryService.fromAxiosError(error, {
           statusOverrides: {
             [HttpStatus.UNAUTHORIZED]: {
               status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -214,18 +214,18 @@ export class MagproxyService {
       })
       .catch((error: unknown) => {
         if (!isAxiosError(error)) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-            'Error is not an instance of AxiosError',
-            error
-          )
+          throw this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+            console: 'Error is not an instance of AxiosError',
+            error,
+          })
         }
         if (error.response?.status === HttpStatus.NOT_FOUND) {
           // Non-retryable error. Return failure.
           return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
         }
-        throw this.throwerErrorGuard.fromAxiosError(error, {
+        throw this.errorFactoryService.fromAxiosError(error, {
           statusOverrides: {
             [HttpStatus.UNAUTHORIZED]: {
               status: HttpStatus.UNPROCESSABLE_ENTITY,

@@ -119,10 +119,10 @@ export class UserDataSubservice {
         return omit(user, ['ifo'])
       }
 
-      throw this.throwerErrorGuard.ForbiddenException(
-        UserErrorsEnum.USER_IS_DECEASED,
-        UserErrorsResponseEnum.USER_IS_DECEASED
-      )
+      throw this.errorFactoryService.ForbiddenException({
+        errorEnum: UserErrorsEnum.USER_IS_DECEASED,
+        message: UserErrorsResponseEnum.USER_IS_DECEASED,
+      })
     }
 
     // user found, update data
@@ -455,10 +455,10 @@ export class UserDataSubservice {
       },
     })
     if (!user) {
-      throw this.throwerErrorGuard.NotFoundException(
-        ErrorsEnum.NOT_FOUND_ERROR,
-        ErrorsResponseEnum.NOT_FOUND_ERROR
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: ErrorEnum.NOT_FOUND_ERROR,
+        message: ErrorResponseEnum.NOT_FOUND_ERROR,
+      })
     }
 
     const active = user.physicalEntity?.activeEdesk

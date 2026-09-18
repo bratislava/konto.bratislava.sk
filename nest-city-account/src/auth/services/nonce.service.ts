@@ -34,20 +34,20 @@ export class NonceService {
    */
   async validateAndMarkUsed(nonce: string, publicKeyEnvVar: string): Promise<boolean> {
     if (!nonce) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Missing X-Nonce header'
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Missing X-Nonce header',
+      })
     }
 
     // Nonce must be at least 64 bits (16 hex characters) for sufficient entropy
     if (nonce.length < 16) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Invalid X-Nonce format. Must be at least 16 characters'
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Invalid X-Nonce format. Must be at least 16 characters',
+      })
     }
 
     const key = this.buildNonceKey(publicKeyEnvVar, nonce)
@@ -57,11 +57,11 @@ export class NonceService {
       const existingNonce = await this.cacheManager.get(key)
 
       if (existingNonce) {
-        throw this.throwerErrorGuard.UnauthorizedException(
-          ErrorsEnum.UNAUTHORIZED_ERROR,
-          ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-          'Nonce has already been used. This request may be a replay attack.'
-        )
+        throw this.errorFactoryService.UnauthorizedException({
+          errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+          message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+          console: 'Nonce has already been used. This request may be a replay attack.',
+        })
       }
 
       // Mark nonce as used by storing it in cache with TTL
@@ -76,12 +76,12 @@ export class NonceService {
       }
 
       // Wrap Redis/cache errors
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Failed to validate nonce',
-        error instanceof Error ? error : undefined
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Failed to validate nonce',
+        error: error instanceof Error ? error : undefined,
+      })
     }
   }
 

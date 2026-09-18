@@ -54,26 +54,26 @@ export class TowingService {
       return data
     } catch (error) {
       if (!isAxiosError(error)) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          toLogfmt({ ecv, url }),
-          error
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+          console: { ecv, url },
+          error,
+        })
       }
 
       if (!error.response) {
-        throw this.throwerErrorGuard.ServiceUnavailableException(
-          TowingErrorsEnum.ENFORCEMENT_BACKEND_UNAVAILABLE,
-          TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_UNAVAILABLE,
-          toLogfmt({ ecv, url, code: error.code }),
-          error
-        )
+        throw this.errorFactoryService.ServiceUnavailableException({
+          errorEnum: TowingErrorsEnum.ENFORCEMENT_BACKEND_UNAVAILABLE,
+          message: TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_UNAVAILABLE,
+          console: { ecv, url, code: error.code },
+          error,
+        })
       }
 
-      throw this.throwerErrorGuard.fromAxiosError(error, {
+      throw this.errorFactoryService.fromAxiosError(error, {
         message: TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_UNEXPECTED_RESPONSE,
-        console: toLogfmt({ ecv, url, status: error.response.status }),
+        console: { ecv, url, status: error.response.status },
         statusOverrides: {
           [HttpStatus.NOT_FOUND]: {
             status: HttpStatus.NOT_FOUND,

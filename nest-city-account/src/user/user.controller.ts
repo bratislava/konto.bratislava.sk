@@ -161,10 +161,10 @@ export class UserController {
       case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
         return this.userService.removeLegalPersonBirthNumber(user.idUser)
       default:
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          UserErrorsEnum.COGNITO_TYPE_ERROR,
-          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        })
     }
   }
 
@@ -200,10 +200,10 @@ export class UserController {
         result = await this.userService.changeLegalPersonEmail(user.sub, body.newEmail)
         break
       default:
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          UserErrorsEnum.COGNITO_TYPE_ERROR,
-          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        })
     }
 
     await this.bloomreachOutboxService.trackCustomer(user.idUser)

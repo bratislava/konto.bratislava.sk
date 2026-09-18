@@ -108,7 +108,9 @@ describe('EdeskBatchUpdateService', () => {
 
     await service.updateEdeskStatusBatch()
 
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('external_edesk_death_date'))
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ event: 'external_edesk_death_date' })
+    )
   })
 
   it('requeues possible URI changes and flags the entities outdated', async () => {

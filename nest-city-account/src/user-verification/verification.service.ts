@@ -93,12 +93,11 @@ export class VerificationService {
       )
       await this.bloomreachOutboxService.trackCustomer(user.idUser)
     } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
-        SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
-        undefined,
-        error
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
+        message: SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+        error,
+      })
     }
 
     try {
@@ -109,12 +108,11 @@ export class VerificationService {
 
       await this.addEncryptedVerificationDataToDatabase(user, data, type)
     } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        SendToQueueErrorsEnum.RABBIT_PUSH_DATA_ERROR,
-        SendToQueueErrorsResponseEnum.RABBIT_PUSH_DATA_ERROR,
-        undefined,
-        error
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: SendToQueueErrorsEnum.RABBIT_PUSH_DATA_ERROR,
+        message: SendToQueueErrorsResponseEnum.RABBIT_PUSH_DATA_ERROR,
+        error,
+      })
     }
 
     return {
@@ -339,12 +337,11 @@ export class VerificationService {
       // we do this only to verify that the token is valid, we don't need the result
       await this.nasesService.getUpvsIdentity(jwtToken)
     } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        VerificationErrorsEnum.VERIFY_EID_ERROR,
-        VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-        undefined,
-        error
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
+        message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+        error,
+      })
     }
 
     const base64Payload = oboToken.split('.')[1]
@@ -354,11 +351,11 @@ export class VerificationService {
 
     const birthNumber = extractBirthNumberFromUri(payload.actor.sub)
     if (!birthNumber) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        VerificationErrorsEnum.VERIFY_EID_ERROR,
-        VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-        'Failed to retrieve birth number from URI'
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
+        message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+        console: 'Failed to retrieve birth number from URI',
+      })
     }
 
     if (
@@ -366,10 +363,10 @@ export class VerificationService {
         CognitoUserAccountTypesEnum.PHYSICAL_ENTITY &&
       type !== 'rc'
     ) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        VerificationErrorsEnum.VERIFY_EID_ERROR,
-        VerificationErrorsResponseEnum.BIRTH_NUMBER_NOT_PROVIDED
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
+        message: VerificationErrorsResponseEnum.BIRTH_NUMBER_NOT_PROVIDED,
+      })
     }
     if (
       (user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
@@ -377,10 +374,10 @@ export class VerificationService {
           CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY) &&
       type !== 'ico'
     ) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        VerificationErrorsEnum.VERIFY_EID_ERROR,
-        VerificationErrorsResponseEnum.ICO_NOT_PROVIDED
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
+        message: VerificationErrorsResponseEnum.ICO_NOT_PROVIDED,
+      })
     }
 
     if (type === 'rc') {
@@ -391,22 +388,22 @@ export class VerificationService {
         0
       )
       if (!response.success) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.VERIFY_EID_ERROR,
-          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          'Failed to verify FO with birth number'
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
+          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          console: 'Failed to verify FO with birth number',
+        })
       }
     }
 
     if (type === 'ico') {
       const ico = extractIcoFromUri(payload.sub)
       if (!ico) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.VERIFY_EID_ERROR,
-          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          'Failed to retrieve ico from URI'
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
+          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          console: 'Failed to retrieve ico from URI',
+        })
       }
       const response =
         await this.verificationDataSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
@@ -415,11 +412,11 @@ export class VerificationService {
           birthNumber
         )
       if (!response.success) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.VERIFY_EID_ERROR,
-          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          'Failed to verify PO with ico and birth number'
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
+          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          console: 'Failed to verify PO with ico and birth number',
+        })
       }
     }
 
@@ -432,10 +429,10 @@ export class VerificationService {
 
     const newUserData = await this.cognitoSubservice.getDataFromCognito(user.idUser)
     if (newUserData[CognitoUserAttributesEnum.TIER] !== CognitoUserAttributesTierEnum.EID) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
-        SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
+        message: SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+      })
     }
 
     return {
@@ -631,10 +628,10 @@ export class VerificationService {
     })
 
     if (!user) {
-      throw this.throwerErrorGuard.NotFoundException(
-        UserErrorsEnum.USER_NOT_FOUND,
-        UserErrorsResponseEnum.USER_NOT_FOUND
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: UserErrorsEnum.USER_NOT_FOUND,
+        message: UserErrorsResponseEnum.USER_NOT_FOUND,
+      })
     }
 
     const verifyData = await this.prisma.userIdCardVerify.findMany({
@@ -705,26 +702,26 @@ export class VerificationService {
       })
     }
     if (!user) {
-      throw this.throwerErrorGuard.NotFoundException(
-        UserErrorsEnum.USER_NOT_FOUND,
-        UserErrorsResponseEnum.USER_NOT_FOUND
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: UserErrorsEnum.USER_NOT_FOUND,
+        message: UserErrorsResponseEnum.USER_NOT_FOUND,
+      })
     }
 
     if (!user.externalId) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        UserErrorsEnum.NO_EXTERNAL_ID,
-        UserErrorsResponseEnum.NO_EXTERNAL_ID
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: UserErrorsEnum.NO_EXTERNAL_ID,
+        message: UserErrorsResponseEnum.NO_EXTERNAL_ID,
+      })
     }
 
     // Update the database
     if (isLegalPerson) {
       if (!data.ico) {
-        throw this.throwerErrorGuard.BadRequestException(
-          VerificationErrorsEnum.ICO_NOT_PROVIDED,
-          VerificationErrorsResponseEnum.ICO_NOT_PROVIDED
-        )
+        throw this.errorFactoryService.BadRequestException({
+          errorEnum: VerificationErrorsEnum.ICO_NOT_PROVIDED,
+          message: VerificationErrorsResponseEnum.ICO_NOT_PROVIDED,
+        })
       }
 
       await this.prisma.legalPerson.update({
@@ -739,10 +736,10 @@ export class VerificationService {
       })
     } else {
       if (!data.ifo) {
-        throw this.throwerErrorGuard.BadRequestException(
-          VerificationErrorsEnum.IFO_NOT_PROVIDED,
-          VerificationErrorsResponseEnum.IFO_NOT_PROVIDED
-        )
+        throw this.errorFactoryService.BadRequestException({
+          errorEnum: VerificationErrorsEnum.IFO_NOT_PROVIDED,
+          message: VerificationErrorsResponseEnum.IFO_NOT_PROVIDED,
+        })
       }
 
       await this.prisma.user.update({

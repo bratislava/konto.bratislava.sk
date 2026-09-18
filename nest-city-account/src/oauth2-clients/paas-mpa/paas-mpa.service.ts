@@ -39,17 +39,17 @@ export class PaasMpaService {
       return await this.bloomreachContactDatabaseService.upsert(user.email, birthNumber, ico)
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Failed to upsert bloomreach contact`,
-          toLogfmt({
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Failed to upsert bloomreach contact`,
+          console: {
             userId: user.idUser,
             email: user.email,
             hasBirthNumber: !!birthNumber,
             hasIco: !!ico,
-          }),
-          error
-        )
+          },
+          error,
+        })
       )
       return undefined
     }
@@ -114,16 +114,16 @@ export class PaasMpaService {
       return await this.handleRegisterPhoneAndGetContactId(user, phoneNumber)
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Unexpected error during PAAS-MPA contact registration for user: ${user.idUser}`,
-          toLogfmt({
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Unexpected error during PAAS-MPA contact registration for user: ${user.idUser}`,
+          console: {
             userId: user.idUser,
             email: user.email,
             hasPhoneNumber: !!phoneNumber,
-          }),
-          error
-        )
+          },
+          error,
+        })
       )
 
       return {

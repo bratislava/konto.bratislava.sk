@@ -88,7 +88,7 @@ describe('EdeskUriUpdateService', () => {
         failed: [{ inputUri: 'rc://sk/old', possibleUriChange: false }],
       } satisfies GetIdentitiesByUrisResult)
       jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
+        .spyOn(errorFactoryService, 'InternalServerErrorException')
         .mockReturnValue(new HttpException('failed to update', HttpStatus.INTERNAL_SERVER_ERROR))
 
       await expect(
@@ -110,7 +110,7 @@ describe('EdeskUriUpdateService', () => {
         failed: [{ inputUri: 'rc://sk/old', possibleUriChange: true }],
       } satisfies GetIdentitiesByUrisResult)
       jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
+        .spyOn(errorFactoryService, 'InternalServerErrorException')
         .mockReturnValue(new HttpException('failed to update', HttpStatus.INTERNAL_SERVER_ERROR))
 
       await expect(

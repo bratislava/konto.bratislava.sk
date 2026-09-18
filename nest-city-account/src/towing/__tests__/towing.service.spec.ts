@@ -186,7 +186,7 @@ describe('TowingService', () => {
           const httpError = error as HttpException
           expect(httpError.getStatus()).toBe(HttpStatus.BAD_GATEWAY)
           expect((httpError.getResponse() as { errorName: string }).errorName).toBe(
-            ErrorsEnum.BAD_GATEWAY_AUTH_ERROR
+            ErrorEnum.BAD_GATEWAY_AUTH_ERROR
           )
         }
       }
@@ -207,7 +207,7 @@ describe('TowingService', () => {
         const httpError = error as HttpException
         expect(httpError.getStatus()).toBe(HttpStatus.BAD_GATEWAY)
         expect((httpError.getResponse() as { errorName: string }).errorName).toBe(
-          ErrorsEnum.BAD_GATEWAY_ERROR
+          ErrorEnum.BAD_GATEWAY_ERROR
         )
       }
     })

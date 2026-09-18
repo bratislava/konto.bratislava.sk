@@ -9,6 +9,7 @@ import { CognitoGuard } from './guards/cognito.guard'
 @ApiTags('Auth')
 @ApiBearerAuth()
 @Controller('auth')
+@AllowList({ idUser: true, sub: true })
 export class AuthController {
   @HttpCode(200)
   @ApiOperation({

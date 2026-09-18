@@ -15,6 +15,7 @@ import { DpbUserDto, DPBUserLoginStatistics } from './dtos/user.dto'
 @ApiTags('DPB')
 @ApiBearerAuth()
 @Controller('dpb')
+@AllowList({ id: true })
 export class DpbController {
   constructor(private readonly dpbService: DpbService) {}
 

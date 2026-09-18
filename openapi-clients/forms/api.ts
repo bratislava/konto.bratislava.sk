@@ -368,6 +368,10 @@ export interface GetFormResponseSimpleDto {
    * Slug of the form definition
    */
   formDefinitionSlug: string
+  /**
+   * Date when the form was sent
+   */
+  formSentAt: string | null
 }
 
 export const GetFormResponseSimpleDtoStateEnum = {

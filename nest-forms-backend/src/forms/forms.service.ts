@@ -312,6 +312,7 @@ export default class FormsService {
         error: true,
         formDataJson: true,
         formDefinitionSlug: true,
+        formSentAt: true,
       },
     })
 

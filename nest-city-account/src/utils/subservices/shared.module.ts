@@ -3,7 +3,6 @@ import { Global, Module } from '@nestjs/common'
 
 import ClientsModule from '../../clients/clients.module'
 import { PrismaModule } from '../../prisma/prisma.module'
-import ThrowerErrorGuard from '../guards/errors.guard'
 import { CognitoSubservice } from './cognito.subservice'
 import { TurnstileSubservice } from './turnstile.subservice'
 import { UserIdentitySubservice } from './user-identity.subservice'
@@ -20,7 +19,6 @@ import { UserIdentitySubservice } from './user-identity.subservice'
  *
  * ## What can be provided:
  * - Subservices: Reusable business logic services (e.g., CognitoSubservice)
- * - Guards: Global guards like ThrowerErrorGuard
  * - Utilities: Cross-cutting concerns that don't belong to a specific feature
  *
  * ## What should NOT be added:
@@ -35,7 +33,7 @@ import { UserIdentitySubservice } from './user-identity.subservice'
 @Global()
 @Module({
   imports: [PrismaModule, ClientsModule], // Only leaf modules can be imported here.
-  providers: [ThrowerErrorGuard, CognitoSubservice, TurnstileSubservice, UserIdentitySubservice],
-  exports: [ThrowerErrorGuard, CognitoSubservice, TurnstileSubservice, UserIdentitySubservice],
+  providers: [CognitoSubservice, TurnstileSubservice, UserIdentitySubservice],
+  exports: [CognitoSubservice, TurnstileSubservice, UserIdentitySubservice],
 })
 export class SharedModule {}

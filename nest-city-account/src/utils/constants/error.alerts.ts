@@ -1,3 +1,5 @@
+import { ErrorEnum } from '@bratislava/log-nest'
+
 import { MagproxyErrorsEnum } from '../../magproxy/magproxy.errors.enum'
 import { UserErrorsEnum } from '../../user/user.error.enum'
 import {
@@ -5,7 +7,6 @@ import {
   VerificationErrorsEnum,
 } from '../../user-verification/verification.errors.enum'
 import { DeliveryMethodErrorsEnum } from '../guards/dtos/delivery-method.error'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
 
 /**
  * This set contains all of the errors, which should be alerted in grafana when they are thrown.
@@ -15,9 +16,9 @@ import { ErrorsEnum } from '../guards/dtos/error.dto'
  */
 export default [
   VerificationErrorsEnum.INVALID_CAPTCHA,
-  ErrorsEnum.DATABASE_ERROR,
-  ErrorsEnum.INTERNAL_SERVER_ERROR,
-  ErrorsEnum.BAD_GATEWAY_AUTH_ERROR,
+  ErrorEnum.DATABASE_ERROR,
+  ErrorEnum.INTERNAL_SERVER_ERROR,
+  ErrorEnum.BAD_GATEWAY_AUTH_ERROR,
   SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
   VerificationErrorsEnum.DATABASE_ERROR,
   SendToQueueErrorsEnum.RABBIT_PUSH_DATA_ERROR,

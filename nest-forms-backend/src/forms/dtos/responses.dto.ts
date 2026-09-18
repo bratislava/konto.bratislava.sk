@@ -111,7 +111,8 @@ export class GetFormResponseSimpleDto {
 
   @Type(() => Date)
   @ApiProperty({
-    description: 'Date when the form was sent',
+    description:
+      'Date when the form was sent. For forms sent before this field existed, the value was backfilled manually from logs and PDF export timestamps, so it may be missing or approximate for historical forms.',
     example: new Date('2026-01-01'),
     nullable: true,
   })

@@ -43,6 +43,8 @@ export class AdminController {
     type: UserVerifyState,
   })
   @UseGuards(AdminGuard)
+  // TODO: email is PII and shouldn't be a path param - it lands unredacted in every log
+  // line via `originalUrl`, which `@AllowList`/`@Redact` can't reach. Move to body/query.
   @Get('status/user/:email')
   async checkUserVerifyState(@Param('email') email: string): Promise<UserVerifyState> {
     const result = await this.adminService.checkUserVerifyState(email.toLowerCase())
@@ -96,6 +98,8 @@ export class AdminController {
     type: VerificationDataForUserResponseDto,
   })
   @UseGuards(AdminGuard)
+  // TODO: email is PII and shouldn't be a path param - it lands unredacted in every log
+  // line via `originalUrl`, which `@AllowList`/`@Redact` can't reach. Move to body/query.
   @Get('user/id-card-verification-data/:email')
   async getVerificationDataForUser(
     @Param('email') email: string
@@ -116,6 +120,9 @@ export class AdminController {
     type: OnlySuccessDto,
   })
   @UseGuards(AdminGuard)
+  @AllowList({ ico: true })
+  // TODO: email is PII and shouldn't be a path param - it lands unredacted in every log
+  // line via `originalUrl`, which `@AllowList`/`@Redact` can't reach. Move to body/query.
   @Post('user/verify-manually/:email')
   async verifyUserManually(
     @Param('email') email: string,

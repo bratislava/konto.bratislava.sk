@@ -17,6 +17,7 @@ export class TowingController {
 
   @Post('public/:ecv')
   @HttpCode(200)
+  @AllowList(true)
   @ApiOperation({
     summary: 'Public lookup of an active towing / relocation by license plate',
     description:

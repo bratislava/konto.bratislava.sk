@@ -18,6 +18,7 @@ export class PaasMpaController {
 
   @Post('register')
   @ClientName(OAuth2ClientName.PAAS_MPA)
+  @AllowList({ idUser: true, sub: true })
   @UseGuards(OAuth2AccessGuard)
   @ApiOperation({
     summary: 'Register phone number for a verified user in Bloomreach',

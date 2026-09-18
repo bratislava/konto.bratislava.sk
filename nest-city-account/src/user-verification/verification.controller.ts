@@ -22,6 +22,12 @@ import { VerificationService } from './verification.service'
 @ApiTags('User verifications')
 @ApiBearerAuth()
 @Controller('user-verification')
+@AllowList({
+  statusCode: true,
+  status: true,
+  message: true,
+  errorName: true,
+})
 export class VerificationController {
   constructor(
     private verificationService: VerificationService,

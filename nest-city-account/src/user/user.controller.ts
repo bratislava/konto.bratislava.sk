@@ -45,11 +45,18 @@ import { UserService } from './user.service'
 @ApiTags('Users manipulation')
 @ApiBearerAuth()
 @Controller('user')
+@AllowList({
+  id: true,
+  externalId: true,
+  ico: true,
+  loginClient: true,
+  grant: true,
+})
 export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly bloomreachOutboxService: BloomreachOutboxService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly errorFactoryService: ErrorFactoryService
   ) {}
 
   @HttpCode(200)

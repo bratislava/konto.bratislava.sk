@@ -33,7 +33,7 @@ const mockEmail = 'test@example.com'
 
 describe('TaxDeliveryMethodsTasksSubservice', () => {
   let service: TaxDeliveryMethodsTasksSubservice
-  let throwerErrorGuard: ThrowerErrorGuard
+  let errorFactoryService: ErrorFactoryService
 
   const mockGetBaConfigInstance = getBaConfigInstance as jest.MockedFunction<
     typeof getBaConfigInstance
@@ -63,7 +63,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         TaxDeliveryMethodsTasksSubservice,
         { provide: PrismaService, useValue: prismaMock },
         { provide: NorisDeliveryMethodService, useValue: createMock<NorisDeliveryMethodService>() },
-        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
         { provide: MailgunService, useValue: createMock<MailgunService>() },
         {
           provide: PdfGeneratorService,
@@ -75,7 +75,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     }).compile()
 
     service = module.get<TaxDeliveryMethodsTasksSubservice>(TaxDeliveryMethodsTasksSubservice)
-    throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
 
     // Make $transaction execute its callback so the advisory-lock path is exercised in tests.
     prismaMock.$transaction.mockImplementation(async (fn) => {

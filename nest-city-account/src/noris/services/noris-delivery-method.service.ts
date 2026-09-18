@@ -31,7 +31,7 @@ interface NorisDeliveryMethodsUpdateResult {
 @Injectable()
 export class NorisDeliveryMethodService {
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly connectionService: NorisConnectionService,
     private readonly validatorService: NorisValidatorService
   ) {}

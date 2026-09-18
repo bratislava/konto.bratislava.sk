@@ -123,7 +123,7 @@ export class NasesService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
-    private throwerErrorGuard: ThrowerErrorGuard,
+    private errorFactoryService: ErrorFactoryService,
     private clientsService: ClientsService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly prismaService: PrismaService,

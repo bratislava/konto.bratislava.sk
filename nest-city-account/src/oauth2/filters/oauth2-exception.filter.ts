@@ -28,7 +28,7 @@ const USER_AGENT = 'user-agent'
 export class OAuth2ExceptionFilter implements ExceptionFilter {
   private readonly logger = new LineLoggerSubservice(OAuth2ExceptionFilter.name)
 
-  private readonly throwerErrorGuard = new ThrowerErrorGuard()
+  private readonly errorFactoryService = new ErrorFactoryService()
 
   constructor(private readonly oauth2ClientSubservice: OAuth2ClientSubservice) {}
 

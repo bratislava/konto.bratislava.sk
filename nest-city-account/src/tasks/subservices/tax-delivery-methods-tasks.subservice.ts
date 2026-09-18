@@ -35,7 +35,7 @@ export class TaxDeliveryMethodsTasksSubservice {
 
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly norisDeliveryMethodService: NorisDeliveryMethodService,
     private readonly mailgunService: MailgunService,
     private readonly pdfGeneratorService: PdfGeneratorService

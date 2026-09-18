@@ -61,7 +61,7 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PdfGeneratorService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         {
           provide: BaConfigService,
           // `playwright` is mocked at the module level above, so the value here is

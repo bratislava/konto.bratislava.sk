@@ -21,7 +21,7 @@ import { SignatureRequest } from '../types/signature-request.types'
 export class SignatureGuard extends AuthGuard('signature') {
   constructor(
     private readonly reflector: Reflector,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly errorFactoryService: ErrorFactoryService
   ) {
     super()
   }

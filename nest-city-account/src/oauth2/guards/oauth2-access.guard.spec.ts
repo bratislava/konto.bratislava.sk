@@ -27,7 +27,7 @@ jest.mock('@nestjs/passport', () => ({
 describe('OAuth2AccessGuard', () => {
   let guard: OAuth2AccessGuard
   let reflector: Reflector
-  let throwerErrorGuard: ThrowerErrorGuard
+  let errorFactoryService: ErrorFactoryService
   let clientSubservice: OAuth2ClientSubservice
 
   const mockClient = createMock<OAuth2Client>({ id: 'test-client-id', name: 'TEST' })
@@ -53,21 +53,19 @@ describe('OAuth2AccessGuard', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     reflector = createMock<Reflector>()
-    throwerErrorGuard = createMock<ThrowerErrorGuard>()
+    errorFactoryService = createMock<ErrorFactoryService>()
     clientSubservice = createMock<OAuth2ClientSubservice>()
 
-    guard = new OAuth2AccessGuard(reflector, throwerErrorGuard, clientSubservice)
+    guard = new OAuth2AccessGuard(reflector, errorFactoryService, clientSubservice)
 
     // Default: reflector returns client name, client lookup succeeds
     jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue('TEST')
     jest.spyOn(clientSubservice, 'findClientByName').mockReturnValue(mockClient)
 
-    // Make throwerErrorGuard throw real errors
-    jest
-      .spyOn(throwerErrorGuard, 'UnauthorizedException')
-      .mockImplementation((_errorEnum, message, console) => {
-        throw new Error(console ?? message)
-      })
+    // Make errorFactoryService throw real errors
+    jest.spyOn(errorFactoryService, 'UnauthorizedException').mockImplementation(({ message, console }) => {
+      throw new Error((console as string | undefined) ?? message)
+    })
   })
 
   it('should be defined', () => {

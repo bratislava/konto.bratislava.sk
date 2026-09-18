@@ -37,7 +37,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
   private readonly maxClockSkew: number = 60 * 1000 // 1 minute
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly nonceService: NonceService,
     private readonly baConfigService: BaConfigService
   ) {

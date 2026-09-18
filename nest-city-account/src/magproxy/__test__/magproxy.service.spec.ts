@@ -15,7 +15,7 @@ describe('MagproxyService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MagproxyService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: ClientsService, useValue: createMock<ClientsService>() },
         {
           provide: BaConfigService,

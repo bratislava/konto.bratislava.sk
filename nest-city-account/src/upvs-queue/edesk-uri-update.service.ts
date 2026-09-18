@@ -13,7 +13,7 @@ export class EdeskUriUpdateService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly nasesService: NasesService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly errorFactoryService: ErrorFactoryService
   ) {}
 
   async getUriToUpdateInternal() {

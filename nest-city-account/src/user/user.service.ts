@@ -57,7 +57,7 @@ export class UserService {
   constructor(
     private userDataSubservice: UserDataSubservice,
     private prisma: PrismaService,
-    private throwerErrorGuard: ThrowerErrorGuard,
+    private errorFactoryService: ErrorFactoryService,
     private bloomreachOutboxService: BloomreachOutboxService,
     private cognitoSubservice: CognitoSubservice,
     private userTierService: UserTierService,

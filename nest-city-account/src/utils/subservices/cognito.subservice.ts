@@ -40,7 +40,7 @@ export class CognitoSubservice {
   private readonly cognitoClient: CognitoIdentityProviderClient
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService
   ) {
     this.cognitoClient = new CognitoIdentityProviderClient({

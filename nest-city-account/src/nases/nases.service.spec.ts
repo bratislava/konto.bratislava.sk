@@ -18,7 +18,7 @@ import { NasesService } from './nases.service'
 
 describe('NasesService', () => {
   let service: NasesService
-  let throwerErrorGuard: ThrowerErrorGuard
+  let errorFactoryService: ErrorFactoryService
   let clientsService: ClientsService
 
   const mockSearchResults = (results: ApiIamIdentitiesIdGet200Response[]) =>
@@ -32,7 +32,7 @@ describe('NasesService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         NasesService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: ClientsService, useValue: createMock<ClientsService>() },
         { provide: ApiJwtTokensService, useValue: createMock<ApiJwtTokensService>() },
         {
@@ -50,7 +50,7 @@ describe('NasesService', () => {
     }).compile()
 
     service = module.get<NasesService>(NasesService)
-    throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
     clientsService = module.get<ClientsService>(ClientsService)
   })
 

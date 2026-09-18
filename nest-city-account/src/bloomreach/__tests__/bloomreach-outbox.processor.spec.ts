@@ -61,7 +61,10 @@ describe('BloomreachOutboxProcessor', () => {
       providers: [
         BloomreachOutboxProcessor,
         { provide: PrismaService, useValue: prismaMock },
-        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        {
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>(),
+        },
         {
           provide: BaConfigService,
           useValue: {

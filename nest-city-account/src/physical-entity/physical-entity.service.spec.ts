@@ -38,7 +38,7 @@ describe('PhysicalEntityService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PhysicalEntityService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: MagproxyService, useValue: MagproxyServiceMock },
         { provide: CognitoSubservice, useValue: createMock<CognitoSubservice>() },

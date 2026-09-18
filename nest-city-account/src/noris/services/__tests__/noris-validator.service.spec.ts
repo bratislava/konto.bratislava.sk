@@ -25,7 +25,7 @@ describe('NorisValidatorService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [NorisValidatorService, ThrowerErrorGuard],
+      providers: [NorisValidatorService, ErrorFactoryService],
     }).compile()
     service = module.get<NorisValidatorService>(NorisValidatorService)
   })

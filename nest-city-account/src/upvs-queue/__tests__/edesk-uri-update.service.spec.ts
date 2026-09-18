@@ -14,7 +14,7 @@ import { EdeskUriUpdateService } from '../edesk-uri-update.service'
 describe('EdeskUriUpdateService', () => {
   let service: EdeskUriUpdateService
   let nasesService: NasesService
-  let throwerErrorGuard: ThrowerErrorGuard
+  let errorFactoryService: ErrorFactoryService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,13 +22,13 @@ describe('EdeskUriUpdateService', () => {
         EdeskUriUpdateService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: NasesService, useValue: createMock<NasesService>() },
-        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
       ],
     }).compile()
 
     service = module.get(EdeskUriUpdateService)
     nasesService = module.get(NasesService)
-    throwerErrorGuard = module.get(ThrowerErrorGuard)
+    errorFactoryService = module.get(ErrorFactoryService)
   })
 
   afterEach(() => {

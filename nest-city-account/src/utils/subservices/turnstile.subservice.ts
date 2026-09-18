@@ -24,7 +24,7 @@ export class TurnstileSubservice {
   private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(TurnstileSubservice.name)
 
   constructor(
-    private throwerErrorGuard: ThrowerErrorGuard,
+    private errorFactoryService: ErrorFactoryService,
     baConfigService: BaConfigService
   ) {
     const { turnstileSecret } = baConfigService.security

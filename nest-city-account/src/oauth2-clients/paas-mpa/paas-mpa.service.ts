@@ -17,7 +17,7 @@ export class PaasMpaService {
     private readonly bloomreachOutboxService: BloomreachOutboxService,
     private readonly bloomreachContactDatabaseService: BloomreachContactDatabaseService,
     private readonly prisma: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly userIdentitySubservice: UserIdentitySubservice
   ) {
     this.logger = new LineLoggerSubservice(PaasMpaService.name)

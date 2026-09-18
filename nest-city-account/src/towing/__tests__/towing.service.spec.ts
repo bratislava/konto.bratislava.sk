@@ -40,7 +40,7 @@ describe('TowingService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TowingService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         {
           provide: BaConfigService,
           useValue: {

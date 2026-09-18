@@ -23,7 +23,7 @@ export class PdfGeneratorService {
   private readonly sharedBrowserLock = pLimit(1)
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService
   ) {
     this.logger = new LineLoggerSubservice(PdfGeneratorService.name)

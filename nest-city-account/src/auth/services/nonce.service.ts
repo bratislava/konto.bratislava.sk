@@ -21,7 +21,7 @@ export class NonceService {
 
   constructor(
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly errorFactoryService: ErrorFactoryService
   ) {}
 
   /**

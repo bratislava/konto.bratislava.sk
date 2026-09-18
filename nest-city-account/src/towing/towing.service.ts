@@ -19,7 +19,7 @@ export class TowingService {
 
   constructor(
     private readonly baConfigService: BaConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly errorFactoryService: ErrorFactoryService
   ) {
     this.enforcementBackendUrl = this.baConfigService.enforcement.backendUrl
   }

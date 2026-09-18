@@ -19,7 +19,7 @@ describe('VerificationSubservice', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         VerificationSubservice,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: MagproxyService, useValue: createMock<MagproxyService>() },
         {
           provide: VerificationDataSubservice,

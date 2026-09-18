@@ -57,7 +57,7 @@ export class VerificationService {
     private cognitoSubservice: CognitoSubservice,
     private verificationDataSubservice: VerificationDataSubservice,
     private nasesService: NasesService,
-    private throwerErrorGuard: ThrowerErrorGuard,
+    private errorFactoryService: ErrorFactoryService,
     private mailgunService: MailgunService,
     private readonly amqpConnection: AmqpConnection,
     private verificationSubservice: VerificationSubservice,

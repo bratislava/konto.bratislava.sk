@@ -27,7 +27,7 @@ export class BloomreachOutboxProcessor {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService
   ) {
     const { apiKey, apiSecret } = this.baConfigService.bloomreach

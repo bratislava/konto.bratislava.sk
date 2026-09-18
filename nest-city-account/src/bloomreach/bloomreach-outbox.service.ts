@@ -20,7 +20,7 @@ export class BloomreachOutboxService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly payloadBuilder: BloomreachPayloadBuilder,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService
   ) {
     this.logger = new LineLoggerSubservice(BloomreachOutboxService.name)

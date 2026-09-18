@@ -49,7 +49,7 @@ describe('EdeskTasksSubservice', () => {
         { provide: PrismaService, useValue: prismaMock },
         { provide: UpvsQueueService, useValue: createMock<UpvsQueueService>() },
         { provide: NorisEdeskService, useValue: createMock<NorisEdeskService>() },
-        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
       ],
     }).compile()
 

@@ -42,7 +42,7 @@ export class AdminService {
 
   constructor(
     private cognitoSubservice: CognitoSubservice,
-    private throwerErrorGuard: ThrowerErrorGuard,
+    private errorFactoryService: ErrorFactoryService,
     private prismaService: PrismaService,
     private readonly userService: UserService,
     private readonly verificationService: VerificationService

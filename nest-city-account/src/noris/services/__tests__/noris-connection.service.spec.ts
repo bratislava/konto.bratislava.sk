@@ -18,7 +18,7 @@ jest.mock('mssql', () => ({
 describe('NorisConnectionService', () => {
   let module: TestingModule
   let service: NorisConnectionService
-  let throwerErrorGuard: ThrowerErrorGuard
+  let errorFactoryService: ErrorFactoryService
 
   let mockMssqlConnect: jest.Mock
 
@@ -47,13 +47,16 @@ describe('NorisConnectionService', () => {
             },
           },
         },
-        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        {
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>(),
+        },
         { provide: PrismaService, useValue: prismaMock },
       ],
     }).compile()
 
     service = module.get<NorisConnectionService>(NorisConnectionService)
-    throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
   })
 
   afterEach(() => {

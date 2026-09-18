@@ -18,7 +18,7 @@ export class AdminCronSubservice {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly adminService: AdminService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly errorFactoryService: ErrorFactoryService
   ) {}
 
   // even though this is a cron job, it only runs once then it deactivates itself,

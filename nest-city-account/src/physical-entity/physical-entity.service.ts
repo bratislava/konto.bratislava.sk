@@ -10,7 +10,7 @@ export class PhysicalEntityService {
 
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly errorFactoryService: ErrorFactoryService
   ) {
     this.logger = new LineLoggerSubservice(PhysicalEntityService.name)
   }

@@ -21,7 +21,7 @@ export class OAuth2AccessGuard extends AuthGuard('cognito-strategy') {
 
   constructor(
     private readonly reflector: Reflector,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly oAuth2ClientSubservice: OAuth2ClientSubservice
   ) {
     super()

@@ -8,10 +8,10 @@ import { VerificationReturnType } from '../../types'
 import { VerificationErrorsEnum } from '../../verification.errors.enum'
 
 @Injectable()
-export class VerificationDataSubservice implements IHasThrowerErrorGuard {
+export class VerificationDataSubservice implements IHasErrorFactoryService {
   constructor(
     private prisma: PrismaService,
-    public readonly throwerErrorGuard: ThrowerErrorGuard
+    public readonly errorFactoryService: ErrorFactoryService
   ) {}
 
   @CatchDatabaseError()

@@ -22,7 +22,7 @@ export class EdeskTasksSubservice {
     private readonly prismaService: PrismaService,
     private readonly upvsQueueService: UpvsQueueService,
     private readonly norisEdeskService: NorisEdeskService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly errorFactoryService: ErrorFactoryService
   ) {
     this.logger = new LineLoggerSubservice(EdeskTasksSubservice.name)
   }

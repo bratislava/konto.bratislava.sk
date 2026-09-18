@@ -22,7 +22,7 @@ describe('UserDataSubservice', () => {
           provide: BloomreachOutboxService,
           useValue: createMock<BloomreachOutboxService>(),
         },
-        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
         {
           provide: UserIdentitySubservice,
           useValue: createMock<UserIdentitySubservice>(),

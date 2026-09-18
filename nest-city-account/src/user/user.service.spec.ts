@@ -27,7 +27,7 @@ jest.mock('../utils/constants/tax-deadline')
 describe('UserService', () => {
   let service: UserService
   let userDataSubservice: jest.Mocked<UserDataSubservice>
-  let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
+  let errorFactoryService: jest.Mocked<ErrorFactoryService>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -43,8 +43,8 @@ describe('UserService', () => {
           useValue: prismaMock,
         },
         {
-          provide: ThrowerErrorGuard,
-          useValue: createMock<ThrowerErrorGuard>(),
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>(),
         },
         {
           provide: BloomreachOutboxService,
@@ -63,7 +63,7 @@ describe('UserService', () => {
 
     service = module.get<UserService>(UserService)
     userDataSubservice = module.get(UserDataSubservice)
-    throwerErrorGuard = module.get(ThrowerErrorGuard)
+    errorFactoryService = module.get(ErrorFactoryService)
   })
 
   afterEach(() => {

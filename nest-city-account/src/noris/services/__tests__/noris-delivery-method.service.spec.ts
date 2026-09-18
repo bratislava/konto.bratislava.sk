@@ -46,7 +46,7 @@ describe('NorisDeliveryMethodService', () => {
           provide: NorisConnectionService,
           useValue: createMock<NorisConnectionService>(),
         },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         {
           provide: NorisValidatorService,
           useValue: createMock<NorisValidatorService>(),

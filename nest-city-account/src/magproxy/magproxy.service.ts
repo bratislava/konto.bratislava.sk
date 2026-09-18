@@ -32,7 +32,7 @@ export class MagproxyService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly clientsService: ClientsService,
     private readonly baConfigService: BaConfigService
   ) {

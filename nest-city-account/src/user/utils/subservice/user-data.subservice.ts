@@ -30,7 +30,7 @@ export class UserDataSubservice {
   constructor(
     private prisma: PrismaService,
     private bloomreachOutboxService: BloomreachOutboxService,
-    private throwerErrorGuard: ThrowerErrorGuard,
+    private errorFactoryService: ErrorFactoryService,
     private userIdentitySubservice: UserIdentitySubservice
   ) {
     this.logger = new LineLoggerSubservice(UserDataSubservice.name)

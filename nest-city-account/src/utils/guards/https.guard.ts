@@ -7,7 +7,7 @@ import BaConfigService from '../../config/ba-config.service'
 @Injectable()
 export class HttpsGuard implements CanActivate {
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService
   ) {}
 

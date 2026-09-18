@@ -16,7 +16,7 @@ export class BloomreachContactDatabaseService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     @Inject('BLOOMREACH_CONTACT_DB') private readonly contactDatabase: IDatabase<unknown>
   ) {
     this.logger = new LineLoggerSubservice(BloomreachContactDatabaseService.name)

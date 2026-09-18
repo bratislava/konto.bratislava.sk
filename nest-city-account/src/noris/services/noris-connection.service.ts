@@ -14,7 +14,7 @@ export class NorisConnectionService implements OnModuleDestroy {
 
   constructor(
     private readonly baConfigService: BaConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly prismaService: PrismaService
   ) {}
 

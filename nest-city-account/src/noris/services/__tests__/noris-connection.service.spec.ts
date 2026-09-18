@@ -132,23 +132,22 @@ describe('NorisConnectionService', () => {
 
     it('should throw InternalServerError for non-MSSQL errors', async () => {
       const internalError = new HttpException('internal', 500)
-      jest.mocked(throwerErrorGuard.InternalServerErrorException).mockReturnValue(internalError)
+      jest.mocked(errorFactoryService.InternalServerErrorException).mockReturnValue(internalError)
 
       const opError = new Error('generic error')
       const operation = jest.fn().mockRejectedValue(opError)
 
       await expect(service.withConnection(operation, 'fail')).rejects.toThrow('internal')
-      expect(throwerErrorGuard.InternalServerErrorException).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'fail',
-        undefined,
-        opError
-      )
+      expect(errorFactoryService.InternalServerErrorException).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: 'fail',
+        error: opError,
+      })
     })
 
     it('should throw BadRequestException and increment counter for MSSQL connection errors', async () => {
       const badRequestError = new HttpException('bad request', 400)
-      jest.mocked(throwerErrorGuard.BadRequestException).mockReturnValue(badRequestError)
+      jest.mocked(errorFactoryService.BadRequestException).mockReturnValue(badRequestError)
       ;(prismaMock.$executeRaw as jest.Mock).mockResolvedValue(1)
 
       const mssqlError = Object.assign(new mssql.MSSQLError('timeout', 'ETIMEOUT'), {
@@ -158,7 +157,7 @@ describe('NorisConnectionService', () => {
 
       await expect(service.withConnection(operation, 'fail')).rejects.toThrow()
       expect(prismaMock.$executeRaw).toHaveBeenCalled()
-      expect(throwerErrorGuard.BadRequestException).toHaveBeenCalled()
+      expect(errorFactoryService.BadRequestException).toHaveBeenCalled()
     })
   })
 })

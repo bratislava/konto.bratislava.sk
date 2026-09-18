@@ -103,10 +103,10 @@ export class PhysicalEntityService {
 
   private async update(data: Partial<PhysicalEntity>): Promise<PhysicalEntity> {
     if (!data.id) {
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        'PhysicalEntity id must be provided to update service'
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+        message: 'PhysicalEntity id must be provided to update service',
+      })
     }
 
     // if activeEdesk is being updated, delete metadata about failed updates

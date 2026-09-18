@@ -30,10 +30,10 @@ export class AdminCronSubservice {
       where: { key: COGNITO_SYNC_CONFIG_DB_KEY },
     })
     if (!configDbResult) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `${COGNITO_SYNC_CONFIG_DB_KEY} not found in database config.`
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `${COGNITO_SYNC_CONFIG_DB_KEY} not found in database config.`,
+      })
     }
     const config = SyncCognitoToDbConfigValueSchema.parse(configDbResult.value)
     if (!config.active) {

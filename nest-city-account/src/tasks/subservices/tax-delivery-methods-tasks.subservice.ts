@@ -102,12 +102,11 @@ export class TaxDeliveryMethodsTasksSubservice {
       }
 
       if (!date) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-          DeliveryMethodErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-          undefined,
-          user
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+          message: DeliveryMethodErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+          error: user,
+        })
       }
 
       acc[birthNumber] = { deliveryMethod, date }
@@ -328,10 +327,10 @@ export class TaxDeliveryMethodsTasksSubservice {
     })
 
     if (!configDbResult) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `${DELIVERY_METHOD_EMAIL_KEY} not found in database config.`
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `${DELIVERY_METHOD_EMAIL_KEY} not found in database config.`,
+      })
     }
 
     return EmailConfigSchema.parse(configDbResult.value).active

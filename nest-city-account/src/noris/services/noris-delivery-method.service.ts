@@ -143,10 +143,10 @@ export class NorisDeliveryMethodService {
 
       if (methodInfo.deliveryMethod === DeliveryMethod.CITY_ACCOUNT && !methodInfo.date) {
         // We must enforce that the date is present for CITY_ACCOUNT delivery method.
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Date must be provided for birth number ${birthNumber} when delivery method is CITY_ACCOUNT`
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Date must be provided when delivery method is CITY_ACCOUNT',
+        })
       }
 
       deliveryGroups[methodInfo.deliveryMethod].push({

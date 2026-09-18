@@ -193,12 +193,11 @@ export class EdeskTasksSubservice {
         })
       } catch (error) {
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'Error mapping eDesk data to Noris type',
-            undefined,
-            error
-          )
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: 'Error mapping eDesk data to Noris type',
+            error,
+          })
         )
       }
     }

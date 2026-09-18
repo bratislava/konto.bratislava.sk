@@ -63,10 +63,10 @@ export class EdeskUriUpdateService {
         activeEdeskUpdateFailCount: { increment: 1 },
       },
     })
-    throw this.throwerErrorGuard.InternalServerErrorException(
-      ErrorsEnum.INTERNAL_SERVER_ERROR,
-      `Failed to update URI for physical entity id ${input.id}`
-    )
+    throw this.errorFactoryService.InternalServerErrorException({
+      errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+      message: `Failed to update URI for physical entity id ${input.id}`,
+    })
   }
 
   async handleUriUpdateExternal(uri: string) {

@@ -29,12 +29,11 @@ export class NorisValidatorService {
 
     const result = schema.safeParse(data)
     if (!result.success) {
-      throw this.throwerErrorGuard.BadRequestException(
-        CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
-        result.error.message,
-        undefined,
-        result.error
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
+        message: result.error.message,
+        error: result.error,
+      })
     }
     return result.data
   }

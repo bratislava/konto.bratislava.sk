@@ -35,11 +35,11 @@ export class SignatureGuard extends AuthGuard('signature') {
     )
 
     if (!publicKeyName) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Public key not specified. Use @SignaturePublicKeyName() decorator on the endpoint.'
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Public key not specified. Use @SignaturePublicKeyName() decorator on the endpoint.',
+      })
     }
 
     const requireNonce = this.reflector.getAllAndOverride<boolean | undefined>(REQUIRE_NONCE, [

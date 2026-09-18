@@ -95,7 +95,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         .mockResolvedValue({
           birthNumbers: ['123456/2020', '123456/4848', '123456/4649', '123456/4521'],
         })
-      const internalErrorSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')
+      const internalErrorSpy = jest.spyOn(errorFactoryService, 'InternalServerErrorException')
 
       prismaMock.user.updateMany.mockResolvedValue({ count: 1 })
       const prismaUserUpdateSpy = jest.spyOn(prismaMock.user, 'updateMany')
@@ -223,7 +223,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         service['norisDeliveryMethodService'],
         'updateDeliveryMethods'
       )
-      const internalErrorSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')
+      const internalErrorSpy = jest.spyOn(errorFactoryService, 'InternalServerErrorException')
       const prismaUserUpdateSpy = jest
         .spyOn(prismaMock.user, 'updateMany')
         .mockResolvedValue({ count: 1 })

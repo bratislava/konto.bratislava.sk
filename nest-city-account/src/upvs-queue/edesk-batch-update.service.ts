@@ -100,13 +100,11 @@ export class EdeskBatchUpdateService {
         })
 
         if (edeskDeathDate) {
-          this.logger.log(
-            toLogfmt({
-              event: 'external_edesk_death_date',
-              norisId: updated.norisId,
-              edeskDeathDate,
-            })
-          )
+          this.logger.log({
+            event: 'external_edesk_death_date',
+            norisId: updated.norisId,
+            edeskDeathDate,
+          })
         }
       })
     )

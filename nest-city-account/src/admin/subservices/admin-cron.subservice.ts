@@ -1,12 +1,9 @@
+import { ErrorEnum, ErrorFactoryService, HandleErrors, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import * as z from 'zod'
 
 import { PrismaService } from '../../prisma/prisma.service'
-import HandleErrors from '../../utils/decorators/errorHandler.decorators'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { AdminService } from '../admin.service'
 import { COGNITO_SYNC_CONFIG_DB_KEY } from '../utils/constants'
 

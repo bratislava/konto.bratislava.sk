@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService, ErrorResponseEnum, LineLoggerSubservice } from '@bratislava/log-nest'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import axios, { isAxiosError } from 'axios'
 import https from 'https'
@@ -13,9 +14,6 @@ import {
 } from '../rfo-by-birthnumber/dtos/rfoSchema'
 import { VerificationReturnType } from '../user-verification/types'
 import { VerificationErrorsEnum } from '../user-verification/verification.errors.enum'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MagproxyErrorsEnum, MagproxyErrorsResponseEnum } from './magproxy.errors.enum'
 
 const httpsAgent = new https.Agent({

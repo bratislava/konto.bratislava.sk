@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
@@ -12,8 +13,7 @@ import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { VerificationErrorsEnum } from '../user-verification/verification.errors.enum'
-import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { CustomErrorEnums } from '../utils/guards/dtos/error.dto'
 import { NasesService } from './nases.service'
 
 describe('NasesService', () => {

@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -23,7 +24,6 @@ import {
 import { Request, Response } from 'express'
 
 import { HttpsGuard } from '../utils/guards/https.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from './dtos/errors.oauth2.dto'
 import {
   AuthorizationRequestDto,

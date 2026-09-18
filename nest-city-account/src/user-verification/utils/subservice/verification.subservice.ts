@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { ResponseRpoLegalPersonDto } from 'openapi-clients/magproxy'
 
@@ -7,7 +8,6 @@ import { PhysicalEntityService } from '../../../physical-entity/physical-entity.
 import { RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
 import { isValidBirthNumber } from '../../../utils/birthNumbers'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import {
   RequestBodyVerifyIdentityCardDto,
   RequestBodyVerifyWithRpoDto,

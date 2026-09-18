@@ -1,3 +1,4 @@
+import { AllowList, ErrorFactoryService } from '@bratislava/log-nest'
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
@@ -18,7 +19,6 @@ import {
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
 import { ResponseInternalServerErrorDto } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import {
   ResponseLegalPersonDataDto,
   ResponseLegalPersonDataSimpleDto,

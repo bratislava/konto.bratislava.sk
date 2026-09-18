@@ -1,12 +1,9 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
 import { validateSync } from 'class-validator'
 import { Request, Response } from 'express'
 
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { toLogfmt } from '../../utils/logging'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from '../dtos/errors.oauth2.dto'
 import { RequestWithAuthorizationData } from '../guards/auth-request-id.guard'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'

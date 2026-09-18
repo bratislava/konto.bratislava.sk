@@ -12,6 +12,7 @@ import {
   ListUsersCommandInput,
   UserType,
 } from '@aws-sdk/client-cognito-identity-provider'
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
 import { Simplify } from 'type-fest'
@@ -28,8 +29,6 @@ import {
   CognitoUserAttributesEnum,
   CognitoUserStatusEnum,
 } from '../global-dtos/cognito.dto'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
 
 /**
  * Service responsible for Cognito API interactions only.

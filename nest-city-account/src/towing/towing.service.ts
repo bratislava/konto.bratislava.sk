@@ -1,10 +1,8 @@
+import { ErrorEnum, ErrorFactoryService, ErrorResponseEnum } from '@bratislava/log-nest'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import axios, { isAxiosError } from 'axios'
 
 import BaConfigService from '../config/ba-config.service'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
 import { TowingSearchResponseDto } from './dtos/towing.dto'
 import { TowingErrorsEnum, TowingErrorsResponseEnum } from './towing.errors.enum'
 

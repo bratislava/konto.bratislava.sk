@@ -4,13 +4,13 @@
  * the integration test in pdf-generator.service.spec.ts needs the real one.
  */
 
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { chromium } from 'playwright'
 
 import BaConfig from '../config/ba-config'
 import BaConfigService from '../config/ba-config.service'
 import EnvironmentVariables from '../config/environment-variables'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { PdfGeneratorService } from './pdf-generator.service'
 
 jest.mock('playwright', () => ({

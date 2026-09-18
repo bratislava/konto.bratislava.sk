@@ -1,10 +1,10 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { ExecutionContext } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 
 import { cognitoUserDataFactory } from '../../__tests__/factories/cognitoUserData.factory'
 import * as crypto from '../../utils/crypto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import * as tokenSerialization from '../../utils/tokenSerialization'
 import { OAuth2Client, OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
 import { OAuth2AccessGuard } from './oauth2-access.guard'

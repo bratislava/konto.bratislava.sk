@@ -7,8 +7,12 @@ import { FieldSize } from '@/src/components/widget-components/FieldBase'
  * so that the constraint caps the whole field — label, input, helptext and error message.
  */
 export const getFieldSizeClassName = (size?: FieldSize): string | undefined => {
-  if (size === 'medium') return 'max-w-[388px]'
-  if (size === 'small') return 'max-w-[200px]'
+  if (size === 'medium') {
+    return 'max-w-[388px]'
+  }
+  if (size === 'small') {
+    return 'max-w-[200px]'
+  }
 
   return undefined
 }

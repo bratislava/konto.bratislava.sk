@@ -1,7 +1,7 @@
 import { Button, Typography } from '@bratislava/component-library'
-import Link from 'next/link'
 
 import { DropdownMenuItemProps } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
+import MLink from '@/src/components/simple-components/MLink'
 import cn from '@/src/utils/cn'
 
 interface BottomSheetMenuRowProps extends DropdownMenuItemProps {
@@ -17,7 +17,7 @@ const BottomSheetMenuRow = ({
   itemClassName,
 }: BottomSheetMenuRowProps) => {
   return url ? (
-    <Link className="flex items-center gap-3" href={url} onClick={() => onLinkClick()}>
+    <MLink className="flex items-center gap-3" href={url} onClick={() => onLinkClick()}>
       <Typography
         variant="p-small"
         as="div"
@@ -29,7 +29,7 @@ const BottomSheetMenuRow = ({
         <span className="p-[10px]">{icon}</span>
         <span>{title}</span>
       </Typography>
-    </Link>
+    </MLink>
   ) : (
     <Button
       onPress={onPress}

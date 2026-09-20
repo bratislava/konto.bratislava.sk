@@ -49,6 +49,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
 
   return (
     <form
+      noValidate // We use AJV validation
       className="flex flex-col gap-4 lg:gap-6"
       data-cy="forgotten-password-form"
       onSubmit={handleSubmit((data: Data) => {

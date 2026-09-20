@@ -1,3 +1,4 @@
+import { i18n } from 'next-i18next/pages'
 import { ReactNode } from 'react'
 
 import { CommonLinkFragment } from '@/src/clients/graphql-strapi/api'
@@ -11,12 +12,16 @@ export type CommonLinkProps = {
   children: ReactNode
   href: string
   target?: '_blank'
+  'aria-label'?: string
   analyticsProps?: LinkAnalyticsProps
 }
 
 export const getLinkProps = (link: CommonLinkFragment | null | undefined) => {
+  const { t } = i18n ?? {}
+
   let href = '#'
   let label = link?.label ?? ''
+  let ariaLabel: string | undefined
   let target: '_blank' | undefined
 
   // To allow setting url query parameters from strapi we use the url field if it starts with '?'
@@ -31,14 +36,16 @@ export const getLinkProps = (link: CommonLinkFragment | null | undefined) => {
     label = link.label ?? link.municipalService.title
     href = link.municipalService.href ?? '#'
   } else if (link.url && !queryParams) {
-    label = link.label ?? link.url
+    const isExternal = link.url.startsWith('http')
     href = link.url
-    target = href.startsWith('http') ? '_blank' : undefined
+    label = link.label ?? link.url
+    ariaLabel = isExternal ? `${label} - ${t ? t('getLinkProps.openInNewTab') : ''}` : undefined
+    target = isExternal ? '_blank' : undefined
   }
 
   if (queryParams) {
     href = `${href}${queryParams}`
   }
 
-  return { children: label, href, target }
+  return { children: label, href, 'aria-label': ariaLabel, target }
 }

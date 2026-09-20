@@ -5,4 +5,5 @@
 export enum OAuth2ClientName {
   PAAS_MPA = 'PAAS_MPA',
   DPB = 'DPB',
+  TICKETS = 'TICKETS',
 }

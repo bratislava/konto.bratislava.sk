@@ -14,14 +14,13 @@ import { Wrapper } from '../Wrapper'
  * variant (logged out / logged in / legal entity / verification tiers) can be rendered
  * side by side without a real session.
  */
-const makeUserAttributes = (overrides: Partial<UserAttributes>): UserAttributes =>
-  ({
-    given_name: 'Jana',
-    family_name: 'Nováková',
-    name: 'Jana Nováková',
-    email: 'jana.novakova@example.com',
-    ...overrides,
-  }) as UserAttributes
+const makeUserAttributes = (overrides: Partial<UserAttributes>): UserAttributes => ({
+  given_name: 'Jana',
+  family_name: 'Nováková',
+  name: 'Jana Nováková',
+  email: 'jana.novakova@example.com',
+  ...overrides,
+})
 
 const loggedOut: SsrAuthContextType = {
   isSignedIn: false,

@@ -102,6 +102,7 @@ const UserProfileDetailsEdit = ({ formId, userAttributes, onSubmit }: Props) => 
 
   return (
     <form
+      noValidate // We use AJV validation
       id={formId}
       className="flex grow flex-col gap-6"
       onSubmit={handleSubmit(handleSubmitCallback)}
@@ -174,6 +175,7 @@ const UserProfileDetailsEdit = ({ formId, userAttributes, onSubmit }: Props) => 
                 isDisabled
                 isRequired
                 label={t('UserProfileDetails.email')}
+                type="email"
                 autoComplete="username"
                 {...field}
                 errorMessage={errors.email}

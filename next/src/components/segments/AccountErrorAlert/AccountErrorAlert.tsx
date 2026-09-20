@@ -107,7 +107,9 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error])
 
-  if (!errorMessage) return null
+  if (!errorMessage) {
+    return null
+  }
 
   return (
     <Alert

@@ -58,6 +58,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
 
   return (
     <form
+      noValidate // We use AJV validation
       className="flex flex-col gap-4 lg:gap-6"
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email, data.password))}
       data-cy="login-container"

@@ -18,7 +18,6 @@ describe('OAuth2ValidationSubservice', () => {
     id: 'test-client-id',
     secret: 'test-secret',
     name: 'TEST',
-    requiresPkce: true,
     isRedirectUriAllowed: jest.fn().mockReturnValue(true),
     areAllScopesAllowed: jest.fn().mockReturnValue(true),
   })
@@ -27,16 +26,14 @@ describe('OAuth2ValidationSubservice', () => {
     id: 'public-pkce-client-id',
     secret: undefined,
     name: 'PUBLIC_PKCE',
-    requiresPkce: true,
     isRedirectUriAllowed: jest.fn().mockReturnValue(true),
     areAllScopesAllowed: jest.fn().mockReturnValue(true),
   })
 
-  const mockConfidentialNoPkceClient = createMock<OAuth2Client>({
-    id: 'confidential-no-pkce-client-id',
+  const mockConfidentialClient = createMock<OAuth2Client>({
+    id: 'confidential-client-id',
     secret: 'confidential-secret',
-    name: 'CONFIDENTIAL_NO_PKCE',
-    requiresPkce: false,
+    name: 'CONFIDENTIAL',
     isRedirectUriAllowed: jest.fn().mockReturnValue(true),
     areAllScopesAllowed: jest.fn().mockReturnValue(true),
   })
@@ -91,8 +88,8 @@ describe('OAuth2ValidationSubservice', () => {
     jest.spyOn(mockClient, 'areAllScopesAllowed').mockReturnValue(true)
     jest.spyOn(mockPublicPkceClient, 'isRedirectUriAllowed').mockReturnValue(true)
     jest.spyOn(mockPublicPkceClient, 'areAllScopesAllowed').mockReturnValue(true)
-    jest.spyOn(mockConfidentialNoPkceClient, 'isRedirectUriAllowed').mockReturnValue(true)
-    jest.spyOn(mockConfidentialNoPkceClient, 'areAllScopesAllowed').mockReturnValue(true)
+    jest.spyOn(mockConfidentialClient, 'isRedirectUriAllowed').mockReturnValue(true)
+    jest.spyOn(mockConfidentialClient, 'areAllScopesAllowed').mockReturnValue(true)
 
     jest
       .spyOn(oAuth2ErrorThrower, 'authorizationException')
@@ -277,10 +274,25 @@ describe('OAuth2ValidationSubservice', () => {
     /**
      * PKCE Parameter Validation
      * RFC 7636 Section 4.3 - code_challenge and code_challenge_method
-     * RFC 7636 Section 4.4.1 - MUST return invalid_request if PKCE required but missing
+     * RFC 7636 Section 4.4.1 - MUST return invalid_request if PKCE parameters are missing
+     * RFC 9700 Section 2.1.1 - PKCE is mandatory for every client, public or confidential
      */
     describe('PKCE parameter validation', () => {
-      it('should throw INVALID_REQUEST when PKCE-required client does not provide PKCE parameters', () => {
+      const expectPkceRequiredError = (
+        clientId: string,
+        hasCodeChallenge: boolean,
+        hasCodeChallengeMethod: boolean
+      ) => {
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+          'Invalid request: PKCE is required: code_challenge and code_challenge_method are required',
+          undefined,
+          'PKCE required but not provided',
+          { clientId, hasCodeChallenge, hasCodeChallengeMethod }
+        )
+      }
+
+      it('should throw INVALID_REQUEST when no PKCE parameters are provided', () => {
         expect(() => {
           service.validateAuthorizationRequest({
             ...validAuthParams(),
@@ -288,131 +300,57 @@ describe('OAuth2ValidationSubservice', () => {
             codeChallengeMethod: undefined,
           })
         }).toThrow(OAuth2Exception)
-        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
-          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          'Invalid request: PKCE is required for this client: code_challenge and code_challenge_method are required',
-          undefined,
-          'PKCE required but not provided',
-          { clientId: 'test-client-id', hasCodeChallenge: false, hasCodeChallengeMethod: false }
-        )
+        expectPkceRequiredError('test-client-id', false, false)
       })
 
-      it('should accept when both code_challenge and code_challenge_method are absent (PKCE not required)', () => {
-        jest
-          .spyOn(oAuth2ClientSubservice, 'findClientById')
-          .mockReturnValue(mockConfidentialNoPkceClient)
+      it('should throw INVALID_REQUEST for a confidential client that omits PKCE parameters', () => {
+        // RFC 9700 Section 2.1.1: having a client_secret does not exempt a client from PKCE.
+        jest.spyOn(oAuth2ClientSubservice, 'findClientById').mockReturnValue(mockConfidentialClient)
         expect(() => {
           service.validateAuthorizationRequest({
             ...validAuthParams(),
-            clientId: 'confidential-no-pkce-client-id',
+            clientId: 'confidential-client-id',
             codeChallenge: undefined,
             codeChallengeMethod: undefined,
           })
-        }).not.toThrow()
+        }).toThrow(OAuth2Exception)
+        expectPkceRequiredError('confidential-client-id', false, false)
       })
 
       it('should throw INVALID_REQUEST when code_challenge is present but code_challenge_method is missing', () => {
-        // RFC 7636 Section 4.4.1: MUST return invalid_request if PKCE parameters are incomplete
-        jest
-          .spyOn(oAuth2ClientSubservice, 'findClientById')
-          .mockReturnValue(mockConfidentialNoPkceClient)
         expect(() => {
           service.validateAuthorizationRequest({
             ...validAuthParams(),
-            clientId: 'confidential-no-pkce-client-id',
-            codeChallenge: 'challenge',
             codeChallengeMethod: undefined,
           })
         }).toThrow(OAuth2Exception)
-        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
-          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          'Invalid request: both code_challenge and code_challenge_method must be provided when using PKCE',
-          undefined,
-          'PKCE parameters incomplete',
-          {
-            clientId: 'confidential-no-pkce-client-id',
-            hasCodeChallenge: true,
-            hasCodeChallengeMethod: false,
-          }
-        )
+        expectPkceRequiredError('test-client-id', true, false)
       })
 
       it('should throw INVALID_REQUEST when code_challenge_method is present but code_challenge is missing', () => {
-        // RFC 7636 Section 4.4.1: MUST return invalid_request if PKCE parameters are incomplete
-        jest
-          .spyOn(oAuth2ClientSubservice, 'findClientById')
-          .mockReturnValue(mockConfidentialNoPkceClient)
         expect(() => {
           service.validateAuthorizationRequest({
             ...validAuthParams(),
-            clientId: 'confidential-no-pkce-client-id',
             codeChallenge: undefined,
-            codeChallengeMethod: 'S256',
           })
         }).toThrow(OAuth2Exception)
-        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
-          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          'Invalid request: both code_challenge and code_challenge_method must be provided when using PKCE',
-          undefined,
-          'PKCE parameters incomplete',
-          {
-            clientId: 'confidential-no-pkce-client-id',
-            hasCodeChallenge: false,
-            hasCodeChallengeMethod: true,
-          }
-        )
+        expectPkceRequiredError('test-client-id', false, true)
       })
 
       it('should throw INVALID_REQUEST when code_challenge is empty string', () => {
-        // RFC 7636 Section 4.3: code_challenge REQUIRED — empty string is not a valid challenge
-        jest
-          .spyOn(oAuth2ClientSubservice, 'findClientById')
-          .mockReturnValue(mockConfidentialNoPkceClient)
+        // RFC 7636 Section 4.3: code_challenge REQUIRED - empty string is not a valid challenge
         expect(() => {
-          service.validateAuthorizationRequest({
-            ...validAuthParams(),
-            clientId: 'confidential-no-pkce-client-id',
-            codeChallenge: '',
-            codeChallengeMethod: 'S256',
-          })
+          service.validateAuthorizationRequest({ ...validAuthParams(), codeChallenge: '' })
         }).toThrow(OAuth2Exception)
-        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
-          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          'Invalid request: both code_challenge and code_challenge_method must be provided when using PKCE',
-          undefined,
-          'PKCE parameters incomplete',
-          {
-            clientId: 'confidential-no-pkce-client-id',
-            hasCodeChallenge: false,
-            hasCodeChallengeMethod: true,
-          }
-        )
+        expectPkceRequiredError('test-client-id', false, true)
       })
 
       it('should throw INVALID_REQUEST when code_challenge_method is empty string', () => {
         // RFC 7636 Section 4.3: code_challenge_method must be a non-empty value ("S256" or "plain")
-        jest
-          .spyOn(oAuth2ClientSubservice, 'findClientById')
-          .mockReturnValue(mockConfidentialNoPkceClient)
         expect(() => {
-          service.validateAuthorizationRequest({
-            ...validAuthParams(),
-            clientId: 'confidential-no-pkce-client-id',
-            codeChallenge: 'challenge',
-            codeChallengeMethod: '',
-          })
+          service.validateAuthorizationRequest({ ...validAuthParams(), codeChallengeMethod: '' })
         }).toThrow(OAuth2Exception)
-        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
-          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          'Invalid request: both code_challenge and code_challenge_method must be provided when using PKCE',
-          undefined,
-          'PKCE parameters incomplete',
-          {
-            clientId: 'confidential-no-pkce-client-id',
-            hasCodeChallenge: true,
-            hasCodeChallengeMethod: false,
-          }
-        )
+        expectPkceRequiredError('test-client-id', true, false)
       })
     })
 
@@ -474,13 +412,11 @@ describe('OAuth2ValidationSubservice', () => {
       })
 
       it('should throw UNSUPPORTED_RESPONSE_TYPE for "token" (implicit grant) on a non-PKCE client', () => {
-        jest
-          .spyOn(oAuth2ClientSubservice, 'findClientById')
-          .mockReturnValue(mockConfidentialNoPkceClient)
+        jest.spyOn(oAuth2ClientSubservice, 'findClientById').mockReturnValue(mockConfidentialClient)
         expect(() => {
           service.validateAuthorizationRequest({
             ...validAuthParams(),
-            clientId: 'confidential-no-pkce-client-id',
+            clientId: 'confidential-client-id',
             responseType: 'token',
             codeChallenge: undefined,
             codeChallengeMethod: undefined,
@@ -507,19 +443,17 @@ describe('OAuth2ValidationSubservice', () => {
         expect(mockClient.areAllScopesAllowed).toHaveBeenCalledWith('read')
       })
 
-      it('should not throw for a minimal valid request (non-PKCE client)', () => {
-        jest
-          .spyOn(oAuth2ClientSubservice, 'findClientById')
-          .mockReturnValue(mockConfidentialNoPkceClient)
+      it('should not throw for a minimal valid request (no scope or state)', () => {
+        jest.spyOn(oAuth2ClientSubservice, 'findClientById').mockReturnValue(mockConfidentialClient)
         expect(() => {
           service.validateAuthorizationRequest({
             responseType: 'code',
-            clientId: 'confidential-no-pkce-client-id',
+            clientId: 'confidential-client-id',
             redirectUri: 'https://example.com/callback',
             scope: undefined,
             state: undefined,
-            codeChallenge: undefined,
-            codeChallengeMethod: undefined,
+            codeChallenge: 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
+            codeChallengeMethod: 'S256',
           })
         }).not.toThrow()
       })
@@ -837,7 +771,6 @@ describe('OAuth2ValidationSubservice', () => {
           id: 'empty-secret-client',
           secret: '',
           name: 'EMPTY',
-          requiresPkce: false,
           isRedirectUriAllowed: jest.fn().mockReturnValue(true),
           areAllScopesAllowed: jest.fn().mockReturnValue(true),
         })
@@ -847,6 +780,7 @@ describe('OAuth2ValidationSubservice', () => {
             clientId: 'empty-secret-client',
             clientSecret: undefined,
             grantType: 'authorization_code',
+            codeVerifier: 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk',
           })
         }).not.toThrow()
       })
@@ -961,18 +895,28 @@ describe('OAuth2ValidationSubservice', () => {
         }).not.toThrow()
       })
 
-      it('should not require code_verifier when client does not require PKCE', () => {
-        jest
-          .spyOn(oAuth2ClientSubservice, 'findClientById')
-          .mockReturnValue(mockConfidentialNoPkceClient)
+      it('should require code_verifier from a confidential client too', () => {
+        // RFC 9700 Section 2.1.1: having a client_secret does not exempt a client from PKCE.
+        jest.spyOn(oAuth2ClientSubservice, 'findClientById').mockReturnValue(mockConfidentialClient)
         expect(() => {
           service.validateTokenRequest({
-            clientId: 'confidential-no-pkce-client-id',
+            clientId: 'confidential-client-id',
             clientSecret: 'confidential-secret',
             grantType: 'authorization_code',
             codeVerifier: undefined,
           })
-        }).not.toThrow()
+        }).toThrow(OAuth2Exception)
+        expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+          OAuth2TokenErrorCode.INVALID_REQUEST,
+          'Invalid request: PKCE code_verifier is required',
+          undefined,
+          'PKCE code_verifier required but not provided',
+          {
+            clientId: 'confidential-client-id',
+            grantType: 'authorization_code',
+            hasCodeVerifier: false,
+          }
+        )
       })
 
       it('should not require code_verifier for refresh_token grant', () => {

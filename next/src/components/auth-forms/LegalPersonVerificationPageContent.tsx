@@ -11,12 +11,22 @@ type Props = {
   showSkipButton?: boolean
 }
 
-const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) => {
+type LegalPersonVerificationPageContentBaseProps = Props & {
+  verificationStatus: VerificationStatus
+  onVerify: () => void
+}
+
+/**
+ * Presentational part of the page content - so all the states can be rendered in the styleguide.
+ */
+export const LegalPersonVerificationPageContentBase = ({
+  showSkipButton = true,
+  verificationStatus,
+  onVerify,
+}: LegalPersonVerificationPageContentBaseProps) => {
   const { t } = useTranslation()
 
   const { redirect } = useQueryParamRedirect()
-
-  const { loginWithEid, verificationStatus } = useVerifyEid()
 
   return verificationStatus === VerificationStatus.VERIFYING ? (
     <AccountSuccessAlert
@@ -52,7 +62,7 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
       <Markdown variant="small" content={t('LegalPersonVerificationPageContent.init.content')} />
       <Button
         variant="solid"
-        onPress={loginWithEid}
+        onPress={onVerify}
         fullWidth
         isLoading={verificationStatus === VerificationStatus.REDIRECTING}
         loadingText={t('LegalPersonVerificationPageContent.init.redirectingButton')}
@@ -65,6 +75,18 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
         </Button>
       ) : null}
     </div>
+  )
+}
+
+const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) => {
+  const { loginWithEid, verificationStatus } = useVerifyEid()
+
+  return (
+    <LegalPersonVerificationPageContentBase
+      showSkipButton={showSkipButton}
+      verificationStatus={verificationStatus}
+      onVerify={loginWithEid}
+    />
   )
 }
 

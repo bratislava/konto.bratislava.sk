@@ -12,7 +12,6 @@ function makeClientConfig(overrides: Partial<OAuth2ClientEnvConfig> = {}): OAuth
     allowedRedirectUris: ['https://paas.example.com/cb'],
     allowedScopes: [],
     allowedGrantTypes: [],
-    requiresPkce: true,
     ...overrides,
   }
 }
@@ -28,7 +27,6 @@ describe('OAuth2Client', () => {
     const client = new OAuth2Client({
       id: 'test-id',
       name: 'TEST',
-      requiresPkce: true,
       allowedRedirectUris: ['https://example.com/callback', 'https://example.com/alt-callback'],
     })
 
@@ -55,7 +53,6 @@ describe('OAuth2Client', () => {
       const wildcardClient = new OAuth2Client({
         id: 'wildcard-id',
         name: 'WILDCARD',
-        requiresPkce: true,
         allowedRedirectUris: ['https://example.com/*'],
       })
       expect(wildcardClient.isRedirectUriAllowed('https://example.com/callback')).toBe(false)
@@ -78,7 +75,6 @@ describe('OAuth2Client', () => {
     const client = new OAuth2Client({
       id: 'test-id',
       name: 'TEST',
-      requiresPkce: true,
       allowedRedirectUris: ['https://example.com/cb'],
       allowedScopes: ['openid', 'profile', 'email', 'identity:verified'],
     })
@@ -109,7 +105,6 @@ describe('OAuth2Client', () => {
       const noScopeClient = new OAuth2Client({
         id: 'x',
         name: 'X',
-        requiresPkce: true,
         allowedRedirectUris: ['https://example.com/cb'],
       })
       expect(noScopeClient.areAllScopesAllowed('openid')).toBe(false)
@@ -120,7 +115,6 @@ describe('OAuth2Client', () => {
       const noScopeClient = new OAuth2Client({
         id: 'x',
         name: 'X',
-        requiresPkce: true,
         allowedRedirectUris: ['https://example.com/cb'],
       })
       expect(noScopeClient.areAllScopesAllowed('')).toBe(true)
@@ -143,7 +137,6 @@ describe('OAuth2Client', () => {
       const emptyArrayClient = new OAuth2Client({
         id: 'x',
         name: 'X',
-        requiresPkce: true,
         allowedRedirectUris: ['https://example.com/cb'],
         allowedScopes: [],
       })
@@ -162,7 +155,6 @@ describe('OAuth2Client', () => {
     const client = new OAuth2Client({
       id: 'test-id',
       name: 'TEST',
-      requiresPkce: true,
       allowedRedirectUris: ['https://example.com/cb'],
       allowedGrantTypes: ['authorization_code', 'refresh_token'],
     })
@@ -180,7 +172,6 @@ describe('OAuth2Client', () => {
       const noGrantClient = new OAuth2Client({
         id: 'x',
         name: 'X',
-        requiresPkce: true,
         allowedRedirectUris: ['https://example.com/cb'],
       })
       expect(noGrantClient.isGrantTypeAllowed('authorization_code')).toBe(false)
@@ -192,7 +183,6 @@ describe('OAuth2Client', () => {
       const noGrantClient = new OAuth2Client({
         id: 'x',
         name: 'X',
-        requiresPkce: true,
         allowedRedirectUris: ['https://example.com/cb'],
       })
       expect(noGrantClient.isGrantTypeAllowed('')).toBe(false)
@@ -214,7 +204,6 @@ describe('OAuth2Client', () => {
         allowedRedirectUris: ['https://example.com/cb'],
         allowedScopes: ['openid'],
         allowedGrantTypes: ['authorization_code'],
-        requiresPkce: true,
       })
       expect(client.id).toBe('my-id')
       expect(client.secret).toBe('my-secret')
@@ -222,7 +211,6 @@ describe('OAuth2Client', () => {
       expect(client.allowedRedirectUris).toEqual(['https://example.com/cb'])
       expect(client.allowedScopes).toEqual(['openid'])
       expect(client.allowedGrantTypes).toEqual(['authorization_code'])
-      expect(client.requiresPkce).toBe(true)
     })
 
     it('should allow secret to be undefined (public client)', () => {
@@ -230,7 +218,6 @@ describe('OAuth2Client', () => {
         id: 'pub',
         name: 'PUB',
         allowedRedirectUris: ['https://example.com/cb'],
-        requiresPkce: true,
       })
       expect(client.secret).toBeUndefined()
     })
@@ -240,7 +227,6 @@ describe('OAuth2Client', () => {
         id: 'min',
         name: 'MIN',
         allowedRedirectUris: ['https://example.com/cb'],
-        requiresPkce: false,
       })
       expect(client.allowedScopes).toBeUndefined()
       expect(client.allowedGrantTypes).toBeUndefined()
@@ -300,7 +286,6 @@ describe('OAuth2ClientSubservice', () => {
           allowedRedirectUris: ['https://paas.example.com/cb'],
           allowedScopes: ['openid', 'profile'],
           allowedGrantTypes: ['authorization_code', 'refresh_token'],
-          requiresPkce: true,
         }),
       ]
       const service = await createService()
@@ -312,7 +297,6 @@ describe('OAuth2ClientSubservice', () => {
       expect(client.allowedRedirectUris).toEqual(['https://paas.example.com/cb'])
       expect(client.allowedScopes).toEqual(['openid', 'profile'])
       expect(client.allowedGrantTypes).toEqual(['authorization_code', 'refresh_token'])
-      expect(client.requiresPkce).toBe(true)
     })
 
     it('should wrap multiple configured clients', async () => {

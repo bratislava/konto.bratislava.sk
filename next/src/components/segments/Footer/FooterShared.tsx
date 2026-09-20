@@ -33,7 +33,9 @@ export const FooterSocialLinks = ({
     <>
       {socialLinks
         .map(({ url, icon, ariaLabel }, index) => {
-          if (!url) return null
+          if (!url) {
+            return null
+          }
 
           return (
             <Button

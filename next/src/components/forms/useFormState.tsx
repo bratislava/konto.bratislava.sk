@@ -93,7 +93,9 @@ const useGetContext = () => {
   }
 
   const getNextStep = () => {
-    if (currentStepIndex === 'summary') return null
+    if (currentStepIndex === 'summary') {
+      return null
+    }
     const nextSteps = stepsSchemas.slice(currentStepIndex + 1)
     const nextStepIndex = nextSteps.findIndex((step) => step != null)
 
@@ -204,7 +206,9 @@ const useGetContext = () => {
 
   const goToStepByFieldId = (fieldId: string) => {
     const stepProperty = parseStepFromFieldId(fieldId)
-    if (!stepProperty) return
+    if (!stepProperty) {
+      return
+    }
 
     const index = stepsSchemas.findIndex((step) => getStepProperty(step) === stepProperty)
 

@@ -7,7 +7,6 @@ export interface OAuth2ClientEnvConfig {
   allowedRedirectUris: string[]
   allowedScopes: string[]
   allowedGrantTypes: string[]
-  requiresPkce: boolean
 }
 
 function parseCommaSeparatedList(value: unknown): string[] {
@@ -60,17 +59,6 @@ export function parseOAuth2ClientsFromEnv(env: Record<string, unknown>): OAuth2C
     const allowedScopes = parseCommaSeparatedList(env[`OAUTH2_${name}_ALLOWED_SCOPES`])
     const allowedGrantTypes = parseCommaSeparatedList(env[`OAUTH2_${name}_ALLOWED_GRANT_TYPES`])
 
-    // Default to true if not specified
-    const requiresPkce = env[`OAUTH2_${name}_REQUIRES_PKCE`] !== 'false'
-
-    if (!clientSecret && !requiresPkce) {
-      // https://datatracker.ietf.org/doc/html/rfc9700#section-2.1.1
-      errors.push(
-        `OAUTH2_${name}: public clients MUST use PKCE (set OAUTH2_${name}_REQUIRES_PKCE=true or provide OAUTH2_${name}_CLIENT_SECRET)`
-      )
-      continue
-    }
-
     clients.push({
       id: clientId,
       secret: clientSecret,
@@ -78,7 +66,6 @@ export function parseOAuth2ClientsFromEnv(env: Record<string, unknown>): OAuth2C
       allowedRedirectUris,
       allowedScopes,
       allowedGrantTypes,
-      requiresPkce,
     })
   }
 

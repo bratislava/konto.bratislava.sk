@@ -15,6 +15,7 @@ import { User, UserType } from '../auth-v2/types/user'
 import { UpdateFormRequestDto } from '../forms/dtos/requests.dto'
 import FormsService from '../forms/forms.service'
 import { FormDefinitionMustBeEnabledGuard } from '../forms/guards/form-definition-must-be-enabled.guard'
+import { FormMustBeEditableGuard } from '../forms/guards/form-must-be-editable.guard'
 import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
 import { FormSendOnlyRegisteredGuard } from '../forms-v2/guards/form-send-only-registered.guard'
 import NasesContactsService from '../nases/services/nases.contacts.service'
@@ -61,6 +62,7 @@ export default class FormSenderController {
     FormAccessGuard,
     FormSendOnlyRegisteredGuard,
     FormDefinitionMustBeEnabledGuard,
+    FormMustBeEditableGuard,
   )
   @Post('send-and-update-form/:formId')
   async sendAndUpdateForm(
@@ -88,6 +90,7 @@ export default class FormSenderController {
     FormAccessGuard,
     FormSendOnlyRegisteredGuard,
     FormDefinitionMustBeEnabledGuard,
+    FormMustBeEditableGuard,
   )
   @Post('eid/send-and-update-form/:formId')
   async sendAndUpdateFormEid(

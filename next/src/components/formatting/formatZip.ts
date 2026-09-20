@@ -1,5 +1,7 @@
 export const formatZip = (zip?: string) => {
-  if (!zip) return null
+  if (!zip) {
+    return null
+  }
 
   // Example: '84104' -> '841 04'
   if (/^\d{5}$/g.test(zip)) {

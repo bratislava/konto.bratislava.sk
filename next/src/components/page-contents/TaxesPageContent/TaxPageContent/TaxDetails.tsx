@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next/pages'
 import { TaxType } from 'openapi-clients/tax'
 
 import Icon from '@/src/components/icon-components/Icon'
-import TaxAccordions from '@/src/components/page-contents/TaxesPageContent/TaxPageContent/TaxAccordions/TaxAccordions'
+import TaxDisclosures from '@/src/components/page-contents/TaxesPageContent/TaxPageContent/TaxAccordions/TaxDisclosures'
 import TaxPaymentSummary from '@/src/components/page-contents/TaxesPageContent/TaxPageContent/TaxPaymentSummary'
 import { useTaxData } from '@/src/components/page-contents/TaxesPageContent/useTaxData'
 import { EXTERNAL_LINKS } from '@/src/utils/routes'
@@ -34,14 +34,14 @@ const TaxDetails = () => {
   }[taxData.type]
 
   return (
-    <div className="flex w-full flex-col items-start gap-3 lg:gap-6">
+    <div className="flex w-full flex-col gap-3 lg:gap-6">
       <div className="flex w-full flex-col justify-between lg:flex-row">
-        <Typography variant="h5" as="p" className="font-semibold">
+        <Typography variant="h5" as="h2">
           {taxAccordionsHeader}
         </Typography>
         <Button variant="link" endIcon={<Icon name="export" />} {...taxAccordionsHeaderLinkProps} />
       </div>
-      <TaxAccordions />
+      <TaxDisclosures />
       <TaxPaymentSummary />
     </div>
   )

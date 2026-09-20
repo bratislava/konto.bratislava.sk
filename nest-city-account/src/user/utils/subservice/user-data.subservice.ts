@@ -4,7 +4,6 @@ import { Simplify } from 'type-fest'
 
 import { Consent } from '../../../bloomreach/bloomreach.types'
 import { BloomreachOutboxService } from '../../../bloomreach/bloomreach-outbox.service'
-import { DPBUserLoginStatistics } from '../../../dpb/dtos/user.dto'
 import {
   ConsentEnum,
   DeliveryMethodEnum,
@@ -14,6 +13,7 @@ import {
   Prisma,
   User,
 } from '../../../generated/prisma/client'
+import { DPBUserLoginStatistics } from '../../../oauth2-clients/dpb/dtos/user.dto'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'

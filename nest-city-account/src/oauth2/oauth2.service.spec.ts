@@ -128,7 +128,7 @@ describe('OAuth2Service', () => {
       })
     })
 
-    it('should convert optional scope/state/PKCE to null when absent', async () => {
+    it('should convert optional scope/state to null when absent', async () => {
       // CUSTOM PROXY DETAIL: Prisma stores null for absent optional fields
       jest
         .spyOn(prisma.oAuth2Data, 'create')
@@ -137,13 +137,13 @@ describe('OAuth2Service', () => {
         response_type: 'code',
         client_id: 'cid',
         redirect_uri: 'https://example.com/cb',
+        code_challenge: 'challenge',
+        code_challenge_method: 'S256',
       })
       expect(prisma.oAuth2Data.create).toHaveBeenCalledWith({
         data: expectObjectContaining<Prisma.OAuth2DataCreateInput>({
           scope: null,
           state: null,
-          codeChallenge: null,
-          codeChallengeMethod: null,
         }),
       })
     })
@@ -155,8 +155,42 @@ describe('OAuth2Service', () => {
           response_type: 'code',
           client_id: 'cid',
           redirect_uri: 'https://example.com/cb',
+          code_challenge: 'challenge',
+          code_challenge_method: 'S256',
         })
       ).rejects.toThrow('DB connection failed')
+    })
+  })
+
+  // ─── loadAuthorizationRequest ───────────────────────────────────────────
+
+  describe('loadAuthorizationRequest', () => {
+    it('should return undefined when the authorization request does not exist', async () => {
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(null)
+      await expect(service.loadAuthorizationRequest('missing-id')).resolves.toBeUndefined()
+    })
+
+    it('should map a stored authorization request back to the request DTO', async () => {
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(
+        oauth2DataFactory({
+          responseType: 'code',
+          clientId: 'cid',
+          redirectUri: 'https://example.com/cb',
+          scope: 'read',
+          state: 'csrf',
+          codeChallenge: 'challenge',
+          codeChallengeMethod: 'S256',
+        })
+      )
+      await expect(service.loadAuthorizationRequest('auth-req-id')).resolves.toEqual({
+        response_type: 'code',
+        client_id: 'cid',
+        redirect_uri: 'https://example.com/cb',
+        scope: 'read',
+        state: 'csrf',
+        code_challenge: 'challenge',
+        code_challenge_method: 'S256',
+      })
     })
   })
 
@@ -318,7 +352,13 @@ describe('OAuth2Service', () => {
     it('should build URL with authRequestId and isOAuth flag', () => {
       baConfigService.oauth2.loginUrl = 'https://login.example.com'
       const url = service.buildLoginRedirectUrl(
-        { response_type: 'code', client_id: 'cid', redirect_uri: 'https://example.com/cb' },
+        {
+          response_type: 'code',
+          client_id: 'cid',
+          redirect_uri: 'https://example.com/cb',
+          code_challenge: 'challenge',
+          code_challenge_method: 'S256',
+        },
         'auth-req-123'
       )
       expect(url).toContain('authRequestId=auth-req-123')
@@ -333,6 +373,8 @@ describe('OAuth2Service', () => {
           client_id: 'cid',
           redirect_uri: 'https://example.com/cb',
           scope: 'identity:verified',
+          code_challenge: 'challenge',
+          code_challenge_method: 'S256',
         },
         'auth-req-123'
       )
@@ -348,6 +390,8 @@ describe('OAuth2Service', () => {
           client_id: 'cid',
           redirect_uri: 'https://example.com/cb',
           scope: 'read',
+          code_challenge: 'challenge',
+          code_challenge_method: 'S256',
         },
         'auth-req-123'
       )
@@ -372,6 +416,8 @@ describe('OAuth2Service', () => {
         client_id: 'cid',
         redirect_uri: 'https://example.com/cb',
         state: 'csrf',
+        code_challenge: 'challenge',
+        code_challenge_method: 'S256',
       })
       expect(result.code).toBeDefined()
       expect(result.code.length).toBeGreaterThan(0)
@@ -393,6 +439,8 @@ describe('OAuth2Service', () => {
         response_type: 'code',
         client_id: 'cid',
         redirect_uri: 'https://example.com/cb',
+        code_challenge: 'challenge',
+        code_challenge_method: 'S256',
       })
       expect(result.state).toBeUndefined()
     })
@@ -405,6 +453,8 @@ describe('OAuth2Service', () => {
         client_id: 'cid',
         redirect_uri: 'https://example.com/cb',
         state: '',
+        code_challenge: 'challenge',
+        code_challenge_method: 'S256',
       })
       expect(result.state).toBeUndefined()
     })
@@ -461,8 +511,10 @@ describe('OAuth2Service', () => {
       redirectUri: 'https://example.com/callback',
       authorizationCode: 'valid-code',
       authorizationCodeCreatedAt: new Date(),
-      codeChallenge: null,
-      codeChallengeMethod: null,
+      // PKCE is mandatory, so every stored request carries a challenge. 'plain' keeps the
+      // verifier these tests send ('v') matching without hashing noise.
+      codeChallenge: 'v',
+      codeChallengeMethod: 'plain',
       accessTokenEnc: 'enc:access',
       refreshTokenEnc: 'enc:refresh',
       accessTokenExpiresAt: new Date(Date.now() + 3600000),
@@ -809,20 +861,6 @@ describe('OAuth2Service', () => {
         'Invalid code_challenge_method',
         { codeChallengeMethod: 'SHA1', validMethods: ['S256', 'plain'] }
       )
-    })
-
-    it('should skip PKCE validation when no code_challenge was stored', async () => {
-      const noPkceData = { ...pkceOAuth2Data, codeChallenge: null, codeChallengeMethod: null }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(noPkceData)
-
-      const result = await service.token({
-        grant_type: 'authorization_code',
-        code: 'valid-code',
-        redirect_uri: 'https://example.com/callback',
-        code_verifier: 'v',
-      })
-      expect(result.access_token).toBeDefined()
-      expect(crypto.timingSafeStringEqual).not.toHaveBeenCalled()
     })
   })
 

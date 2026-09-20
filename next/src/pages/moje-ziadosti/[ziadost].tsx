@@ -8,6 +8,7 @@ import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import MyApplicationDetails from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails/MyApplicationDetails'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { modifyGinisDataForSchemaSlug } from '@/src/frontend/utils/ginis'
 import logger from '@/src/frontend/utils/logger'
@@ -89,13 +90,17 @@ const AccountMyApplicationsPage = ({
 }: MyApplicationDetailsPageProps) => {
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout>
-        <MyApplicationDetails
-          formDefinitionTitle={formDefinitionTitle}
-          myApplicationFormData={myApplicationFormData}
-          myApplicationGinisData={myApplicationGinisData}
-        />
-      </PageLayout>
+      <>
+        <SeoHead title={formDefinitionTitle} />
+
+        <PageLayout>
+          <MyApplicationDetails
+            formDefinitionTitle={formDefinitionTitle}
+            myApplicationFormData={myApplicationFormData}
+            myApplicationGinisData={myApplicationGinisData}
+          />
+        </PageLayout>
+      </>
     </GeneralContextProvider>
   )
 }

@@ -6,7 +6,9 @@ import logger from '@/src/frontend/utils/logger'
 export const useJsonParseMemo = <T>(stringToParse: string | undefined | null) =>
   useMemo<T | null>(() => {
     try {
-      if (!stringToParse) return null
+      if (!stringToParse) {
+        return null
+      }
 
       return JSON.parse(stringToParse) as unknown as T
     } catch (error) {

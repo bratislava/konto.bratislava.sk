@@ -1,5 +1,6 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
+import { useTranslation } from 'next-i18next/pages'
 
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import { GeneralQuery } from '@/src/clients/graphql-strapi/api'
@@ -21,6 +22,7 @@ import {
   FormDefinitionSlugTitleMap,
   FormDefinitionSlugTitleMapProvider,
 } from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionSlugTitleMap'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
@@ -80,9 +82,12 @@ const MyApplicationsPage = ({
   formDefinitionSlugTitleMap,
   dehydratedState,
 }: MyApplicationsPageProps) => {
+  const { t } = useTranslation()
+
   return (
     <HydrationBoundary state={dehydratedState}>
       <GeneralContextProvider general={general}>
+        <SeoHead title={t('MyApplicationsPageContent.title')} />
         <PageLayout>
           <FormDefinitionSlugTitleMapProvider
             formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}

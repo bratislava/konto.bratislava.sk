@@ -44,6 +44,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
 
   return (
     <form
+      noValidate // We use AJV validation
       className="flex w-full flex-col space-y-4"
       onSubmit={handleSubmit((data: PhoneNumberData) => onSubmit({ data }))}
     >

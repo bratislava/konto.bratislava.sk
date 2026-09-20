@@ -56,8 +56,8 @@ export class OAuth2Service {
         redirectUri: request.redirect_uri,
         scope: request.scope || null,
         state: request.state || null,
-        codeChallenge: request.code_challenge || null,
-        codeChallengeMethod: request.code_challenge_method || null,
+        codeChallenge: request.code_challenge,
+        codeChallengeMethod: request.code_challenge_method,
       },
     })
 
@@ -98,8 +98,8 @@ export class OAuth2Service {
       redirect_uri: storedRequest.redirectUri,
       scope: storedRequest.scope || undefined,
       state: storedRequest.state || undefined,
-      code_challenge: storedRequest.codeChallenge || undefined,
-      code_challenge_method: storedRequest.codeChallengeMethod || undefined,
+      code_challenge: storedRequest.codeChallenge,
+      code_challenge_method: storedRequest.codeChallengeMethod,
     }
 
     return request
@@ -414,13 +414,11 @@ export class OAuth2Service {
       )
     }
 
-    if (oauth2Data.codeChallenge) {
-      this.validatePkce(
-        request.code_verifier,
-        oauth2Data.codeChallenge,
-        oauth2Data.codeChallengeMethod
-      )
-    }
+    this.validatePkce(
+      request.code_verifier,
+      oauth2Data.codeChallenge,
+      oauth2Data.codeChallengeMethod
+    )
 
     if (
       !oauth2Data.accessTokenEnc ||
@@ -471,7 +469,7 @@ export class OAuth2Service {
   private validatePkce(
     codeVerifier: string,
     codeChallenge: string,
-    codeChallengeMethod: string | null
+    codeChallengeMethod: string
   ): void {
     let expectedChallenge: string
 

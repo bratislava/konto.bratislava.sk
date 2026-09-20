@@ -55,6 +55,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
 
   return (
     <form
+      noValidate // We use AJV validation
       className="flex flex-col gap-4 lg:gap-6"
       onSubmit={handleSubmit((data: Data) => onSubmit(data.oldPassword, data.password))}
       data-cy="change-password-form"

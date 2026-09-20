@@ -94,7 +94,7 @@ describe('TokenRequestValidationPipe', () => {
    * authorization_code Grant Validation
    *
    * RFC 6749 Section 4.1.3 - Required: grant_type, code, redirect_uri
-   * RFC 7636 Section 4.5 - Required: code_verifier (when PKCE used)
+   * RFC 7636 Section 4.5 - Required: code_verifier (PKCE is mandatory for all clients)
    */
   describe('transform - authorization_code validation', () => {
     it('should accept a valid authorization_code request with all required fields', async () => {

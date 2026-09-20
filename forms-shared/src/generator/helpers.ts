@@ -3,7 +3,13 @@ import type { RJSFSchema } from '@rjsf/utils' with {
 }
 import camelCase from 'lodash/camelCase'
 import { BaAjvInputFormat } from '../form-utils/ajvFormats'
-import { InputUiOptionsInputType } from './uiOptionsTypes'
+import {
+  inputWidthCharactersMax,
+  inputWidthCharactersMin,
+  inputWidthFractions,
+  InputUiOptionsInputType,
+  InputWidthType,
+} from './uiOptionsTypes'
 import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
 
 type ObjectJsonSchema = {
@@ -221,4 +227,21 @@ export const getInputTypeForAjvFormat = (format: BaAjvInputFormat): InputUiOptio
     'ba-iban': 'text' as const,
     'ba-ratio': 'text' as const,
   }[format]
+}
+
+/**
+ * `InputWidthType` already rejects invalid literals at compile time, this guards callers that reach
+ * the generator from JavaScript or with a non-literal value.
+ */
+export const validateInputWidth = (inputWidth: InputWidthType | undefined, property: string) => {
+  if (
+    typeof inputWidth === 'number' &&
+    (!Number.isInteger(inputWidth) ||
+      inputWidth < inputWidthCharactersMin ||
+      inputWidth > inputWidthCharactersMax)
+  ) {
+    throw new Error(
+      `inputWidth must be an integer between ${inputWidthCharactersMin} and ${inputWidthCharactersMax} or one of ${inputWidthFractions.join(', ')}, got ${inputWidth} (property "${property}")`,
+    )
+  }
 }

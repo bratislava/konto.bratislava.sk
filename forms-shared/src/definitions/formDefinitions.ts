@@ -553,8 +553,8 @@ export const formDefinitions: FormDefinition[] = [
   {
     type: FormDefinitionType.Email,
     slug: 'tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii',
-    title: 'Žiadosť o stanovisko k projektovej dokumentácii',
-    jsonVersion: '1.0.2',
+    title: 'Žiadosť o záväzné stanovisko k projektovej dokumentácii',
+    jsonVersion: '1.1.0',
     schema: ziadostOStanoviskoKProjektovejDokumentacii,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
     subject: {

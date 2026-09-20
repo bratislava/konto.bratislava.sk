@@ -1,0 +1,129 @@
+name: E2E tests
+
+on:
+  pull_request:
+    branches:
+      - master
+
+  push:
+    tags:
+      - "dev**"
+      - "staging**"
+      - "prod**"
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  dependabot-approval:
+    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    environment: dependabot
+    steps:
+      - name: Wait for approval
+        run: echo "Approved to run E2E tests for Dependabot PR"
+
+  e2e-tests:
+    needs: [ dependabot-approval ]
+    if: always() && (needs.dependabot-approval.result == 'success' || needs.dependabot-approval.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.15"
+
+      - name: Install and build forms-shared
+        id: forms-shared
+        working-directory: forms-shared
+        background: true
+        run: |
+          npm install
+          npm run build
+
+      - name: Install and build openapi-clients
+        id: openapi-clients
+        working-directory: openapi-clients
+        background: true
+        run: |
+          npm install
+          npm run build
+
+      - name: Install next dependencies
+        id: next-install
+        working-directory: next
+        background: true
+        run: npm install
+
+      - name: Install e2e-tests dependencies
+        id: e2e-install
+        working-directory: e2e-tests
+        background: true
+        run: npm ci
+
+      - name: Install Playwright browsers
+        id: playwright-browsers
+        background: true
+        run: |
+          version=$(node -p "require('./e2e-tests/package.json').devDependencies['@playwright/test']")
+          npx --yes "playwright@${version}" install --with-deps chromium
+
+      - name: Wait for the Next.js build inputs
+        wait: [ forms-shared, openapi-clients, next-install ]
+
+      - name: Build application
+        working-directory: next
+        run: npm run build:e2e
+
+      - name: Start application
+        id: app-server
+        working-directory: next
+        background: true
+        run: npm run start
+
+      # `playwright.config.ts` declares a `webServer` with `reuseExistingServer`, so it adopts the
+      # application started above rather than launching one of its own.
+      - name: Wait for application
+        run: |
+          timeout 120 bash -c \
+            'until curl --silent --fail --output /dev/null http://localhost:3000/api/healthcheck; do sleep 2; done'
+
+      - name: Wait for the test prerequisites
+        wait: [ e2e-install, playwright-browsers ]
+
+      - name: Run Playwright tests
+        working-directory: e2e-tests
+        run: npm test
+
+      - name: Stop application
+        cancel: app-server
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: playwright-report
+          path: e2e-tests/playwright-report
+          retention-days: 1
+
+      - name: Upload Playwright test results
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: playwright-test-results
+          path: e2e-tests/test-results
+          retention-days: 1
+
+      - name: Upload JUnit results
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: playwright-junit
+          path: e2e-tests/results
+          retention-days: 1
+

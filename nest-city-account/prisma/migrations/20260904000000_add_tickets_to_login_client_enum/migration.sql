@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "LoginClientEnum" ADD VALUE 'TICKETS' BEFORE 'CITY_ACCOUNT';

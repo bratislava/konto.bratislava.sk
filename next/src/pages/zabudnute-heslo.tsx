@@ -13,6 +13,7 @@ import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { AmplifyClientOAuthProvider } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
@@ -119,40 +120,44 @@ const ForgottenPasswordPage = ({ general, clientInfo }: AuthPageCommonProps) => 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
-        <PageLayout
-          variant="auth"
-          hasBackButton={forgotPasswordStatus !== ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
-        >
-          <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 lg:gap-10">
-            {forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_REQUIRED ? (
-              <NewPasswordForm
-                onSubmit={(verificationCode, newPassword) =>
-                  forgotPasswordSubmit(verificationCode, newPassword)
-                }
-                onResend={() => forgotPassword(lastEmail)}
-                error={forgotPasswordError}
-                lastEmail={lastEmail}
-              />
-            ) : forgotPasswordStatus === ForgotPasswordStatus.INIT ? (
-              <>
-                <ForgottenPasswordForm
-                  onSubmit={(email: string) => forgotPassword(email)}
+        <>
+          <SeoHead title={t('ForgottenPasswordPage.title')} />
+
+          <PageLayout
+            variant="auth"
+            hasBackButton={forgotPasswordStatus !== ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
+          >
+            <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 lg:gap-10">
+              {forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_REQUIRED ? (
+                <NewPasswordForm
+                  onSubmit={(verificationCode, newPassword) =>
+                    forgotPasswordSubmit(verificationCode, newPassword)
+                  }
+                  onResend={() => forgotPassword(lastEmail)}
                   error={forgotPasswordError}
                   lastEmail={lastEmail}
-                  setLastEmail={setLastEmail}
                 />
-                <HorizontalDivider />
-                <AccountLink variant="login" />
-              </>
-            ) : (
-              <AccountSuccessAlert
-                title={t('ForgottenPasswordPage.successTitle')}
-                confirmLabel={t('ForgottenPasswordPage.goToLogin')}
-                onConfirm={onConfirm}
-              />
-            )}
-          </AccountContainer>
-        </PageLayout>
+              ) : forgotPasswordStatus === ForgotPasswordStatus.INIT ? (
+                <>
+                  <ForgottenPasswordForm
+                    onSubmit={(email: string) => forgotPassword(email)}
+                    error={forgotPasswordError}
+                    lastEmail={lastEmail}
+                    setLastEmail={setLastEmail}
+                  />
+                  <HorizontalDivider />
+                  <AccountLink variant="login" />
+                </>
+              ) : (
+                <AccountSuccessAlert
+                  title={t('ForgottenPasswordPage.successTitle')}
+                  confirmLabel={t('ForgottenPasswordPage.goToLogin')}
+                  onConfirm={onConfirm}
+                />
+              )}
+            </AccountContainer>
+          </PageLayout>
+        </>
       </GeneralContextProvider>
     </AmplifyClientOAuthProvider>
   )

@@ -35,7 +35,7 @@ const DocumentsSection = ({
       <div className="flex flex-col gap-6">
         <SectionHeader title={title} text={text} />
 
-        <div className="flex flex-col rounded-lg border border-border-active-default bg-background-passive-base py-2">
+        <div className="flex flex-col rounded-lg border border-border-passive-primary bg-background-passive-base py-2">
           <ul id={listId}>
             {filteredExternalDocuments
               .slice(

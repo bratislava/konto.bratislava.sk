@@ -2,7 +2,7 @@
 
 A reference for engineers integrating Dopravný podnik Bratislava (DPB) with Bratislavské konto (BK) via OAuth 2.0.
 
-> **Version:** 1.0.0 · **Last updated:** 2026-05-29 · **Owner:** Bratislavské konto / Innovation team
+> **Version:** 1.1.0 · **Last updated:** 2026-09-14 · **Owner:** Bratislavské konto / Innovation team
 
 ## Table of Contents
 
@@ -74,7 +74,7 @@ Any additional authentication factors or login methods that BK introduces in the
 The user-facing login flow is a standard OAuth 2.0 Authorization Code flow with PKCE:
 
 1. The user clicks "Sign in" in the DPB application.
-2. DPB redirects the user's browser to the BK authorization endpoint with `client_id`, `redirect_uri`, `state`, and (for PKCE) `code_challenge` with `code_challenge_method=S256`.
+2. DPB redirects the user's browser to the BK authorization endpoint with `client_id`, `redirect_uri`, `state`, and required PKCE `code_challenge` with `code_challenge_method=S256`.
 3. The user authenticates on the BK side. BK handles passwords, email verification, identity verification, and any other authentication concerns.
 4. BK redirects the user back to DPB's `redirect_uri` with an authorization `code` and the original `state`.
 5. DPB exchanges the `code` at the BK token endpoint (`/oauth2/token`) – together with the PKCE `code_verifier` and, for confidential clients, `client_secret` – for a bearer access token and a refresh token.
@@ -104,12 +104,12 @@ In addition to the user-facing flow, BK exposes admin (backend-to-backend) endpo
 
 The endpoints involved in the integration, at a glance:
 
-| Endpoint                | Method | Authentication                                     | Purpose                                                                                       |
-| ----------------------- | ------ | -------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `/oauth2/authorize`     | GET    | –                                                  | Entry point of the OAuth flow (the URL DPB redirects the user's browser to).                  |
-| `/oauth2/token`         | POST   | `client_id` + `client_secret` (confidential), PKCE | Exchanges an authorization `code` for an access token; also serves the `refresh_token` grant. |
-| `/dpb/userdata`         | GET    | `Authorization: Bearer <access_token>`             | Returns the authenticated user's profile.                                                     |
-| `/dpb/list-user-logins` | GET    | RSA-SHA-256 signature (backend-to-backend)         | Returns aggregated login statistics for all DPB users.                                        |
+| Endpoint                | Method | Authentication                                                     | Purpose                                                                                       |
+| ----------------------- | ------ | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| `/oauth2/authorize`     | GET    | –                                                                  | Entry point of the OAuth flow (the URL DPB redirects the user's browser to).                  |
+| `/oauth2/token`         | POST   | `client_id` + `client_secret` (confidential), PKCE `code_verifier` | Exchanges an authorization `code` for an access token; also serves the `refresh_token` grant. |
+| `/dpb/userdata`         | GET    | `Authorization: Bearer <access_token>`                             | Returns the authenticated user's profile.                                                     |
+| `/dpb/list-user-logins` | GET    | RSA-SHA-256 signature (backend-to-backend)                         | Returns aggregated login statistics for all DPB users.                                        |
 
 Full request/response schemas, error codes, and the exact admin-signing rules (headers, signed string, replay protection) are documented in Swagger – [staging](https://nest-city-account.staging.bratislava.sk/api) · [prod](https://nest-city-account.bratislava.sk/api).
 
@@ -119,7 +119,8 @@ Full request/response schemas, error codes, and the exact admin-signing rules (h
   - [RFC 6749 – The OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749)
   - [RFC 7636 – PKCE for OAuth Public Clients](https://datatracker.ietf.org/doc/html/rfc7636)
   - [RFC 9700 – Best Current Practice for OAuth 2.0 Security](https://datatracker.ietf.org/doc/html/rfc9700)
-- Because the integration is spec-compliant, DPB is free to use any OAuth library that conforms to the OAuth specification – it will work out of the box.
+- **PKCE is required on every authorization request and every `authorization_code` token exchange**, for confidential and public clients alike, per recommendation of [RFC 9700 Section 2.1.1](https://datatracker.ietf.org/doc/html/rfc9700#section-2.1.1). There is no per-client opt-out.
+- Because the integration is spec-compliant, DPB is free to use any OAuth library that conforms to the OAuth specification – it will work out of the box. Make sure PKCE is enabled in the library's configuration.
 - Once it holds a bearer token, DPB calls the BK REST API to obtain user data: <https://nest-city-account.bratislava.sk/api#/DPB/DpbController_userData>.
 - **The bearer access token is opaque – it is _not_ a JWT.** Do not attempt to decode or inspect it; treat it as a random string and use it solely as the `Authorization: Bearer …` credential when calling BK endpoints. All user information must be retrieved by calling `/dpb/userdata` (or other documented endpoints), never by parsing the token itself.
 - **Refresh tokens are supported.** Every successful token response also includes a refresh token alongside the access token, and the token endpoint accepts both `authorization_code` and `refresh_token` grant types – so DPB can extend a session beyond the access-token TTL without forcing the user to re-authenticate. Whether to actually use refresh tokens is up to DPB; if used, the usual OAuth 2.0 hygiene needs to be applied (store on the backend only, rotate, revoke on logout, etc.).
@@ -321,7 +322,8 @@ Implementation recommendations for the DPB side. Choose the section that matches
 
 ### Server-side web application (confidential client) – recommended
 
-- **DO** use `client_secret` (mandatory) together with PKCE (very strongly recommended, `code_challenge_method=S256`).
+- **DO** use `client_secret` (mandatory) together with PKCE (also mandatory, `code_challenge_method=S256`).
+- **DO** generate a fresh `code_verifier` for every authorization request as a random string of 43–128 characters from `[A-Za-z0-9\-._~]`.
 - **DO** perform the token exchange (`POST /oauth2/token`) from the DPB backend – **never** from the browser.
 - **DO** store tokens in `HttpOnly` `Secure` cookies or a server-side session. **DO NOT** store them in `localStorage`.
 - **DO** send a `state` parameter on every authorization request, and verify it on the callback (recommended).
@@ -330,7 +332,7 @@ Implementation recommendations for the DPB side. Choose the section that matches
 
 - **DO NOT** use `client_secret` – a public client cannot keep it secret.
 - **DO** use PKCE; it is mandatory (`code_challenge_method=S256`).
-- **DO** generate a `code_verifier` as a random string of 43–128 characters from `[A-Za-z0-9\-._~]`.
+- **DO** generate a fresh `code_verifier` for every authorization request as a random string of 43–128 characters from `[A-Za-z0-9\-._~]`.
 - **DO** always send a `state` parameter on the authorization request, and verify it on the callback.
 - **DO** store tokens in secure platform storage (iOS Keychain / Android Keystore).
 
@@ -352,7 +354,7 @@ Quick reference for the abbreviations and short forms used in this document, in 
 | **MFA**      | Multi-Factor Authentication         | Additional authentication factors on top of a password. Not currently provided by BK; once added, will be handled entirely on the BK side. |
 | **OAuth**    | Open Authorization                  | Industry-standard authorization protocol; this integration uses OAuth 2.0.                                                                 |
 | **PAAS**     | PAAS mobile parking application     | Another OAuth client integrated with BK; used in this document as an additional example alongside DPB.                                     |
-| **PKCE**     | Proof Key for Code Exchange         | OAuth 2.0 extension that protects the authorization code (see RFC 7636).                                                                   |
+| **PKCE**     | Proof Key for Code Exchange         | Pronounced "pixie". OAuth 2.0 extension that protects the authorization code (see RFC 7636).                                               |
 | **PROD**     | Production                          | The live production environment.                                                                                                           |
 | **RČ**       | _Rodné číslo_                       | Slovak birth number / personal identification number.                                                                                      |
 | **REST**     | Representational State Transfer     | Architectural style of the BK API.                                                                                                         |

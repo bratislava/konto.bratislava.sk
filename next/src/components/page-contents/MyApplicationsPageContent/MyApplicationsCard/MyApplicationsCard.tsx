@@ -46,7 +46,7 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
   const formSlug = form.formDefinitionSlug
 
   const formDefinitionSlugTitleMap = useFormDefinitionSlugTitleMap()
-  const cardTitle = formSlug ? formDefinitionSlugTitleMap[formSlug] : undefined
+  const cardTitle = formDefinitionSlugTitleMap[formSlug]
 
   const formPageHref = ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(formSlug, form.id)
   const detailPageHref = ROUTES.MY_APPLICATION_DETAIL(form.id)
@@ -59,7 +59,7 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
         value: formatDate(form.createdAt),
       }
     : {
-        label: 'Dátum aktualizácie',
+        label: t('MyApplicationsCard.updatedAt'),
         value: formatDate(form.updatedAt),
         // TODO
         // - Backend needs to add sentAt to the GetFormResponseSimpleDto
@@ -89,6 +89,15 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
       onPress: () => setShowDeleteFormConceptModal(true),
     },
   ].filter(isDefined)
+
+  const mobileConceptMenuItems: DropdownMenuItemProps[] = [
+    ...conceptMenuItems,
+    {
+      title: t('MyApplicationsCard.button.continue'),
+      icon: <Icon name={'edit'} className="size-6" />,
+      url: formPageHref,
+    },
+  ]
 
   const detailPageDesktopButton = (
     <Button
@@ -220,14 +229,7 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
       <BottomSheetMenuModal
         isOpen={isBottomSheetMenuOpen}
         setIsOpen={setIsBottomSheetMenuOpen}
-        conceptMenuContent={[
-          {
-            title: t('MyApplicationsCard.button.continue'),
-            icon: <Icon name={'edit'} className="size-6" />,
-            url: formPageHref,
-          },
-          ...conceptMenuItems,
-        ]}
+        conceptMenuContent={mobileConceptMenuItems}
       />
     </>
   )

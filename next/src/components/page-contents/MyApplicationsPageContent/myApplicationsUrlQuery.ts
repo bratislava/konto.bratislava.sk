@@ -35,9 +35,9 @@ export const parseMyApplicationsFiltersFromUrlQuery = ({
 }) =>
   ({
     // A hand-edited URL can carry an unknown slug, such a section falls back to 'ALL'.
-    selectedSection: myApplicationStateFilterBySlug[stav] ?? 'ALL',
+    selectedMyApplicationState: myApplicationStateFilterBySlug[stav] ?? 'ALL',
     // A hand-edited URL can carry a nonsensical page, the API expects 1-based pages.
-    currentPage: Math.max(strana, 1),
+    page: Math.max(strana, 1),
   }) as const
 
 const loadSearchParams = createLoader(myApplicationsUrlQueryParams)

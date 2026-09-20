@@ -28,11 +28,12 @@ import cn from '@/src/utils/cn'
 
 const MyApplicationsPageContent = () => {
   const { t } = useTranslation()
-  const { selectedSection, setSelectedSection, currentPage } = useMyApplicationsFilters()
+  const { selectedMyApplicationState, setSelectedMyApplicationState, page } =
+    useMyApplicationsFilters()
 
   const filters = getMyApplicationsFilters({
-    myApplicationState: selectedSection,
-    page: currentPage,
+    myApplicationState: selectedMyApplicationState,
+    page,
   })
 
   const {
@@ -66,11 +67,11 @@ const MyApplicationsPageContent = () => {
       <PageHeader title={t('MyApplicationsPageContent.title')} />
       <SectionContainer className="py-4 lg:py-8">
         <Tabs
-          selectedKey={selectedSection}
+          selectedKey={selectedMyApplicationState}
           onSelectionChange={(key) => {
-            const section = MY_APPLICATION_STATE_FILTERS.find((filter) => filter === key)
-            if (section) {
-              setSelectedSection(section)
+            const state = MY_APPLICATION_STATE_FILTERS.find((filter) => filter === key)
+            if (state) {
+              setSelectedMyApplicationState(state)
             }
           }}
           className="flex flex-col gap-7 lg:gap-8"
@@ -107,7 +108,7 @@ const MyApplicationsPageContent = () => {
                   isError={isError}
                   refreshListData={refreshListData}
                 />
-              ) : selectedSection !== 'DRAFT' ? (
+              ) : selectedMyApplicationState !== 'DRAFT' ? (
                 <MyApplicationsBanner variant="no-applications" />
               ) : null}
             </TabPanel>

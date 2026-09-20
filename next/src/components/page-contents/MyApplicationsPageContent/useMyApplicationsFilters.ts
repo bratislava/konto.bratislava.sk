@@ -10,22 +10,22 @@ import logger from '@/src/frontend/utils/logger'
 
 export const useMyApplicationsFilters = () => {
   const [queryState, setQueryState] = useQueryStates(myApplicationsUrlQueryParams, {
-    history: 'push',
+    history: 'replace',
   })
 
-  const setSelectedSection = (variant: MyApplicationStateFilter) => {
+  const setSelectedMyApplicationState = (variant: MyApplicationStateFilter) => {
     setQueryState({ stav: slugByMyApplicationStateFilter[variant], strana: 1 }).catch((error) =>
       logger.error(error),
     )
   }
 
-  const setCurrentPage = (page: number) => {
+  const setPage = (page: number) => {
     setQueryState({ strana: page }).catch((error) => logger.error(error))
   }
 
   return {
     ...parseMyApplicationsFiltersFromUrlQuery(queryState),
-    setSelectedSection,
-    setCurrentPage,
+    setSelectedMyApplicationState,
+    setPage,
   } as const
 }

@@ -6,21 +6,14 @@ type Props = {
   variant?: 'default' | 'warning' | 'success' | 'error'
   size?: 'small' | 'large'
   text: string
-  shorthand?: boolean
 }
-
-const MAX_SHORTHAND_TEXT_LENGTH = 10
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-13191&m=dev
  * TODO align with design system
  */
 
-const Tag = ({ variant = 'default', text, shorthand, size = 'small' }: Props) => {
-  const textToRender = shorthand
-    ? `${text.slice(0, MAX_SHORTHAND_TEXT_LENGTH)}${text.length > MAX_SHORTHAND_TEXT_LENGTH ? '...' : ''}`
-    : text
-
+const Tag = ({ variant = 'default', text, size = 'small' }: Props) => {
   return (
     <div
       className={cn(
@@ -35,7 +28,7 @@ const Tag = ({ variant = 'default', text, shorthand, size = 'small' }: Props) =>
       )}
     >
       <Typography variant="p-small" className="inline-block cursor-default select-none">
-        {textToRender}
+        {text}
       </Typography>
     </div>
   )

@@ -39,12 +39,12 @@ const getFormDefinitionSlugTitleMap = (): FormDefinitionSlugTitleMap =>
 
 export const getServerSideProps = amplifyGetServerSideProps<MyApplicationsPageProps>(
   async ({ context, fetchAuthSession }) => {
-    const { selectedSection, currentPage } = parseMyApplicationsFiltersFromServerUrlQuery(
+    const { selectedMyApplicationState, page } = parseMyApplicationsFiltersFromServerUrlQuery(
       context.query,
     )
     const filters = getMyApplicationsFilters({
-      myApplicationState: selectedSection,
-      page: currentPage,
+      myApplicationState: selectedMyApplicationState,
+      page,
     })
 
     const queryClient = new QueryClient()

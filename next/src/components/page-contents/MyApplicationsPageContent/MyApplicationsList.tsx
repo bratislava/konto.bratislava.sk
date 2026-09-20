@@ -19,7 +19,7 @@ type Props = {
 
 const MyApplicationsList = ({ applications, isPending, isError, refreshListData }: Props) => {
   const { t } = useTranslation()
-  const { currentPage, setCurrentPage } = useMyApplicationsFilters()
+  const { page, setPage } = useMyApplicationsFilters()
 
   if (isPending) {
     return (
@@ -63,8 +63,8 @@ const MyApplicationsList = ({ applications, isPending, isError, refreshListData 
       <div className="py-4 lg:py-8">
         <Pagination
           totalCount={applications?.countPages ?? 0}
-          currentPage={currentPage}
-          onPageChange={(page) => setCurrentPage(page)}
+          currentPage={page}
+          onPageChange={(page) => setPage(page)}
         />
       </div>
     </>

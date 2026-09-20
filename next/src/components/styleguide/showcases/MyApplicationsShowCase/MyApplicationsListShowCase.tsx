@@ -16,16 +16,17 @@ import {
 import { ShowcaseLayout, ShowcaseSelectField } from './shared'
 
 const MyApplicationsListShowCase = () => {
-  const { selectedSection, setSelectedSection } = useMyApplicationsFilters()
+  const { selectedMyApplicationState: myApplicationState, setSelectedMyApplicationState } =
+    useMyApplicationsFilters()
   const [scenario, setScenario] = useState<ListScenario>('withItems')
 
   const applications = useMemo(
-    () => createMockApplications(selectedSection, scenario),
-    [selectedSection, scenario],
+    () => createMockApplications(myApplicationState, scenario),
+    [myApplicationState, scenario],
   )
   const queryClient = useMemo(
-    () => createMockQueryClient(applications, selectedSection),
-    [applications, selectedSection],
+    () => createMockQueryClient(applications, myApplicationState),
+    [applications, myApplicationState],
   )
 
   return (
@@ -35,8 +36,8 @@ const MyApplicationsListShowCase = () => {
           <ShowcaseSelectField
             label="Status"
             options={sectionOptions}
-            value={selectedSection}
-            onChange={setSelectedSection}
+            value={myApplicationState}
+            onChange={setSelectedMyApplicationState}
           />
           <ShowcaseSelectField
             label="List content"
@@ -49,7 +50,7 @@ const MyApplicationsListShowCase = () => {
     >
       {/* key forces a remount so the freshly seeded QueryClient is picked up */}
       <QueryClientProvider client={queryClient}>
-        <div className="bg-background-passive-base" key={`${selectedSection}-${scenario}`}>
+        <div className="bg-background-passive-base" key={`${myApplicationState}-${scenario}`}>
           <FormDefinitionSlugTitleMapProvider
             formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           >

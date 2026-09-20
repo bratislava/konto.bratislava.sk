@@ -33,14 +33,6 @@ const TagShowCase = () => {
         <Tag text="Default" size="large" />
         <Tag text="Defaulttttttttttttttttttt" size="large" />
       </Stack>
-
-      <Typography>Shorthand (text longer than 10 characters is truncated)</Typography>
-      <Stack>
-        <Tag text="Defaulttttttttttttttttttt" shorthand />
-        <Tag text="Short" shorthand />
-        <Tag text="Errorrrrrrrrrrrrrrrrrrrrr" variant="error" shorthand />
-        <Tag text="Defaulttttttttttttttttttt" size="large" shorthand />
-      </Stack>
     </Wrapper>
   )
 }

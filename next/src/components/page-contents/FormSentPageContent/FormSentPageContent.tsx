@@ -43,7 +43,7 @@ const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
   if (isEmbedded) {
     return {
       title: t('FormSentPageContent.title'),
-      content: contentFromStrapi ?? t('FormSentPageContent.content_embedded'),
+      content: contentFromStrapi ?? t('FormSentPageContent.content.embedded'),
       isContentCentered,
       alert: alertProps,
     }
@@ -52,7 +52,7 @@ const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
   if (isTaxForm) {
     return {
       title: t('FormSentPageContent.title'),
-      content: contentFromStrapi ?? t('FormSentPageContent.content_tax'),
+      content: contentFromStrapi ?? t('FormSentPageContent.content.tax'),
       isContentCentered,
       alert: alertProps,
       primaryButton: feedbackButton,
@@ -62,7 +62,7 @@ const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
 
   return {
     title: t('FormSentPageContent.title'),
-    content: contentFromStrapi ?? t('FormSentPageContent.content'),
+    content: contentFromStrapi ?? t('FormSentPageContent.content.generic'),
     isContentCentered,
     alert: alertProps,
     primaryButton: feedbackButton,
@@ -79,7 +79,7 @@ const FormSentPageContent = () => {
     useFormSentPageContent()
 
   return (
-    <div className="py-6 lg:py-16">
+    <div className="w-full py-6 lg:py-16">
       <ThankYouTile
         variant="success"
         title={title}

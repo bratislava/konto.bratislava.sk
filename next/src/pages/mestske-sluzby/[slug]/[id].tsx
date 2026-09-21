@@ -24,7 +24,9 @@ import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerS
 import type { GlobalAppProps } from '@/src/pages/_app'
 import { ROUTES } from '@/src/utils/routes'
 
-const fetchStrapiForm = async (slug: string): Promise<FormWithSentPageFragment | null | undefined> => {
+const fetchStrapiForm = async (
+  slug: string,
+): Promise<FormWithSentPageFragment | null | undefined> => {
   const result = await strapiClient.FormWithSentPageBySlug({ slug })
 
   return result.forms[0]

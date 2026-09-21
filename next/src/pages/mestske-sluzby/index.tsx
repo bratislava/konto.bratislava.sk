@@ -1,4 +1,5 @@
 import { uniqBy } from 'lodash'
+import { useTranslation } from 'next-i18next/pages'
 
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import { GeneralQuery, MunicipalServiceEntityFragment } from '@/src/clients/graphql-strapi/api'
@@ -8,6 +9,7 @@ import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import MunicipalServicesPageContent, {
   MunicipalServicesPageContentProps,
 } from '@/src/components/page-contents/MunicipalServicesPageContent/MunicipalServicesPageContent'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { isDefined } from '@/src/frontend/utils/general'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
@@ -65,16 +67,22 @@ const AccountMunicipalServicesPage = ({
   servicesLegalPerson,
   categoriesLegalPerson,
 }: AccountMunicipalServicesPageProps) => {
+  const { t } = useTranslation()
+
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout>
-        <MunicipalServicesPageContent
-          services={services}
-          categories={categories}
-          servicesLegalPerson={servicesLegalPerson}
-          categoriesLegalPerson={categoriesLegalPerson}
-        />
-      </PageLayout>
+      <>
+        <SeoHead title={t('MunicipalServicesPageContent.title')} />
+
+        <PageLayout>
+          <MunicipalServicesPageContent
+            services={services}
+            categories={categories}
+            servicesLegalPerson={servicesLegalPerson}
+            categoriesLegalPerson={categoriesLegalPerson}
+          />
+        </PageLayout>
+      </>
     </GeneralContextProvider>
   )
 }

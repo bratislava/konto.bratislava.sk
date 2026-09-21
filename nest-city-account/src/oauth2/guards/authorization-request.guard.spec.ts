@@ -64,11 +64,13 @@ describe('AuthorizationRequestGuard', () => {
       })
     })
 
-    it('should handle optional parameters being absent (scope, state, PKCE)', () => {
+    it('should handle optional parameters being absent (scope, state)', () => {
       const context = createMockContext({
         response_type: 'code',
         client_id: 'test-client-id',
         redirect_uri: 'https://example.com/callback',
+        code_challenge: 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
+        code_challenge_method: 'S256',
       })
       guard.canActivate(context)
       expect(validationSubservice.validateAuthorizationRequest).toHaveBeenCalledWith({
@@ -77,8 +79,8 @@ describe('AuthorizationRequestGuard', () => {
         redirectUri: 'https://example.com/callback',
         scope: undefined,
         state: undefined,
-        codeChallenge: undefined,
-        codeChallengeMethod: undefined,
+        codeChallenge: 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
+        codeChallengeMethod: 'S256',
       })
     })
 

@@ -10,6 +10,7 @@ import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { AmplifyClientOAuthProvider } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
@@ -91,22 +92,26 @@ const PasswordChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
-        <PageLayout
-          variant="auth"
-          hasBackButton={passwordChangeStatus !== PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
-        >
-          <AccountContainer ref={accountContainerRef}>
-            {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
-              <AccountSuccessAlert
-                title={t('PasswordChangePage.successTitle')}
-                confirmLabel={t('auth.continueToAccount')}
-                onConfirm={onConfirm}
-              />
-            ) : (
-              <PasswordChangeForm onSubmit={changePassword} error={passwordChangeError} />
-            )}
-          </AccountContainer>
-        </PageLayout>
+        <>
+          <SeoHead title={t('PasswordChangePage.title')} />
+
+          <PageLayout
+            variant="auth"
+            hasBackButton={passwordChangeStatus !== PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
+          >
+            <AccountContainer ref={accountContainerRef}>
+              {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
+                <AccountSuccessAlert
+                  title={t('PasswordChangePage.successTitle')}
+                  confirmLabel={t('auth.continueToAccount')}
+                  onConfirm={onConfirm}
+                />
+              ) : (
+                <PasswordChangeForm onSubmit={changePassword} error={passwordChangeError} />
+              )}
+            </AccountContainer>
+          </PageLayout>
+        </>
       </GeneralContextProvider>
     </AmplifyClientOAuthProvider>
   )

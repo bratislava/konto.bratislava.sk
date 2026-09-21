@@ -119,46 +119,29 @@ export class OAuth2ValidationSubservice {
     return scope
   }
 
+  /**
+   * Validate the PKCE parameters of an authorization request.
+   *
+   * PKCE is mandatory for every client (https://datatracker.ietf.org/doc/html/rfc9700#section-2.1.1),
+   * so both code_challenge and code_challenge_method must always be present and non-empty.
+   */
   private validatePkceParameters(
     codeChallenge: unknown,
     codeChallengeMethod: unknown,
     client: OAuth2Client
-  ): { codeChallenge?: string; codeChallengeMethod?: string } {
+  ): { codeChallenge: string; codeChallengeMethod: string } {
     const arePkceParamsValid =
       typeof codeChallenge === 'string' &&
       codeChallenge.length > 0 &&
       typeof codeChallengeMethod === 'string' &&
       codeChallengeMethod.length > 0
 
-    if (client.requiresPkce) {
-      if (arePkceParamsValid) {
-        return { codeChallenge, codeChallengeMethod }
-      }
-
-      throw this.oAuth2ErrorThrower.authorizationException(
-        OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-        `Invalid request: PKCE is required for this client: code_challenge and code_challenge_method are required`,
-        undefined,
-        'PKCE required but not provided',
-        {
-          clientId: client.id,
-          hasCodeChallenge: !!codeChallenge,
-          hasCodeChallengeMethod: !!codeChallengeMethod,
-        }
-      )
-    }
-
-    if (codeChallenge === undefined && codeChallengeMethod === undefined) {
-      // PKCE not required and not provided
-      return { codeChallenge: undefined, codeChallengeMethod: undefined }
-    }
-
     if (!arePkceParamsValid) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-        `Invalid request: both code_challenge and code_challenge_method must be provided when using PKCE`,
+        `Invalid request: PKCE is required: code_challenge and code_challenge_method are required`,
         undefined,
-        'PKCE parameters incomplete',
+        'PKCE required but not provided',
         {
           clientId: client.id,
           hasCodeChallenge: !!codeChallenge,
@@ -357,25 +340,25 @@ export class OAuth2ValidationSubservice {
       }
     }
 
-    // Business logic validation: PKCE code_verifier (for authorization_code grant)
-    if (params.grantType === 'authorization_code' && client.requiresPkce) {
-      if (
-        !params.codeVerifier ||
+    // Business logic validation: PKCE code_verifier (for authorization_code grant).
+    // PKCE is mandatory for every client, so a code_verifier is always required here.
+    if (
+      params.grantType === 'authorization_code' &&
+      (!params.codeVerifier ||
         typeof params.codeVerifier !== 'string' ||
-        params.codeVerifier.length === 0
-      ) {
-        throw this.oAuth2ErrorThrower.tokenException(
-          OAuth2TokenErrorCode.INVALID_REQUEST,
-          'Invalid request: PKCE code_verifier is required',
-          undefined,
-          'PKCE code_verifier required but not provided',
-          {
-            clientId,
-            grantType: params.grantType,
-            hasCodeVerifier: !!params.codeVerifier,
-          }
-        )
-      }
+        params.codeVerifier.length === 0)
+    ) {
+      throw this.oAuth2ErrorThrower.tokenException(
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        'Invalid request: PKCE code_verifier is required',
+        undefined,
+        'PKCE code_verifier required but not provided',
+        {
+          clientId,
+          grantType: params.grantType,
+          hasCodeVerifier: !!params.codeVerifier,
+        }
+      )
     }
   }
 }

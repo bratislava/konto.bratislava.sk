@@ -22,6 +22,9 @@ import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormState } from '@/src/components/forms/useFormState'
 import { useFormValidatorRegistry } from '@/src/components/forms/useFormValidatorRegistry'
 import Icon from '@/src/components/icon-components/Icon'
+import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure'
+import DisclosureHeader from '@/src/components/simple-components/Disclosure/DisclosureHeader'
+import DisclosurePanel from '@/src/components/simple-components/Disclosure/DisclosurePanel'
 
 const FormComponent = ({ children }: SummaryFormComponentProps) => (
   <div className="flex flex-col gap-8">{children}</div>
@@ -108,27 +111,29 @@ const ArrayItemComponent = ({ arrayItem, children, hasError }: SummaryArrayItemC
 
   if (arrayDepth === 1) {
     return (
-      <details
-        className="group mb-4 rounded-xl border border-gray-200 open:border-gray-700 hover:border-gray-500 open:hover:border-gray-700"
-        open={false}
+      <Disclosure
+        variant="unstyled"
+        className="group mb-4 rounded-xl border border-gray-200 hover:border-gray-500 data-expanded:border-gray-700 data-expanded:hover:border-gray-700"
       >
-        <summary className="group flex w-full cursor-pointer p-6">
+        <DisclosureHeader className="p-6">
           <div className="flex grow flex-col gap-1">
             <Typography variant="p-small" className="font-semibold">
               {arrayItem.title}
             </Typography>
             {hasError && (
-              <Typography variant="p-small" className="text-category-700 group-open:hidden">
+              <Typography
+                variant="p-small"
+                className="text-category-700 group-data-expanded:hidden"
+              >
                 {t('SummaryDetails.containsErrors')}
               </Typography>
             )}
           </div>
-          <span className="shrink-0" aria-hidden>
-            <Icon name="chevron-down" className="transition-transform group-open:rotate-180" />
-          </span>
-        </summary>
-        <div className="p-6 pt-0">{children}</div>
-      </details>
+        </DisclosureHeader>
+        <DisclosurePanel className="px-6" innerClassName="pb-6">
+          {children}
+        </DisclosurePanel>
+      </Disclosure>
     )
   }
 

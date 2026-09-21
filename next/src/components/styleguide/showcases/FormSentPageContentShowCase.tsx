@@ -1,6 +1,7 @@
 import { Typography } from '@bratislava/component-library'
 import { PropsWithChildren } from 'react'
 
+import { FormSentPageFragment } from '@/src/clients/graphql-strapi/api'
 import { FormContextContext } from '@/src/components/forms/useFormContext'
 import { SsrAuthContext } from '@/src/components/logic/SsrAuthContext'
 import FormSentPageContent from '@/src/components/page-contents/FormSentPageContent/FormSentPageContent'
@@ -10,13 +11,15 @@ import { Wrapper } from '@/src/components/styleguide/Wrapper'
 type MockFormContextValue = {
   isTaxForm: boolean
   isEmbedded: boolean
-  formDefinition: { feedbackLink?: string }
+  feedbackLink: string | null
+  strapiFormSentPage: FormSentPageFragment | null
 }
 
 const mockFormContext = (overrides: Partial<MockFormContextValue> = {}): MockFormContextValue => ({
   isTaxForm: false,
   isEmbedded: false,
-  formDefinition: { feedbackLink: undefined },
+  feedbackLink: null,
+  strapiFormSentPage: null,
   ...overrides,
 })
 
@@ -45,13 +48,43 @@ const formVariants: FormVariant[] = [
   },
   {
     label: 'Generic – with feedback link',
-    formContext: mockFormContext({ formDefinition: { feedbackLink: '#' } }),
+    formContext: mockFormContext({ feedbackLink: '#' }),
   },
   {
     label: 'Tax form',
-    formContext: mockFormContext({ isTaxForm: true, formDefinition: { feedbackLink: '#' } }),
+    formContext: mockFormContext({ isTaxForm: true, feedbackLink: '#' }),
   },
   { label: 'Embedded', formContext: mockFormContext({ isEmbedded: true }) },
+  {
+    label: 'Strapi – custom content',
+    formContext: mockFormContext({
+      strapiFormSentPage: {
+        content: 'Custom **content** from Strapi with a [link](#).',
+      },
+    }),
+  },
+  {
+    label: 'Strapi – content aligned to the left',
+    formContext: mockFormContext({
+      strapiFormSentPage: {
+        content:
+          'Custom content from Strapi aligned to the left, because `isContentCentered` is turned off.',
+        isContentCentered: false,
+      },
+    }),
+  },
+  {
+    label: 'Strapi – with alert',
+    formContext: mockFormContext({
+      feedbackLink: '#',
+      strapiFormSentPage: {
+        alert: {
+          title: 'Alert title',
+          content: 'Alert content from Strapi.',
+        },
+      },
+    }),
+  },
 ]
 
 const FormSentPageContentShowCase = () => (

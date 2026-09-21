@@ -3402,7 +3402,7 @@ export type FormWithLandingPageFragment = {
   } | null
 }
 
-export type FormFragment = {
+export type FormWithSentPageFragment = {
   __typename?: 'Form'
   slug: string
   moreInformationUrl?: string | null
@@ -3420,31 +3420,13 @@ export type FormFragment = {
       content?: string | null
     } | null
   } | null
-  landingPage?: {
-    __typename?: 'ComponentBlocksFormLandingPage'
-    text?: string | null
-    linkCtas?: Array<{
-      __typename: 'ComponentBlocksFormLandingPageLinkCta'
-      id: string
-      title: string
-      text?: string | null
-      buttonLabel: string
-      url: string
-    } | null> | null
-    formCta?: {
-      __typename: 'ComponentBlocksFormLandingPageFormCta'
-      title: string
-      text?: string | null
-      buttonLabel: string
-    } | null
-  } | null
 }
 
-export type FormBaseBySlugQueryVariables = Exact<{
+export type FormWithSentPageBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input']
 }>
 
-export type FormBaseBySlugQuery = {
+export type FormWithSentPageBySlugQuery = {
   __typename?: 'Query'
   forms: Array<{
     __typename?: 'Form'
@@ -3454,6 +3436,17 @@ export type FormBaseBySlugQuery = {
     isTemporarilyDisabled?: boolean | null
     temporarilyDisabledUntil?: string | null
     temporarilyDisabledReason?: string | null
+    formSentPage?: {
+      __typename?: 'ComponentBlocksFormSentPage'
+      feedbackLink?: string | null
+      content?: string | null
+      isContentCentered?: boolean | null
+      alert?: {
+        __typename?: 'ComponentBlocksFormSentPageAlert'
+        title?: string | null
+        content?: string | null
+      } | null
+    } | null
   } | null>
 }
 
@@ -5118,47 +5111,6 @@ export const FormBaseFragmentDoc = gql`
   }
   ${FormTemporarilyDisabledFragmentDoc}
 `
-export const FormLandingPageLinkCtaFragmentDoc = gql`
-  fragment FormLandingPageLinkCta on ComponentBlocksFormLandingPageLinkCta {
-    __typename
-    id
-    title
-    text
-    buttonLabel
-    url
-  }
-`
-export const FormLandingPageFormCtaFragmentDoc = gql`
-  fragment FormLandingPageFormCta on ComponentBlocksFormLandingPageFormCta {
-    __typename
-    title
-    text
-    buttonLabel
-  }
-`
-export const FormLandingPageFragmentDoc = gql`
-  fragment FormLandingPage on ComponentBlocksFormLandingPage {
-    text
-    linkCtas {
-      ...FormLandingPageLinkCta
-    }
-    formCta {
-      ...FormLandingPageFormCta
-    }
-  }
-  ${FormLandingPageLinkCtaFragmentDoc}
-  ${FormLandingPageFormCtaFragmentDoc}
-`
-export const FormWithLandingPageFragmentDoc = gql`
-  fragment FormWithLandingPage on Form {
-    ...FormBase
-    landingPage {
-      ...FormLandingPage
-    }
-  }
-  ${FormBaseFragmentDoc}
-  ${FormLandingPageFragmentDoc}
-`
 export const FormSentPageFragmentDoc = gql`
   fragment FormSentPage on ComponentBlocksFormSentPage {
     feedbackLink
@@ -5170,14 +5122,14 @@ export const FormSentPageFragmentDoc = gql`
     }
   }
 `
-export const FormFragmentDoc = gql`
-  fragment Form on Form {
-    ...FormWithLandingPage
+export const FormWithSentPageFragmentDoc = gql`
+  fragment FormWithSentPage on Form {
+    ...FormBase
     formSentPage {
       ...FormSentPage
     }
   }
-  ${FormWithLandingPageFragmentDoc}
+  ${FormBaseFragmentDoc}
   ${FormSentPageFragmentDoc}
 `
 export const MunicipalServiceRedirectFragmentDoc = gql`
@@ -5347,6 +5299,47 @@ export const MunicipalServiceCardEntityFragmentDoc = gql`
   ${MunicipalServiceSlugEntityFragmentDoc}
   ${MunicipalServiceRedirectFragmentDoc}
   ${MunicipalServiceTagEntityFragmentDoc}
+`
+export const FormLandingPageLinkCtaFragmentDoc = gql`
+  fragment FormLandingPageLinkCta on ComponentBlocksFormLandingPageLinkCta {
+    __typename
+    id
+    title
+    text
+    buttonLabel
+    url
+  }
+`
+export const FormLandingPageFormCtaFragmentDoc = gql`
+  fragment FormLandingPageFormCta on ComponentBlocksFormLandingPageFormCta {
+    __typename
+    title
+    text
+    buttonLabel
+  }
+`
+export const FormLandingPageFragmentDoc = gql`
+  fragment FormLandingPage on ComponentBlocksFormLandingPage {
+    text
+    linkCtas {
+      ...FormLandingPageLinkCta
+    }
+    formCta {
+      ...FormLandingPageFormCta
+    }
+  }
+  ${FormLandingPageLinkCtaFragmentDoc}
+  ${FormLandingPageFormCtaFragmentDoc}
+`
+export const FormWithLandingPageFragmentDoc = gql`
+  fragment FormWithLandingPage on Form {
+    ...FormBase
+    landingPage {
+      ...FormLandingPage
+    }
+  }
+  ${FormBaseFragmentDoc}
+  ${FormLandingPageFragmentDoc}
 `
 export const MunicipalServiceCategoryEntityFragmentDoc = gql`
   fragment MunicipalServiceCategoryEntity on MunicipalServiceCategory {
@@ -5560,14 +5553,14 @@ export const AlertsDocument = gql`
   }
   ${AlertFragmentDoc}
 `
-export const FormBaseBySlugDocument = gql`
-  query FormBaseBySlug($slug: String!) {
+export const FormWithSentPageBySlugDocument = gql`
+  query FormWithSentPageBySlug($slug: String!) {
     forms(filters: { slug: { eq: $slug } }) {
       documentId
-      ...FormBase
+      ...FormWithSentPage
     }
   }
-  ${FormBaseFragmentDoc}
+  ${FormWithSentPageFragmentDoc}
 `
 export const FormWithLandingPageBySlugDocument = gql`
   query FormWithLandingPageBySlug($slug: String!) {
@@ -5683,20 +5676,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
-    FormBaseBySlug(
-      variables: FormBaseBySlugQueryVariables,
+    FormWithSentPageBySlug(
+      variables: FormWithSentPageBySlugQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
       signal?: RequestInit['signal'],
-    ): Promise<FormBaseBySlugQuery> {
+    ): Promise<FormWithSentPageBySlugQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<FormBaseBySlugQuery>({
-            document: FormBaseBySlugDocument,
+          client.request<FormWithSentPageBySlugQuery>({
+            document: FormWithSentPageBySlugDocument,
             variables,
             requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
             signal,
           }),
-        'FormBaseBySlug',
+        'FormWithSentPageBySlug',
         'query',
         variables,
       )

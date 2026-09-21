@@ -1,4 +1,9 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import {
+  ApiExtraModels,
+  ApiProperty,
+  ApiPropertyOptional,
+  getSchemaPath,
+} from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import {
   IsBoolean,
@@ -47,7 +52,7 @@ export class BumpJsonVersionResponseDto {
   success: boolean
 }
 
-export class GetFormResponseSimpleDto {
+abstract class GetFormResponseSimpleBaseDto {
   @ApiProperty({
     description: 'Id of record',
     default: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
@@ -70,14 +75,6 @@ export class GetFormResponseSimpleDto {
   })
   @IsDate()
   declare updatedAt: Date
-
-  @ApiProperty({
-    description: 'State of form',
-    default: FormState.DRAFT,
-    enum: FormState,
-  })
-  @IsEnum(FormState)
-  declare state: string
 
   @ApiProperty({
     description: 'Specific error type',
@@ -108,11 +105,23 @@ export class GetFormResponseSimpleDto {
   @IsNotEmpty()
   @IsString()
   declare formDefinitionSlug: string
+}
+
+const FORM_SENT_AT_DESCRIPTION =
+  'Date when the form was sent. For forms sent before this field existed, the value was backfilled manually from logs PDF export timestamps, and NASES mailbox, so it may be approximate for historical forms.'
+
+export class GetFormResponseSimpleDraftDto extends GetFormResponseSimpleBaseDto {
+  @ApiProperty({
+    description: 'State of form',
+    default: FormState.DRAFT,
+    enum: [FormState.DRAFT],
+  })
+  @IsEnum(FormState)
+  declare state: typeof FormState.DRAFT
 
   @Type(() => Date)
   @ApiProperty({
-    description:
-      'Date when the form was sent. For forms sent before this field existed, the value was backfilled manually from logs PDF export timestamps, and NASES mailbox, so it may be approximate for historical forms.',
+    description: FORM_SENT_AT_DESCRIPTION,
     example: new Date('2026-01-01'),
     nullable: true,
   })
@@ -120,6 +129,27 @@ export class GetFormResponseSimpleDto {
   @IsDate()
   declare formSentAt: Date | null
 }
+
+export class GetFormResponseSimpleSentDto extends GetFormResponseSimpleBaseDto {
+  @ApiProperty({
+    description: 'State of form',
+    enum: Object.values(FormState).filter((state) => state !== FormState.DRAFT),
+  })
+  @IsEnum(FormState)
+  declare state: Exclude<FormState, typeof FormState.DRAFT>
+
+  @Type(() => Date)
+  @ApiProperty({
+    description: FORM_SENT_AT_DESCRIPTION,
+    example: new Date('2026-01-01'),
+  })
+  @IsDate()
+  declare formSentAt: Date
+}
+
+export type GetFormResponseSimpleDto =
+  | GetFormResponseSimpleDraftDto
+  | GetFormResponseSimpleSentDto
 
 class GetFormMetaDto {
   @ApiProperty({
@@ -133,6 +163,7 @@ class GetFormMetaDto {
   countByState!: Record<FormState, number>
 }
 
+@ApiExtraModels(GetFormResponseSimpleDraftDto, GetFormResponseSimpleSentDto)
 export class GetFormsResponseDto {
   @ApiProperty({
     description: 'actual page',
@@ -154,7 +185,13 @@ export class GetFormsResponseDto {
 
   @ApiProperty({
     description: 'Items',
-    type: [GetFormResponseSimpleDto],
+    type: 'array',
+    items: {
+      oneOf: [
+        { $ref: getSchemaPath(GetFormResponseSimpleDraftDto) },
+        { $ref: getSchemaPath(GetFormResponseSimpleSentDto) },
+      ],
+    },
   })
   items!: GetFormResponseSimpleDto[]
 

@@ -335,7 +335,7 @@ export const GetFormResponseDtoErrorEnum = {
 export type GetFormResponseDtoErrorEnum =
   (typeof GetFormResponseDtoErrorEnum)[keyof typeof GetFormResponseDtoErrorEnum]
 
-export interface GetFormResponseSimpleDto {
+export interface GetFormResponseSimpleDraftDto {
   /**
    * Id of record
    */
@@ -349,13 +349,9 @@ export interface GetFormResponseSimpleDto {
    */
   updatedAt: string
   /**
-   * State of form
-   */
-  state: GetFormResponseSimpleDtoStateEnum
-  /**
    * Specific error type
    */
-  error: GetFormResponseSimpleDtoErrorEnum
+  error: GetFormResponseSimpleDraftDtoErrorEnum
   /**
    * Data in JSON format
    */
@@ -369,26 +365,16 @@ export interface GetFormResponseSimpleDto {
    */
   formDefinitionSlug: string
   /**
+   * State of form
+   */
+  state: GetFormResponseSimpleDraftDtoStateEnum
+  /**
    * Date when the form was sent. For forms sent before this field existed, the value was backfilled manually from logs PDF export timestamps, and NASES mailbox, so it may be approximate for historical forms.
    */
   formSentAt: string | null
 }
 
-export const GetFormResponseSimpleDtoStateEnum = {
-  Draft: 'DRAFT',
-  Queued: 'QUEUED',
-  DeliveredNases: 'DELIVERED_NASES',
-  DeliveredGinis: 'DELIVERED_GINIS',
-  SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
-  Processing: 'PROCESSING',
-  Finished: 'FINISHED',
-  Rejected: 'REJECTED',
-  Error: 'ERROR',
-} as const
-
-export type GetFormResponseSimpleDtoStateEnum =
-  (typeof GetFormResponseSimpleDtoStateEnum)[keyof typeof GetFormResponseSimpleDtoStateEnum]
-export const GetFormResponseSimpleDtoErrorEnum = {
+export const GetFormResponseSimpleDraftDtoErrorEnum = {
   None: 'NONE',
   RabbitmqMaxTries: 'RABBITMQ_MAX_TRIES',
   FilesNotYetScanned: 'FILES_NOT_YET_SCANNED',
@@ -401,8 +387,82 @@ export const GetFormResponseSimpleDtoErrorEnum = {
   WebhookSendError: 'WEBHOOK_SEND_ERROR',
 } as const
 
-export type GetFormResponseSimpleDtoErrorEnum =
-  (typeof GetFormResponseSimpleDtoErrorEnum)[keyof typeof GetFormResponseSimpleDtoErrorEnum]
+export type GetFormResponseSimpleDraftDtoErrorEnum =
+  (typeof GetFormResponseSimpleDraftDtoErrorEnum)[keyof typeof GetFormResponseSimpleDraftDtoErrorEnum]
+export const GetFormResponseSimpleDraftDtoStateEnum = {
+  Draft: 'DRAFT',
+} as const
+
+export type GetFormResponseSimpleDraftDtoStateEnum =
+  (typeof GetFormResponseSimpleDraftDtoStateEnum)[keyof typeof GetFormResponseSimpleDraftDtoStateEnum]
+
+export interface GetFormResponseSimpleSentDto {
+  /**
+   * Id of record
+   */
+  id: string
+  /**
+   * Create date of record
+   */
+  createdAt: string
+  /**
+   * Update date of record
+   */
+  updatedAt: string
+  /**
+   * Specific error type
+   */
+  error: GetFormResponseSimpleSentDtoErrorEnum
+  /**
+   * Data in JSON format
+   */
+  formDataJson: { [key: string]: any } | null
+  /**
+   * Form subject
+   */
+  formSubject: string
+  /**
+   * Slug of the form definition
+   */
+  formDefinitionSlug: string
+  /**
+   * State of form
+   */
+  state: GetFormResponseSimpleSentDtoStateEnum
+  /**
+   * Date when the form was sent. For forms sent before this field existed, the value was backfilled manually from logs PDF export timestamps, and NASES mailbox, so it may be approximate for historical forms.
+   */
+  formSentAt: string
+}
+
+export const GetFormResponseSimpleSentDtoErrorEnum = {
+  None: 'NONE',
+  RabbitmqMaxTries: 'RABBITMQ_MAX_TRIES',
+  FilesNotYetScanned: 'FILES_NOT_YET_SCANNED',
+  UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
+  InfectedFiles: 'INFECTED_FILES',
+  NasesSendError: 'NASES_SEND_ERROR',
+  GinisSendError: 'GINIS_SEND_ERROR',
+  SharepointSendError: 'SHAREPOINT_SEND_ERROR',
+  EmailSendError: 'EMAIL_SEND_ERROR',
+  WebhookSendError: 'WEBHOOK_SEND_ERROR',
+} as const
+
+export type GetFormResponseSimpleSentDtoErrorEnum =
+  (typeof GetFormResponseSimpleSentDtoErrorEnum)[keyof typeof GetFormResponseSimpleSentDtoErrorEnum]
+export const GetFormResponseSimpleSentDtoStateEnum = {
+  Queued: 'QUEUED',
+  DeliveredNases: 'DELIVERED_NASES',
+  DeliveredGinis: 'DELIVERED_GINIS',
+  SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
+  Processing: 'PROCESSING',
+  Finished: 'FINISHED',
+  Rejected: 'REJECTED',
+  Error: 'ERROR',
+} as const
+
+export type GetFormResponseSimpleSentDtoStateEnum =
+  (typeof GetFormResponseSimpleSentDtoStateEnum)[keyof typeof GetFormResponseSimpleSentDtoStateEnum]
 
 export interface GetFormsResponseDto {
   /**
@@ -420,12 +480,18 @@ export interface GetFormsResponseDto {
   /**
    * Items
    */
-  items: Array<GetFormResponseSimpleDto>
+  items: Array<GetFormsResponseDtoItemsInner>
   /**
    * Meta data
    */
   meta: GetFormMetaDto
 }
+/**
+ * @type GetFormsResponseDtoItemsInner
+ */
+export type GetFormsResponseDtoItemsInner =
+  GetFormResponseSimpleDraftDto | GetFormResponseSimpleSentDto
+
 export interface GinisDocumentDetailResponseDto {
   id: string
   dossierId: string

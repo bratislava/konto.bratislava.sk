@@ -23,6 +23,7 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { FormWithSelectedProperties } from '../utils/types/prisma'
 import {
   FormUpdateBodyDto,
   GetFormsRequestDto,
@@ -326,11 +327,16 @@ export default class FormsService {
         )
       }
 
-      dataWithLatestFlag.push({
-        ...form,
-        formSubject: extractFormSubjectPlain(formDefinition, form.formDataJson),
-        formDefinitionSlug: formDefinition.slug,
-      })
+      dataWithLatestFlag.push(
+        this.toGetFormResponseSimpleDto({
+          ...form,
+          formSubject: extractFormSubjectPlain(
+            formDefinition,
+            form.formDataJson,
+          ),
+          formDefinitionSlug: formDefinition.slug,
+        }),
+      )
     })
 
     const total = await this.prisma.forms.count({
@@ -345,6 +351,24 @@ export default class FormsService {
         countByState: await this.getFormsCount(where),
       },
     }
+  }
+
+  private toGetFormResponseSimpleDto(
+    form: FormWithSelectedProperties & { formSubject: string },
+  ): GetFormResponseSimpleDto {
+    if (form.state === FormState.DRAFT) {
+      return { ...form, state: FormState.DRAFT }
+    }
+
+    if (form.formSentAt === null) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        FormsErrorsEnum.FORM_SENT_AT_MISSING_ERROR,
+        FormsErrorsResponseEnum.FORM_SENT_AT_MISSING_ERROR,
+        { formId: form.id, state: form.state },
+      )
+    }
+
+    return { ...form, state: form.state, formSentAt: form.formSentAt }
   }
 
   async getFormsCount(

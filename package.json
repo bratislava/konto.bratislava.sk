@@ -11,22 +11,22 @@
     "lint": "turbo run lint"
   },
   "devDependencies": {
-    "turbo": "2.10.12"
+    "turbo": "2.11.2"
   },
-  "packageManager": "pnpm@12.3.4",
+  "packageManager": "pnpm@12.5.1",
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "24.20.0",
+      "version": "24.21.0",
       "onFail": "error"
     },
     "packageManager": {
       "name": "pnpm",
-      "version": "12.3.4",
+      "version": "12.5.1",
       "onFail": "error"
     }
   },
   "volta": {
-    "node": "24.20.0"
+    "node": "24.21.0"
   }
 }

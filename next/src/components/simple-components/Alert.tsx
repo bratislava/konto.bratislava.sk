@@ -45,7 +45,7 @@ const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
   ) : null
 }
 
-type AlertBase = {
+export type AlertProps = {
   title?: string
   message?: ReactNode
   type: 'error' | 'success' | 'info' | 'warning'
@@ -75,8 +75,8 @@ const Alert = ({
   fullWidth = false,
   solid = false,
   hasIcon = true,
-}: AlertBase) => {
-  const { t } = useTranslation()
+}: AlertProps) => {
+  const { t } = useTranslation('account')
 
   const icons = {
     error: <Icon name="error" className="size-6" />,

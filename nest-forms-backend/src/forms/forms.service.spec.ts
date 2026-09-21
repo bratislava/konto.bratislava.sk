@@ -8,6 +8,7 @@ import {
   UserFixtureFactory,
 } from '../../test/fixtures/auth/user-fixture-factory'
 import prismaMock from '../../test/singleton'
+import { createTestForm } from '../__tests__/factories/form.factory'
 import FilesHelper from '../files/files.helper'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
@@ -19,6 +20,7 @@ import ScannerClientService from '../scanner-client/scanner-client.service'
 import { EDITABLE_ERRORS } from '../utils/constants'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { GetFormsRequestDto } from './dtos/requests.dto'
+import { FormsErrorsResponseEnum } from './forms.errors.enum'
 import FormsService from './forms.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
@@ -78,6 +80,15 @@ describe('FormsService', () => {
   })
 
   describe('getForms', () => {
+    const createdAtFieldRefMock = new Date('2026-01-01T00:00:00.000Z')
+
+    beforeEach(() => {
+      Object.defineProperty(prismaMock.forms, 'fields', {
+        value: { createdAt: createdAtFieldRefMock },
+        configurable: true,
+      })
+    })
+
     it('should count correctly', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         schema: {
@@ -93,9 +104,6 @@ describe('FormsService', () => {
         .mockResolvedValue([{ id: '1' }, { id: '2' }] as Forms[])
       prismaMock.forms.count.mockResolvedValue(63)
       ;(prismaMock.forms.groupBy as jest.Mock).mockResolvedValue([])
-      Object.defineProperty(prismaMock.forms, 'fields', {
-        value: { createdAt: 'createdAtMock' },
-      })
 
       const query: GetFormsRequestDto = {
         currentPage: '2',
@@ -124,7 +132,7 @@ describe('FormsService', () => {
           },
           updatedAt: {
             not: {
-              equals: 'createdAtMock',
+              equals: createdAtFieldRefMock,
             },
           },
           state: { in: [FormState.DRAFT, FormState.PROCESSING] },
@@ -177,6 +185,78 @@ describe('FormsService', () => {
         meta: {
           countByState,
         },
+      })
+    })
+
+    describe('formSentAt discrimination', () => {
+      const sentAt = new Date('2026-01-01T00:00:00.000Z')
+      const query: GetFormsRequestDto = {}
+
+      beforeEach(() => {
+        ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+          slug: 'test-form',
+          schema: { baUiSchema: {} },
+        })
+        mockFormDefinitions = [{ slug: 'test-form' }]
+        prismaMock.forms.count.mockResolvedValue(1)
+        ;(prismaMock.forms.groupBy as jest.Mock).mockResolvedValue([])
+      })
+
+      it('keeps formSentAt null for a DRAFT form that was never sent', async () => {
+        jest
+          .spyOn(prismaMock.forms, 'findMany')
+          .mockResolvedValue([
+            createTestForm({ state: FormState.DRAFT, formSentAt: null }),
+          ])
+
+        const result = await service.getForms(query, authUser.user)
+
+        expect(result.items[0]).toMatchObject({
+          state: FormState.DRAFT,
+          formSentAt: null,
+        })
+      })
+
+      it('keeps formSentAt set for a DRAFT form that reverted after a failed send attempt', async () => {
+        jest
+          .spyOn(prismaMock.forms, 'findMany')
+          .mockResolvedValue([
+            createTestForm({ state: FormState.DRAFT, formSentAt: sentAt }),
+          ])
+
+        const result = await service.getForms(query, authUser.user)
+
+        expect(result.items[0]).toMatchObject({
+          state: FormState.DRAFT,
+          formSentAt: sentAt,
+        })
+      })
+
+      it('returns formSentAt for a non-DRAFT form that has it set', async () => {
+        jest
+          .spyOn(prismaMock.forms, 'findMany')
+          .mockResolvedValue([
+            createTestForm({ state: FormState.QUEUED, formSentAt: sentAt }),
+          ])
+
+        const result = await service.getForms(query, authUser.user)
+
+        expect(result.items[0]).toMatchObject({
+          state: FormState.QUEUED,
+          formSentAt: sentAt,
+        })
+      })
+
+      it('throws when a non-DRAFT form has no formSentAt', async () => {
+        jest
+          .spyOn(prismaMock.forms, 'findMany')
+          .mockResolvedValue([
+            createTestForm({ state: FormState.QUEUED, formSentAt: null }),
+          ])
+
+        await expect(service.getForms(query, authUser.user)).rejects.toThrow(
+          FormsErrorsResponseEnum.FORM_SENT_AT_MISSING_ERROR,
+        )
       })
     })
   })

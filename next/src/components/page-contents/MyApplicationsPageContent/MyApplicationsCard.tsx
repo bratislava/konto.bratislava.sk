@@ -1,6 +1,9 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from 'openapi-clients/forms'
+import {
+  GetFormResponseDtoStateEnum,
+  GetFormsResponseDtoItemsInner as GetFormResponseSimpleDto,
+} from 'openapi-clients/forms'
 import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 

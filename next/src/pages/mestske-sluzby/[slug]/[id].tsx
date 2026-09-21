@@ -8,7 +8,7 @@ import { GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
 
 import { formsClient } from '@/src/clients/forms'
 import { strapiClient } from '@/src/clients/graphql-strapi'
-import { FormBaseFragment, GeneralQuery } from '@/src/clients/graphql-strapi/api'
+import { FormWithSentPageFragment, GeneralQuery } from '@/src/clients/graphql-strapi/api'
 import { makeClientFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import FormPage, { FormPageProps } from '@/src/components/forms/FormPage'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
@@ -24,8 +24,10 @@ import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerS
 import type { GlobalAppProps } from '@/src/pages/_app'
 import { ROUTES } from '@/src/utils/routes'
 
-const fetchStrapiForm = async (slug: string): Promise<FormBaseFragment | null | undefined> => {
-  const result = await strapiClient.FormBaseBySlug({ slug })
+const fetchStrapiForm = async (
+  slug: string,
+): Promise<FormWithSentPageFragment | null | undefined> => {
+  const result = await strapiClient.FormWithSentPageBySlug({ slug })
 
   return result.forms[0]
 }

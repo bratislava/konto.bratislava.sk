@@ -26,7 +26,6 @@ const basePropertiesToPick = [
   'embedded',
   'additionalInfoTemplate',
   'termsAndConditions',
-  'feedbackLink',
   'sendPolicy',
 ] as const satisfies readonly (keyof FormDefinition)[]
 

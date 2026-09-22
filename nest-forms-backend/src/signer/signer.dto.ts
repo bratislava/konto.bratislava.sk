@@ -121,7 +121,7 @@ export class VerifySignatureRequestDto implements ApiCepVerifyPostRequest {
  * Passthrough response of the Slovensko.sk `POST /api/cep/verify` endpoint. The properties intentionally keep the
  * upstream snake_case naming.
  */
-export class VerifySignatureResponseDto implements ApiCepVerifyPost200Response {
+export class VerifySignatureResultDto implements ApiCepVerifyPost200Response {
   @ApiProperty({ description: 'Verification result code.', example: 0 })
   @IsNumber()
   verify_result!: number
@@ -142,4 +142,49 @@ export class VerifySignatureResponseDto implements ApiCepVerifyPost200Response {
   @IsOptional()
   @IsObject({ each: true })
   verified_objects?: ApiCepVerifyPost200ResponseVerifiedObjectsInner[]
+}
+
+/**
+ * Details of a failed call to Slovensko.sk. Returned with HTTP 200 on purpose: the edge proxy replaces 5xx bodies
+ * with a generic outage page, which would hide the upstream response from the admin.
+ */
+export class VerifySignatureUpstreamErrorDto {
+  @ApiProperty({ description: 'Error message.' })
+  message!: string
+
+  @ApiPropertyOptional({ description: 'Axios error code, e.g. ECONNREFUSED.' })
+  code?: string
+
+  @ApiPropertyOptional({ description: 'HTTP status returned by Slovensko.sk.' })
+  status?: number
+
+  @ApiPropertyOptional({ description: 'HTTP status text returned by Slovensko.sk.' })
+  statusText?: string
+
+  @ApiPropertyOptional({
+    description: 'Response body returned by Slovensko.sk, if any.',
+    type: 'object',
+    additionalProperties: true,
+  })
+  data?: unknown
+
+  @ApiPropertyOptional({ description: 'URL that was called.' })
+  url?: string
+}
+
+export class VerifySignatureResponseDto {
+  @ApiProperty({ description: 'Whether the Slovensko.sk call succeeded.' })
+  success!: boolean
+
+  @ApiPropertyOptional({
+    description: 'Verification result, present when `success` is true.',
+    type: VerifySignatureResultDto,
+  })
+  result?: VerifySignatureResultDto
+
+  @ApiPropertyOptional({
+    description: 'Upstream error details, present when `success` is false.',
+    type: VerifySignatureUpstreamErrorDto,
+  })
+  error?: VerifySignatureUpstreamErrorDto
 }

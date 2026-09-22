@@ -18,10 +18,6 @@ import {
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import {
   SignerDataRequestDto,
@@ -126,8 +122,8 @@ export default class SignerService {
       this.baConfigService.slovenskoSk.apiTokenPrivate,
     )
 
-    return this.clientsService.slovenskoSkApi
-      .apiCepVerifyPost(
+    try {
+      const response = await this.clientsService.slovenskoSkApi.apiCepVerifyPost(
         { content: data.content },
         {
           headers: {
@@ -135,20 +131,29 @@ export default class SignerService {
           },
         },
       )
-      .then((response) => response.data)
-      .catch((error: unknown) => {
-        console.log(error)
-        if (!isAxiosError(error)) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-            'Failed to verify signature in Slovensko.sk',
-            error,
-          )
+
+      return { success: true, result: response.data }
+    } catch (error) {
+      // Upstream failures are returned with HTTP 200 on purpose: the edge proxy replaces 5xx bodies with a generic
+      // outage page, which would hide the actual Slovensko.sk response from the admin.
+      const message = error instanceof Error ? error.message : String(error)
+      this.logger.error(`Failed to verify signature in Slovensko.sk: ${message}`)
+
+      if (isAxiosError(error)) {
+        return {
+          success: false,
+          error: {
+            message,
+            code: error.code,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            data: error.response?.data as unknown,
+            url: error.config?.url,
+          },
         }
-        throw this.throwerErrorGuard.fromAxiosError(error, {
-          console: 'Failed to verify signature in Slovensko.sk',
-        })
-      })
+      }
+
+      return { success: false, error: { message } }
+    }
   }
 }

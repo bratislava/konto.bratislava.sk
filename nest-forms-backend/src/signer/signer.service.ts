@@ -137,6 +137,7 @@ export default class SignerService {
       )
       .then((response) => response.data)
       .catch((error: unknown) => {
+        console.log(error)
         if (!isAxiosError(error)) {
           throw this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,

@@ -1,11 +1,17 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
   IsBoolean,
   IsNotEmpty,
+  IsNumber,
   IsObject,
   IsOptional,
   IsString,
 } from 'class-validator'
+import type {
+  ApiCepVerifyPost200Response,
+  ApiCepVerifyPost200ResponseVerifiedObjectsInner,
+  ApiCepVerifyPostRequest,
+} from 'openapi-clients/slovensko-sk'
 
 import { JSON_FORM_EXAMPLE } from '../utils/constants'
 
@@ -99,4 +105,41 @@ export class SignerDataResponseDto {
   })
   @IsString()
   xdcNamespaceURI!: string
+}
+
+export class VerifySignatureRequestDto implements ApiCepVerifyPostRequest {
+  @ApiProperty({
+    description:
+      'Base64 encoded content of the object to verify. Can be an ASiC-E CAdES, ASiC-E XAdES, CAdES, PAdES, XAdES or MessageContainer object.',
+  })
+  @IsString()
+  @IsNotEmpty()
+  content!: string
+}
+
+/**
+ * Passthrough response of the Slovensko.sk `POST /api/cep/verify` endpoint. The properties intentionally keep the
+ * upstream snake_case naming.
+ */
+export class VerifySignatureResponseDto implements ApiCepVerifyPost200Response {
+  @ApiProperty({ description: 'Verification result code.', example: 0 })
+  @IsNumber()
+  verify_result!: number
+
+  @ApiProperty({
+    description: 'Verification result description.',
+    example: 'OK',
+  })
+  @IsString()
+  verify_description!: string
+
+  @ApiPropertyOptional({
+    description:
+      'Verified objects. The shape differs per signature type (ASiC-E CAdES, ASiC-E XAdES, CAdES, PAdES, XAdES).',
+    type: 'array',
+    items: { type: 'object', additionalProperties: true },
+  })
+  @IsOptional()
+  @IsObject({ each: true })
+  verified_objects?: ApiCepVerifyPost200ResponseVerifiedObjectsInner[]
 }

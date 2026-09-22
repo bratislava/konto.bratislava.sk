@@ -1,6 +1,6 @@
 import { IncomingHttpHeaders } from 'node:http'
 
-import { Controller, Get, Headers, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Headers, Post, UseGuards } from '@nestjs/common'
 import {
   ApiOkResponse,
   ApiOperation,
@@ -11,6 +11,11 @@ import {
 import AdminGuard from '../auth/guards/admin.guard'
 import { ValidateFormRegistrationsResultDto } from '../nases/dtos/responses.dto'
 import NasesCronService from '../nases/services/nases.cron.service'
+import {
+  VerifySignatureRequestDto,
+  VerifySignatureResponseDto,
+} from '../signer/signer.dto'
+import SignerService from '../signer/signer.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import AdminService from './admin.service'
@@ -23,6 +28,7 @@ export default class AdminController {
     private readonly adminService: AdminService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly nasesCronService: NasesCronService,
+    private readonly signerService: SignerService,
   ) {}
 
   // Endpoints only for testing
@@ -88,5 +94,22 @@ export default class AdminController {
   @Get('check-form-registrations-in-nases')
   async checkFormsRegistrationsInNases(): Promise<ValidateFormRegistrationsResultDto> {
     return this.nasesCronService.validateFormRegistrations()
+  }
+
+  @ApiOperation({
+    summary: 'Informatively verify the signatures on a signed object',
+    description:
+      'Passthrough to the Slovensko.sk `POST /api/cep/verify` endpoint. Takes the same arguments and returns the same response.',
+  })
+  @ApiOkResponse({
+    description: 'Result of the signature verification',
+    type: VerifySignatureResponseDto,
+  })
+  @UseGuards(AdminGuard)
+  @Post('verify-signature')
+  async verifySignature(
+    @Body() data: VerifySignatureRequestDto,
+  ): Promise<VerifySignatureResponseDto> {
+    return this.signerService.verifySignature(data)
   }
 }

@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { isAxiosError } from 'axios'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { getSignerData } from 'forms-shared/signer/signerData'
@@ -7,6 +8,9 @@ import {
   validateXml,
 } from 'forms-shared/slovensko-sk/validateXml'
 
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
+import ClientsService from '../clients/clients.service'
+import BaConfigService from '../config/ba-config.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,
@@ -14,8 +18,17 @@ import {
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
+import {
+  ErrorsEnum,
+  ErrorsResponseEnum,
+} from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { SignerDataRequestDto, SignerDataResponseDto } from './signer.dto'
+import {
+  SignerDataRequestDto,
+  SignerDataResponseDto,
+  VerifySignatureRequestDto,
+  VerifySignatureResponseDto,
+} from './signer.dto'
 import {
   SignerErrorsEnum,
   SignerErrorsResponseEnum,
@@ -30,6 +43,9 @@ export default class SignerService {
     private readonly formsService: FormsService,
     private readonly prismaService: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
+    private readonly clientsService: ClientsService,
+    private readonly apiJwtTokensService: ApiJwtTokensService,
+    private readonly baConfigService: BaConfigService,
   ) {
     this.logger = new Logger('SignerService')
   }
@@ -96,5 +112,42 @@ export default class SignerService {
     await this.validateXml(signerData.xdcXMLData, signerData.xdcUsedXSD)
 
     return signerData
+  }
+
+  /**
+   * Passthrough to the Slovensko.sk `POST /api/cep/verify` endpoint, which informatively verifies the signatures on
+   * the given object.
+   */
+  async verifySignature(
+    data: VerifySignatureRequestDto,
+  ): Promise<VerifySignatureResponseDto> {
+    const jwtToken = this.apiJwtTokensService.createTechnicalAccountJwtToken(
+      this.baConfigService.slovenskoSk.subNasesTechnicalAccount,
+      this.baConfigService.slovenskoSk.apiTokenPrivate,
+    )
+
+    return this.clientsService.slovenskoSkApi
+      .apiCepVerifyPost(
+        { content: data.content },
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        },
+      )
+      .then((response) => response.data)
+      .catch((error: unknown) => {
+        if (!isAxiosError(error)) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+            'Failed to verify signature in Slovensko.sk',
+            error,
+          )
+        }
+        throw this.throwerErrorGuard.fromAxiosError(error, {
+          console: 'Failed to verify signature in Slovensko.sk',
+        })
+      })
   }
 }

@@ -121,7 +121,7 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                     isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
                   }
                   taggedEvents
-                  // uncomment for local testing, needs to be run with `yarn build && yarn start`
+                  // uncomment for local testing, needs to be run with `pnpm run build && pnpm run start`
                   // trackLocalhost
                 >
                   <NavMenuContextProvider>

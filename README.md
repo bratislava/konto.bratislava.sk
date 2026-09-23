@@ -2,6 +2,35 @@
 
 Monorepo of services, shared libraries and frontend for [konto.bratislava.sk](https://konto.bratislava.sk).
 
+## Toolchain
+
+**pnpm is the only supported package manager — do not use npm or yarn.**
+
+pnpm must be installed via the [official guide](https://pnpm.io/installation), not through npm, to work correctly.
+
+pnpm resolves this workspace reliably where npm does not: npm installs without complaint but then breaks at build time with obscure module resolution errors on the more complex dependency graphs here, also its flat `node_modules` hides phantom dependencies — packages that are importable without ever being declared.
+
+Node and pnpm versions are pinned once in the root `package.json`. Who makes sure you get the right version depends on how you run things:
+
+| You run | Version comes from | Pinned in | Wrong or missing version |
+| --- | --- | --- | --- |
+| `pnpm …` (including scripts, so `node` started by pnpm) | pnpm itself | `devEngines` | pnpm downloads the pinned version and uses it |
+| `node …` directly | [Volta](https://volta.sh) | `volta.node` | Volta downloads the pinned version and uses it |
+| Any other tool that checks `devEngines` | — | `devEngines` | Stops with an error |
+
+So on a fresh checkout, `pnpm install` is enough: pnpm fetches the right pnpm and Node on its own. The automatic download is enabled by `pmOnFail: download` and `runtimeOnFail: download` in `pnpm-workspace.yaml`; everything else keeps the strict `onFail: error` from `devEngines`.
+
+**Volta** is optional. It is a version manager that switches to the project's Node version whenever you run `node` inside this repository. Install it only if you run `node` directly. Volta can't manage pnpm 12+, so pnpm itself still comes from the official installer.
+
+## Turborepo
+
+[Turborepo](https://turbo.build) is configured once in the root `turbo.json`.
+
+- Every task depends on `^build`, which means "first build every workspace package this one depends on" (the `^` stands for dependencies). So shared packages are always built before whatever uses them, and you never have to rebuild them by hand.
+- Apps that consume those packages have a `build:dependencies` script, which builds everything the package depends on but not the package itself. Use it to get a freshly cloned workspace ready for `pnpm run dev` without building the app first.
+- Task results are cached and replayed instead of re-run when nothing relevant changed. Locally that is a `.turbo` directory; in CI it is a shared remote cache, so a package unchanged since an earlier run is restored rather than rebuilt.
+- We do not currently run several services at once (there is no `dev` task, and a CI build targets a single service), so the parallel-task side of Turborepo buys us little today. The caching and the dependency ordering are the reasons it is here.
+
 ## Product specification
 
 [Product specification for city account (internal)](https://magistratba.sharepoint.com/:w:/s/InnovationTeam/Ee7urGwpSLBGnhyBYT5OJyAB9yPAd8xctA2I_xU6rYWbuA?e=ofobAR)
@@ -86,6 +115,22 @@ If you don't have Passbolt access, ask around on the konto.bratislava.sk team.
 ### Validation and build pipelines
 
 By creating a PR, GitHub actions will run validation pipelines and Dockerized build, lint and test pipelines.
+
+## Docker
+
+A few things here differ from a typical per-service Docker setup:
+
+- The build context is always the repository root, never the service directory — `turbo prune --docker` needs the workspace metadata to resolve the dependency graph. Hence a single root `.dockerignore`, and `prepare` stages that prune before installing.
+- Bake reads three files, merging targets of the same name:
+  - `docker-bake.hcl` — targets, and everything a laptop can do. `docker buildx bake <target>` works with no arguments.
+  - `docker-bake.json` — toolchain versions only. Plain JSON so [scripts/verify-docker-bake-versions.ts](scripts/verify-docker-bake-versions.ts) can check them against `package.json` and the pnpm catalog without parsing HCL.
+  - `.github/docker-bake.ci.hcl` — CI-only overlay (registry cache, tags, host networking, remote cache). Kept out of the root and off the `docker-bake.override.hcl` name so local bake does not pick it up and fail on the missing `--allow`.
+- pnpm is installed from [pnpm.Dockerfile](pnpm.Dockerfile), which every image `COPY`s from through the `pnpm-dist` bake context.
+- Two Dockerfile checks are skipped for every image, via a `BUILDKIT_DOCKERFILE_CHECK` build arg on the shared bake target instead of a `# check=skip=` directive in each Dockerfile. `docker-bake.hcl` says which and why.
+- CI runs the Turborepo cache server on the runner's loopback, so builds reach it at `127.0.0.1` — no published port, no proxy, no `host.docker.internal` (a Docker Desktop convenience that does not exist on Linux runners). Three pieces have to line up for that: the `network=host` buildx driver option, `network = "host"` on the bake target, and `allow: network.host` on each bake step to grant the gated entitlement. Missing any one of them yields a silent cache miss, not an error.
+- Tests and lint run inside `docker build` as their own stages, not as runner steps, so an unchanged service short-circuits on the layer cache instead of re-running them.
+- CI bake steps pass `source: .` so the build uses the files already checked out on the runner. Without it, `docker/bake-action` has Docker download the whole repository again from GitHub, including every tag. That adds about 30 seconds to each build for no benefit.
+- Next.js images bake their environment in, so they are built per cluster. Backend images are environment-agnostic and built once per commit.
 
 ## Acknowledgments
 

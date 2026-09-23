@@ -113,19 +113,20 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
-export type ${clientName}Client = ReturnType<typeof create${clientName}Client>
+export interface ${clientName}Client extends
+  ${factories.map((factory) => `ReturnType<typeof ${factory}>`).join(',\n  ')} {}
 
 export const create${clientName}Client = ({
   basePath,
   configurationParameters = {},
   axios,
-}: ClientConfig) => {
+}: ClientConfig): ${clientName}Client => {
   const configuration = new Configuration(configurationParameters)
   const args = [configuration, basePath, axios] as const
 
   return {
     ${factories.map((factory) => `...${factory}(...args)`).join(',\n    ')}
-  }
+  } satisfies ${clientName}Client
 }
 `
 
@@ -165,7 +166,7 @@ const cleanupExistingClient = (type: ValidType, outputDir: string) => {
 const generateOpenApiClient = (type: ValidType, url: string, outputDir: string) => {
   console.log(`Generating OpenAPI client for ${type}...`)
   execSync(
-    `npx @openapitools/openapi-generator-cli generate \
+    `pnpm exec openapi-generator-cli generate \
       -i ${url} \
       -g typescript-axios \
       -o ${outputDir} \

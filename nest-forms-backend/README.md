@@ -7,26 +7,16 @@
    - RabbitMQ
    - PostgreSQL
 
-2. Install and build required shared packages:
+2. Install dependencies for the whole workspace:
 
    ```bash
-   # Build forms-shared
-   cd ../forms-shared/
-   npm install
-   npm run build
-
-   # Build openapi-clients
-   cd ../openapi-clients/
-   npm install
-   npm run build
-
-   cd ../nest-forms-backend/
+   pnpm install
    ```
 
-3. Install dependencies in `/nest-forms-backend`:
+3. Build the shared packages this service depends on:
 
    ```bash
-   npm install
+   pnpm run build:dependencies
    ```
 
 4. Copy and adjust `.env` from `.env.example`, and populate secrets you need
@@ -36,8 +26,8 @@
 6. Migrate database and generate Prisma files:
 
    ```bash
-   npx prisma migrate dev
-   npx prisma generate
+   pnpm exec prisma migrate dev
+   pnpm exec prisma generate
    ```
 
 7. Choose virus scan option:
@@ -62,7 +52,7 @@
 8. Start dev server:
 
    ```bash
-   npm run start:dev
+   pnpm run start:dev
    ```
 
 ## Test
@@ -72,17 +62,17 @@ Follow the same setup as with the local run.
 Run the test suite:
 
 ```bash
-npm run test
+pnpm run test
 ```
 
 Test sending pre-filled messages (forms) to UPVS FIX server:
 
 ```bash
-npm run test:send-form
+pnpm run test:send-form
 ```
 
 Test PDF creation for tax form - output is written to gitignored `pdf-output` directory:
 
 ```bash
-npm run test:generate-pdf
+pnpm run test:generate-pdf
 ```

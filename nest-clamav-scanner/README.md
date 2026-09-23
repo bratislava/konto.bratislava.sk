@@ -53,7 +53,7 @@ If the scanning result is `SAFE`, `INFECTED`, `MOVE ERROR INFECTED`, `MOVE ERROR
 
 ## Run locally
 
-If you want to run an application without installing it locally quickly, you can run it through `docker compose`.
+You need `clamav` and a database running before you start the app.
 
 1. You need to have `clamav` running first. To do that, in directories `/cvdmirror` and `/clamav` (in this order) run
 
@@ -65,26 +65,32 @@ If you want to run an application without installing it locally quickly, you can
 
 2. Copy and adjust `.env` from `.env.example`, and populate secrets you need (mainly `MINIO_SECRET_KEY`)
 
-3. In this `/nest-clamav-scanner` directory, run
+3. In this `/nest-clamav-scanner` directory, start the database:
 
    ```bash
-   docker compose up
+   docker compose up postgres
    ```
 
-   This command will initially build the image and run the container with the app. You can access the app on `http://localhost:3200`.
+4. Follow _Local installation_ below, then start the app with `pnpm run start:dev`. You can access it on `http://localhost:3200`.
 
 ## Local installation
 
-- Run npm installation for dependencies
+- Run pnpm installation for dependencies
 
   ```bash
-  npm install
+  pnpm install
+  ```
+
+- Build the shared packages this service depends on
+
+  ```bash
+  pnpm run build:dependencies
   ```
 
 - For Prisma, it comes in handy to have Prisma cli. Check if it is working on your pc:
 
   ```bash
-  npx prisma
+  pnpm exec prisma
   ```
 
 - Check the `.env` file for your correct local database connection configuration. It looks like this:
@@ -104,13 +110,13 @@ DATABASE_URL="postgresql://user:pass@localhost:54302/mydb?connect_timeout=30&sch
 
 ```bash
 # development
-npm run start
+pnpm run start
 
 # watch mode
-npm run start:dev
+pnpm run start:dev
 
 # production mode
-npm run start:prod
+pnpm run start:prod
 ```
 
 ## Test
@@ -119,13 +125,13 @@ To run tests in the repo, please use these commands:
 
 ```bash
 # unit tests
-npm run test
+pnpm run test
 
 # e2e tests
-npm run test:e2e
+pnpm run test:e2e
 
 # test coverage
-npm run test:cov
+pnpm run test:cov
 ```
 
 ## Stay in touch

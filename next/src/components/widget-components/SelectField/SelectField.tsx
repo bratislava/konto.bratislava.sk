@@ -29,7 +29,6 @@ const DropdownIndicator = <
   const { menuIsOpen, isDisabled } = props.selectProps
 
   return (
-    // @ts-expect-error: TypeScript expects a different type than provided by react-select
     <components.DropdownIndicator {...props}>
       <Icon
         name="chevron-down"
@@ -48,7 +47,6 @@ const ClearIndicator = <
   props: ClearIndicatorProps<Option, IsMulti, Group>,
 ) => {
   return (
-    // @ts-expect-error: TypeScript expects a different type than provided by react-select
     <components.ClearIndicator {...props}>
       <Icon name="close" />
     </components.ClearIndicator>
@@ -57,7 +55,6 @@ const ClearIndicator = <
 
 const MultiValueRemove = (props: MultiValueRemoveProps) => {
   return (
-    // @ts-expect-error: TypeScript expects a different type than provided by react-select
     <components.MultiValueRemove {...props}>
       <Icon name="close" />
     </components.MultiValueRemove>
@@ -78,7 +75,6 @@ const CustomOption = <
 
   return (
     <>
-      {/* @ts-expect-error: TypeScript expects a different type than provided by react-select */}
       <components.Option {...props}>
         {selectHasDescriptions ? (
           <div>

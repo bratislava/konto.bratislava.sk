@@ -11,13 +11,26 @@ import { PaymentModule } from './payment/payment.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { TasksModule } from './tasks/tasks.module'
 import { TaxModule } from './tax/tax.module'
-import AppLoggerMiddleware from './utils/middlewares/logger'
+import alertReporting from './utils/constants/error.alerts'
 import { SharedModule } from './utils/subservices/shared.module'
 import { UtilsModule } from './utils-module/utils.module'
 
 @Module({
   imports: [
     BaConfigModule,
+    NestLoggingModule.forRoot({ alertReporting }),
+    SanitizationModule.forRoot({
+      redactors: [emailRedactor, birthNumberRedactor],
+      // Error response envelope fields, so failed requests stay debuggable
+      allowShape: {
+        message: true,
+        error: true,
+        statusCode: true,
+        status: true,
+        errorName: true,
+      },
+      onDisallowed: 'redact',
+    }),
     CognitoAuthModule.registerAsync({
       inject: [BaConfigService],
       useFactory: (baConfigService: BaConfigService) => ({
@@ -44,7 +57,7 @@ import { UtilsModule } from './utils-module/utils.module'
   controllers: [AppController],
   providers: [],
 })
-export class AppModule {
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
     consumer.apply(AppLoggerMiddleware).forRoutes('*')
   }

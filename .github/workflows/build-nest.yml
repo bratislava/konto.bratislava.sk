@@ -164,11 +164,6 @@ jobs:
 
       # Every bake target below sets network=host, which is a gated entitlement,
       # hence `allow: network.host` on each step.
-      #
-      # `source: .` builds from the checkout above. Without it bake-action
-      # defaults to the Git context, so BuildKit clones the repository -- and
-      # auto-follows every tag -- inside the builder container on each cold
-      # builder, which costs far more than syncing the working tree.
       - name: Build validation image
         if: ${{ !inputs.skip_tests }}
         uses: docker/bake-action@v7

@@ -124,7 +124,7 @@ A few things here differ from a typical per-service Docker setup:
 - Two Dockerfile checks are skipped for every image, via a `BUILDKIT_DOCKERFILE_CHECK` build arg on the shared bake target instead of a `# check=skip=` directive in each Dockerfile. `docker-bake.hcl` says which and why.
 - CI runs the Turborepo cache server on the runner's loopback, so builds reach it at `127.0.0.1` — no published port, no proxy, no `host.docker.internal` (a Docker Desktop convenience that does not exist on Linux runners). Three pieces have to line up for that: the `network=host` buildx driver option, `network = "host"` on the bake target, and `allow: network.host` on each bake step to grant the gated entitlement. Missing any one of them yields a silent cache miss, not an error.
 - Tests and lint run inside `docker build` as their own stages, not as runner steps, so an unchanged service short-circuits on the layer cache instead of re-running them.
-- CI bake steps pass `source: .` to build from the checkout. Without it BuildKit clones the repository — following every tag — inside the builder (it takes around 30 seconds extra for no gain).
+- CI bake steps pass `source: .` so the build uses the files already checked out on the runner. Without it, `docker/bake-action` has Docker download the whole repository again from GitHub, including every tag. That adds about 30 seconds to each build for no benefit.
 - Next.js images bake their environment in, so they are built per cluster. Backend images are environment-agnostic and built once per commit.
 
 ## Acknowledgments

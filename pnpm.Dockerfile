@@ -3,18 +3,18 @@
 # Adapted from pnpm's own image, which installs the binary the same way:
 # https://github.com/pnpm/pnpm/blob/main/docker/Dockerfile
 #
-# Two Linux builds are published, one linked against glibc and one against musl.
-# The musl one is statically linked -- it carries its own libc instead of loading
-# the system's -- so it runs unchanged whatever base image COPYs it, glibc or
-# musl. Using it everywhere is what keeps this a single download with no
-# per-image libc branch. The glibc build is the opposite: it needs a dynamic
-# loader the musl distributions do not have, and fails there with a bare
-# "not found".
+# pnpm publishes two Linux builds:
 #
-# Built on the same node image as everything else purely so there is no extra
-# base image to pin and refresh -- nothing here uses Node.js. curl is installed
-# for its --retry, which busybox wget has no equivalent for, and a registry
-# hiccup should not fail a build.
+#   Build   Runs on Debian   Runs on Alpine   Used by
+#   glibc   yes              no               pnpm's own Dockerfile (Debian)
+#   musl    yes              yes              this file, for all our images
+#
+# The musl build works on Debian too because it needs nothing from the system.
+# The glibc build fails on Alpine with a confusing "not found".
+#
+# The node image is used only to avoid pinning another base image; Node.js
+# itself is not needed here. curl is installed because busybox wget cannot
+# retry failed downloads.
 
 ARG NODE_VERSION
 FROM node:${NODE_VERSION}-alpine AS pnpm-dist

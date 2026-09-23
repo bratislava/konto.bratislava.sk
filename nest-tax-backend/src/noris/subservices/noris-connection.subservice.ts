@@ -1,12 +1,14 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import { connect, ConnectionError, ConnectionPool, MSSQLError } from 'mssql'
 
 import BaConfigService from '../../config/ba-config.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../utils/constants'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 @Injectable()
@@ -17,7 +19,7 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
 
   constructor(
     private readonly baConfigService: BaConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly prismaService: PrismaService,
   ) {}
 
@@ -27,13 +29,11 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
       await connection.close()
     } catch (error) {
       this.logger.warn(
-        this.throwerErrorGuard.BadRequestException(
-          ErrorsEnum.BAD_REQUEST_ERROR,
-          'Failed to close MSSQL connection on shutdown',
-          undefined,
-          undefined,
+        this.errorFactoryService.BadRequestException({
+          errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+          message: 'Failed to close MSSQL connection on shutdown',
           error,
-        ),
+        }),
       )
     }
   }

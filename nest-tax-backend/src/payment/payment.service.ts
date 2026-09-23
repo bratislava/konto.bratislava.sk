@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import formurlencoded from 'form-urlencoded'
 
@@ -12,10 +17,7 @@ import {
 } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { TaxService } from '../tax/tax.service'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { TaxPaymentWithTaxInfo } from '../utils/types/types.prisma'
 import { RetryService } from '../utils-module/retry.service'
 import {

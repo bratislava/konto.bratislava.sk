@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton'
@@ -7,7 +8,6 @@ import { TaxType } from '../../../generated/prisma/client'
 import { NorisService } from '../../../noris/noris.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import TaxImportHelperService from '../tax-import-helper.service'
 
 const firstHistoricalYear = 2020

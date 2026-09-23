@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
@@ -20,8 +21,6 @@ import { generateItemizedRealEstateTaxDetail } from '../../../../tax/utils/helpe
 import { createTestingRealEstateTaxMock } from '../../../../tax/utils/testing-tax-mock'
 import { getTaxDefinitionByType } from '../../../../tax-definitions/getTaxDefinitionByType'
 import { TaxDefinition } from '../../../../tax-definitions/taxDefinitionsTypes'
-import { ErrorsEnum } from '../../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../../utils/subservices/database.subservice'
 import { TaxWithTaxPayer } from '../../../../utils/types/types.prisma'
@@ -54,7 +53,7 @@ describe('NorisTaxRealEstateSubservice', () => {
   let connectionService: jest.Mocked<NorisConnectionSubservice>
   let cityAccountSubservice: jest.Mocked<CityAccountSubservice>
   let paymentSubservice: jest.Mocked<NorisPaymentSubservice>
-  let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
+  let errorFactoryService: jest.Mocked<ErrorFactoryService>
 
   const mockNorisData: NorisRealEstateTax[] = [
     {
@@ -180,8 +179,8 @@ describe('NorisTaxRealEstateSubservice', () => {
           useValue: createMock<NorisPaymentSubservice>(),
         },
         {
-          provide: ThrowerErrorGuard,
-          useValue: createMock<ThrowerErrorGuard>(),
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>(),
         },
         {
           provide: BloomreachService,
@@ -210,7 +209,7 @@ describe('NorisTaxRealEstateSubservice', () => {
     connectionService = module.get(NorisConnectionSubservice)
     cityAccountSubservice = module.get(CityAccountSubservice)
     paymentSubservice = module.get(NorisPaymentSubservice)
-    throwerErrorGuard = module.get(ThrowerErrorGuard)
+    errorFactoryService = module.get(ErrorFactoryService)
     ;(getTaxDefinitionByType as jest.Mock).mockReturnValue(mockTaxDefinition)
 
     Object.defineProperty(service, 'logger', {

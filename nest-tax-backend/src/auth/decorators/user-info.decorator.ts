@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import {
   createParamDecorator,
   ExecutionContext,
@@ -9,9 +10,8 @@ import { isAxiosError } from 'axios'
 import express from 'express'
 
 import ClientsService from '../../clients/clients.service'
+import alertReporting from '../../utils/constants/error.alerts'
 import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 
 @Injectable()
 export class UserInfoPipe implements PipeTransform {

@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../prisma/prisma.service'
@@ -5,7 +6,6 @@ import {
   OVERPAYMENTS_LOOKBACK_DAYS,
   OVERPAYMENTS_LOOKBACK_DAYS_DEFAULT,
 } from '../../utils/constants'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export default class TasksConfigSubservice {

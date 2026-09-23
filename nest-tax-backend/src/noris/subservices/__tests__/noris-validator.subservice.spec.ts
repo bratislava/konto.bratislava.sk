@@ -1,8 +1,8 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
-import { ErrorSymbols } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
+import alertReporting from '../../../utils/constants/error.alerts'
 import {
   NorisCommunalWasteTaxSchema,
   NorisRealEstateTaxSchema,
@@ -42,7 +42,13 @@ describe('NorisValidatorSubservice', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [NorisValidatorSubservice, ThrowerErrorGuard],
+      providers: [
+        NorisValidatorSubservice,
+        {
+          provide: ErrorFactoryService,
+          useValue: new ErrorFactoryService({ alertReporting }),
+        },
+      ],
     }).compile()
     service = module.get<NorisValidatorSubservice>(NorisValidatorSubservice)
   })

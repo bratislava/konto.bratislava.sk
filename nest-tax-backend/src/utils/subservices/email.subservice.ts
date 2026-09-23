@@ -1,11 +1,13 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import nodemailer from 'nodemailer'
 import { SentMessageInfo } from 'nodemailer/lib/smtp-transport'
 
 import BaConfigService from '../../config/ba-config.service'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
-import { LineLoggerSubservice } from './line-logger.subservice'
 
 /**
  * EmailSubservice handles the functionality of sending emails using an SMTP

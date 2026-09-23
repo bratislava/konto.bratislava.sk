@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
@@ -8,10 +13,7 @@ import { NorisTaxPayment } from '../noris/types/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   DateRangeDto,
   NorisRequestGeneral,

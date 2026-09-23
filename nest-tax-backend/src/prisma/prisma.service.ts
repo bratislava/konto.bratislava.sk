@@ -1,11 +1,10 @@
+import { escapeForLogfmt, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable, OnModuleInit } from '@nestjs/common'
 import { PrismaPg } from '@prisma/adapter-pg'
 
 import BaConfigService from '../config/ba-config.service'
 import { PrismaClient } from '../generated/prisma/client'
 import type * as Prisma from '../generated/prisma/internal/prismaNamespace'
-import { escapeForLogfmt } from '../utils/logging'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 const getPrismaClientOptions = (connectionString: string) => {
   return {

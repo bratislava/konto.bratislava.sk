@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+} from '@bratislava/log-nest'
 import { Injectable, Logger } from '@nestjs/common'
 import currency from 'currency.js'
 import dayjs from 'dayjs'
@@ -14,11 +19,6 @@ import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import BaConfigService from '../../config/ba-config.service'
 import { PaymentStatus, TaxPayment } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto'

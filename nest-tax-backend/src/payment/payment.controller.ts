@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import {
   Controller,
   Get,
@@ -29,7 +30,6 @@ import {
   ResponseErrorDto,
   ResponseInternalServerErrorDto,
 } from '../utils/guards/dtos/error.dto'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { PaymentResponseQueryDto } from './dtos/gpwebpay.dto'
 import {
   PaymentRedirectResponseDto,

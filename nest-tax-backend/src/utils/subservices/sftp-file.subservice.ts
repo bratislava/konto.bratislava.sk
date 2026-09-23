@@ -1,5 +1,6 @@
 import path from 'node:path'
 
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -9,8 +10,6 @@ import SFTPClient, { FileInfo } from 'ssh2-sftp-client'
 import BaConfigService from '../../config/ba-config.service'
 import { TaxType } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)

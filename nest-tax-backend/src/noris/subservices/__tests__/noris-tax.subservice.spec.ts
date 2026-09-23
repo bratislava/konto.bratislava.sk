@@ -1,10 +1,9 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto'
 import { TaxType } from '../../../generated/prisma/client'
-import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { NorisTaxSubservice } from '../noris-tax.subservice'
 import { NorisTaxCommunalWasteSubservice } from '../noris-tax/noris-tax.communal-waste.subservice'
 import { NorisTaxRealEstateSubservice } from '../noris-tax/noris-tax.real-estate.subservice'
@@ -13,7 +12,7 @@ import { createTestNorisRealEstateTax } from './factories/noris-real-estate-tax.
 
 describe('NorisTaxSubservice', () => {
   let service: NorisTaxSubservice
-  let throwerErrorGuard: ThrowerErrorGuard
+  let errorFactoryService: ErrorFactoryService
   let norisTaxRealEstateSubservice: jest.Mocked<NorisTaxRealEstateSubservice>
   let norisTaxCommunalWasteSubservice: jest.Mocked<NorisTaxCommunalWasteSubservice>
 
@@ -24,8 +23,8 @@ describe('NorisTaxSubservice', () => {
       providers: [
         NorisTaxSubservice,
         {
-          provide: ThrowerErrorGuard,
-          useValue: createMock<ThrowerErrorGuard>(),
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>(),
         },
         {
           provide: NorisTaxRealEstateSubservice,
@@ -39,7 +38,7 @@ describe('NorisTaxSubservice', () => {
     }).compile()
 
     service = module.get<NorisTaxSubservice>(NorisTaxSubservice)
-    throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
     norisTaxRealEstateSubservice = module.get(NorisTaxRealEstateSubservice)
     norisTaxCommunalWasteSubservice = module.get(
       NorisTaxCommunalWasteSubservice,

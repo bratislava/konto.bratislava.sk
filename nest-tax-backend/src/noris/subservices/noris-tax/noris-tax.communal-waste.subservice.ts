@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { HttpException, Injectable } from '@nestjs/common'
 import groupBy from 'lodash/groupBy'
 import * as mssql from 'mssql'
@@ -7,11 +12,8 @@ import BaConfigService from '../../../config/ba-config.service'
 import { TaxType } from '../../../generated/prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { QrCodeService } from '../../../qrcode/qrcode.service'
-import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import {
   NorisBaseTaxSchema,
@@ -37,7 +39,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     private readonly norisValidatorSubservice: NorisValidatorSubservice,
 
     qrCodeService: QrCodeService,
-    throwerErrorGuard: ThrowerErrorGuard,
+    errorFactoryService: ErrorFactoryService,
     prismaService: PrismaService,
     bloomreachService: BloomreachService,
     cityAccountSubservice: CityAccountSubservice,
@@ -52,7 +54,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       qrCodeService,
       prismaService,
       bloomreachService,
-      throwerErrorGuard,
+      errorFactoryService,
       databaseSubservice,
       logger,
       cityAccountSubservice,

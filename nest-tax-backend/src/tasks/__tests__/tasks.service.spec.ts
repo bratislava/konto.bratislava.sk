@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -5,8 +6,6 @@ import { Test, TestingModule } from '@nestjs/testing'
 import prismaMock from '../../../test/singleton'
 import { PrismaService } from '../../prisma/prisma.service'
 import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../utils/constants'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import CityAccountIngestionTasksService from '../subservices/city-account-ingestion.tasks.service'
 import NorisSyncTasksService from '../subservices/noris-sync.tasks.service'
@@ -22,7 +21,7 @@ describe('TasksService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TasksService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         {
           provide: ReportingTasksService,
           useValue: createMock<ReportingTasksService>(),

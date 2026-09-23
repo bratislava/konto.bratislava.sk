@@ -1,8 +1,7 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import z from 'zod'
 
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 @Injectable()

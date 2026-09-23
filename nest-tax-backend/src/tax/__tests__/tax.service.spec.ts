@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -15,7 +16,6 @@ import { PrismaService } from '../../prisma/prisma.service'
 import { QrCodeGeneratorDto } from '../../qrcode/dtos/qrcode.dto'
 import { QrCodeService } from '../../qrcode/qrcode.service'
 import type { GetTaxDetailPureResponse } from '../../tax-definitions/taxDefinitionsTypes'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,

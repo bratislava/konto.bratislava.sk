@@ -64,18 +64,13 @@ target "_toolchain" {
   }
 }
 
-# The images whose build runs `turbo run`, and so can use the Turborepo remote
-# cache. Empty on purpose: the cache only exists on the CI runner, and the
-# overlay in .github/ redeclares this target to add it. Bake merges targets of
-# the same name across files, so everything below inherits the CI settings
-# without any of them naming a CI concept.
-target "_turbo-cache" {
-  inherits = ["_toolchain"]
-}
+# Mixed into images that run `turbo run`. Empty here; .github/docker-bake.ci.hcl
+# redeclares it in CI to add the Turborepo remote cache (host network + TURBO_*
+# args).
+target "_turbo-cache" {}
 
 # --- forms-shared -------------------------------------------------------------
-# Tests only; there is no deployable forms-shared image. Does not use the
-# Turborepo remote cache, so it inherits the plain toolchain target.
+# Tests only; there is no deployable forms-shared image.
 
 target "forms-shared-test" {
   inherits   = ["_toolchain"]
@@ -103,7 +98,7 @@ target "forms-shared-test-local-update" {
 # --- next ---------------------------------------------------------------------
 
 target "next" {
-  inherits   = ["_turbo-cache"]
+  inherits   = ["_toolchain", "_turbo-cache"]
   dockerfile = "next/Dockerfile"
   target     = "runner"
   args = {
@@ -114,7 +109,7 @@ target "next" {
 # --- strapi -------------------------------------------------------------------
 
 target "strapi" {
-  inherits   = ["_turbo-cache"]
+  inherits   = ["_toolchain", "_turbo-cache"]
   dockerfile = "strapi/Dockerfile"
   target     = "runner"
 }
@@ -125,7 +120,7 @@ target "strapi" {
 # what the build-nest workflow passes to bake, as `<service>[-<stage>]`.
 
 target "_nest-city-account" {
-  inherits   = ["_turbo-cache"]
+  inherits   = ["_toolchain", "_turbo-cache"]
   dockerfile = "nest-city-account/Dockerfile"
 }
 
@@ -150,7 +145,7 @@ target "nest-city-account-lint" {
 }
 
 target "_nest-clamav-scanner" {
-  inherits   = ["_turbo-cache"]
+  inherits   = ["_toolchain", "_turbo-cache"]
   dockerfile = "nest-clamav-scanner/Dockerfile"
 }
 
@@ -175,7 +170,7 @@ target "nest-clamav-scanner-lint" {
 }
 
 target "_nest-forms-backend" {
-  inherits   = ["_turbo-cache"]
+  inherits   = ["_toolchain", "_turbo-cache"]
   dockerfile = "nest-forms-backend/Dockerfile"
 }
 
@@ -207,7 +202,7 @@ target "nest-forms-backend-test-e2e" {
 }
 
 target "_nest-tax-backend" {
-  inherits   = ["_turbo-cache"]
+  inherits   = ["_toolchain", "_turbo-cache"]
   dockerfile = "nest-tax-backend/Dockerfile"
 }
 

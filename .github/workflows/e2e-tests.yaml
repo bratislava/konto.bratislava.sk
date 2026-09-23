@@ -54,8 +54,8 @@ jobs:
         with:
           cache: true
           # pnpm/setup can only run a bare `pnpm install`; the filtered, frozen
-          # one this job needs stays a backgrounded step of its own below, so it
-          # keeps overlapping the image build.
+          # one this job needs is a step of its own below, run while the image
+          # builds.
           install: false
 
       - name: Set up Docker build
@@ -86,21 +86,15 @@ jobs:
         with:
           minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
 
-      - name: Wait for pnpm and Node.js
-        wait: pnpm-setup
-
-      # The trailing `...` pulls in the workspace dependencies, which the suite
-      # needs: unlike the Cypress suite it imports `forms-shared` through its
-      # `exports` map, so the package has to be installed and built.
-      - name: Install dependencies
-        id: install-deps
-        background: true
-        run: pnpm install --frozen-lockfile --filter=konto-bratislava-sk-monorepo --filter="${E2E_PACKAGE}..."
-
+      # Two independent threads from here: the image build (the critical path)
+      # runs in the background, while the main thread prepares the local test
+      # environment, and they only meet before the tests run.
       - name: Wait for Docker and Turborepo cache setup
         wait: [ docker-build-setup, meta, turbo-cache ]
 
       - name: Build application image
+        id: app-image
+        background: true
         uses: docker/bake-action@v7
         with:
           source: .
@@ -115,15 +109,12 @@ jobs:
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
           NEXT_BUILD_ENV: e2e
 
-      - name: Start application container
-        run: |
-          docker run --detach \
-            --name "$CONTAINER_NAME" \
-            --publish 3000:3000 \
-            "$IMAGE_TAG"
+      - name: Wait for pnpm and Node.js
+        wait: pnpm-setup
 
-      - name: Wait for dependency install
-        wait: install-deps
+      # The trailing `...` pulls in the workspace dependencies
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --filter=konto-bratislava-sk-monorepo --filter="${E2E_PACKAGE}..."
 
       - name: Install Playwright browsers
         id: playwright-browsers
@@ -135,13 +126,21 @@ jobs:
       # Same Turborepo remote cache as the image build, so an unchanged package
       # is restored rather than rebuilt.
       - name: Build test dependencies
-        id: test-deps
-        background: true
         run: pnpm --filter "$E2E_PACKAGE" run build:dependencies
         env:
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
           TURBO_TEAM: city-account
           TURBO_TOKEN: local
+
+      - name: Wait for application image
+        wait: app-image
+
+      - name: Start application container
+        run: |
+          docker run --detach \
+            --name "$CONTAINER_NAME" \
+            --publish 3000:3000 \
+            "$IMAGE_TAG"
 
       # `playwright.config.ts` declares a `webServer` with `reuseExistingServer`,
       # so it adopts the container started above rather than launching an app
@@ -151,8 +150,8 @@ jobs:
           timeout 120 bash -c \
             'until curl --silent --fail --output /dev/null http://localhost:3000/api/healthcheck; do sleep 2; done'
 
-      - name: Wait for the test prerequisites
-        wait: [ playwright-browsers, test-deps ]
+      - name: Wait for Playwright browsers
+        wait: playwright-browsers
 
       - name: Run Playwright tests
         run: pnpm --filter "$E2E_PACKAGE" run test

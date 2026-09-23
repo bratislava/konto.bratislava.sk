@@ -1,10 +1,9 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { CognitoUserAttributesTierEnum } from 'openapi-clients/city-account'
 
 import { TIERS_KEY } from '../../utils/decorators/tier.decorator'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CognitoSubservice } from '../../utils/subservices/cognito.subservice'
 
 @Injectable()

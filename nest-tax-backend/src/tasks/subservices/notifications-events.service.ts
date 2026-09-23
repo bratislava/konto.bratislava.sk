@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { HttpException, Injectable } from '@nestjs/common'
 import dayjs, { Dayjs } from 'dayjs'
 import pLimit from 'p-limit'
@@ -20,10 +25,7 @@ import {
   parseInstallmentDueDate,
 } from '../../tax/utils/unified-tax.util'
 import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { TaxPaymentWithTaxAndTaxPayer } from '../../utils/types/types.prisma'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../utils/types'
 

@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  HandleErrors,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import dayjs from 'dayjs'
@@ -9,9 +14,6 @@ import {
 } from '../tax/dtos/error.dto'
 import { stateHolidays } from '../tax/utils/unified-tax.util'
 import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../utils/constants'
-import HandleErrors from '../utils/decorators/errorHandler.decorator'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import CityAccountIngestionTasksService from './subservices/city-account-ingestion.tasks.service'
 import NorisSyncTasksService from './subservices/noris-sync.tasks.service'

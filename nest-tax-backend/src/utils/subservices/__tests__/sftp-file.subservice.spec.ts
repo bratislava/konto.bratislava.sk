@@ -1,9 +1,9 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FileInfo } from 'ssh2-sftp-client'
 
 import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../guards/errors.guard'
 import SftpFileSubservice from '../sftp-file.subservice'
 
 // Mock SFTPClient
@@ -27,7 +27,7 @@ const mockBaConfigService = {
   },
 }
 
-const mockThrowerErrorGuard = {
+const mockErrorFactoryService = {
   InternalServerErrorException: jest.fn(),
 }
 
@@ -40,7 +40,7 @@ describe('SftpFileSubservice', () => {
         SftpFileSubservice,
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: BaConfigService, useValue: mockBaConfigService },
-        { provide: ThrowerErrorGuard, useValue: mockThrowerErrorGuard },
+        { provide: ErrorFactoryService, useValue: mockErrorFactoryService },
       ],
     }).compile()
 

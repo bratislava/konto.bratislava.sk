@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { HttpStatus, Injectable, Logger } from '@nestjs/common'
 import { isAxiosError } from 'axios'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
@@ -5,8 +6,6 @@ import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import ClientsService from '../../clients/clients.service'
 import BaConfigService from '../../config/ba-config.service'
 import { addSlashToBirthNumber } from '../functions/birthNumber'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
 
 @Injectable()
 export class CityAccountSubservice {

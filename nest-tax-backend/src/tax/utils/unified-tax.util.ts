@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import dayjs, { Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -16,7 +17,7 @@ import {
   ReplaceQrCodeWithGeneratorDto,
   TaxTypeToResponseDetailItemizedDto,
 } from '../../tax-definitions/taxDefinitionsTypes'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import alertReporting from '../../utils/constants/error.alerts'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,

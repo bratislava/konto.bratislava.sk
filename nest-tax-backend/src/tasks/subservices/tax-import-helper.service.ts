@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -7,7 +8,6 @@ import { TaxImportStatus, TaxType } from '../../generated/prisma/client'
 import { NorisService } from '../../noris/noris.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)

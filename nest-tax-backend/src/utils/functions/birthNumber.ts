@@ -1,5 +1,6 @@
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
+
+import alertReporting from '../constants/error.alerts'
 
 export function addSlashToBirthNumber(birthNumber: string): string {
   const birthNumberRegex = /^\d{6}\/?\d{3,4}$/

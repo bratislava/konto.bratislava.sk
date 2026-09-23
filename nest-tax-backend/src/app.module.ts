@@ -1,4 +1,11 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common'
+import {
+  AppLoggerMiddleware,
+  birthNumberRedactor,
+  emailRedactor,
+  NestLoggingModule,
+  SanitizationModule,
+} from '@bratislava/log-nest'
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ScheduleModule } from '@nestjs/schedule'
 import { CognitoAuthModule } from '@nestjs-cognito/auth'
 

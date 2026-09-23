@@ -1,11 +1,10 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import mssql, { MSSQLError } from 'mssql'
 
 import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
-import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 
@@ -47,13 +46,13 @@ describe('NorisConnectionSubservice', () => {
       providers: [
         NorisConnectionSubservice,
         { provide: BaConfigService, useValue: baConfigService },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: PrismaService, useValue: prismaService },
       ],
     }).compile()
 
     service = module.get<NorisConnectionSubservice>(NorisConnectionSubservice)
-    throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
   })
 
   afterEach(async () => {

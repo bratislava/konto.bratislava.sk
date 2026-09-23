@@ -1,3 +1,4 @@
+import { AllowList } from '@bratislava/log-nest'
 import { Controller, Get } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 

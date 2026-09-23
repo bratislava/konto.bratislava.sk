@@ -1,3 +1,5 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
+
 import {
   DeliveryMethodNamed,
   PaymentStatus,
@@ -13,7 +15,6 @@ import {
   GetTaxDetailPureOptions,
   GetTaxDetailPureResponse,
 } from '../../../tax-definitions/taxDefinitionsTypes'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,

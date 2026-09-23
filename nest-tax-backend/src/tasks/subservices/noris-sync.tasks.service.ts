@@ -1,3 +1,9 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import BaConfigService from '../../config/ba-config.service'
@@ -11,12 +17,6 @@ import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
 } from '../../utils/constants'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { getNextTaxType } from '../utils/tax-type-switch'
 
 @Injectable()

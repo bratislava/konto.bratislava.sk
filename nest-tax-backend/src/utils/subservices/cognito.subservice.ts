@@ -4,12 +4,11 @@ import {
   CognitoIdentityProviderClient,
   CognitoIdentityProviderServiceException,
 } from '@aws-sdk/client-cognito-identity-provider'
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { CognitoUserAttributesTierEnum } from 'openapi-clients/city-account'
 
 import BaConfigService from '../../config/ba-config.service'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
 
 @Injectable()
 export class CognitoSubservice {

@@ -8,8 +8,6 @@ import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { TaxType } from '../../generated/prisma/client'
 import { NorisService } from '../../noris/noris.service'
 import { PrismaService } from '../../prisma/prisma.service'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { AdminService } from '../admin.service'
 import {
@@ -42,7 +40,7 @@ describe('AdminService', () => {
           provide: NorisService,
           useValue: createMock<NorisService>(),
         },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
       ],
     }).compile()
 

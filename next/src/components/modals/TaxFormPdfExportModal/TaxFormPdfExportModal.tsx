@@ -40,10 +40,10 @@ const SuccessContent = () => {
   const { t } = useTranslation()
 
   const { register } = useFormRedirects()
-  const {
-    formDefinition: { feedbackLink },
-  } = useFormContext()
+  const { strapiFormSentPage } = useFormContext()
   const { isSignedIn } = useSsrAuth()
+
+  const feedbackLink = strapiFormSentPage?.feedbackLink?.trim()
 
   // TODO Translations - cleanup
   const actions = [
@@ -189,7 +189,7 @@ const TaxFormPdfExportModal = ({ state, ...props }: TaxFormPdfExportModalProps) 
             state.onClose()
           }
         },
-      } as ModalProps)}
+      })}
     >
       <Dialog>
         {state?.type === 'loading' && <LoadingContent />}

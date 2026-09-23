@@ -10,12 +10,17 @@ pnpm must be installed via the [official guide](https://pnpm.io/installation), n
 
 pnpm resolves this workspace reliably where npm does not: npm installs without complaint but then breaks at build time with obscure module resolution errors on the more complex dependency graphs here, also its flat `node_modules` hides phantom dependencies — packages that are importable without ever being declared.
 
-Node and pnpm versions are pinned once in the root `package.json`. How they are provisioned depends on how you invoke the runtime:
+Node and pnpm versions are pinned once in the root `package.json`. Who makes sure you get the right version depends on how you run things:
 
-- **`node` directly** — [Volta](https://volta.sh) provides the version in `volta.node`. (Volta doesn't support pnpm 12+.)
-- **`pnpm`, and `node` reached through pnpm** — the versions are managed by pnpm. `devEngines` pins both, and `pmOnFail: download` / `runtimeOnFail: download` in `pnpm-workspace.yaml` tell pnpm to fetch a pinned version that is not present rather than fail. So `pnpm install` on a fresh checkout provisions its own pnpm and Node.
+| You run | Version comes from | Pinned in | Wrong or missing version |
+| --- | --- | --- | --- |
+| `pnpm …` (including scripts, so `node` started by pnpm) | pnpm itself | `devEngines` | pnpm downloads the pinned version and uses it |
+| `node …` directly | [Volta](https://volta.sh) | `volta.node` | Volta downloads the pinned version and uses it |
+| Any other tool that checks `devEngines` | — | `devEngines` | Stops with an error |
 
-The `onFail: error` on `devEngines` is the strict default for everything else — a tool that reads the pin but does not satisfy the version stops rather than run on a mismatch.
+So on a fresh checkout, `pnpm install` is enough: pnpm fetches the right pnpm and Node on its own. The automatic download is enabled by `pmOnFail: download` and `runtimeOnFail: download` in `pnpm-workspace.yaml`; everything else keeps the strict `onFail: error` from `devEngines`.
+
+**Volta** is optional. It is a version manager that switches to the project's Node version whenever you run `node` inside this repository. Install it only if you run `node` directly. Volta can't manage pnpm 12+, so pnpm itself still comes from the official installer.
 
 ## Turborepo
 

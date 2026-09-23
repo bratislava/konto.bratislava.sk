@@ -131,6 +131,7 @@ jobs:
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
           TURBO_TEAM: city-account
           TURBO_TOKEN: local
+          TURBO_TELEMETRY_DISABLED: 1
 
       - name: Wait for application image
         wait: app-image

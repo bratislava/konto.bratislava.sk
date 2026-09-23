@@ -28,6 +28,7 @@ export class CardPaymentReportingController {
     description: 'Email sent.',
   })
   @UseGuards(AdminGuard)
+  @AllowList({ date: true })
   @Post('send-report')
   async sendReport(
     @Body() data: RequestPostReportingSendReport,

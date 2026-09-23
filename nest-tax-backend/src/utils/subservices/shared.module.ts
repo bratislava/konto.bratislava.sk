@@ -1,7 +1,6 @@
 import { Global, Module } from '@nestjs/common'
 
 import ClientsModule from '../../clients/clients.module'
-import ThrowerErrorGuard from '../guards/errors.guard'
 import { CityAccountSubservice } from './cityaccount.subservice'
 import { CognitoSubservice } from './cognito.subservice'
 import DatabaseSubservice from './database.subservice'
@@ -18,7 +17,7 @@ import DatabaseSubservice from './database.subservice'
  *
  * ## What can be provided:
  * - Subservices: Reusable business logic services (e.g., CityAccountSubservice, CognitoSubservice)
- * - Guards: Global guards like ThrowerErrorGuard
+ * - Guards: Global guards
  * - Utilities: Cross-cutting concerns that don't belong to a specific feature
  *
  * ## What should NOT be added:
@@ -33,17 +32,7 @@ import DatabaseSubservice from './database.subservice'
 @Global()
 @Module({
   imports: [ClientsModule], // Only leaf modules can be imported here.
-  providers: [
-    ThrowerErrorGuard,
-    CityAccountSubservice,
-    CognitoSubservice,
-    DatabaseSubservice,
-  ],
-  exports: [
-    ThrowerErrorGuard,
-    CityAccountSubservice,
-    CognitoSubservice,
-    DatabaseSubservice,
-  ],
+  providers: [CityAccountSubservice, CognitoSubservice, DatabaseSubservice],
+  exports: [CityAccountSubservice, CognitoSubservice, DatabaseSubservice],
 })
 export class SharedModule {}

@@ -26,7 +26,7 @@ So on a fresh checkout, `pnpm install` is enough: pnpm fetches the right pnpm an
 
 [Turborepo](https://turbo.build) is configured once in the root `turbo.json`.
 
-- Every task depends on `^build`, so shared packages are always built before whatever consumes them — you never have to rebuild dependencies by hand.
+- Every task depends on `^build`, which means "first build every workspace package this one depends on" (the `^` stands for dependencies). So shared packages are always built before whatever uses them, and you never have to rebuild them by hand.
 - Apps that consume those packages have a `build:dependencies` script, which builds everything the package depends on but not the package itself. Use it to get a freshly cloned workspace ready for `pnpm run dev` without building the app first.
 - Task results are cached and replayed instead of re-run when nothing relevant changed. Locally that is a `.turbo` directory; in CI it is a shared remote cache, so a package unchanged since an earlier run is restored rather than rebuilt.
 - We do not currently run several services at once (there is no `dev` task, and a CI build targets a single service), so the parallel-task side of Turborepo buys us little today. The caching and the dependency ordering are the reasons it is here.

@@ -13,7 +13,7 @@
   "devDependencies": {
     "turbo": "2.11.2"
   },
-  "packageManager": "pnpm@12.5.1",
+  "packageManager": "pnpm@12.6.0",
   "devEngines": {
     "runtime": {
       "name": "node",
@@ -22,7 +22,7 @@
     },
     "packageManager": {
       "name": "pnpm",
-      "version": "12.5.1",
+      "version": "12.6.0",
       "onFail": "error"
     }
   },

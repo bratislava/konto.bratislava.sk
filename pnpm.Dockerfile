@@ -9,8 +9,12 @@
 #   glibc   yes              no               pnpm's own Dockerfile (Debian)
 #   musl    yes              yes              this file, for all our images
 #
-# The musl build works on Debian too because it needs nothing from the system.
-# The glibc build fails on Alpine with a confusing "not found".
+# The musl build is made for Alpine, but it also runs on Debian because it
+# brings everything it needs with it. All our images are Alpine except the
+# forms-shared test image (forms-shared/Dockerfile.test), which is Debian
+# because Playwright's Chromium does not support Alpine. Thanks to musl, both
+# can use the same download. The glibc build does not run on Alpine; it fails
+# there with a confusing "not found".
 #
 # The node image is used only to avoid pinning another base image; Node.js
 # itself is not needed here. curl is installed because busybox wget cannot

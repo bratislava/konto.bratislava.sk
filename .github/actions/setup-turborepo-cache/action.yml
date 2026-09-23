@@ -9,10 +9,8 @@ inputs:
 outputs:
   turbo_api:
     description: Turborepo cache API URL reachable from BuildKit.
-    # Plain loopback: the builder is created with the `network=host` driver
-    # option and the bake targets build with `network = "host"`, so a RUN step
-    # shares the runner's network namespace. Nothing has to be published or
-    # proxied, and the server can keep its default 127.0.0.1 bind.
+    # With the `network=host` driver option, Docker build can reach this
+    # cache server on the local network
     value: http://127.0.0.1:8585
 
 runs:

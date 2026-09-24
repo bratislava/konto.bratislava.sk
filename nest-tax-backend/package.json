@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "3.1098.0",
-    "@bratislava/log-nest": "1.0.1",
+    "@bratislava/log-nest": "1.1.0",
     "@nestjs-cognito/auth": "2.5.1",
     "@nestjs/common": "11.1.28",
     "@nestjs/config": "4.0.4",

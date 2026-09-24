@@ -1,4 +1,4 @@
-import { AllowList } from '@bratislava/log-nest'
+import { LogAllowList } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -50,7 +50,7 @@ export class AdminController {
     type: CreateBirthNumbersResponseDto,
   })
   @UseGuards(AdminGuard)
-  @AllowList({ year: true, taxType: true, options: true })
+  @LogAllowList({ year: true, taxType: true, options: true })
   @Post('create-data-from-noris')
   async loadDataFromNoris(
     @Body() data: RequestPostNorisLoadDataDto,
@@ -70,7 +70,7 @@ export class AdminController {
     description: 'Number of records updated in Noris',
   })
   @UseGuards(AdminGuard)
-  @AllowList({ year: true, taxType: true, options: true, updated: true })
+  @LogAllowList({ year: true, taxType: true, options: true, updated: true })
   @Post('update-data-from-noris')
   async updateDataFromNoris(
     @Body() data: RequestPostNorisLoadDataDto,
@@ -90,7 +90,7 @@ export class AdminController {
     type: ResponseCreatedAlreadyCreatedDto,
   })
   @UseGuards(AdminGuard)
-  @AllowList({
+  @LogAllowList({
     year: true,
     fromDate: true,
     toDate: true,
@@ -119,7 +119,7 @@ export class AdminController {
     type: ResponseCreatedAlreadyCreatedDto,
   })
   @UseGuards(AdminGuard)
-  @AllowList({
+  @LogAllowList({
     fromDate: true,
     toDate: true,
     created: true,
@@ -146,7 +146,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @UseGuards(NotProductionGuard)
-  @AllowList({ year: true })
+  @LogAllowList({ year: true })
   @Post('create-testing-tax')
   async createTestingTax(
     @Body() request: RequestAdminCreateTestingTaxDto,
@@ -167,7 +167,7 @@ export class AdminController {
     description: 'Internal server error or tax payer not found',
   })
   @UseGuards(AdminGuard)
-  @AllowList({ year: true, taxType: true, order: true })
+  @LogAllowList({ year: true, taxType: true, order: true })
   @Post('delete-tax')
   async deleteTax(@Body() request: RequestAdminDeleteTaxDto): Promise<void> {
     await this.adminService.deleteTax(request)

@@ -2,8 +2,8 @@ import {
   AppLoggerMiddleware,
   birthNumberRedactor,
   emailRedactor,
+  LogSanitizationModule,
   NestLoggingModule,
-  SanitizationModule,
 } from '@bratislava/log-nest'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ScheduleModule } from '@nestjs/schedule'
@@ -26,7 +26,7 @@ import { UtilsModule } from './utils-module/utils.module'
   imports: [
     BaConfigModule,
     NestLoggingModule.forRoot({ alertReporting }),
-    SanitizationModule.forRoot({
+    LogSanitizationModule.forRoot({
       redactors: [emailRedactor, birthNumberRedactor],
       // Error response envelope fields, so failed requests stay debuggable
       allowShape: {

@@ -2,8 +2,8 @@ import {
   AppLoggerMiddleware,
   birthNumberRedactor,
   emailRedactor,
+  LogSanitizationModule,
   NestLoggingModule,
-  SanitizationModule,
 } from '@bratislava/log-nest'
 import { BullModule } from '@nestjs/bull'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
@@ -20,7 +20,7 @@ import alertReporting from './utils/constants/error.alerts'
   imports: [
     BaConfigModule,
     NestLoggingModule.forRoot({ alertReporting }),
-    SanitizationModule.forRoot({
+    LogSanitizationModule.forRoot({
       redactors: [emailRedactor, birthNumberRedactor],
       allowShape: {
         message: true,

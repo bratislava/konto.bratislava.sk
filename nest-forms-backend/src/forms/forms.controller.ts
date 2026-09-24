@@ -1,4 +1,4 @@
-import { AllowList } from '@bratislava/log-nest'
+import { LogAllowList } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -57,7 +57,7 @@ export default class FormsController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard, FormDefinitionMustBeEnabledGuard)
-  @AllowList({ formId: true, success: true })
+  @LogAllowList({ formId: true, success: true })
   @Post(':formId/bump-version')
   async bumpJsonVersion(
     @Param('formId') formId: string,
@@ -81,7 +81,7 @@ export default class FormsController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth])
   @UseGuards(UserAuthGuard)
-  @AllowList({
+  @LogAllowList({
     currentPage: true,
     pagination: true,
     countPages: true,
@@ -117,7 +117,7 @@ export default class FormsController {
   @FormAccessAllowMigrations()
   @AllowCompletedDisabledForms(true)
   @UseGuards(UserAuthGuard, FormAccessGuard, FormDefinitionMustBeEnabledGuard)
-  @AllowList({
+  @LogAllowList({
     id: true,
     createdAt: true,
     updatedAt: true,
@@ -154,7 +154,7 @@ export default class FormsController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard)
-  @AllowList({ archived: true, formId: true })
+  @LogAllowList({ archived: true, formId: true })
   @Delete(':formId')
   async deleteForm(
     @Param('formId') formId: string,
@@ -183,7 +183,7 @@ export default class FormsController {
     FormDefinitionMustBeEnabledGuard,
     FormMustBeEditableGuard,
   )
-  @AllowList({
+  @LogAllowList({
     id: true,
     createdAt: true,
     updatedAt: true,

@@ -3,7 +3,11 @@ import {
   GinisError,
   SslDetailDokumentuWflDokument,
 } from '@bratislava/ginis-sdk'
-import { AllowList, ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LogAllowList,
+} from '@bratislava/log-nest'
 import { Controller, Get, HttpStatus, Param, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
@@ -51,7 +55,7 @@ export default class GinisController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth])
   @UseGuards(UserAuthGuard, FormAccessGuard)
-  @AllowList({ id: true, dossierId: true })
+  @LogAllowList({ id: true, dossierId: true })
   @Get(':formId')
   async getGinisDocumentByFormId(
     @Param('formId') formId: string,

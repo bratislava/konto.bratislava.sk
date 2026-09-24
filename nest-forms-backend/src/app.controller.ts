@@ -1,4 +1,4 @@
-import { AllowList } from '@bratislava/log-nest'
+import { LogAllowList } from '@bratislava/log-nest'
 import { Controller, Get } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
@@ -13,7 +13,7 @@ export default class AppController {
     summary: 'Hello world!',
     description: 'See if nest is working!',
   })
-  @AllowList(true)
+  @LogAllowList(true)
   @Get('healthcheck')
   @ApiOkResponse({
     description: '',

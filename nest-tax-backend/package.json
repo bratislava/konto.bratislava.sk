@@ -29,7 +29,7 @@
     "vulnerabilities": "pnpm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "3.1098.0",
+    "@aws-sdk/client-cognito-identity-provider": "3.1136.0",
     "@nestjs-cognito/auth": "2.5.1",
     "@nestjs/common": "11.1.28",
     "@nestjs/config": "4.0.4",

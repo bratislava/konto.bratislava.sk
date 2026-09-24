@@ -372,7 +372,7 @@ export default class NasesSenderService {
       if (!response.data) {
         // TODO temp SEND_TO_NASES_ERROR log, remove
         this.logger.log(
-          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: EMPTY, message: ${message}`,
+          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: EMPTY`,
         )
 
         return {
@@ -389,7 +389,7 @@ export default class NasesSenderService {
         this.logger.log(
           `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${JSON.stringify(
             response.data,
-          )}, message: ${message}`,
+          )}`,
         )
 
         return {
@@ -411,7 +411,7 @@ export default class NasesSenderService {
         this.errorFactoryService.InternalServerErrorException({
           errorEnum: NasesErrorsEnum.SEND_TO_NASES_ERROR,
           message: NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
-          console: { formId: data.id, message },
+          console: { formId: data.id },
         }),
       )
 

@@ -154,7 +154,7 @@ export default class NasesContactsService {
       this.logger.error(
         this.errorFactoryService.UnprocessableEntityException({
           errorEnum: NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
-          message: `extractCorporateBodyData: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: ICO not found in contact returned by nases ${contact.uri}.`,
+          message: `extractCorporateBodyData: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: ICO not found in contact returned by nases.`,
         }),
       )
     }

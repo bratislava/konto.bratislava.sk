@@ -403,11 +403,7 @@ export class FormSenderService {
 
       // TODO temp SEND_TO_NASES_ERROR log, remove.
       this.logger.log(
-        `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, formSignature from db: ${JSON.stringify(
-          form.formSignature,
-          null,
-          2,
-        )}`,
+        `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, has formSignature in db: ${Boolean(form.formSignature)}`,
       )
 
       throw this.errorFactoryService.InternalServerErrorException({
@@ -487,7 +483,6 @@ export class FormSenderService {
           status: sendData.status,
           formId: data.formId,
           error: FormError.NASES_SEND_ERROR,
-          sendData: sendData.data,
         },
       })
     }

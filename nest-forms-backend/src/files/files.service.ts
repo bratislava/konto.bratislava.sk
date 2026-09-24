@@ -186,7 +186,7 @@ export default class FilesService {
     }
 
     this.logger.debug(
-      `Scanner status update: File ${file.minioFileName} was updated with status: ${status}`,
+      `Scanner status update: File ${file.id} was updated with status: ${status}`,
     )
     return {
       ...file,
@@ -203,7 +203,7 @@ export default class FilesService {
     const fileName = data.filename
     const fileId = data.id
     this.logger.log(
-      `Received file upload request for form ${formId} with filename ${fileName}.`,
+      `Received file upload request for form ${formId} with file id ${fileId}.`,
     )
     if (!bufferedFile) {
       throw this.errorFactoryService.BadRequestException({
@@ -272,7 +272,7 @@ export default class FilesService {
       })
     }
 
-    this.logger.log(`File ${minioFileName} was successfully uploaded to Minio.`)
+    this.logger.log(`File ${fileId} was successfully uploaded to Minio.`)
 
     const file = await this.filesHelper.saveFileToDatabase(
       fileId,
@@ -349,15 +349,13 @@ export default class FilesService {
     this.logger.debug(`Received file download request for fileId ${fileId}.`)
     const file = await this.getFile(fileId)
     this.logger.debug(
-      `Minio file name: ${file.minioFileName} was found with scan status: ${file.status}.`,
+      `File ${file.id} was found with scan status: ${file.status}.`,
     )
     const formInfo = this.filesHelper.fileDto2formInfo(file)
     const filePath = this.filesHelper.getPath(formInfo)
     const pathWithMinioFileName = filePath + file.minioFileName
     const bucket = this.filesHelper.getBucketUid(file.status)
-    this.logger.debug(
-      `Downloading from bucket: ${bucket}, file path with minioFileName: ${pathWithMinioFileName}`,
-    )
+    this.logger.debug(`Downloading file ${file.id} from bucket: ${bucket}`)
 
     // download
     return this.minioStorageService.download(bucket, pathWithMinioFileName)
@@ -531,9 +529,7 @@ export default class FilesService {
         const filePath = this.filesHelper.getPath(formInfo)
         const pathWithMinioFileName = filePath + file.minioFileName
         const bucket = this.filesHelper.getBucketUid(file.status)
-        this.logger.debug(
-          `Deleting from bucket: ${bucket}, file path with minioFileName: ${pathWithMinioFileName}`,
-        )
+        this.logger.debug(`Deleting file ${file.id} from bucket: ${bucket}`)
         const deleteStatus = await this.minioStorageService.deleteFile(
           bucket,
           pathWithMinioFileName,

@@ -43,7 +43,7 @@ export default class RabbitmqClientModule {
       new LineLoggerSubservice(RabbitmqClientService.name),
     )
     this.logger.log(
-      `Setting up rabbit mq connection to: ${this.baConfigService.rabbitMq.uri}`,
+      `Setting up rabbit mq connection to: ${new URL(this.baConfigService.rabbitMq.uri).host}`,
     )
   }
 }

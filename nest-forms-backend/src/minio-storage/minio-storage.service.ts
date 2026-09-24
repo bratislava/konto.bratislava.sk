@@ -135,9 +135,7 @@ export class MinioStorageService {
         .client()
         .statObject(bucketName, fileName)
     } catch (error) {
-      this.logger.error(
-        `File: ${fileName} does not exist in bucket: ${bucketName}`,
-      )
+      this.logger.error(`File does not exist in bucket: ${bucketName}`)
       this.logger.error(error)
       return false
     }

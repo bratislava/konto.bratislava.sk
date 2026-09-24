@@ -426,7 +426,7 @@ export default class SharepointService {
         message: SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR,
         console: JSON.stringify({
           databaseName: dbName,
-          postedData: JSON.stringify(fieldValues),
+          postedFields: Object.keys(fieldValues),
         }),
       })
     }

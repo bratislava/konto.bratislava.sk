@@ -551,25 +551,25 @@ export default class GinisService {
           throw this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
             message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-            console: `Failed to search nases identity for uri: ${uri}`,
+            console: 'Failed to search nases identity by uri',
             error,
           })
         }
         throw this.errorFactoryService.fromAxiosError(error, {
-          console: `Failed to search nases identity for uri: ${uri}`,
+          console: 'Failed to search nases identity by uri',
         })
       })
 
     if (result.length === 0) {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
-        message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in nases. Uri: ${uri}`,
+        message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in nases.`,
       })
     }
     if (result.length > 1) {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
-        message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Multiple results found for form uri. Uri: ${uri}`,
+        message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Multiple results found for form uri.`,
       })
     }
     return result[0]
@@ -622,7 +622,7 @@ export default class GinisService {
     this.logger.error(
       this.errorFactoryService.UnprocessableEntityException({
         errorEnum: NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
-        message: `extractContactParamsFromUri: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: Contact shape not identified from nases identity search data for uri: ${form.mainUri}.`,
+        message: `extractContactParamsFromUri: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: Contact shape not identified from nases identity search data. Form id: ${form.id}.`,
       }),
     )
 

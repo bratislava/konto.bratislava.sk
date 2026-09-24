@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from 'node:crypto'
 
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import * as jwt from 'jsonwebtoken'
 
@@ -7,7 +8,6 @@ import BaConfigService from '../config/ba-config.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { decryptData, encryptData, timingSafeStringEqual } from '../utils/crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { deserializeTokenData, serializeTokenData, TokenData } from '../utils/tokenSerialization'
 import {
   AuthorizationRequestDto,
@@ -30,15 +30,14 @@ import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subs
 
 @Injectable()
 export class OAuth2Service {
-  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(OAuth2Service.name)
-
   constructor(
     private readonly oAuth2ErrorThrower: OAuth2ErrorThrower,
     private readonly prisma: PrismaService,
     private readonly cognitoSubservice: CognitoSubservice,
     private readonly validationSubservice: OAuth2ValidationSubservice,
     private readonly baConfigService: BaConfigService,
-    private readonly oAuth2ClientSubservice: OAuth2ClientSubservice
+    private readonly oAuth2ClientSubservice: OAuth2ClientSubservice,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   /**

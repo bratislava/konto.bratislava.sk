@@ -1,21 +1,21 @@
+import {
+  CatchDatabaseError,
+  ErrorFactoryService,
+  HasErrorFactoryService,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { LegalPerson, User } from '../../../generated/prisma/client'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
-import {
-  CatchDatabaseError,
-  IHasThrowerErrorGuard,
-} from '../../../utils/decorators/CatchDatabaseError.decorators'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { VerificationReturnType } from '../../types'
 import { VerificationErrorsEnum } from '../../verification.errors.enum'
 
 @Injectable()
-export class VerificationDataSubservice implements IHasThrowerErrorGuard {
+export class VerificationDataSubservice implements HasErrorFactoryService {
   constructor(
     private prisma: PrismaService,
-    public readonly throwerErrorGuard: ThrowerErrorGuard
+    public readonly errorFactoryService: ErrorFactoryService
   ) {}
 
   @CatchDatabaseError()

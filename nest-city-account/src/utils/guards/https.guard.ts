@@ -1,14 +1,13 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
 
 import BaConfigService from '../../config/ba-config.service'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { ErrorsEnum } from './dtos/error.dto'
 
 @Injectable()
 export class HttpsGuard implements CanActivate {
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService
   ) {}
 
@@ -30,11 +29,11 @@ export class HttpsGuard implements CanActivate {
       request.headers['cloudfront-forwarded-proto'] === 'https' // CloudFront
 
     if (!isSecure) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        ErrorsEnum.FORBIDDEN_ERROR,
-        'HTTPS is required for OAuth2 endpoints',
-        'Insecure connection attempt blocked'
-      )
+      throw this.errorFactoryService.ForbiddenException({
+        errorEnum: ErrorEnum.FORBIDDEN_ERROR,
+        message: 'HTTPS is required for OAuth2 endpoints',
+        console: 'Insecure connection attempt blocked',
+      })
     }
 
     return true

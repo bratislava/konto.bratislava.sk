@@ -1,3 +1,9 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { AxiosError, isAxiosError } from 'axios'
 import keyBy from 'lodash/keyBy'
@@ -17,9 +23,6 @@ import {
   VerificationErrorsEnum,
   VerificationErrorsResponseEnum,
 } from '../user-verification/verification.errors.enum'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 export type GetUpvsIdentitiesByUrisParam = {
   physicalEntityId?: string
@@ -117,17 +120,14 @@ function getUpvsIamFault(error: AxiosError): UpvsIamFault | undefined {
 
 @Injectable()
 export class NasesService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
-    private throwerErrorGuard: ThrowerErrorGuard,
+    private errorFactoryService: ErrorFactoryService,
     private clientsService: ClientsService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly prismaService: PrismaService,
-    private readonly baConfigService: BaConfigService
-  ) {
-    this.logger = new LineLoggerSubservice(NasesService.name)
-  }
+    private readonly baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   async getUpvsIdentity(token: string) {
     const result = await this.clientsService.slovenskoSkApi
@@ -137,14 +137,14 @@ export class NasesService {
       .then((response) => response.data)
       .catch((error: unknown) => {
         if (!isAxiosError(error)) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-            'Error is not an instance of AxiosError',
-            error
-          )
+          throw this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+            console: 'Error is not an instance of AxiosError',
+            error,
+          })
         }
-        throw this.throwerErrorGuard.fromAxiosError(error, {
+        throw this.errorFactoryService.fromAxiosError(error, {
           message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
         })
       })
@@ -202,12 +202,12 @@ export class NasesService {
       })
       .catch(async (error: unknown) => {
         if (!isAxiosError(error)) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-            'Error is not an instance of AxiosError',
-            error
-          )
+          throw this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+            console: 'Error is not an instance of AxiosError',
+            error,
+          })
         }
         const iamFault = getUpvsIamFault(error)
         let consoleMessage: string | undefined
@@ -217,15 +217,15 @@ export class NasesService {
         } else if (error.response?.status === HttpStatus.BAD_REQUEST) {
           consoleMessage = 'Identity lookup parameters failed slovensko-sk container validation.'
         }
-        throw this.throwerErrorGuard.fromAxiosError(error, {
+        throw this.errorFactoryService.fromAxiosError(error, {
           message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
           console: consoleMessage,
           statusOverrides: {
             // Rate limit must keep its 429 status
             [HttpStatus.TOO_MANY_REQUESTS]: {
               status: HttpStatus.TOO_MANY_REQUESTS,
-              errorEnum: ErrorsEnum.TOO_MANY_REQUESTS_ERROR,
-              message: ErrorsResponseEnum.TOO_MANY_REQUESTS_ERROR,
+              errorEnum: ErrorEnum.TOO_MANY_REQUESTS_ERROR,
+              message: ErrorResponseEnum.TOO_MANY_REQUESTS_ERROR,
             },
             // 400 with a `fault` in the body = UPVS IAM itself rejected the query
             [HttpStatus.BAD_REQUEST]: iamFault
@@ -236,8 +236,8 @@ export class NasesService {
                 }
               : {
                   status: HttpStatus.INTERNAL_SERVER_ERROR,
-                  errorEnum: ErrorsEnum.INTERNAL_SERVER_ERROR,
-                  message: ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+                  errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+                  message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
                 },
           },
         })
@@ -280,14 +280,14 @@ export class NasesService {
       })
       .catch((error: unknown) => {
         if (!isAxiosError(error)) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-            'Error is not an instance of AxiosError',
-            error
-          )
+          throw this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+            console: 'Error is not an instance of AxiosError',
+            error,
+          })
         }
-        throw this.throwerErrorGuard.fromAxiosError(error, {
+        throw this.errorFactoryService.fromAxiosError(error, {
           message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
           console: `Internal reason: ${VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE}. Uris: ${JSON.stringify(uris)}`,
         })
@@ -304,10 +304,10 @@ export class NasesService {
     >
 
     if (uniqueInputs.length === 0 || uniqueInputs.length > 10) {
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        'Must provide between 1 and 10 URIs to validate'
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+        message: 'Must provide between 1 and 10 URIs to validate',
+      })
     }
 
     const results = await this.searchUpvsIdentitiesByUri(uniqueInputs.map((input) => input.uri))

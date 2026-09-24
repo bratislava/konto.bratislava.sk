@@ -1,3 +1,4 @@
+import { ErrorEnum } from '@bratislava/log-nest'
 import { ApiProperty } from '@nestjs/swagger'
 
 import { AdminErrorsEnum } from '../../../admin/admin.errors.enum'
@@ -11,35 +12,6 @@ import {
   VerificationErrorsEnum,
 } from '../../../user-verification/verification.errors.enum'
 import { DeliveryMethodErrorsEnum } from './delivery-method.error'
-
-// copied over from nest-forms-backend
-export enum ErrorsEnum {
-  NOT_FOUND_ERROR = 'NOT_FOUND_ERROR',
-  DATABASE_ERROR = 'DATABASE_ERROR',
-  INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
-  UNAUTHORIZED_ERROR = 'UNAUTHORIZED_ERROR',
-  UNPROCESSABLE_ENTITY_ERROR = 'UNPROCESSABLE_ENTITY_ERROR',
-  BAD_REQUEST_ERROR = 'BAD_REQUEST_ERROR',
-  FORBIDDEN_ERROR = 'FORBIDDEN_ERROR',
-  BAD_GATEWAY_ERROR = 'BAD_GATEWAY_ERROR',
-  BAD_GATEWAY_AUTH_ERROR = 'BAD_GATEWAY_AUTH_ERROR',
-  SERVICE_UNAVAILABLE_ERROR = 'SERVICE_UNAVAILABLE_ERROR',
-  TOO_MANY_REQUESTS_ERROR = 'TOO_MANY_REQUESTS_ERROR',
-}
-
-export enum ErrorsResponseEnum {
-  NOT_FOUND_ERROR = 'Resource not found.',
-  DATABASE_ERROR = 'There was database error.',
-  INTERNAL_SERVER_ERROR = 'Internal server error.',
-  UNAUTHORIZED_ERROR = 'Unauthorized.',
-  UNPROCESSABLE_ENTITY_ERROR = 'Unprocessable entity.',
-  BAD_REQUEST_ERROR = 'Bad request.',
-  FORBIDDEN_ERROR = 'Forbidden error',
-  BAD_GATEWAY_ERROR = 'Bad gateway.',
-  BAD_GATEWAY_AUTH_ERROR = 'Bad gateway: downstream rejected our credentials.',
-  SERVICE_UNAVAILABLE_ERROR = 'Service unavailable.',
-  TOO_MANY_REQUESTS_ERROR = 'Too many requests',
-}
 
 export class ResponseInternalServerErrorDto {
   @ApiProperty({
@@ -59,7 +31,7 @@ export type CustomErrorEnums =
   | UserErrorsEnum
   | VerificationErrorsEnum
   | MagproxyErrorsEnum
-  | ErrorsEnum
+  | ErrorEnum
   | AdminErrorsEnum
   | SendToQueueErrorsEnum
   | DeliveryMethodErrorsEnum
@@ -67,42 +39,10 @@ export type CustomErrorEnums =
   | CustomErrorNorisTypesEnum
   | TowingErrorsEnum
 
-export const ErrorSymbols = {
-  alert: Symbol('alert'),
-  console: Symbol('console'),
-  errorType: Symbol('errorType'),
-  stack: Symbol('stack'),
-  field: Symbol('field'),
-  errorCause: Symbol('errorCause'),
-  causedByMessage: Symbol('causedByMessage'),
-} as const
-
-export const errorTypeKeys: Record<string, string> = {
-  alert: `$Symbol-alert`,
-  console: `$Symbol-console`,
-  errorType: `$Symbol-errorType`,
-  stack: `$Symbol-stack`,
-  field: `$Symbol-field`,
-  errorCause: `$Symbol-errorCause`,
-  causedByMessage: `$Symbol-causedByMessage`,
-}
-
-export const errorTypeStrings = Object.values(errorTypeKeys)
-
-export class ResponseErrorInternalDto {
-  statusCode!: number
-
-  status!: string
-
-  message!: string
-
-  errorName!: CustomErrorEnums;
-
-  [ErrorSymbols.alert]?: number;
-
-  [ErrorSymbols.console]?: string;
-
-  [ErrorSymbols.errorCause]?: string;
-
-  [ErrorSymbols.causedByMessage]?: string
+// Registers `CustomErrorEnums` as this app's error-enum union, so an injected
+// `ErrorFactoryService` with no explicit generic is typed with it everywhere.
+declare module '@bratislava/log-nest' {
+  interface LogNestErrorEnumRegistry {
+    errorEnum: CustomErrorEnums
+  }
 }

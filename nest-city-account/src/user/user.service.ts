@@ -1,4 +1,5 @@
 // TODO - communication state to LEGAL_ENTITY
+import { ErrorFactoryService, LineLoggerSubservice, toLogfmt } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
@@ -28,10 +29,7 @@ import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   ResponseLegalPersonDataDto,
   ResponseLegalPersonDataSimpleDto,
@@ -54,16 +52,15 @@ const USER_REQUEST_LIMIT = 100
 
 @Injectable()
 export class UserService {
-  private readonly logger = new LineLoggerSubservice(UserService.name)
-
   constructor(
     private userDataSubservice: UserDataSubservice,
     private prisma: PrismaService,
-    private throwerErrorGuard: ThrowerErrorGuard,
+    private errorFactoryService: ErrorFactoryService,
     private bloomreachOutboxService: BloomreachOutboxService,
     private cognitoSubservice: CognitoSubservice,
     private userTierService: UserTierService,
-    private norisDeliveryMethodService: NorisDeliveryMethodService
+    private norisDeliveryMethodService: NorisDeliveryMethodService,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   private async hasChangedDeliveryMethodAfterDeadline(userId: string): Promise<boolean> {
@@ -131,11 +128,11 @@ export class UserService {
   async recordUserLoginClient(externalId: string, loginClient: LoginClientEnum): Promise<void> {
     const user = await this.userDataSubservice.getUserByExternalId(externalId)
     if (!user) {
-      throw this.throwerErrorGuard.NotFoundException(
-        UserErrorsEnum.USER_NOT_FOUND,
-        `User not found for Cognito ID: ${externalId}`,
-        `Failed to record login client '${loginClient}' for user with Cognito ID: ${externalId}. User does not exist in database.`
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: UserErrorsEnum.USER_NOT_FOUND,
+        message: `User not found for Cognito ID: ${externalId}`,
+        console: `Failed to record login client '${loginClient}' for user with Cognito ID: ${externalId}. User does not exist in database.`,
+      })
     }
     await this.userDataSubservice.recordUserLoginClient(loginClient, user.id)
   }
@@ -146,11 +143,11 @@ export class UserService {
   ): Promise<void> {
     const legalPerson = await this.userDataSubservice.getLegalPersonByExternalId(externalId)
     if (!legalPerson) {
-      throw this.throwerErrorGuard.NotFoundException(
-        UserErrorsEnum.USER_NOT_FOUND,
-        `Legal person not found for Cognito ID: ${externalId}`,
-        `Failed to record login client '${loginClient}' for legal person with Cognito ID: ${externalId}. Legal person does not exist in database.`
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: UserErrorsEnum.USER_NOT_FOUND,
+        message: `Legal person not found for Cognito ID: ${externalId}`,
+        console: `Failed to record login client '${loginClient}' for legal person with Cognito ID: ${externalId}. Legal person does not exist in database.`,
+      })
     }
     await this.userDataSubservice.recordLegalPersonLoginClient(loginClient, legalPerson.id)
   }
@@ -195,12 +192,11 @@ export class UserService {
         ),
       }
     } catch (error) {
-      throw this.throwerErrorGuard.NotFoundException(
-        UserErrorsEnum.USER_NOT_FOUND,
-        UserErrorsResponseEnum.USER_NOT_FOUND,
-        undefined,
-        error
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: UserErrorsEnum.USER_NOT_FOUND,
+        message: UserErrorsResponseEnum.USER_NOT_FOUND,
+        error,
+      })
     }
   }
 
@@ -220,12 +216,11 @@ export class UserService {
 
       return user
     } catch (error) {
-      throw this.throwerErrorGuard.NotFoundException(
-        UserErrorsEnum.USER_NOT_FOUND,
-        UserErrorsResponseEnum.USER_NOT_FOUND,
-        undefined,
-        error
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: UserErrorsEnum.USER_NOT_FOUND,
+        message: UserErrorsResponseEnum.USER_NOT_FOUND,
+        error,
+      })
     }
   }
 
@@ -246,11 +241,11 @@ export class UserService {
         return this.userDataSubservice.upsertLegalPerson(cognitoUserData)
       }
       default:
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          UserErrorsEnum.COGNITO_TYPE_ERROR,
-          UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
-          toLogfmt(cognitoUserData)
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          console: toLogfmt(cognitoUserData),
+        })
     }
   }
 
@@ -266,10 +261,10 @@ export class UserService {
       case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
         return this.upsertLegalPersonData(cognitoUserData)
       default:
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          UserErrorsEnum.COGNITO_TYPE_ERROR,
-          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        })
     }
   }
 
@@ -289,10 +284,10 @@ export class UserService {
         await this.recordLegalPersonLoginClient(externalId, loginClient)
         return
       default:
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          UserErrorsEnum.COGNITO_TYPE_ERROR,
-          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        })
     }
   }
 
@@ -308,10 +303,10 @@ export class UserService {
         // Get user from database
         const user = await this.userDataSubservice.getUserByExternalId(externalId)
         if (!user) {
-          throw this.throwerErrorGuard.NotFoundException(
-            UserErrorsEnum.USER_NOT_FOUND,
-            `User not found for external ID: ${externalId}`
-          )
+          throw this.errorFactoryService.NotFoundException({
+            errorEnum: UserErrorsEnum.USER_NOT_FOUND,
+            message: `User not found for external ID: ${externalId}`,
+          })
         }
 
         return {
@@ -328,10 +323,10 @@ export class UserService {
         // Get legal person from database
         const legalPerson = await this.userDataSubservice.getLegalPersonByExternalId(externalId)
         if (!legalPerson) {
-          throw this.throwerErrorGuard.NotFoundException(
-            UserErrorsEnum.USER_NOT_FOUND,
-            `Legal person not found for external ID: ${externalId}`
-          )
+          throw this.errorFactoryService.NotFoundException({
+            errorEnum: UserErrorsEnum.USER_NOT_FOUND,
+            message: `Legal person not found for external ID: ${externalId}`,
+          })
         }
 
         return {
@@ -343,10 +338,10 @@ export class UserService {
         }
       }
       default:
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          UserErrorsEnum.COGNITO_TYPE_ERROR,
-          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        })
     }
   }
 
@@ -355,10 +350,10 @@ export class UserService {
       where: { birthNumber, ...ACTIVE_USER_FILTER },
     })
     if (!user) {
-      throw this.throwerErrorGuard.NotFoundException(
-        AdminErrorsEnum.BIRTH_NUMBER_NOT_FOUND,
-        AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: AdminErrorsEnum.BIRTH_NUMBER_NOT_FOUND,
+        message: AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND,
+      })
     }
     let cognitoUser = {}
     if (user.externalId) {
@@ -448,10 +443,10 @@ export class UserService {
         await this.userDataSubservice.removeLegalPersonDataFromDatabase(externalId)
         break
       default:
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          UserErrorsEnum.COGNITO_TYPE_ERROR,
-          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        })
     }
 
     await this.bloomreachOutboxService.anonymizeCustomer(externalId)
@@ -469,12 +464,11 @@ export class UserService {
         })
       } catch (error) {
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            CustomErrorNorisTypesEnum.FAILED_TO_REMOVE_DELIVERY_METHOD_FROM_NORIS,
-            CustomErrorNorisTypesResponseEnum.FAILED_TO_REMOVE_DELIVERY_METHOD_FROM_NORIS,
-            undefined,
-            error
-          )
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: CustomErrorNorisTypesEnum.FAILED_TO_REMOVE_DELIVERY_METHOD_FROM_NORIS,
+            message: CustomErrorNorisTypesResponseEnum.FAILED_TO_REMOVE_DELIVERY_METHOD_FROM_NORIS,
+            error,
+          })
         )
         taxDeliveryMethodsRemoved = false
       }
@@ -587,10 +581,10 @@ export class UserService {
         users[users.length - 1].lastVerificationIdentityCard?.getTime()
     ) {
       // If this happens because of manual edit in the database, please add random jitter to the dates
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        CustomErrorAdminTypesEnum.TOO_MANY_USERS_VERIFIED_WITH_THE_SAME_TIMESTAMP,
-        CustomErrorAdminTypesResponseEnum.TOO_MANY_USERS_VERIFIED_WITH_THE_SAME_TIMESTAMP
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: CustomErrorAdminTypesEnum.TOO_MANY_USERS_VERIFIED_WITH_THE_SAME_TIMESTAMP,
+        message: CustomErrorAdminTypesResponseEnum.TOO_MANY_USERS_VERIFIED_WITH_THE_SAME_TIMESTAMP,
+      })
     }
 
     const lastVerify = users[users.length - 1]?.lastVerificationIdentityCard
@@ -635,10 +629,10 @@ export class UserService {
       case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
       case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
       default: {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          UserErrorsEnum.COGNITO_TYPE_ERROR,
-          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        })
       }
     }
   }
@@ -671,10 +665,10 @@ export class UserService {
         break
       }
       default:
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          UserErrorsEnum.COGNITO_TYPE_ERROR,
-          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        })
     }
   }
 }

@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -6,7 +7,6 @@ import { bloomreachOutboxFactory } from '../../__tests__/factories/bloomreachOut
 import BaConfigService from '../../config/ba-config.service'
 import { ConsentEnum } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
@@ -55,10 +55,14 @@ describe('BloomreachOutboxService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         BloomreachOutboxService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: BloomreachPayloadBuilder, useValue: createMock<BloomreachPayloadBuilder>() },
-        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        {
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>(),
+        },
         {
           provide: BaConfigService,
           useValue: {

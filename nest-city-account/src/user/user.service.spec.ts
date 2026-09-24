@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -16,7 +17,6 @@ import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { UserService } from './user.service'
 import { UserTierService } from './user-tier.service'
@@ -27,11 +27,12 @@ jest.mock('../utils/constants/tax-deadline')
 describe('UserService', () => {
   let service: UserService
   let userDataSubservice: jest.Mocked<UserDataSubservice>
-  let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
+  let errorFactoryService: jest.Mocked<ErrorFactoryService>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         UserService,
         UserTierService,
         {
@@ -43,8 +44,8 @@ describe('UserService', () => {
           useValue: prismaMock,
         },
         {
-          provide: ThrowerErrorGuard,
-          useValue: createMock<ThrowerErrorGuard>(),
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>(),
         },
         {
           provide: BloomreachOutboxService,
@@ -63,7 +64,7 @@ describe('UserService', () => {
 
     service = module.get<UserService>(UserService)
     userDataSubservice = module.get(UserDataSubservice)
-    throwerErrorGuard = module.get(ThrowerErrorGuard)
+    errorFactoryService = module.get(ErrorFactoryService)
   })
 
   afterEach(() => {
@@ -258,7 +259,7 @@ describe('UserService', () => {
         [CognitoUserAttributesEnum.ACCOUNT_TYPE]:
           'unknown' as unknown as CognitoUserAccountTypesEnum,
       })
-      throwerErrorGuard.UnprocessableEntityException.mockReturnValueOnce(
+      errorFactoryService.UnprocessableEntityException.mockReturnValueOnce(
         new Error('invalid account type') as never
       )
 
@@ -266,7 +267,7 @@ describe('UserService', () => {
         service.updateGdprConsent(cognitoUserData, ConsentEnum.MARKETING, true)
       ).rejects.toThrow('invalid account type')
 
-      expect(throwerErrorGuard.UnprocessableEntityException).toHaveBeenCalled()
+      expect(errorFactoryService.UnprocessableEntityException).toHaveBeenCalled()
       expect(userDataSubservice.setUserConsents).not.toHaveBeenCalled()
       expect(userDataSubservice.setLegalPersonConsents).not.toHaveBeenCalled()
     })
@@ -298,7 +299,7 @@ describe('UserService', () => {
       const cognitoUserData = cognitoUserDataFactory({
         [CognitoUserAttributesEnum.ACCOUNT_TYPE]: accountType,
       })
-      throwerErrorGuard.UnprocessableEntityException.mockReturnValueOnce(
+      errorFactoryService.UnprocessableEntityException.mockReturnValueOnce(
         new Error('invalid account type') as never
       )
 

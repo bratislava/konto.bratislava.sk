@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import Turnstile, { TurnstileResponse } from 'cf-turnstile'
 
@@ -6,8 +7,6 @@ import {
   VerificationErrorsEnum,
   VerificationErrorsResponseEnum,
 } from '../../user-verification/verification.errors.enum'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { LineLoggerSubservice } from './line-logger.subservice'
 
 /**
  * Cloudflare's documented "always passes" Turnstile test secret
@@ -22,11 +21,10 @@ const DUMMY_TURNSTILE_SECRET = '1x0000000000000000000000000000000AA'
 export class TurnstileSubservice {
   turnstile
 
-  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(TurnstileSubservice.name)
-
   constructor(
-    private throwerErrorGuard: ThrowerErrorGuard,
-    baConfigService: BaConfigService
+    private errorFactoryService: ErrorFactoryService,
+    baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice
   ) {
     const { turnstileSecret } = baConfigService.security
     this.turnstile = Turnstile(turnstileSecret)
@@ -42,18 +40,17 @@ export class TurnstileSubservice {
     try {
       result = await this.turnstile(token)
     } catch (error) {
-      throw this.throwerErrorGuard.BadRequestException(
-        VerificationErrorsEnum.INVALID_CAPTCHA,
-        VerificationErrorsResponseEnum.INVALID_CAPTCHA,
-        undefined,
-        error
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: VerificationErrorsEnum.INVALID_CAPTCHA,
+        message: VerificationErrorsResponseEnum.INVALID_CAPTCHA,
+        error,
+      })
     }
     if (!result.success) {
-      throw this.throwerErrorGuard.BadRequestException(
-        VerificationErrorsEnum.INVALID_CAPTCHA,
-        VerificationErrorsResponseEnum.INVALID_CAPTCHA
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: VerificationErrorsEnum.INVALID_CAPTCHA,
+        message: VerificationErrorsResponseEnum.INVALID_CAPTCHA,
+      })
     }
   }
 }

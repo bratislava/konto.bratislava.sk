@@ -3,21 +3,22 @@ import { existsSync, unlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import pLimit from 'p-limit'
 import { Browser, BrowserContext, chromium, Page } from 'playwright'
 import { v4 as uuidv4 } from 'uuid'
 
 import BaConfigService from '../config/ba-config.service'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { PdfTemplateKeys, pdfTemplates, PdfTemplateVariables } from './templates/pdf-templates'
 
 @Injectable()
 export class PdfGeneratorService {
-  private readonly logger: LineLoggerSubservice
-
   private sharedBrowser: Browser | null = null
 
   private sharedBrowserRefCount = 0
@@ -25,11 +26,10 @@ export class PdfGeneratorService {
   private readonly sharedBrowserLock = pLimit(1)
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly baConfigService: BaConfigService
-  ) {
-    this.logger = new LineLoggerSubservice(PdfGeneratorService.name)
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   /**
    * Runs the callback that ensures a single shared Chromium instance will be
@@ -58,10 +58,10 @@ export class PdfGeneratorService {
         return browser
       }
       if (!this.sharedBrowser) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Shared Chromium browser missing despite active refcount'
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Shared Chromium browser missing despite active refcount',
+        })
       }
       this.sharedBrowserRefCount++
       return this.sharedBrowser
@@ -81,12 +81,11 @@ export class PdfGeneratorService {
           await browser.close()
         } catch (error) {
           this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              'Failed to close shared Chromium browser',
-              undefined,
-              error
-            )
+            this.errorFactoryService.InternalServerErrorException({
+              errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+              message: 'Failed to close shared Chromium browser',
+              error,
+            })
           )
         }
       }
@@ -138,34 +137,32 @@ export class PdfGeneratorService {
         contentType: 'application/pdf',
       }
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-        'Error generating PDF from Mailgun template',
-        error
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+        console: 'Error generating PDF from Mailgun template',
+        error,
+      })
     } finally {
       if (page) {
         await page.close().catch((err: unknown) => {
           this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              'Failed to close page',
-              undefined,
-              err
-            )
+            this.errorFactoryService.InternalServerErrorException({
+              errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+              message: 'Failed to close page',
+              error: err,
+            })
           )
         })
       }
       if (context) {
         await context.close().catch((err: unknown) => {
           this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              'Failed to close browser context',
-              undefined,
-              err
-            )
+            this.errorFactoryService.InternalServerErrorException({
+              errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+              message: 'Failed to close browser context',
+              error: err,
+            })
           )
         })
       }
@@ -195,20 +192,19 @@ export class PdfGeneratorService {
 
         child.on('error', (err) => {
           this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              'Failed to start qpdf process',
-              undefined,
-              err
-            )
+            this.errorFactoryService.InternalServerErrorException({
+              errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+              message: 'Failed to start qpdf process',
+              error: err,
+            })
           )
           reject(
-            this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              'Failed to start PDF encryption process',
-              err.message,
-              err
-            )
+            this.errorFactoryService.InternalServerErrorException({
+              errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+              message: 'Failed to start PDF encryption process',
+              console: err.message,
+              error: err,
+            })
           )
         })
 
@@ -218,23 +214,23 @@ export class PdfGeneratorService {
           } else {
             const stderr = Buffer.concat(stderrChunks).toString()
             reject(
-              this.throwerErrorGuard.InternalServerErrorException(
-                ErrorsEnum.INTERNAL_SERVER_ERROR,
-                'PDF encryption failed during processing',
-                `qpdf exited with code ${code}: ${stderr}`
-              )
+              this.errorFactoryService.InternalServerErrorException({
+                errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+                message: 'PDF encryption failed during processing',
+                console: `qpdf exited with code ${code}: ${stderr}`,
+              })
             )
           }
         })
       })
     } catch (error) {
       if (error instanceof Error) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Unexpected error during PDF encryption setup',
-          error.message,
-          error
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Unexpected error during PDF encryption setup',
+          console: error.message,
+          error,
+        })
       }
       throw error
     } finally {

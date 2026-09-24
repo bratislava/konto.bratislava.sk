@@ -1,10 +1,6 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Inject, Injectable } from '@nestjs/common'
 import { IDatabase } from 'pg-promise'
-
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 interface BloomreachContactRecord {
   uuid: string
@@ -16,14 +12,11 @@ interface BloomreachContactRecord {
 
 @Injectable()
 export class BloomreachContactDatabaseService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-    @Inject('BLOOMREACH_CONTACT_DB') private readonly contactDatabase: IDatabase<unknown>
-  ) {
-    this.logger = new LineLoggerSubservice(BloomreachContactDatabaseService.name)
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    @Inject('BLOOMREACH_CONTACT_DB') private readonly contactDatabase: IDatabase<unknown>,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   /**
    * Upserts a bloomreach contact with retry.
@@ -46,12 +39,12 @@ export class BloomreachContactDatabaseService {
         /* eslint-disable-next-line no-await-in-loop -- intentional sequential retries */
         return await this.handleUpsert(email, birthNumber, ico)
       } catch (error) {
-        loggedError = this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Failed to upsert bloomreach contact on attempt: ${attempt}`,
-          toLogfmt({ email, hasBirthNumber: !!birthNumber, hasIco: !!ico, attempt }),
-          error
-        )
+        loggedError = this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Failed to upsert bloomreach contact on attempt: ${attempt}`,
+          console: { email, hasBirthNumber: !!birthNumber, hasIco: !!ico, attempt },
+          error,
+        })
         this.logger.error(loggedError.message) // this won't alert
       }
     }

@@ -1,12 +1,9 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import BaConfigService from '../config/ba-config.service'
 import { BloomreachOutboxStatus, ConsentEnum } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BloomreachCommandNameEnum,
   BloomreachCustomerCommandData,
@@ -18,16 +15,13 @@ import { mergeCustomerCommandData } from './utils/merge-commands.utils'
 
 @Injectable()
 export class BloomreachOutboxService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly payloadBuilder: BloomreachPayloadBuilder,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly baConfigService: BaConfigService
-  ) {
-    this.logger = new LineLoggerSubservice(BloomreachOutboxService.name)
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   async trackCustomer(externalId: string, phoneNumber?: string): Promise<void> {
     if (this.baConfigService.bloomreach.integrationState !== 'ACTIVE') {
@@ -42,12 +36,12 @@ export class BloomreachOutboxService {
       this.logger.debug(`Queued customers command for ${externalId}`)
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to queue customer tracking',
-          toLogfmt({ externalId, hasPhoneNumber: !!phoneNumber }),
-          error
-        )
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to queue customer tracking',
+          console: { externalId, hasPhoneNumber: !!phoneNumber },
+          error,
+        })
       )
     }
   }
@@ -70,11 +64,11 @@ export class BloomreachOutboxService {
 
     if (!externalId) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `No externalId for ${userType}, skipping trackConsents`,
-          toLogfmt({ userId, userType })
-        )
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `No externalId for ${userType}, skipping trackConsents`,
+          console: { userId, userType },
+        })
       )
       return
     }
@@ -91,12 +85,12 @@ export class BloomreachOutboxService {
       this.logger.debug(`Queued ${commands.length} consent events for ${userType} ${externalId}`)
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to queue consent events',
-          toLogfmt({ externalId, userType, eventCount: consents.length }),
-          error
-        )
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to queue consent events',
+          console: { externalId, userType, eventCount: consents.length },
+          error,
+        })
       )
     }
   }
@@ -122,12 +116,12 @@ export class BloomreachOutboxService {
       this.logger.debug(`Queued anonymize commands for ${externalId}`)
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to queue anonymize commands',
-          toLogfmt({ externalId }),
-          error
-        )
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to queue anonymize commands',
+          console: { externalId },
+          error,
+        })
       )
     }
   }

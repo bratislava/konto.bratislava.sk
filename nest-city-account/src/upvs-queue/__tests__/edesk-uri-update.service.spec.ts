@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -8,27 +9,27 @@ import { ExternalEdeskCheck } from '../../generated/prisma/client'
 import { QueueItemStatusEnum } from '../../generated/prisma/enums'
 import { GetIdentitiesByUrisResult, NasesService } from '../../nases/nases.service'
 import { PrismaService } from '../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { EdeskUriUpdateService } from '../edesk-uri-update.service'
 
 describe('EdeskUriUpdateService', () => {
   let service: EdeskUriUpdateService
   let nasesService: NasesService
-  let throwerErrorGuard: ThrowerErrorGuard
+  let errorFactoryService: ErrorFactoryService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         EdeskUriUpdateService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: NasesService, useValue: createMock<NasesService>() },
-        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
       ],
     }).compile()
 
     service = module.get(EdeskUriUpdateService)
     nasesService = module.get(NasesService)
-    throwerErrorGuard = module.get(ThrowerErrorGuard)
+    errorFactoryService = module.get(ErrorFactoryService)
   })
 
   afterEach(() => {
@@ -88,7 +89,7 @@ describe('EdeskUriUpdateService', () => {
         failed: [{ inputUri: 'rc://sk/old', possibleUriChange: false }],
       } satisfies GetIdentitiesByUrisResult)
       jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
+        .spyOn(errorFactoryService, 'InternalServerErrorException')
         .mockReturnValue(new HttpException('failed to update', HttpStatus.INTERNAL_SERVER_ERROR))
 
       await expect(
@@ -110,7 +111,7 @@ describe('EdeskUriUpdateService', () => {
         failed: [{ inputUri: 'rc://sk/old', possibleUriChange: true }],
       } satisfies GetIdentitiesByUrisResult)
       jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
+        .spyOn(errorFactoryService, 'InternalServerErrorException')
         .mockReturnValue(new HttpException('failed to update', HttpStatus.INTERNAL_SERVER_ERROR))
 
       await expect(

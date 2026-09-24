@@ -1,21 +1,16 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { PhysicalEntity } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export class PhysicalEntityService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
-  ) {
-    this.logger = new LineLoggerSubservice(PhysicalEntityService.name)
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   async linkToUserIdByBirthnumber(userId: string, birthNumber: string) {
     const entities = await this.prismaService.physicalEntity.findMany({
@@ -105,10 +100,10 @@ export class PhysicalEntityService {
 
   private async update(data: Partial<PhysicalEntity>): Promise<PhysicalEntity> {
     if (!data.id) {
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        'PhysicalEntity id must be provided to update service'
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+        message: 'PhysicalEntity id must be provided to update service',
+      })
     }
 
     // if activeEdesk is being updated, delete metadata about failed updates

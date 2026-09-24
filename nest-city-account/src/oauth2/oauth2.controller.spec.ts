@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -68,6 +69,7 @@ describe('OAuth2Controller', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OAuth2Controller],
       providers: [
+        LineLoggerSubservice,
         { provide: OAuth2Service, useValue: createMock<OAuth2Service>() },
         { provide: OAuth2ErrorThrower, useValue: createMock<OAuth2ErrorThrower>() },
       ],

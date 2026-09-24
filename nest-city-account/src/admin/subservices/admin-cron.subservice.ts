@@ -1,12 +1,14 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  HandleErrors,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import * as z from 'zod'
 
 import { PrismaService } from '../../prisma/prisma.service'
-import HandleErrors from '../../utils/decorators/errorHandler.decorators'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { AdminService } from '../admin.service'
 import { COGNITO_SYNC_CONFIG_DB_KEY } from '../utils/constants'
 
@@ -16,12 +18,11 @@ const SyncCognitoToDbConfigValueSchema = z.object({
 
 @Injectable()
 export class AdminCronSubservice {
-  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(AdminCronSubservice.name)
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly adminService: AdminService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   // even though this is a cron job, it only runs once then it deactivates itself,
@@ -33,10 +34,10 @@ export class AdminCronSubservice {
       where: { key: COGNITO_SYNC_CONFIG_DB_KEY },
     })
     if (!configDbResult) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `${COGNITO_SYNC_CONFIG_DB_KEY} not found in database config.`
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `${COGNITO_SYNC_CONFIG_DB_KEY} not found in database config.`,
+      })
     }
     const config = SyncCognitoToDbConfigValueSchema.parse(configDbResult.value)
     if (!config.active) {

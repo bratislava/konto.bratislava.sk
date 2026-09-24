@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -23,7 +24,6 @@ import {
 import { Request, Response } from 'express'
 
 import { HttpsGuard } from '../utils/guards/https.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from './dtos/errors.oauth2.dto'
 import {
   AuthorizationRequestDto,
@@ -52,11 +52,10 @@ import { TokenRequestValidationPipe } from './pipes/token-request-validation.pip
 @UseGuards(HttpsGuard)
 @UseFilters(OAuth2ExceptionFilter)
 export class OAuth2Controller {
-  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(OAuth2Controller.name)
-
   constructor(
     private readonly oauth2Service: OAuth2Service,
-    private readonly oAuth2ErrorThrower: OAuth2ErrorThrower
+    private readonly oAuth2ErrorThrower: OAuth2ErrorThrower,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   @Get('authorize')

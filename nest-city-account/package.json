@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "3.1095.0",
+    "@bratislava/log-nest": "1.1.0",
     "@golevelup/nestjs-rabbitmq": "9.0.2",
     "@keyv/redis": "5.1.6",
     "@nestjs/cache-manager": "3.1.3",

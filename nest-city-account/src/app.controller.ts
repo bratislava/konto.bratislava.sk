@@ -1,7 +1,9 @@
+import { LogAllowList } from '@bratislava/log-nest'
 import { Controller, Get } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
 @Controller()
+@LogAllowList(true)
 @ApiTags('default')
 export class AppController {
   @ApiOperation({

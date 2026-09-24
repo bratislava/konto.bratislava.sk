@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import pLimit from 'p-limit'
 import { z } from 'zod'
@@ -16,10 +17,7 @@ import {
   DeliveryMethodErrorsEnum,
   DeliveryMethodErrorsResponseEnum,
 } from '../../utils/guards/dtos/delivery-method.error'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { DeliveryMethodCodec } from '../../utils/norisCodec'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 const LOCK_DELIVERY_METHODS_BATCH = 100
@@ -33,17 +31,14 @@ const EmailConfigSchema = z.object({
 
 @Injectable()
 export class TaxDeliveryMethodsTasksSubservice {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly norisDeliveryMethodService: NorisDeliveryMethodService,
     private readonly mailgunService: MailgunService,
-    private readonly pdfGeneratorService: PdfGeneratorService
-  ) {
-    this.logger = new LineLoggerSubservice(TaxDeliveryMethodsTasksSubservice.name)
-  }
+    private readonly pdfGeneratorService: PdfGeneratorService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   async updateDeliveryMethodsInNoris() {
     const currentYear = new Date().getFullYear()
@@ -104,12 +99,11 @@ export class TaxDeliveryMethodsTasksSubservice {
       }
 
       if (!date) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-          DeliveryMethodErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-          undefined,
-          user
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+          message: DeliveryMethodErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+          error: user,
+        })
       }
 
       acc[birthNumber] = { deliveryMethod, date }
@@ -330,10 +324,10 @@ export class TaxDeliveryMethodsTasksSubservice {
     })
 
     if (!configDbResult) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `${DELIVERY_METHOD_EMAIL_KEY} not found in database config.`
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `${DELIVERY_METHOD_EMAIL_KEY} not found in database config.`,
+      })
     }
 
     return EmailConfigSchema.parse(configDbResult.value).active

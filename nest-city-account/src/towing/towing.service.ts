@@ -1,10 +1,8 @@
+import { ErrorEnum, ErrorFactoryService, ErrorResponseEnum } from '@bratislava/log-nest'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import axios, { isAxiosError } from 'axios'
 
 import BaConfigService from '../config/ba-config.service'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
 import { TowingSearchResponseDto } from './dtos/towing.dto'
 import { TowingErrorsEnum, TowingErrorsResponseEnum } from './towing.errors.enum'
 
@@ -21,7 +19,7 @@ export class TowingService {
 
   constructor(
     private readonly baConfigService: BaConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly errorFactoryService: ErrorFactoryService
   ) {
     this.enforcementBackendUrl = this.baConfigService.enforcement.backendUrl
   }
@@ -56,26 +54,26 @@ export class TowingService {
       return data
     } catch (error) {
       if (!isAxiosError(error)) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          toLogfmt({ ecv, url }),
-          error
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+          console: { ecv, url },
+          error,
+        })
       }
 
       if (!error.response) {
-        throw this.throwerErrorGuard.ServiceUnavailableException(
-          TowingErrorsEnum.ENFORCEMENT_BACKEND_UNAVAILABLE,
-          TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_UNAVAILABLE,
-          toLogfmt({ ecv, url, code: error.code }),
-          error
-        )
+        throw this.errorFactoryService.ServiceUnavailableException({
+          errorEnum: TowingErrorsEnum.ENFORCEMENT_BACKEND_UNAVAILABLE,
+          message: TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_UNAVAILABLE,
+          console: { ecv, url, code: error.code },
+          error,
+        })
       }
 
-      throw this.throwerErrorGuard.fromAxiosError(error, {
+      throw this.errorFactoryService.fromAxiosError(error, {
         message: TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_UNEXPECTED_RESPONSE,
-        console: toLogfmt({ ecv, url, status: error.response.status }),
+        console: { ecv, url, status: error.response.status },
         statusOverrides: {
           [HttpStatus.NOT_FOUND]: {
             status: HttpStatus.NOT_FOUND,

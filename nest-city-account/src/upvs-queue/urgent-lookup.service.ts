@@ -1,11 +1,10 @@
+import { LineLoggerSubservice, toLogfmt } from '@bratislava/log-nest'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
 import { LookupIdentityFOResult, NasesService } from '../nases/nases.service'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { toLogfmt } from '../utils/logging'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { selectUrgentEntities, UrgentEntityRow } from './upvs-queue.queries'
 
 /** A resolved urgent identity paired with the entity it was resolved for. */
@@ -30,8 +29,6 @@ interface UrgentRunResult {
 
 @Injectable()
 export class UrgentLookupService {
-  private readonly logger = new LineLoggerSubservice(UrgentLookupService.name)
-
   // Urgent (per-person lookup) budget, independent of the URI-search BATCH_SIZE.
   private readonly URGENT_BATCH_SIZE = 50
 
@@ -39,7 +36,8 @@ export class UrgentLookupService {
     private readonly prismaService: PrismaService,
     private readonly physicalEntityService: PhysicalEntityService,
     private readonly nasesService: NasesService,
-    private readonly cognitoSubservice: CognitoSubservice
+    private readonly cognitoSubservice: CognitoSubservice,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   /**

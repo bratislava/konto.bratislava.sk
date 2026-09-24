@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -7,8 +8,6 @@ import { ConnectionPool } from 'mssql'
 import prismaMock from '../../../../test/singleton'
 import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
-import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { NorisConnectionService } from '../noris-connection.service'
 
 jest.mock('mssql', () => ({
@@ -19,7 +18,7 @@ jest.mock('mssql', () => ({
 describe('NorisConnectionService', () => {
   let module: TestingModule
   let service: NorisConnectionService
-  let throwerErrorGuard: ThrowerErrorGuard
+  let errorFactoryService: ErrorFactoryService
 
   let mockMssqlConnect: jest.Mock
 
@@ -35,6 +34,7 @@ describe('NorisConnectionService', () => {
 
     module = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         NorisConnectionService,
         {
           provide: BaConfigService,
@@ -48,13 +48,16 @@ describe('NorisConnectionService', () => {
             },
           },
         },
-        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        {
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>(),
+        },
         { provide: PrismaService, useValue: prismaMock },
       ],
     }).compile()
 
     service = module.get<NorisConnectionService>(NorisConnectionService)
-    throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
   })
 
   afterEach(() => {
@@ -130,23 +133,22 @@ describe('NorisConnectionService', () => {
 
     it('should throw InternalServerError for non-MSSQL errors', async () => {
       const internalError = new HttpException('internal', 500)
-      jest.mocked(throwerErrorGuard.InternalServerErrorException).mockReturnValue(internalError)
+      jest.mocked(errorFactoryService.InternalServerErrorException).mockReturnValue(internalError)
 
       const opError = new Error('generic error')
       const operation = jest.fn().mockRejectedValue(opError)
 
       await expect(service.withConnection(operation, 'fail')).rejects.toThrow('internal')
-      expect(throwerErrorGuard.InternalServerErrorException).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'fail',
-        undefined,
-        opError
-      )
+      expect(errorFactoryService.InternalServerErrorException).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: 'fail',
+        error: opError,
+      })
     })
 
     it('should throw BadRequestException and increment counter for MSSQL connection errors', async () => {
       const badRequestError = new HttpException('bad request', 400)
-      jest.mocked(throwerErrorGuard.BadRequestException).mockReturnValue(badRequestError)
+      jest.mocked(errorFactoryService.BadRequestException).mockReturnValue(badRequestError)
       ;(prismaMock.$executeRaw as jest.Mock).mockResolvedValue(1)
 
       const mssqlError = Object.assign(new mssql.MSSQLError('timeout', 'ETIMEOUT'), {
@@ -156,7 +158,7 @@ describe('NorisConnectionService', () => {
 
       await expect(service.withConnection(operation, 'fail')).rejects.toThrow()
       expect(prismaMock.$executeRaw).toHaveBeenCalled()
-      expect(throwerErrorGuard.BadRequestException).toHaveBeenCalled()
+      expect(errorFactoryService.BadRequestException).toHaveBeenCalled()
     })
   })
 })

@@ -1,3 +1,4 @@
+import { LogAllowList } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -66,6 +67,12 @@ export class IntegrationController {
     description: 'User data',
     type: ResponseUserByBirthNumberDto,
   })
+  @LogAllowList({
+    externalId: true,
+    cognitoAttributes: {
+      sub: true,
+    },
+  })
   @Get('userdata')
   async getUserDataByBirthNumber(
     @Query() query: RequestQueryUserByBirthNumberDto
@@ -102,6 +109,11 @@ export class IntegrationController {
     status: 200,
     description: 'Returns list of birth numbers for new verified users.',
     type: GetNewVerifiedUsersBirthNumbersResponseDto,
+  })
+  @LogAllowList({
+    since: true,
+    nextSince: true,
+    take: true,
   })
   @UsePipes(new ValidationPipe({ transform: true, forbidUnknownValues: true })) // https://github.com/darraghoriordan/eslint-plugin-nestjs-typed/blob/main/src/docs/rules/validation-pipe-should-use-forbid-unknown.md
   @Post('get-verified-users-birth-numbers-batch')

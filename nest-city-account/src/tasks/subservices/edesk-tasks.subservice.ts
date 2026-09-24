@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import dayjs from 'dayjs'
 import { UpvsIdentityUpvsEdeskStatusEnum } from 'openapi-clients/slovensko-sk'
@@ -8,9 +9,6 @@ import { NorisEdeskService } from '../../noris/services/noris-edesk.service'
 import { EdeskStatus } from '../../noris/types/noris.types'
 import { PrismaService } from '../../prisma/prisma.service'
 import { UpvsQueueService } from '../../upvs-queue/upvs-queue.service'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 const PHYSICAL_PERSONS_RETRIEVE_BATCH_SIZE = 4000
 const LEGAL_PERSONS_RETRIEVE_BATCH_SIZE = 0 // TODO: add when upvs retrieval works for legal persons
@@ -18,16 +16,13 @@ const EXTERNAL_ITEMS_PROCESS_BATCH_SIZE = 500
 
 @Injectable()
 export class EdeskTasksSubservice {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly upvsQueueService: UpvsQueueService,
     private readonly norisEdeskService: NorisEdeskService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
-  ) {
-    this.logger = new LineLoggerSubservice(EdeskTasksSubservice.name)
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   async updateEdesk(): Promise<void> {
     await this.upvsQueueService.processBatch()
@@ -195,12 +190,11 @@ export class EdeskTasksSubservice {
         })
       } catch (error) {
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'Error mapping eDesk data to Noris type',
-            undefined,
-            error
-          )
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: 'Error mapping eDesk data to Noris type',
+            error,
+          })
         )
       }
     }

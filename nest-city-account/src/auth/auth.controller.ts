@@ -1,3 +1,4 @@
+import { LogAllowList } from '@bratislava/log-nest'
 import { Controller, Get, HttpCode, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
@@ -8,6 +9,7 @@ import { CognitoGuard } from './guards/cognito.guard'
 @ApiTags('Auth')
 @ApiBearerAuth()
 @Controller('auth')
+@LogAllowList({ idUser: true, sub: true })
 export class AuthController {
   @HttpCode(200)
   @ApiOperation({

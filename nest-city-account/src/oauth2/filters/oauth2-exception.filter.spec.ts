@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -53,6 +54,7 @@ describe('OAuth2ExceptionFilter', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         OAuth2ExceptionFilter,
         { provide: OAuth2ClientSubservice, useValue: createMock<OAuth2ClientSubservice>() },
       ],

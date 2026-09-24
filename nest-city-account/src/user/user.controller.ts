@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LogAllowList } from '@bratislava/log-nest'
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
@@ -18,7 +19,6 @@ import {
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
 import { ResponseInternalServerErrorDto } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import {
   ResponseLegalPersonDataDto,
   ResponseLegalPersonDataSimpleDto,
@@ -45,11 +45,18 @@ import { UserService } from './user.service'
 @ApiTags('Users manipulation')
 @ApiBearerAuth()
 @Controller('user')
+@LogAllowList({
+  id: true,
+  externalId: true,
+  ico: true,
+  loginClient: true,
+  grant: true,
+})
 export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly bloomreachOutboxService: BloomreachOutboxService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly errorFactoryService: ErrorFactoryService
   ) {}
 
   @HttpCode(200)
@@ -161,10 +168,10 @@ export class UserController {
       case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
         return this.userService.removeLegalPersonBirthNumber(user.idUser)
       default:
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          UserErrorsEnum.COGNITO_TYPE_ERROR,
-          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        })
     }
   }
 
@@ -200,10 +207,10 @@ export class UserController {
         result = await this.userService.changeLegalPersonEmail(user.sub, body.newEmail)
         break
       default:
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          UserErrorsEnum.COGNITO_TYPE_ERROR,
-          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        })
     }
 
     await this.bloomreachOutboxService.trackCustomer(user.idUser)

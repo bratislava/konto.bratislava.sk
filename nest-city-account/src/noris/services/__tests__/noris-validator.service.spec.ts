@@ -1,8 +1,8 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import noop from 'lodash/noop'
 
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { EdeskRecordSchema } from '../../types/noris.types'
 import { NorisValidatorService } from '../noris-validator.service'
 import {
@@ -25,7 +25,7 @@ describe('NorisValidatorService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [NorisValidatorService, ThrowerErrorGuard],
+      providers: [LineLoggerSubservice, NorisValidatorService, ErrorFactoryService],
     }).compile()
     service = module.get<NorisValidatorService>(NorisValidatorService)
   })

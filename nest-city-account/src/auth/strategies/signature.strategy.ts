@@ -1,13 +1,12 @@
 import { createPublicKey } from 'node:crypto'
 
+import { ErrorEnum, ErrorFactoryService, ErrorResponseEnum } from '@bratislava/log-nest'
 import { HttpException, Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { createVerify } from 'crypto'
 import { Strategy as CustomStrategy } from 'passport-custom'
 
 import BaConfigService from '../../config/ba-config.service'
-import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { NonceService } from '../services/nonce.service'
 import { SignaturePublicKey } from '../types/signature-public-key.enum'
 import { SignatureRequest } from '../types/signature-request.types'
@@ -38,7 +37,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
   private readonly maxClockSkew: number = 60 * 1000 // 1 minute
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly nonceService: NonceService,
     private readonly baConfigService: BaConfigService
   ) {
@@ -56,11 +55,11 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
     const publicKeyName = req.signaturePublicKeyName
 
     if (!publicKeyName) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Server configuration error: Public key not specified'
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Server configuration error: Public key not specified',
+      })
     }
 
     const publicKeyRaw = this.baConfigService.signaturePublicKey[publicKeyName]
@@ -69,68 +68,69 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
     const publicKey = publicKeyRaw.replace(/\\n/g, '\n')
 
     if (!this.isValidPublicKeyPem(publicKey)) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Server configuration error: Invalid public key format'
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Server configuration error: Invalid public key format',
+      })
     }
 
     const signature = req.headers['x-signature']
     const timestamp = req.headers['x-timestamp']
 
     if (!signature || typeof signature !== 'string') {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Missing X-Signature header'
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Missing X-Signature header',
+      })
     }
 
     if (!timestamp || typeof timestamp !== 'string') {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Missing X-Timestamp header'
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Missing X-Timestamp header',
+      })
     }
 
     const isValidTimestampFormat =
       /^\d+$/.test(timestamp) && (timestamp.length === 10 || timestamp.length === 13)
     if (!isValidTimestampFormat) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Invalid X-Timestamp format. Must be Unix timestamp in seconds or milliseconds (10 or 13 digits)'
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console:
+          'Invalid X-Timestamp format. Must be Unix timestamp in seconds or milliseconds (10 or 13 digits)',
+      })
     }
 
     const requestTime = parseInt(timestamp, 10)
     if (requestTime <= 0) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Invalid X-Timestamp format. Must be Unix timestamp in milliseconds'
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Invalid X-Timestamp format. Must be Unix timestamp in milliseconds',
+      })
     }
 
     const now = Date.now()
     const age = now - requestTime
 
     if (age > this.maxTimestampAge) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        `Request timestamp too old. Age: ${age}ms, Max: ${this.maxTimestampAge}ms`
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: `Request timestamp too old. Age: ${age}ms, Max: ${this.maxTimestampAge}ms`,
+      })
     }
 
     if (age < -this.maxClockSkew) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Request timestamp is in the future. Check your system clock.'
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Request timestamp is in the future. Check your system clock.',
+      })
     }
 
     // Construct the data that should have been signed
@@ -152,11 +152,11 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       isValid = verifier.verify(publicKey, signature, 'base64')
 
       if (!isValid) {
-        throw this.throwerErrorGuard.UnauthorizedException(
-          ErrorsEnum.UNAUTHORIZED_ERROR,
-          ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-          'Invalid signature'
-        )
+        throw this.errorFactoryService.UnauthorizedException({
+          errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+          message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+          console: 'Invalid signature',
+        })
       }
 
       await this.validateNonceOrThrow(req, publicKeyName)
@@ -169,12 +169,12 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       }
 
       // Wrap other errors
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Signature verification failed',
-        error instanceof Error ? error : undefined
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Signature verification failed',
+        error: error instanceof Error ? error : undefined,
+      })
     }
   }
 
@@ -186,11 +186,12 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
     }
 
     if (typeof nonce !== 'string') {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Missing X-Nonce header or header is not string. This endpoint requires nonce-based replay protection.'
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console:
+          'Missing X-Nonce header or header is not string. This endpoint requires nonce-based replay protection.',
+      })
     }
 
     await this.nonceService.validateAndMarkUsed(nonce, publicKeyName)

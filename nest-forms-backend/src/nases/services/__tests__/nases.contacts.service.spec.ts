@@ -20,8 +20,9 @@ describe('NasesContactsService', () => {
     jest.resetAllMocks()
     const app: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         NasesContactsService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         {
           provide: ClientsService,
           useValue: createMock<ClientsService>(),

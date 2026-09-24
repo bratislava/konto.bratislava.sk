@@ -20,6 +20,7 @@ describe('FilesService', () => {
   beforeEach(async () => {
     const app = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         FilesService,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -36,7 +37,7 @@ describe('FilesService', () => {
           provide: FormAccessService,
           useValue: createMock<FormAccessService>(),
         },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
       ],
     }).compile()
 

@@ -69,6 +69,7 @@ describe('GinisService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         GinisService,
         GinisAPIService,
         GinisHelper,
@@ -81,7 +82,7 @@ describe('GinisService', () => {
             download: jest.fn(),
           },
         },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: ApiJwtTokensService,
@@ -135,8 +136,9 @@ describe('GinisService', () => {
     // Create a real NasesContactsService instance for extraction methods
     // The extraction methods are pure functions that don't need dependencies
     const realNasesContactsService = new NasesContactsService(
-      module.get(ThrowerErrorGuard),
+      module.get(ErrorFactoryService),
       module.get(ClientsService),
+      new LineLoggerSubservice(NasesContactsService.name),
     )
 
     // Use real implementations for extraction methods

@@ -59,6 +59,7 @@ describe('ConvertPdfService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),
@@ -92,7 +93,7 @@ describe('ConvertPdfService', () => {
           },
         },
         ScannerClientService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: FormAccessService,

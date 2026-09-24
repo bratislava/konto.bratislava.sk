@@ -41,9 +41,10 @@ describe('NasesSenderService', () => {
     jest.resetAllMocks()
     const app: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         NasesSenderService,
         ConvertService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },
         MinioStorageService,
         { provide: TaxService, useValue: createMock<TaxService>() },

@@ -38,6 +38,7 @@ describe('FormDeliveryConsumerService', () => {
     // TODO refactor to use imports
     const app: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         FormDeliveryConsumerService,
         {
           provide: RabbitmqClientService,
@@ -60,8 +61,8 @@ describe('FormDeliveryConsumerService', () => {
           useValue: createMock<ConvertPdfService>(),
         },
         {
-          provide: ThrowerErrorGuard,
-          useValue: createMock<ThrowerErrorGuard>(),
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>(),
         },
       ],
     }).compile()

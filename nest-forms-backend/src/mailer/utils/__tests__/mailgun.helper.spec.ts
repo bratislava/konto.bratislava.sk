@@ -54,13 +54,21 @@ describe('MailgunHelper', () => {
           },
         },
         {
-          provide: ThrowerErrorGuard,
+          provide: ErrorFactoryService,
           useValue: {
             NotFoundException: jest
               .fn()
-              .mockImplementation((enum1, message) => {
-                throw new Error(`NotFound: ${enum1} - ${message}`)
-              }),
+              .mockImplementation(
+                ({
+                  errorEnum,
+                  message,
+                }: {
+                  errorEnum: string
+                  message: string
+                }) => {
+                  throw new Error(`NotFound: ${errorEnum} - ${message}`)
+                },
+              ),
           },
         },
       ],

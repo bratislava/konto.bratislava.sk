@@ -159,6 +159,10 @@ describe('EmailFormsService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        {
+          provide: LineLoggerSubservice,
+          useValue: createMock<LineLoggerSubservice>(),
+        },
         EmailFormsService,
         {
           provide: PrismaService,
@@ -184,15 +188,13 @@ describe('EmailFormsService', () => {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),
         },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
       ],
     }).compile()
 
     service = module.get<EmailFormsService>(EmailFormsService)
     mailgunService = module.get(MailgunService)
     oloMailerService = module.get(OloMailerService)
-
-    service['logger'] = createMock<LineLoggerSubservice>()
 
     jest.spyOn(console, 'log').mockImplementation(jest.fn())
     jest.spyOn(console, 'error').mockImplementation(jest.fn())

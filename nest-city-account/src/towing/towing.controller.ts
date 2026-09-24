@@ -1,4 +1,4 @@
-import { AllowList } from '@bratislava/log-nest'
+import { LogAllowList } from '@bratislava/log-nest'
 import { Body, Controller, HttpCode, Param, Post } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
@@ -17,7 +17,7 @@ export class TowingController {
 
   @Post('public/:ecv')
   @HttpCode(200)
-  @AllowList(true)
+  @LogAllowList(true)
   @ApiOperation({
     summary: 'Public lookup of an active towing / relocation by license plate',
     description:

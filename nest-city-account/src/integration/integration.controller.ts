@@ -1,4 +1,4 @@
-import { AllowList } from '@bratislava/log-nest'
+import { LogAllowList } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -67,7 +67,7 @@ export class IntegrationController {
     description: 'User data',
     type: ResponseUserByBirthNumberDto,
   })
-  @AllowList({
+  @LogAllowList({
     externalId: true,
     cognitoAttributes: {
       sub: true,
@@ -110,7 +110,7 @@ export class IntegrationController {
     description: 'Returns list of birth numbers for new verified users.',
     type: GetNewVerifiedUsersBirthNumbersResponseDto,
   })
-  @AllowList({
+  @LogAllowList({
     since: true,
     nextSince: true,
     take: true,

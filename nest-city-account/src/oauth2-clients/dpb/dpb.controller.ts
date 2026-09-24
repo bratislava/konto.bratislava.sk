@@ -1,4 +1,4 @@
-import { AllowList } from '@bratislava/log-nest'
+import { LogAllowList } from '@bratislava/log-nest'
 import { Controller, Get, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
@@ -15,7 +15,7 @@ import { DpbUserDto, DPBUserLoginStatistics } from './dtos/user.dto'
 @ApiTags('DPB')
 @ApiBearerAuth()
 @Controller('dpb')
-@AllowList({ id: true })
+@LogAllowList({ id: true })
 export class DpbController {
   constructor(private readonly dpbService: DpbService) {}
 

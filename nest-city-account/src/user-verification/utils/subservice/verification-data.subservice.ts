@@ -1,4 +1,8 @@
-import { CatchDatabaseError, ErrorFactoryService, IHasErrorFactoryService } from '@bratislava/log-nest'
+import {
+  CatchDatabaseError,
+  ErrorFactoryService,
+  HasErrorFactoryService,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { LegalPerson, User } from '../../../generated/prisma/client'
@@ -8,7 +12,7 @@ import { VerificationReturnType } from '../../types'
 import { VerificationErrorsEnum } from '../../verification.errors.enum'
 
 @Injectable()
-export class VerificationDataSubservice implements IHasErrorFactoryService {
+export class VerificationDataSubservice implements HasErrorFactoryService {
   constructor(
     private prisma: PrismaService,
     public readonly errorFactoryService: ErrorFactoryService

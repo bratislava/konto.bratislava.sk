@@ -6,11 +6,10 @@ import { PrismaService } from '../../prisma/prisma.service'
 
 @Injectable()
 export class CleanupTasksSubservice {
-  private readonly logger: LineLoggerSubservice
-
-  constructor(private readonly prismaService: PrismaService) {
-    this.logger = new LineLoggerSubservice(CleanupTasksSubservice.name)
-  }
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   async deleteOldUserVerificationData() {
     const today = new Date()

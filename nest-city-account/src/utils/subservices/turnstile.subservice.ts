@@ -21,11 +21,10 @@ const DUMMY_TURNSTILE_SECRET = '1x0000000000000000000000000000000AA'
 export class TurnstileSubservice {
   turnstile
 
-  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(TurnstileSubservice.name)
-
   constructor(
     private errorFactoryService: ErrorFactoryService,
-    baConfigService: BaConfigService
+    baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice
   ) {
     const { turnstileSecret } = baConfigService.security
     this.turnstile = Turnstile(turnstileSecret)

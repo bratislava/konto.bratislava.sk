@@ -11,17 +11,14 @@ import { PaasMpaRegisterResponseDto, PaasMpaRegisterStatusEnum } from './dtos/pa
 
 @Injectable()
 export class PaasMpaService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly bloomreachOutboxService: BloomreachOutboxService,
     private readonly bloomreachContactDatabaseService: BloomreachContactDatabaseService,
     private readonly prisma: PrismaService,
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly userIdentitySubservice: UserIdentitySubservice
-  ) {
-    this.logger = new LineLoggerSubservice(PaasMpaService.name)
-  }
+    private readonly userIdentitySubservice: UserIdentitySubservice,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   private isVerifiedTier(tier?: CognitoUserAttributesTierEnum): boolean {
     return (

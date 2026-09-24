@@ -30,15 +30,14 @@ import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subs
 
 @Injectable()
 export class OAuth2Service {
-  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(OAuth2Service.name)
-
   constructor(
     private readonly oAuth2ErrorThrower: OAuth2ErrorThrower,
     private readonly prisma: PrismaService,
     private readonly cognitoSubservice: CognitoSubservice,
     private readonly validationSubservice: OAuth2ValidationSubservice,
     private readonly baConfigService: BaConfigService,
-    private readonly oAuth2ClientSubservice: OAuth2ClientSubservice
+    private readonly oAuth2ClientSubservice: OAuth2ClientSubservice,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   /**

@@ -52,8 +52,6 @@ const USER_REQUEST_LIMIT = 100
 
 @Injectable()
 export class UserService {
-  private readonly logger = new LineLoggerSubservice(UserService.name)
-
   constructor(
     private userDataSubservice: UserDataSubservice,
     private prisma: PrismaService,
@@ -61,7 +59,8 @@ export class UserService {
     private bloomreachOutboxService: BloomreachOutboxService,
     private cognitoSubservice: CognitoSubservice,
     private userTierService: UserTierService,
-    private norisDeliveryMethodService: NorisDeliveryMethodService
+    private norisDeliveryMethodService: NorisDeliveryMethodService,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   private async hasChangedDeliveryMethodAfterDeadline(userId: string): Promise<boolean> {

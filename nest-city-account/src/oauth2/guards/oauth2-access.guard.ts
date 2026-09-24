@@ -1,4 +1,4 @@
-import { ErrorEnum, ErrorFactoryService, ErrorResponseEnum, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService, ErrorResponseEnum } from '@bratislava/log-nest'
 import { ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { AuthGuard } from '@nestjs/passport'
@@ -17,15 +17,12 @@ import { OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
  */
 @Injectable()
 export class OAuth2AccessGuard extends AuthGuard('cognito-strategy') {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly reflector: Reflector,
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly oAuth2ClientSubservice: OAuth2ClientSubservice
   ) {
     super()
-    this.logger = new LineLoggerSubservice(OAuth2AccessGuard.name)
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

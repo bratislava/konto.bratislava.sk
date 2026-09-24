@@ -6,14 +6,11 @@ import { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
 export class PhysicalEntityService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly errorFactoryService: ErrorFactoryService
-  ) {
-    this.logger = new LineLoggerSubservice(PhysicalEntityService.name)
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   async linkToUserIdByBirthnumber(userId: string, birthNumber: string) {
     const entities = await this.prismaService.physicalEntity.findMany({

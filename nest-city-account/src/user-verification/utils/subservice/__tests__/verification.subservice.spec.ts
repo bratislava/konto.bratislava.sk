@@ -1,4 +1,4 @@
-import { ErrorFactoryService } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -18,6 +18,7 @@ describe('VerificationSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         VerificationSubservice,
         ErrorFactoryService,
         { provide: MagproxyService, useValue: createMock<MagproxyService>() },

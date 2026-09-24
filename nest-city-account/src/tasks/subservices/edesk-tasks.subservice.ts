@@ -16,16 +16,13 @@ const EXTERNAL_ITEMS_PROCESS_BATCH_SIZE = 500
 
 @Injectable()
 export class EdeskTasksSubservice {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly upvsQueueService: UpvsQueueService,
     private readonly norisEdeskService: NorisEdeskService,
-    private readonly errorFactoryService: ErrorFactoryService
-  ) {
-    this.logger = new LineLoggerSubservice(EdeskTasksSubservice.name)
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   async updateEdesk(): Promise<void> {
     await this.upvsQueueService.processBatch()

@@ -2,7 +2,6 @@ import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislav
 import { Inject, Injectable } from '@nestjs/common'
 import { IDatabase } from 'pg-promise'
 
-
 interface BloomreachContactRecord {
   uuid: string
   birth_number?: string
@@ -13,14 +12,11 @@ interface BloomreachContactRecord {
 
 @Injectable()
 export class BloomreachContactDatabaseService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly errorFactoryService: ErrorFactoryService,
-    @Inject('BLOOMREACH_CONTACT_DB') private readonly contactDatabase: IDatabase<unknown>
-  ) {
-    this.logger = new LineLoggerSubservice(BloomreachContactDatabaseService.name)
-  }
+    @Inject('BLOOMREACH_CONTACT_DB') private readonly contactDatabase: IDatabase<unknown>,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   /**
    * Upserts a bloomreach contact with retry.

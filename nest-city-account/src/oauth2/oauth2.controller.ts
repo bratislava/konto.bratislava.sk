@@ -52,11 +52,10 @@ import { TokenRequestValidationPipe } from './pipes/token-request-validation.pip
 @UseGuards(HttpsGuard)
 @UseFilters(OAuth2ExceptionFilter)
 export class OAuth2Controller {
-  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(OAuth2Controller.name)
-
   constructor(
     private readonly oauth2Service: OAuth2Service,
-    private readonly oAuth2ErrorThrower: OAuth2ErrorThrower
+    private readonly oAuth2ErrorThrower: OAuth2ErrorThrower,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   @Get('authorize')

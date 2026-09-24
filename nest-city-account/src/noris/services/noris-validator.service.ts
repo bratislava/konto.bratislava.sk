@@ -6,9 +6,10 @@ import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 @Injectable()
 export class NorisValidatorService {
-  private readonly logger = new LineLoggerSubservice(NorisValidatorService.name)
-
-  constructor(private readonly errorFactoryService: ErrorFactoryService) {}
+  constructor(
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   validateNorisData<T extends z.ZodType>(schema: T, data: unknown[]): z.infer<T>[]
   validateNorisData<T extends z.ZodType>(schema: T, data: unknown): z.infer<T>

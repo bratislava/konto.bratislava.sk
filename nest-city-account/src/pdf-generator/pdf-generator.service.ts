@@ -3,7 +3,12 @@ import { existsSync, unlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
-import { ErrorEnum, ErrorFactoryService, ErrorResponseEnum, LineLoggerSubservice } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import pLimit from 'p-limit'
 import { Browser, BrowserContext, chromium, Page } from 'playwright'
@@ -14,8 +19,6 @@ import { PdfTemplateKeys, pdfTemplates, PdfTemplateVariables } from './templates
 
 @Injectable()
 export class PdfGeneratorService {
-  private readonly logger: LineLoggerSubservice
-
   private sharedBrowser: Browser | null = null
 
   private sharedBrowserRefCount = 0
@@ -24,10 +27,9 @@ export class PdfGeneratorService {
 
   constructor(
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly baConfigService: BaConfigService
-  ) {
-    this.logger = new LineLoggerSubservice(PdfGeneratorService.name)
-  }
+    private readonly baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   /**
    * Runs the callback that ensures a single shared Chromium instance will be

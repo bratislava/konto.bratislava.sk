@@ -29,8 +29,6 @@ interface UrgentRunResult {
 
 @Injectable()
 export class UrgentLookupService {
-  private readonly logger = new LineLoggerSubservice(UrgentLookupService.name)
-
   // Urgent (per-person lookup) budget, independent of the URI-search BATCH_SIZE.
   private readonly URGENT_BATCH_SIZE = 50
 
@@ -38,7 +36,8 @@ export class UrgentLookupService {
     private readonly prismaService: PrismaService,
     private readonly physicalEntityService: PhysicalEntityService,
     private readonly nasesService: NasesService,
-    private readonly cognitoSubservice: CognitoSubservice
+    private readonly cognitoSubservice: CognitoSubservice,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   /**

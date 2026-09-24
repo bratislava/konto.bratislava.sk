@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -18,6 +19,7 @@ describe('UpvsQueueService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         UpvsQueueService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: UrgentLookupService, useValue: createMock<UrgentLookupService>() },

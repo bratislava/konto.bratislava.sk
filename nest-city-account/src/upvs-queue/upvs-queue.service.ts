@@ -9,13 +9,12 @@ import { UrgentLookupService } from './urgent-lookup.service'
 
 @Injectable()
 export class UpvsQueueService {
-  private readonly logger = new LineLoggerSubservice(UpvsQueueService.name)
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly urgentLookupService: UrgentLookupService,
     private readonly edeskUriUpdateService: EdeskUriUpdateService,
-    private readonly edeskBatchUpdateService: EdeskBatchUpdateService
+    private readonly edeskBatchUpdateService: EdeskBatchUpdateService,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   async addExternalItemsToQueue(

@@ -63,9 +63,11 @@ describe('OAuth2AccessGuard', () => {
     jest.spyOn(clientSubservice, 'findClientByName').mockReturnValue(mockClient)
 
     // Make errorFactoryService throw real errors
-    jest.spyOn(errorFactoryService, 'UnauthorizedException').mockImplementation(({ message, console }) => {
-      throw new Error((console as string | undefined) ?? message)
-    })
+    jest
+      .spyOn(errorFactoryService, 'UnauthorizedException')
+      .mockImplementation(({ message, console }) => {
+        throw new Error((console as string | undefined) ?? message)
+      })
   })
 
   it('should be defined', () => {

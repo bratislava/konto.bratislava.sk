@@ -21,18 +21,16 @@ const RETRY_BACKOFF_BASE_MS = 60_000
 
 @Injectable()
 export class BloomreachOutboxProcessor {
-  private readonly logger: LineLoggerSubservice
-
   private readonly bloomreachCredentials: string
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly baConfigService: BaConfigService
+    private readonly baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice
   ) {
     const { apiKey, apiSecret } = this.baConfigService.bloomreach
     this.bloomreachCredentials = Buffer.from(`${apiKey}:${apiSecret}`, 'binary').toString('base64')
-    this.logger = new LineLoggerSubservice(BloomreachOutboxProcessor.name)
   }
 
   async processOutbox(): Promise<void> {

@@ -28,6 +28,7 @@ import { FormMigrationsService } from '../services/form-migrations.service'
 export class FormMigrationsController {
   constructor(private readonly formMigrationService: FormMigrationsService) {}
 
+  @AllowList({ success: true })
   @Post('prepare')
   @ApiOkResponse({
     type: PrepareMigrationOutput,
@@ -47,6 +48,7 @@ export class FormMigrationsController {
     return { success: true }
   }
 
+  @AllowList({ success: true })
   @Post('claim/:formId')
   @ApiOkResponse({
     type: ClaimMigrationOutput,

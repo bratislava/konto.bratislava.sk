@@ -8,6 +8,7 @@ import StatusService from './status.service'
 
 @ApiTags('Statuses')
 @Controller('status')
+@AllowList(true)
 export default class StatusController {
   constructor(private readonly statusService: StatusService) {}
 

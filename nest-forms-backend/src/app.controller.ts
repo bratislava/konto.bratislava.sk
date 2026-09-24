@@ -13,6 +13,7 @@ export default class AppController {
     summary: 'Hello world!',
     description: 'See if nest is working!',
   })
+  @AllowList(true)
   @Get('healthcheck')
   @ApiOkResponse({
     description: '',

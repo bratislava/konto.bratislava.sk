@@ -4,7 +4,7 @@
  * the integration test in pdf-generator.service.spec.ts needs the real one.
  */
 
-import { ErrorFactoryService } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { chromium } from 'playwright'
 
@@ -60,6 +60,7 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         PdfGeneratorService,
         ErrorFactoryService,
         {

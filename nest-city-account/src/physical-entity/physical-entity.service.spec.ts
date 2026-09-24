@@ -37,6 +37,7 @@ describe('PhysicalEntityService', () => {
     jest.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         PhysicalEntityService,
         ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },

@@ -31,17 +31,14 @@ const EmailConfigSchema = z.object({
 
 @Injectable()
 export class TaxDeliveryMethodsTasksSubservice {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly norisDeliveryMethodService: NorisDeliveryMethodService,
     private readonly mailgunService: MailgunService,
-    private readonly pdfGeneratorService: PdfGeneratorService
-  ) {
-    this.logger = new LineLoggerSubservice(TaxDeliveryMethodsTasksSubservice.name)
-  }
+    private readonly pdfGeneratorService: PdfGeneratorService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   async updateDeliveryMethodsInNoris() {
     const currentYear = new Date().getFullYear()

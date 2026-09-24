@@ -38,14 +38,13 @@ import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
  */
 @Injectable()
 export class AdminService {
-  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(AdminService.name)
-
   constructor(
     private cognitoSubservice: CognitoSubservice,
     private errorFactoryService: ErrorFactoryService,
     private prismaService: PrismaService,
     private readonly userService: UserService,
-    private readonly verificationService: VerificationService
+    private readonly verificationService: VerificationService,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   /**

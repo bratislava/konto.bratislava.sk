@@ -15,16 +15,13 @@ import { mergeCustomerCommandData } from './utils/merge-commands.utils'
 
 @Injectable()
 export class BloomreachOutboxService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly payloadBuilder: BloomreachPayloadBuilder,
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly baConfigService: BaConfigService
-  ) {
-    this.logger = new LineLoggerSubservice(BloomreachOutboxService.name)
-  }
+    private readonly baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   async trackCustomer(externalId: string, phoneNumber?: string): Promise<void> {
     if (this.baConfigService.bloomreach.integrationState !== 'ACTIVE') {

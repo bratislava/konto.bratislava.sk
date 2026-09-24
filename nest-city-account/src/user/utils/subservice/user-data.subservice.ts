@@ -1,4 +1,9 @@
-import { ErrorEnum, ErrorFactoryService, ErrorResponseEnum, LineLoggerSubservice } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { omit } from 'lodash'
 import { Simplify } from 'type-fest'
@@ -25,16 +30,13 @@ import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
 
 @Injectable()
 export class UserDataSubservice {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private prisma: PrismaService,
     private bloomreachOutboxService: BloomreachOutboxService,
     private errorFactoryService: ErrorFactoryService,
-    private userIdentitySubservice: UserIdentitySubservice
-  ) {
-    this.logger = new LineLoggerSubservice(UserDataSubservice.name)
-  }
+    private userIdentitySubservice: UserIdentitySubservice,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   private cognitoDataToDatabaseData(cognitoData: CognitoGetUserData): {
     externalId: string

@@ -10,12 +10,11 @@ const NORIS_SILENT_CONNECTION_ERRORS_KEY = 'NORIS_SILENT_CONNECTION_ERRORS'
 
 @Injectable()
 export class NorisConnectionService implements OnModuleDestroy {
-  private readonly logger = new LineLoggerSubservice(NorisConnectionService.name)
-
   constructor(
     private readonly baConfigService: BaConfigService,
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly prismaService: PrismaService
+    private readonly prismaService: PrismaService,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   async onModuleDestroy(): Promise<void> {

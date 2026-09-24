@@ -27,11 +27,12 @@ const USER_AGENT = 'user-agent'
  */
 @Catch(HttpException)
 export class OAuth2ExceptionFilter implements ExceptionFilter {
-  private readonly logger = new LineLoggerSubservice(OAuth2ExceptionFilter.name)
-
   private readonly errorFactoryService = new ErrorFactoryService({ alertReporting })
 
-  constructor(private readonly oauth2ClientSubservice: OAuth2ClientSubservice) {}
+  constructor(
+    private readonly oauth2ClientSubservice: OAuth2ClientSubservice,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp()

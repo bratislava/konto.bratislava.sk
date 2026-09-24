@@ -1,4 +1,4 @@
-import { ErrorFactoryService } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import axios from 'axios'
@@ -59,6 +59,7 @@ describe('BloomreachOutboxProcessor', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         BloomreachOutboxProcessor,
         { provide: PrismaService, useValue: prismaMock },
         {

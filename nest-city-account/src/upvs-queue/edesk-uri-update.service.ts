@@ -1,4 +1,4 @@
-import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { QueueItemStatusEnum } from '../generated/prisma/enums'
@@ -8,8 +8,6 @@ import { selectUriToUpdateInternal } from './upvs-queue.queries'
 
 @Injectable()
 export class EdeskUriUpdateService {
-  private readonly logger = new LineLoggerSubservice(EdeskUriUpdateService.name)
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly nasesService: NasesService,
@@ -38,11 +36,7 @@ export class EdeskUriUpdateService {
   async handleUriUpdateInternal(input: { uri: string; id: string }) {
     const upvsResult = await this.nasesService.getIdentitiesByUris([input])
     const successItem = upvsResult.success[0]
-    if (
-      upvsResult.success.length === 1 &&
-      successItem.data.uri &&
-      successItem.physicalEntityId
-    ) {
+    if (upvsResult.success.length === 1 && successItem.data.uri && successItem.physicalEntityId) {
       await this.prismaService.physicalEntity.update({
         where: { id: successItem.physicalEntityId },
         data: {

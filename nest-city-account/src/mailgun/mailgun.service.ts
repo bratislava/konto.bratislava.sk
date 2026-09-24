@@ -14,18 +14,16 @@ const mailgun = new Mailgun(formData)
 export class MailgunService {
   private mg: Interfaces.IMailgunClient
 
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly mailgunMessageBuilder: MailgunMessageBuilder,
-    private readonly baConfigService: BaConfigService
+    private readonly baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice
   ) {
     this.mg = mailgun.client({
       username: 'api',
       key: baConfigService.mailgun.apiKey,
       url: MAILGUN.API_URL,
     })
-    this.logger = new LineLoggerSubservice(MailgunService.name)
     this.logger.log('Successfully initialized Mailgun')
   }
 

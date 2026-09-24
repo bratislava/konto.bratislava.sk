@@ -1,4 +1,9 @@
-import { ErrorEnum, ErrorFactoryService, ErrorResponseEnum, LineLoggerSubservice } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import axios, { isAxiosError } from 'axios'
 import https from 'https'
@@ -29,15 +34,12 @@ let magproxyAzureAdToken = ''
  */
 @Injectable()
 export class MagproxyService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly clientsService: ClientsService,
-    private readonly baConfigService: BaConfigService
-  ) {
-    this.logger = new LineLoggerSubservice(MagproxyService.name)
-  }
+    private readonly baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   private async auth(token: string): Promise<string> {
     let tokenCheck = token

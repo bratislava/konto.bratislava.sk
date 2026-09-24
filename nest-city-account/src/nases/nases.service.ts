@@ -120,17 +120,14 @@ function getUpvsIamFault(error: AxiosError): UpvsIamFault | undefined {
 
 @Injectable()
 export class NasesService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private errorFactoryService: ErrorFactoryService,
     private clientsService: ClientsService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly prismaService: PrismaService,
-    private readonly baConfigService: BaConfigService
-  ) {
-    this.logger = new LineLoggerSubservice(NasesService.name)
-  }
+    private readonly baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   async getUpvsIdentity(token: string) {
     const result = await this.clientsService.slovenskoSkApi

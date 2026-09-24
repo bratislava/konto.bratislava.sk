@@ -18,15 +18,12 @@ import { VerificationDataSubservice } from './verification-data.subservice'
 
 @Injectable()
 export class VerificationSubservice {
-  private logger: LineLoggerSubservice
-
   constructor(
     private magproxyService: MagproxyService,
     private verificationDataSubservice: VerificationDataSubservice,
-    private physicalEntityService: PhysicalEntityService
-  ) {
-    this.logger = new LineLoggerSubservice(VerificationSubservice.name)
-  }
+    private physicalEntityService: PhysicalEntityService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   private checkIdentityCard(
     rfoData: RfoIdentityListElement,

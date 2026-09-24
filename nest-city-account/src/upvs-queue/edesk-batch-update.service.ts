@@ -14,8 +14,6 @@ import { selectHighPriorityEntities } from './upvs-queue.queries'
 
 @Injectable()
 export class EdeskBatchUpdateService {
-  private readonly logger = new LineLoggerSubservice(EdeskBatchUpdateService.name)
-
   private readonly BATCH_SIZE = 8 // 8 requests per batch for the URI-search flow
 
   private readonly HIGH_PRIORITY_RESERVED_SLOTS = 5 // Reserve 5 slots for high priority
@@ -23,7 +21,8 @@ export class EdeskBatchUpdateService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly physicalEntityService: PhysicalEntityService,
-    private readonly nasesService: NasesService
+    private readonly nasesService: NasesService,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   /**

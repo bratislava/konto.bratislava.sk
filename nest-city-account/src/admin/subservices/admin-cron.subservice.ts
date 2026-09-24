@@ -1,4 +1,9 @@
-import { ErrorEnum, ErrorFactoryService, HandleErrors, LineLoggerSubservice } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  HandleErrors,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import * as z from 'zod'
@@ -13,12 +18,11 @@ const SyncCognitoToDbConfigValueSchema = z.object({
 
 @Injectable()
 export class AdminCronSubservice {
-  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(AdminCronSubservice.name)
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly adminService: AdminService,
-    private readonly errorFactoryService: ErrorFactoryService
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   // even though this is a cron job, it only runs once then it deactivates itself,

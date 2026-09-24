@@ -52,8 +52,6 @@ import {
 
 @Injectable()
 export class VerificationService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private cognitoSubservice: CognitoSubservice,
     private verificationDataSubservice: VerificationDataSubservice,
@@ -66,10 +64,9 @@ export class VerificationService {
     private readonly bloomreachOutboxService: BloomreachOutboxService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly userTierService: UserTierService,
-    private readonly baConfigService: BaConfigService
-  ) {
-    this.logger = new LineLoggerSubservice(VerificationService.name)
-  }
+    private readonly baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   async sendToQueue(
     user: CognitoGetUserData,
@@ -132,7 +129,10 @@ export class VerificationService {
       try {
         const data = JSON.parse(message.content.toString()) as RabbitMessageDto
         const errorFactoryService = new ErrorFactoryService({ alertReporting })
-        const prismaService = new PrismaService(getBaConfigInstance())
+        const prismaService = new PrismaService(
+          getBaConfigInstance(),
+          new LineLoggerSubservice(PrismaService.name)
+        )
         const cognitoSubservice = new CognitoSubservice(errorFactoryService, getBaConfigInstance())
         const userTierService = new UserTierService(cognitoSubservice, prismaService)
         await userTierService.changeTier(
@@ -143,7 +143,8 @@ export class VerificationService {
 
         const bloomreachContactDatabaseService = new BloomreachContactDatabaseService(
           errorFactoryService,
-          getBloomreachContactDatabase()
+          getBloomreachContactDatabase(),
+          new LineLoggerSubservice(BloomreachContactDatabaseService.name)
         )
 
         const userIdentitySubservice = new UserIdentitySubservice(prismaService)
@@ -157,7 +158,8 @@ export class VerificationService {
           prismaService,
           bloomreachPayloadBuilder,
           errorFactoryService,
-          getBaConfigInstance()
+          getBaConfigInstance(),
+          new LineLoggerSubservice(BloomreachOutboxService.name)
         )
 
         await bloomreachOutboxService.trackCustomer(data.msg.user.idUser)

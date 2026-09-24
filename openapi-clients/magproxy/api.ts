@@ -28,6 +28,7 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from './common'
 import type { RequestArgs } from './base'
 // @ts-ignore
@@ -3148,7 +3149,9 @@ export const DeveloperApiAxiosParamCreator = function (configuration?: Configura
       if (data !== undefined) {
         localVarFormParams.append(
           'data',
-          new Blob([JSON.stringify(data)], { type: 'application/json' }),
+          new Blob([JSON.stringify(data, replaceWithSerializableTypeIfNeeded)], {
+            type: 'application/json',
+          }),
         )
       }
       if (files) {
@@ -3731,7 +3734,7 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nevControllerTechnicalEmisionControl', 'id', id)
-      const localVarPath = `/nev/tkek/{id}`.replace(`{${'id'}}`, encodeURIComponent(String(id)))
+      const localVarPath = `/nev/tkek/{id}`.replace('{id}', encodeURIComponent(String(id)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -3776,7 +3779,7 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
       // verify required parameter 'ecv' is not null or undefined
       assertParamExists('nevControllerVehicleByECV', 'ecv', ecv)
       const localVarPath = `/nev/vozidlo/ecv/{ecv}`.replace(
-        `{${'ecv'}}`,
+        '{ecv}',
         encodeURIComponent(String(ecv)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3823,7 +3826,7 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
       // verify required parameter 'birthNumber' is not null or undefined
       assertParamExists('nevControllerVehicleByHolderBirthNumber', 'birthNumber', birthNumber)
       const localVarPath = `/nev/vozidlo/drzitel/rodnecislo/{birthNumber}`.replace(
-        `{${'birthNumber'}}`,
+        '{birthNumber}',
         encodeURIComponent(String(birthNumber)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3870,7 +3873,7 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
       // verify required parameter 'ico' is not null or undefined
       assertParamExists('nevControllerVehicleByHolderICO', 'ico', ico)
       const localVarPath = `/nev/vozidlo/drzitel/ico/{ico}`.replace(
-        `{${'ico'}}`,
+        '{ico}',
         encodeURIComponent(String(ico)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3917,7 +3920,7 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
       // verify required parameter 'birthNumber' is not null or undefined
       assertParamExists('nevControllerVehicleByOwnerBirthNumber', 'birthNumber', birthNumber)
       const localVarPath = `/nev/vozidlo/vlastnik/rodnecislo/{birthNumber}`.replace(
-        `{${'birthNumber'}}`,
+        '{birthNumber}',
         encodeURIComponent(String(birthNumber)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3964,7 +3967,7 @@ export const NEVNrodnEvidenciaVozidielApiAxiosParamCreator = function (
       // verify required parameter 'ico' is not null or undefined
       assertParamExists('nevControllerVehicleByOwnerICO', 'ico', ico)
       const localVarPath = `/nev/vozidlo/vlastnik/ico/{ico}`.replace(
-        `{${'ico'}}`,
+        '{ico}',
         encodeURIComponent(String(ico)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4385,7 +4388,7 @@ export const RARegisterAdriesApiAxiosParamCreator = function (configuration?: Co
       // verify required parameter 'identifikatorAdresy' is not null or undefined
       assertParamExists('raControllerFindAddress', 'identifikatorAdresy', identifikatorAdresy)
       const localVarPath = `/ra/adresy/identifikatorAdresy/{identifikatorAdresy}`.replace(
-        `{${'identifikatorAdresy'}}`,
+        '{identifikatorAdresy}',
         encodeURIComponent(String(identifikatorAdresy)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4432,7 +4435,7 @@ export const RARegisterAdriesApiAxiosParamCreator = function (configuration?: Co
       // verify required parameter 'kodPolozky' is not null or undefined
       assertParamExists('raControllerFindDistricByCode', 'kodPolozky', kodPolozky)
       const localVarPath = `/ra/okresy/kodPolozky/{kodPolozky}`.replace(
-        `{${'kodPolozky'}}`,
+        '{kodPolozky}',
         encodeURIComponent(String(kodPolozky)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4479,7 +4482,7 @@ export const RARegisterAdriesApiAxiosParamCreator = function (configuration?: Co
       // verify required parameter 'nazov' is not null or undefined
       assertParamExists('raControllerFindDistrictByName', 'nazov', nazov)
       const localVarPath = `/ra/okresy/nazov/{nazov}`.replace(
-        `{${'nazov'}}`,
+        '{nazov}',
         encodeURIComponent(String(nazov)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4526,7 +4529,7 @@ export const RARegisterAdriesApiAxiosParamCreator = function (configuration?: Co
       // verify required parameter 'kodPolozky' is not null or undefined
       assertParamExists('raControllerFindMunicipalityByCode', 'kodPolozky', kodPolozky)
       const localVarPath = `/ra/obce/kodPolozky/{kodPolozky}`.replace(
-        `{${'kodPolozky'}}`,
+        '{kodPolozky}',
         encodeURIComponent(String(kodPolozky)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4573,7 +4576,7 @@ export const RARegisterAdriesApiAxiosParamCreator = function (configuration?: Co
       // verify required parameter 'nazov' is not null or undefined
       assertParamExists('raControllerFindMunicipalityByName', 'nazov', nazov)
       const localVarPath = `/ra/obce/nazov/{nazov}`.replace(
-        `{${'nazov'}}`,
+        '{nazov}',
         encodeURIComponent(String(nazov)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4620,7 +4623,7 @@ export const RARegisterAdriesApiAxiosParamCreator = function (configuration?: Co
       // verify required parameter 'nazov' is not null or undefined
       assertParamExists('raControllerFindMunicipalityPartByName', 'nazov', nazov)
       const localVarPath = `/ra/castObce/nazov/{nazov}`.replace(
-        `{${'nazov'}}`,
+        '{nazov}',
         encodeURIComponent(String(nazov)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4667,7 +4670,7 @@ export const RARegisterAdriesApiAxiosParamCreator = function (configuration?: Co
       // verify required parameter 'kodPolozky' is not null or undefined
       assertParamExists('raControllerFindRegionByCode', 'kodPolozky', kodPolozky)
       const localVarPath = `/ra/kraje/kodPolozky/{kodPolozky}`.replace(
-        `{${'kodPolozky'}}`,
+        '{kodPolozky}',
         encodeURIComponent(String(kodPolozky)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4714,7 +4717,7 @@ export const RARegisterAdriesApiAxiosParamCreator = function (configuration?: Co
       // verify required parameter 'nazov' is not null or undefined
       assertParamExists('raControllerFindRegionByName', 'nazov', nazov)
       const localVarPath = `/ra/kraje/nazov/{nazov}`.replace(
-        `{${'nazov'}}`,
+        '{nazov}',
         encodeURIComponent(String(nazov)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4761,7 +4764,7 @@ export const RARegisterAdriesApiAxiosParamCreator = function (configuration?: Co
       // verify required parameter 'nazov' is not null or undefined
       assertParamExists('raControllerFindStreetByName', 'nazov', nazov)
       const localVarPath = `/ra/ulice/nazov/{nazov}`.replace(
-        `{${'nazov'}}`,
+        '{nazov}',
         encodeURIComponent(String(nazov)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6010,7 +6013,7 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       // verify required parameter 'rodneCislo' is not null or undefined
       assertParamExists('rfoControllerGetList', 'rodneCislo', rodneCislo)
       const localVarPath = `/rfo/rodneCislo/list/{rodneCislo}`.replace(
-        `{${'rodneCislo'}}`,
+        '{rodneCislo}',
         encodeURIComponent(String(rodneCislo)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6061,7 +6064,7 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       // verify required parameter 'rodneCislo' is not null or undefined
       assertParamExists('rfoControllerGetOne', 'rodneCislo', rodneCislo)
       const localVarPath = `/rfo/rodneCislo/{rodneCislo}`.replace(
-        `{${'rodneCislo'}}`,
+        '{rodneCislo}',
         encodeURIComponent(String(rodneCislo)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6119,7 +6122,7 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
     ): Promise<RequestArgs> => {
       // verify required parameter 'ifo' is not null or undefined
       assertParamExists('rfoControllerGetOneByIfo', 'ifo', ifo)
-      const localVarPath = `/rfo/ifo/{ifo}`.replace(`{${'ifo'}}`, encodeURIComponent(String(ifo)))
+      const localVarPath = `/rfo/ifo/{ifo}`.replace('{ifo}', encodeURIComponent(String(ifo)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -6257,9 +6260,9 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       assertParamExists('rfoControllerGetOneByName', 'datumNarodenia', datumNarodenia)
       const localVarPath =
         `/rfo/meno-priezvisko-datumnarodenia/{meno}/{priezvisko}/{datumNarodenia}`
-          .replace(`{${'meno'}}`, encodeURIComponent(String(meno)))
-          .replace(`{${'priezvisko'}}`, encodeURIComponent(String(priezvisko)))
-          .replace(`{${'datumNarodenia'}}`, encodeURIComponent(String(datumNarodenia)))
+          .replace('{meno}', encodeURIComponent(String(meno)))
+          .replace('{priezvisko}', encodeURIComponent(String(priezvisko)))
+          .replace('{datumNarodenia}', encodeURIComponent(String(datumNarodenia)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -6316,7 +6319,7 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       // verify required parameter 'rodneCislo' is not null or undefined
       assertParamExists('rfoControllerGetOneDcom', 'rodneCislo', rodneCislo)
       const localVarPath = `/rfo/rodneCislo/dcom/{rodneCislo}`.replace(
-        `{${'rodneCislo'}}`,
+        '{rodneCislo}',
         encodeURIComponent(String(rodneCislo)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6363,7 +6366,7 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       // verify required parameter 'ifo' is not null or undefined
       assertParamExists('rfoControllerMark', 'ifo', ifo)
       const localVarPath = `/rfo/oznacenie-zaujmovej-osoby/{ifo}`.replace(
-        `{${'ifo'}}`,
+        '{ifo}',
         encodeURIComponent(String(ifo)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6410,7 +6413,7 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       // verify required parameter 'ifo' is not null or undefined
       assertParamExists('rfoControllerUnMark', 'ifo', ifo)
       const localVarPath = `/rfo/odznacenie-zaujmovej-ososby/{ifo}`.replace(
-        `{${'ifo'}}`,
+        '{ifo}',
         encodeURIComponent(String(ifo)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7139,7 +7142,7 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
     ): Promise<RequestArgs> => {
       // verify required parameter 'ico' is not null or undefined
       assertParamExists('rpoControllerGetLegalPerson', 'ico', ico)
-      const localVarPath = `/rpo/{ico}`.replace(`{${'ico'}}`, encodeURIComponent(String(ico)))
+      const localVarPath = `/rpo/{ico}`.replace('{ico}', encodeURIComponent(String(ico)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -7184,7 +7187,7 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
     ): Promise<RequestArgs> => {
       // verify required parameter 'ico' is not null or undefined
       assertParamExists('rpoControllerGetLegalPersonBase', 'ico', ico)
-      const localVarPath = `/rpo/base/{ico}`.replace(`{${'ico'}}`, encodeURIComponent(String(ico)))
+      const localVarPath = `/rpo/base/{ico}`.replace('{ico}', encodeURIComponent(String(ico)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -7229,10 +7232,7 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
     ): Promise<RequestArgs> => {
       // verify required parameter 'ico' is not null or undefined
       assertParamExists('rpoControllerGetLegalPersonBase_1', 'ico', ico)
-      const localVarPath = `/rpo/base/ico/{ico}`.replace(
-        `{${'ico'}}`,
-        encodeURIComponent(String(ico)),
-      )
+      const localVarPath = `/rpo/base/ico/{ico}`.replace('{ico}', encodeURIComponent(String(ico)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -7278,7 +7278,7 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
     ): Promise<RequestArgs> => {
       // verify required parameter 'ico' is not null or undefined
       assertParamExists('rpoControllerGetLegalPersonByIcoFromApi', 'ico', ico)
-      const localVarPath = `/rpo/susr/{ico}`.replace(`{${'ico'}}`, encodeURIComponent(String(ico)))
+      const localVarPath = `/rpo/susr/{ico}`.replace('{ico}', encodeURIComponent(String(ico)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -7326,10 +7326,7 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('rpoControllerGetLegalPersonDetailFromAPI', 'id', id)
-      const localVarPath = `/rpo/susr/detail/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
-      )
+      const localVarPath = `/rpo/susr/detail/{id}`.replace('{id}', encodeURIComponent(String(id)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -7374,7 +7371,7 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
     ): Promise<RequestArgs> => {
       // verify required parameter 'ico' is not null or undefined
       assertParamExists('rpoControllerGetLegalPerson_2', 'ico', ico)
-      const localVarPath = `/rpo/ico/{ico}`.replace(`{${'ico'}}`, encodeURIComponent(String(ico)))
+      const localVarPath = `/rpo/ico/{ico}`.replace('{ico}', encodeURIComponent(String(ico)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions

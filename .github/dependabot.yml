@@ -1,122 +1,40 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
-# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
-
 version: 2
 updates:
   - package-ecosystem: 'npm'
-    directory: '/forms-shared'
+    directories:
+      - '/'
+      - '/forms-shared'
+      - '/nest-city-account'
+      - '/nest-clamav-scanner'
+      - '/nest-forms-backend'
+      - '/nest-tax-backend'
+      - '/openapi-clients'
     versioning-strategy: increase
     schedule:
       interval: 'weekly'
       day: 'sunday'
+    # pnpm rejects versions published too recently (minimumReleaseAge), so a bump
+    # of a fresh release would fail to install. Our own packages are exempt there
+    # too.
+    cooldown:
+      default-days: 3
+      exclude:
+        - '@bratislava/*'
     ignore:
       # RJSF and Ajv packages must be updated manually and thoroughly checked if they work
       # These packages must be updated synchronously across all packages
       - dependency-name: '@rjsf/*'
       - dependency-name: 'ajv'
       - dependency-name: 'ajv-*'
-      # `npm run generate-assets` must be executed after Tailwind update
+      # `pnpm run generate-assets` must be executed after Tailwind update
       - dependency-name: '@tailwindcss/postcss'
       - dependency-name: 'tailwindcss'
       - dependency-name: 'postcss'
-      # Playwright must be updated in nest-forms-backend at the same time
+      # Playwright must be updated together with PLAYWRIGHT_VERSION in docker-bake.json
       - dependency-name: 'playwright'
-      # Major version updates of Node types are done manually when Node version is upgraded
-      - dependency-name: '@types/node'
-        update-types: ['version-update:semver-major']
-    groups:
-      react-email-dependencies:
-        patterns:
-          - 'react-email'
-          - '@react-email/*'
-  - package-ecosystem: 'npm'
-    directory: '/openapi-clients'
-    versioning-strategy: increase
-    schedule:
-      interval: 'weekly'
-      day: 'sunday'
-    ignore:
-      # Major version updates of Node types are done manually when Node version is upgraded
-      - dependency-name: '@types/node'
-        update-types: ['version-update:semver-major']
-  - package-ecosystem: 'npm'
-    directory: '/next'
-    versioning-strategy: increase
-    schedule:
-      interval: 'weekly'
-      day: 'sunday'
-    # Open only security updates https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#open-pull-requests-limit
-    open-pull-requests-limit: 0
-    ignore:
-      # Major version updates of Node types are done manually when Node version is upgraded
-      - dependency-name: '@types/node'
-        update-types: ['version-update:semver-major']
-  - package-ecosystem: 'npm'
-    directory: '/nest-forms-backend'
-    versioning-strategy: increase
-    schedule:
-      interval: 'weekly'
-      day: 'sunday'
-    ignore:
-      # RJSF and Ajv packages must be updated manually and thoroughly checked if they work
-      # These packages must be updated synchronously across all packages
-      - dependency-name: '@rjsf/*'
-      - dependency-name: 'ajv'
-      - dependency-name: 'ajv-*'
-      # Playwright must be updated in forms-shared at the same time
-      - dependency-name: 'playwright'
-      # Major version updates of Node types are done manually when Node version is upgraded
-      - dependency-name: '@types/node'
-        update-types: ['version-update:semver-major']
-    groups:
-      nestjs-dependencies:
-        patterns:
-          - '@nestjs/*'
-      prisma-dependencies:
-        patterns:
-          - 'prisma'
-          - 'prisma-*'
-          - '@prisma/*'
-      aws-dependencies:
-        patterns:
-          - '@aws-sdk/*'
-          - 'aws-jwt-verify'
-      eslint-dependencies:
-        patterns:
-          - 'eslint'
-          - '@bratislava/eslint-config-nest'
-  - package-ecosystem: 'npm'
-    directory: '/nest-clamav-scanner'
-    versioning-strategy: increase
-    schedule:
-      interval: 'weekly'
-      day: 'sunday'
-    ignore:
-      # Major version updates of Node types are done manually when Node version is upgraded
-      - dependency-name: '@types/node'
-        update-types: ['version-update:semver-major']
-    groups:
-      nestjs-dependencies:
-        patterns:
-          - '@nestjs/*'
-      prisma-dependencies:
-        patterns:
-          - 'prisma'
-          - 'prisma-*'
-          - '@prisma/*'
-      eslint-dependencies:
-        patterns:
-          - 'eslint'
-          - '@bratislava/eslint-config-nest'
-  - package-ecosystem: 'npm'
-    directory: '/nest-tax-backend'
-    versioning-strategy: increase
-    schedule:
-      interval: 'weekly'
-      day: 'sunday'
-    ignore:
+      - dependency-name: '@playwright/test'
+      # Turbo must be updated together with TURBO_VERSION in docker-bake.json
+      - dependency-name: 'turbo'
       # Major version updates of Node types are done manually when Node version is upgraded
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
@@ -130,30 +48,28 @@ updates:
           - 'prisma'
           - 'prisma-*'
           - '@prisma/*'
+      aws-dependencies:
+        patterns:
+          - '@aws-sdk/*'
+          - 'aws-jwt-verify'
       eslint-dependencies:
         patterns:
           - 'eslint'
           - '@bratislava/eslint-config-nest'
+      react-email-dependencies:
+        patterns:
+          - 'react-email'
+          - '@react-email/*'
+
+  # Open only security updates https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#open-pull-requests-limit
   - package-ecosystem: 'npm'
-    directory: '/nest-city-account'
+    directory: '/next'
     versioning-strategy: increase
     schedule:
       interval: 'weekly'
       day: 'sunday'
+    open-pull-requests-limit: 0
     ignore:
       # Major version updates of Node types are done manually when Node version is upgraded
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
-    groups:
-      nestjs-dependencies:
-        patterns:
-          - '@nestjs/*'
-      prisma-dependencies:
-        patterns:
-          - 'prisma'
-          - 'prisma-*'
-          - '@prisma/*'
-      eslint-dependencies:
-        patterns:
-          - 'eslint'
-          - '@bratislava/eslint-config-nest'

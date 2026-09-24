@@ -27,21 +27,18 @@ const LOAD_HISTORICAL_TAXES_BATCH = 500
 
 @Injectable()
 export default class TaxImportTasksService {
-  private readonly logger: LineLoggerSubservice
-
   private lastLoadedTaxType: TaxType = TaxType.DZN
 
   constructor(
     private readonly databaseSubservice: DatabaseSubservice,
     private readonly norisService: NorisService,
     private readonly taxImportHelperService: TaxImportHelperService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly configSubservice: TasksConfigSubservice,
     private readonly retryService: RetryService,
     private readonly prismaService: PrismaService,
-  ) {
-    this.logger = new LineLoggerSubservice(TaxImportTasksService.name)
-  }
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   async loadTaxesForUsers() {
     this.lastLoadedTaxType =
@@ -138,10 +135,10 @@ export default class TaxImportTasksService {
     // Parse the lookback days from config, throw error if invalid
     const lookbackDays = parseInt(config.OVERPAYMENTS_LOOKBACK_DAYS, 10)
     if (Number.isNaN(lookbackDays) || lookbackDays <= 0) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Invalid OVERPAYMENTS_LOOKBACK_DAYS configuration: ${config.OVERPAYMENTS_LOOKBACK_DAYS}. Must be a positive integer.`,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `Invalid OVERPAYMENTS_LOOKBACK_DAYS configuration: ${config.OVERPAYMENTS_LOOKBACK_DAYS}. Must be a positive integer.`,
+      })
     }
 
     this.logger.log(
@@ -176,13 +173,12 @@ export default class TaxImportTasksService {
     } catch (error) {
       // Failure: increment lookback days for next run
       await this.configSubservice.incrementOverpaymentsLookbackDays()
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
-        'Failed to load overpayments from Noris after all retry attempts',
-        undefined,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
+        message:
+          'Failed to load overpayments from Noris after all retry attempts',
         error,
-      )
+      })
     }
   }
 

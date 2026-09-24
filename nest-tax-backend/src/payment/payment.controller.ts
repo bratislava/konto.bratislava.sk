@@ -1,4 +1,3 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
 import {
   Controller,
   Get,
@@ -42,11 +41,7 @@ import { PaymentService } from './payment.service'
 @ApiExtraModels(PaymentRedirectResponseDto)
 @Controller('payment')
 export class PaymentController {
-  private readonly logger: LineLoggerSubservice
-
-  constructor(private readonly paymentService: PaymentService) {
-    this.logger = new LineLoggerSubservice(PaymentController.name)
-  }
+  constructor(private readonly paymentService: PaymentService) {}
 
   @HttpCode(200)
   @ApiOperation({

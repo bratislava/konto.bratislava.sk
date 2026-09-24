@@ -11,7 +11,7 @@ export class TiersGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly cognitoSubservice: CognitoSubservice,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -30,10 +30,10 @@ export class TiersGuard implements CanActivate {
     )
     const result = requiredRoles.includes(tier)
     if (!result) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        ErrorsEnum.FORBIDDEN_ERROR,
-        'Forbidden tier',
-      )
+      throw this.errorFactoryService.ForbiddenException({
+        errorEnum: ErrorEnum.FORBIDDEN_ERROR,
+        message: 'Forbidden tier',
+      })
     }
     return result
   }

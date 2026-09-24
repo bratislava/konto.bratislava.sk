@@ -24,17 +24,14 @@ import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
 
 @Injectable()
 export class AdminService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly bloomreachService: BloomreachService,
     private readonly norisService: NorisService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-  ) {
-    this.logger = new LineLoggerSubservice(AdminService.name)
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   async loadDataFromNoris(
     taxType: TaxType,
@@ -98,10 +95,10 @@ export class AdminService {
     const taxAdministrator =
       await this.prismaService.taxAdministrator.findFirst({})
     if (!taxAdministrator) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'No tax administrator found in the database',
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: 'No tax administrator found in the database',
+      })
     }
 
     const taxesByVariableSymbolExist = await this.prismaService.tax.findFirst({
@@ -111,10 +108,10 @@ export class AdminService {
     })
 
     if (taxesByVariableSymbolExist) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Tax with this variable symbol already exists',
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: 'Tax with this variable symbol already exists',
+      })
     }
 
     // Get tax definition for the tax type
@@ -151,10 +148,10 @@ export class AdminService {
       },
     })
     if (!taxPayer) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Tax payer not found',
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: 'Tax payer not found',
+      })
     }
 
     const tax = await this.prismaService.tax.findUnique({
@@ -168,10 +165,10 @@ export class AdminService {
       },
     })
     if (!tax) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Tax not found',
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: 'Tax not found',
+      })
     }
 
     await this.prismaService.tax.delete({
@@ -204,10 +201,10 @@ export class AdminService {
     )
     if (!bloomreachResponse) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Error in send Tax data to Bloomreach for tax payer with ID ${taxPayer.id} and year ${year}`,
-        ),
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Error in send Tax data to Bloomreach for tax payer with ID ${taxPayer.id} and year ${year}`,
+        }),
       )
     }
   }

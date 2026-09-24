@@ -221,10 +221,12 @@ const isStateHoliday = (date: Dayjs): boolean => {
   const yearHolidays = stateHolidays[year]
 
   if (!yearHolidays) {
-    throw new ThrowerErrorGuard().InternalServerErrorException(
-      CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
-      CustomErrorTaxTypesResponseEnum.STATE_HOLIDAY_NOT_EXISTS,
-    )
+    throw new ErrorFactoryService({
+      alertReporting,
+    }).InternalServerErrorException({
+      errorEnum: CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
+      message: CustomErrorTaxTypesResponseEnum.STATE_HOLIDAY_NOT_EXISTS,
+    })
   }
 
   return yearHolidays.dates.some((holiday) => holiday.isSame(date, 'day'))
@@ -284,17 +286,21 @@ export const calculateInstallmentAmounts = (
   numberOfInstallments?: number,
 ) => {
   if (installments.length === 0) {
-    throw new ThrowerErrorGuard().InternalServerErrorException(
-      CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-      'No installments found for the tax.',
-    )
+    throw new ErrorFactoryService({
+      alertReporting,
+    }).InternalServerErrorException({
+      errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+      message: 'No installments found for the tax.',
+    })
   }
 
   if (numberOfInstallments && installments.length !== numberOfInstallments) {
-    throw new ThrowerErrorGuard().InternalServerErrorException(
-      CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-      CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
-    )
+    throw new ErrorFactoryService({
+      alertReporting,
+    }).InternalServerErrorException({
+      errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+      message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+    })
   }
 
   const installmentOrders = Array.from(
@@ -304,10 +310,12 @@ export const calculateInstallmentAmounts = (
   const amounts = installmentOrders.map((order) => {
     const installment = installments.find((item) => item.order === order)
     if (!installment) {
-      throw new ThrowerErrorGuard().InternalServerErrorException(
-        CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
-        CustomErrorTaxTypesResponseEnum.MISSING_INSTALLMENT_AMOUNTS,
-      )
+      throw new ErrorFactoryService({
+        alertReporting,
+      }).InternalServerErrorException({
+        errorEnum: CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
+        message: CustomErrorTaxTypesResponseEnum.MISSING_INSTALLMENT_AMOUNTS,
+      })
     }
     return installment.amount
   })
@@ -462,10 +470,12 @@ const calculateInstallmentPaymentDetails = (options: {
   const dueDateLastPayment =
     installmentDueDatesParsed[installmentDueDatesParsed.length - 1]
   if (!dueDateLastPayment) {
-    throw new ThrowerErrorGuard().InternalServerErrorException(
-      CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
-      CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
-    )
+    throw new ErrorFactoryService({
+      alertReporting,
+    }).InternalServerErrorException({
+      errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
+      message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+    })
   }
 
   if (isCancelled) {
@@ -519,10 +529,12 @@ const calculateInstallmentPaymentDetails = (options: {
   // All valid reasons for no active payment should have been caught before
   //  the ` calculateInstallmentAmounts ` call
   if (!active) {
-    throw new ThrowerErrorGuard().InternalServerErrorException(
-      CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
-      CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
-    )
+    throw new ErrorFactoryService({
+      alertReporting,
+    }).InternalServerErrorException({
+      errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
+      message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+    })
   }
 
   const paymentNote =
@@ -692,10 +704,12 @@ export const getTaxDetailPureForOneTimeGenerator = (options: {
   const overallBalance = Math.max(overallAmount - overallPaid, 0)
 
   if (overallBalance <= 0) {
-    throw new ThrowerErrorGuard().UnprocessableEntityException(
-      CustomErrorTaxTypesEnum.ALREADY_PAID,
-      CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
-    )
+    throw new ErrorFactoryService({
+      alertReporting,
+    }).UnprocessableEntityException({
+      errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
+      message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+    })
   }
 
   const description =
@@ -778,41 +792,53 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   ) {
     switch (installmentPayment.reasonNotPossible) {
       case InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID:
-        throw new ThrowerErrorGuard().UnprocessableEntityException(
-          CustomErrorTaxTypesEnum.ALREADY_PAID,
-          CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
-        )
+        throw new ErrorFactoryService({
+          alertReporting,
+        }).UnprocessableEntityException({
+          errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
+          message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+        })
 
       case InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE:
-        throw new ThrowerErrorGuard().UnprocessableEntityException(
-          CustomErrorTaxTypesEnum.AFTER_DUE_DATE,
-          CustomErrorTaxTypesResponseEnum.AFTER_DUE_DATE,
-        )
+        throw new ErrorFactoryService({
+          alertReporting,
+        }).UnprocessableEntityException({
+          errorEnum: CustomErrorTaxTypesEnum.AFTER_DUE_DATE,
+          message: CustomErrorTaxTypesResponseEnum.AFTER_DUE_DATE,
+        })
 
       case InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD:
-        throw new ThrowerErrorGuard().UnprocessableEntityException(
-          CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
-          CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
-        )
+        throw new ErrorFactoryService({
+          alertReporting,
+        }).UnprocessableEntityException({
+          errorEnum: CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
+          message: CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
+        })
 
       case InstallmentPaymentReasonNotPossibleEnum.TAX_IS_CANCELLED:
-        throw new ThrowerErrorGuard().UnprocessableEntityException(
-          CustomErrorTaxTypesEnum.TAX_IS_CANCELLED,
-          CustomErrorTaxTypesResponseEnum.TAX_IS_CANCELLED,
-        )
+        throw new ErrorFactoryService({
+          alertReporting,
+        }).UnprocessableEntityException({
+          errorEnum: CustomErrorTaxTypesEnum.TAX_IS_CANCELLED,
+          message: CustomErrorTaxTypesResponseEnum.TAX_IS_CANCELLED,
+        })
 
       case InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT:
-        throw new ThrowerErrorGuard().UnprocessableEntityException(
-          CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
-          CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
-        )
+        throw new ErrorFactoryService({
+          alertReporting,
+        }).UnprocessableEntityException({
+          errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
+          message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
+        })
 
       case undefined:
       default:
-        throw new ThrowerErrorGuard().UnprocessableEntityException(
-          CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
-          CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
-        )
+        throw new ErrorFactoryService({
+          alertReporting,
+        }).UnprocessableEntityException({
+          errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
+          message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+        })
     }
   }
 
@@ -822,10 +848,12 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   )
 
   if (!activeInstallmentInfo) {
-    throw new ThrowerErrorGuard().InternalServerErrorException(
-      CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
-      CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
-    )
+    throw new ErrorFactoryService({
+      alertReporting,
+    }).InternalServerErrorException({
+      errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
+      message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+    })
   }
   // Create description based on the installment status
   // data that goes to payment gateway should not contain diacritics

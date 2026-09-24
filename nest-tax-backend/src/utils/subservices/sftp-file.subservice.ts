@@ -19,7 +19,7 @@ export default class SftpFileSubservice {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly baConfigService: BaConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
   ) {}
 
   async getNewFiles(sftpPath: string, taxType: TaxType, from?: Date) {
@@ -46,13 +46,11 @@ export default class SftpFileSubservice {
         }),
       )
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Error during retrieval of files form SFTP server',
-        undefined,
-        undefined,
-        error instanceof Error ? error : undefined,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: 'Error during retrieval of files form SFTP server',
+        error: error instanceof Error ? error : undefined,
+      })
     } finally {
       await sftp.end()
     }

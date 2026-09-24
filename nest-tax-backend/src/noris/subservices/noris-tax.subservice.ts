@@ -22,7 +22,7 @@ export class NorisTaxSubservice {
   private readonly subservices: TaxTypeToNorisSubservice
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly norisTaxRealEstateSubservice: NorisTaxRealEstateSubservice,
     private readonly norisTaxCommunalWasteSubservice: NorisTaxCommunalWasteSubservice,
   ) {
@@ -62,10 +62,10 @@ export class NorisTaxSubservice {
     }
 
     // Fallback for exhaustiveness
-    throw this.throwerErrorGuard.InternalServerErrorException(
-      ErrorsEnum.INTERNAL_SERVER_ERROR,
-      `Unknown tax type: ${taxType}`,
-    )
+    throw this.errorFactoryService.InternalServerErrorException({
+      errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+      message: `Unknown tax type: ${taxType}`,
+    })
   }
 
   async getAndProcessNorisTaxDataByBirthNumberAndYear(

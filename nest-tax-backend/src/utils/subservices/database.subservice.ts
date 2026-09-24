@@ -11,7 +11,7 @@ import { PrismaService } from '../../prisma/prisma.service'
 export default class DatabaseSubservice {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
   ) {}
 
   async getConfigByKeys<T extends string>(
@@ -41,23 +41,21 @@ export default class DatabaseSubservice {
       )
     } catch (error) {
       const keysString = requiredKeys.map((key) => `'${key}'`).join(', ')
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.DATABASE_ERROR,
-        ErrorsResponseEnum.DATABASE_ERROR,
-        undefined,
-        `Error while getting ${keysString} from Config.`,
-        error instanceof Error ? error : undefined,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.DATABASE_ERROR,
+        message: ErrorResponseEnum.DATABASE_ERROR,
+        console: `Error while getting ${keysString} from Config.`,
+        error: error instanceof Error ? error : undefined,
+      })
     }
 
     requiredKeys.forEach((key) => {
       if (!constants[key]) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.DATABASE_ERROR,
-          ErrorsResponseEnum.DATABASE_ERROR,
-          undefined,
-          `Could not find '${key}' settings in database. ${JSON.stringify(constants)}`,
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.DATABASE_ERROR,
+          message: ErrorResponseEnum.DATABASE_ERROR,
+          console: `Could not find '${key}' settings in database. ${JSON.stringify(constants)}`,
+        })
       }
     })
 

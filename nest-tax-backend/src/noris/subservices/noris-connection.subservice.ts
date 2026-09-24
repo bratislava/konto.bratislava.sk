@@ -13,14 +13,11 @@ import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 @Injectable()
 export class NorisConnectionSubservice implements OnModuleDestroy {
-  private readonly logger = new LineLoggerSubservice(
-    NorisConnectionSubservice.name,
-  )
-
   constructor(
     private readonly baConfigService: BaConfigService,
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly prismaService: PrismaService,
+    private readonly logger: LineLoggerSubservice,
   ) {}
 
   async onModuleDestroy(): Promise<void> {
@@ -86,7 +83,6 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
     if (error instanceof MSSQLError) {
       const mssqlErrorDetails = {
         code: error.code,
-        message: error.message,
         name: error.name,
       }
       return `${errorMessage}: ${JSON.stringify(mssqlErrorDetails)}`
@@ -95,13 +91,12 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
   }
 
   private getNorisUrgentError(errorMessage: string, error: unknown) {
-    return this.throwerErrorGuard.InternalServerErrorException(
-      ErrorsEnum.INTERNAL_SERVER_ERROR,
-      this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
-      undefined,
-      error instanceof Error ? undefined : (error as string),
-      error instanceof Error ? error : undefined,
-    )
+    return this.errorFactoryService.InternalServerErrorException({
+      errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+      message: this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+      console: error instanceof Error ? undefined : (error as string),
+      error: error instanceof Error ? error : undefined,
+    })
   }
 
   private async handleDatabaseError(
@@ -124,13 +119,11 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
         WHERE "key" = ${NORIS_SILENT_CONNECTION_ERRORS_KEY}
       `
 
-      throw this.throwerErrorGuard.BadRequestException(
-        CustomErrorNorisTypesEnum.CONNECTION_ERROR,
-        this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
-        undefined,
-        undefined,
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
+        message: this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
         error,
-      )
+      })
     }
 
     throw this.getNorisUrgentError(errorMessage, error)

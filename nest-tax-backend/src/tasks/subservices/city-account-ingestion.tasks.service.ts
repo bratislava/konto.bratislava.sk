@@ -11,7 +11,7 @@ export default class CityAccountIngestionTasksService {
 
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly databaseSubservice: DatabaseSubservice,
   ) {}
@@ -57,12 +57,12 @@ export default class CityAccountIngestionTasksService {
         },
       })
     } else {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Database used to contain `LOADING_NEW_USERS_FROM_CITY_ACCOUNT` key in Config table at the start of this task, but it no longer exists. This really should not happen.',
-        undefined,
-        `New \`nextSince\` was supposed to be set: ${data.nextSince.toISOString()}`,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message:
+          'Database used to contain `LOADING_NEW_USERS_FROM_CITY_ACCOUNT` key in Config table at the start of this task, but it no longer exists. This really should not happen.',
+        console: `New \`nextSince\` was supposed to be set: ${data.nextSince.toISOString()}`,
+      })
     }
   }
 }

@@ -9,11 +9,10 @@ import {
 
 @Injectable()
 export default class TasksConfigSubservice {
-  private readonly logger: LineLoggerSubservice
-
-  constructor(private readonly prismaService: PrismaService) {
-    this.logger = new LineLoggerSubservice(TasksConfigSubservice.name)
-  }
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   async resetOverpaymentsLookbackDays(): Promise<void> {
     await this.prismaService.config.updateMany({

@@ -15,20 +15,18 @@ import {
 
 @Injectable()
 export class BloomreachService {
-  private readonly logger: LineLoggerSubservice
-
   private readonly bloomreachCredentials: string
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice,
   ) {
     const { apiKey, apiSecret } = this.baConfigService.bloomreach
     this.bloomreachCredentials = Buffer.from(
       `${apiKey}:${apiSecret}`,
       'binary',
     ).toString('base64')
-    this.logger = new LineLoggerSubservice(BloomreachService.name)
   }
 
   private async trackEvent(
@@ -63,10 +61,10 @@ export class BloomreachService {
     )
     if (eventResponse.status !== 200) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Error in send data to Bloomreach for user id ${cognitoId}`,
-        ),
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Error in send data to Bloomreach for user id ${cognitoId}`,
+        }),
       )
       return false
     }

@@ -1,10 +1,10 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { AmqpConnection, RabbitMQModule } from '@golevelup/nestjs-rabbitmq'
 import { Module } from '@nestjs/common'
 
 import BaConfigModule from '../config/ba-config.module'
 import BaConfigService from '../config/ba-config.service'
 import { RABBIT_FORM_DELIVERY } from '../utils/constants'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import RabbitmqClientService from './rabbitmq-client.service'
 
 @Module({

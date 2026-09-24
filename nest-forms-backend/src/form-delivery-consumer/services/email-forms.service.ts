@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import type { GenericObjectType } from '@rjsf/utils' with {
   'resolution-mode': 'import',
@@ -35,9 +40,6 @@ import MailgunService from '../../mailer/mailgun.service'
 import OloMailerService from '../../mailer/olo-mailer.service'
 import PrismaService from '../../prisma/prisma.service'
 import { getFileIdsToInfoMap } from '../../utils/files'
-import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { EmailFormChecked, isEmailFormChecked } from '../../utils/types/prisma'
 import {
   EmailFormsErrorsEnum,

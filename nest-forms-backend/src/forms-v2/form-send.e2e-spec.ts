@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Controller, Get, Param, UseGuards } from '@nestjs/common'
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { Test } from '@nestjs/testing'
@@ -16,7 +17,6 @@ import {
 import { AppV2Module } from '../app-v2.module'
 import FormRegistrationStatusRepository from '../nases/repositories/form-registration-status.repository'
 import PrismaService from '../prisma/prisma.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FormSendOnlyRegisteredGuard } from './guards/form-send-only-registered.guard'
 import { CreateFormService } from './services/create-form.service'
 

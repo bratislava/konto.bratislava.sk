@@ -1,9 +1,9 @@
+import { errorToLogfmt } from '@bratislava/log-nest'
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { CognitoJwtVerifier } from 'aws-jwt-verify'
 import { CognitoJwtVerifierSingleUserPool } from 'aws-jwt-verify/cognito-verifier'
 
 import BaConfigService from '../../config/ba-config.service'
-import { errorToLogfmt } from '../../utils/logging'
 
 @Injectable()
 export class CognitoJwtVerifyService {

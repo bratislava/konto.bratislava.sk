@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+} from '@bratislava/log-nest'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -18,11 +23,6 @@ import {
   DEFAULT_PAGE_SIZE,
   EDITABLE_ERRORS,
 } from '../utils/constants'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import {
   FormUpdateBodyDto,
   GetFormsRequestDto,

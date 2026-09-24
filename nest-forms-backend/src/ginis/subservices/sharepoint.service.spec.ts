@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -20,7 +21,6 @@ import FormValidatorRegistryService from '../../form-validator-registry/form-val
 import { FormsErrorsResponseEnum } from '../../forms/forms.errors.enum'
 import { FormError, Forms, FormState } from '../../generated/prisma/client'
 import PrismaService from '../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import SharepointService from './sharepoint.service'
 
 jest.mock('forms-shared/form-utils/formDataExtractors', () => ({

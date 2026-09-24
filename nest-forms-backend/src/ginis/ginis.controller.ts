@@ -3,6 +3,7 @@ import {
   GinisError,
   SslDetailDokumentuWflDokument,
 } from '@bratislava/ginis-sdk'
+import { AllowList, ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Controller, Get, HttpStatus, Param, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
@@ -24,8 +25,6 @@ import {
   mapGinisHistory,
   MappedDocumentHistory,
 } from '../utils/ginis/ginis-api-helper'
-import { ErrorsEnum } from '../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import GinisDocumentDetailResponseDto from './dtos/ginis-api.response.dto'
 import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService from './subservices/ginis-api.service'

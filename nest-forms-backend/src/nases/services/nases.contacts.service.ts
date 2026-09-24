@@ -1,3 +1,9 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { isAxiosError } from 'axios'
 import {
@@ -6,12 +12,6 @@ import {
 } from 'openapi-clients/slovensko-sk'
 
 import ClientsService from '../../clients/clients.service'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from '../nases.errors.enum'
 
 interface NaturalPersonData {

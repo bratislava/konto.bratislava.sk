@@ -1,9 +1,9 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import StatusService from './status.service'
 
 jest.mock('../prisma/prisma.service')

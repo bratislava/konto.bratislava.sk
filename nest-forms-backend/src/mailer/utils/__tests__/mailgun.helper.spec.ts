@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Test } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import Handlebars from 'handlebars'
@@ -9,7 +10,6 @@ import {
   MailgunErrorsEnum,
   MailgunErrorsResponseEnum,
 } from '../../../utils/global-enums/mailgun.errors.enum'
-import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import MailgunHelper from '../mailgun.helper'
 
 // Mock for IMailgunClient

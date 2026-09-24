@@ -1,5 +1,6 @@
 import { Readable } from 'node:stream'
 
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { v1, v4 } from 'uuid'
@@ -13,7 +14,6 @@ import { FileStatus } from '../../../generated/prisma/client'
 import { MinioStorageService } from '../../../minio-storage/minio-storage.service'
 import PrismaService from '../../../prisma/prisma.service'
 import TaxService from '../../../tax/tax.service'
-import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import { NasesErrorsResponseEnum } from '../../nases.errors.enum'
 import NasesSenderService from '../nases.sender.service'
 

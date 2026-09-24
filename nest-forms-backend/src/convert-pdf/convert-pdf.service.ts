@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { FormDefinitionSlovenskoSk } from 'forms-shared/definitions/formDefinitionTypes'
 
@@ -11,7 +12,6 @@ import {
 import FormsService from '../forms/forms.service'
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import { PDF_EXPORT_FILE_NAME } from '../utils/files'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 
 /**
  * Creates a pdf file from filled-in form and uploads it to minio among SAFE form files.

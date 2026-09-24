@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosError } from 'axios'
@@ -16,7 +17,6 @@ import ApiJwtTokensService from '../../../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../../../clients/clients.service'
 import BaConfigService from '../../../config/ba-config.service'
 import { ClusterEnv } from '../../../config/environment-variables'
-import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,

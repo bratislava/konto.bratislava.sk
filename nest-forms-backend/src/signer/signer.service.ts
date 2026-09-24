@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable, Logger } from '@nestjs/common'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -14,7 +15,6 @@ import {
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { SignerDataRequestDto, SignerDataResponseDto } from './signer.dto'
 import {
   SignerErrorsEnum,

@@ -1,5 +1,10 @@
 import { setTimeout } from 'node:timers/promises'
 
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
@@ -24,10 +29,8 @@ import MailgunService from '../../mailer/mailgun.service'
 import PrismaService from '../../prisma/prisma.service'
 import RabbitmqClientService from '../../rabbitmq-client/rabbitmq-client.service'
 import { RABBIT_FORM_DELIVERY } from '../../utils/constants'
-import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import alertReporting from '../../utils/constants/error.alerts'
 import rabbitmqRequeueDelay from '../../utils/handlers/rabbitmq.handlers'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import {
   RabbitPayloadDto,
   RabbitPayloadUserDataDto,

@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { Request } from 'express'
@@ -5,7 +6,6 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 
 import { User } from '../../auth-v2/types/user'
 import { ALLOW_COMPLETED_DISABLED_FORMS_KEY } from '../../forms-v2/decorators/allow-completed-disabled-forms.decorator'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { FormsErrorsEnum, FormsErrorsResponseEnum } from '../forms.errors.enum'
 import FormsService from '../forms.service'
 

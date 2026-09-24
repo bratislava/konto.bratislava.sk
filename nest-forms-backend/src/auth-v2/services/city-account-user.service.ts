@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+} from '@bratislava/log-nest'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { isAxiosError } from 'axios'
 import {
@@ -6,11 +11,6 @@ import {
 } from 'openapi-clients/city-account'
 
 import ClientsService from '../../clients/clients.service'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 
 export type CityAccountUser = ResponseLegalPersonDataDto | ResponseUserDataDto
 

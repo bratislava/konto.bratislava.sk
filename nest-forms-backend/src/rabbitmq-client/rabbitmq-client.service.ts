@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
 import { Replies } from 'amqplib'
@@ -5,7 +6,6 @@ import { Replies } from 'amqplib'
 import { RabbitPayloadDto } from '../form-delivery-consumer/dtos/form-delivery-consumer.dto'
 import { GinisCheckDeliveryPayloadDto } from '../ginis/dtos/ginis.response.dto'
 import { RABBIT_FORM_DELIVERY, RABBIT_GINIS } from '../utils/constants'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export default class RabbitmqClientService {

@@ -4,6 +4,7 @@ import { plainToInstance } from 'class-transformer'
 import { validateSync } from 'class-validator'
 import { Request, Response } from 'express'
 
+import alertReporting from '../../utils/constants/error.alerts'
 import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from '../dtos/errors.oauth2.dto'
 import { RequestWithAuthorizationData } from '../guards/auth-request-id.guard'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'
@@ -28,7 +29,7 @@ const USER_AGENT = 'user-agent'
 export class OAuth2ExceptionFilter implements ExceptionFilter {
   private readonly logger = new LineLoggerSubservice(OAuth2ExceptionFilter.name)
 
-  private readonly errorFactoryService = new ErrorFactoryService()
+  private readonly errorFactoryService = new ErrorFactoryService({ alertReporting })
 
   constructor(private readonly oauth2ClientSubservice: OAuth2ClientSubservice) {}
 

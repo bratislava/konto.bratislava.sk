@@ -18,6 +18,7 @@ import { NasesService } from '../nases/nases.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
 import { UserTierService } from '../user/user-tier.service'
+import alertReporting from '../utils/constants/error.alerts'
 import { decryptData, encryptData } from '../utils/crypto'
 import {
   CognitoGetUserData,
@@ -130,7 +131,7 @@ export class VerificationService {
       channel.reject(message, false)
       try {
         const data = JSON.parse(message.content.toString()) as RabbitMessageDto
-        const errorFactoryService = new ErrorFactoryService()
+        const errorFactoryService = new ErrorFactoryService({ alertReporting })
         const prismaService = new PrismaService(getBaConfigInstance())
         const cognitoSubservice = new CognitoSubservice(errorFactoryService, getBaConfigInstance())
         const userTierService = new UserTierService(cognitoSubservice, prismaService)

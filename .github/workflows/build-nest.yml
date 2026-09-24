@@ -112,49 +112,14 @@ jobs:
           buildx_driver_opts: |
             network=host
 
-      # One metadata call per build stage: the flavor suffix keeps each
-      # stage's registry cache separate. The deployable image has no suffix, so
-      # its cache is shared across clusters and with CI's final image.
-      - name: Docker metadata (validate)
-        if: ${{ !inputs.skip_tests }}
-        id: meta-validate
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
-        with:
-          image: ${{ inputs.image }}
-          suffix: -validate
-
-      - name: Docker metadata (test)
-        if: ${{ !inputs.skip_tests }}
-        id: meta-test
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
-        with:
-          image: ${{ inputs.image }}
-          suffix: -test
-
-      - name: Docker metadata (lint)
-        if: ${{ !inputs.skip_tests }}
-        id: meta-lint
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
-        with:
-          image: ${{ inputs.image }}
-          suffix: -lint
-
-      - name: Docker metadata (e2e)
-        if: ${{ !inputs.skip_tests && inputs.e2e_tests }}
-        id: meta-e2e
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
-        with:
-          image: ${{ inputs.image }}
-          suffix: -e2e
-
-      # Used for both the CI final image (prefix empty) and the deploy image
-      # (cluster prefix), so a single metadata call serves both.
-      - name: Docker metadata (build)
-        id: meta-build
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+      - name: Docker build config
+        id: config
+        uses: ./.github/actions/docker-build-config
         with:
           image: ${{ inputs.image }}
           prefix: ${{ env.CLUSTER_PREFIX }}
+          caches: builder-deps,test,lint,test-e2e
+          push: ${{ inputs.cluster != '' }}
 
       - name: Set up Turborepo cache
         id: turbo-cache
@@ -173,8 +138,8 @@ jobs:
           targets: ${{ inputs.service }}-builder-deps
           allow: network.host
         env:
-          CACHE_FROM: ${{ steps.meta-validate.outputs.cache_from }}
-          CACHE_TO: ${{ steps.meta-validate.outputs.cache_to }}
+          CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache)['builder-deps'].from }}
+          CACHE_TO: ${{ fromJSON(steps.config.outputs.cache)['builder-deps'].to }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Run unit tests
@@ -186,8 +151,8 @@ jobs:
           targets: ${{ inputs.service }}-test
           allow: network.host
         env:
-          CACHE_FROM: ${{ steps.meta-test.outputs.cache_from }}
-          CACHE_TO: ${{ steps.meta-test.outputs.cache_to }}
+          CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).test.from }}
+          CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).test.to }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Run ESLint
@@ -199,8 +164,8 @@ jobs:
           targets: ${{ inputs.service }}-lint
           allow: network.host
         env:
-          CACHE_FROM: ${{ steps.meta-lint.outputs.cache_from }}
-          CACHE_TO: ${{ steps.meta-lint.outputs.cache_to }}
+          CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).lint.from }}
+          CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).lint.to }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Run E2E tests
@@ -214,8 +179,8 @@ jobs:
           set: |
             *.args.CI_E2E_DATABASE_URL=postgresql://forms:password@localhost:${{ job.services.postgres.ports['5432'] }}/forms?schema=public&connect_timeout=30
         env:
-          CACHE_FROM: ${{ steps.meta-e2e.outputs.cache_from }}
-          CACHE_TO: ${{ steps.meta-e2e.outputs.cache_to }}
+          CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache)['test-e2e'].from }}
+          CACHE_TO: ${{ fromJSON(steps.config.outputs.cache)['test-e2e'].to }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       # CI mode: build the final `runner` image, do not push.
@@ -228,8 +193,8 @@ jobs:
           targets: ${{ inputs.service }}
           allow: network.host
         env:
-          CACHE_FROM: ${{ steps.meta-build.outputs.cache_from }}
-          CACHE_TO: ${{ steps.meta-build.outputs.cache_to }}
+          CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).main.from }}
+          CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).main.to }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       # Deploy mode only: reuse the commit image across clusters. If it already
@@ -250,10 +215,10 @@ jobs:
           source: .
           files: ${{ env.BAKE_FILES }}
           targets: ${{ inputs.service }}
-          push: true
           allow: network.host
         env:
-          CACHE_FROM: ${{ steps.meta-build.outputs.cache_from }}
-          CACHE_TO: ${{ steps.meta-build.outputs.cache_to }}
-          TAGS: ${{ steps.meta-build.outputs.tags }}
+          CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).main.from }}
+          CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).main.to }}
+          TAGS: ${{ join(fromJSON(steps.config.outputs.meta).tags, ' ') }}
+          OUTPUT: ${{ steps.config.outputs.image_output }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}

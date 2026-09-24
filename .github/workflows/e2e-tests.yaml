@@ -71,10 +71,10 @@ jobs:
           buildx_driver_opts: |
             network=host
 
-      - name: Docker metadata
-        id: meta
+      - name: Docker build config
+        id: config
         background: true
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        uses: ./.github/actions/docker-build-config
         with:
           image: ${{ env.REGISTRY }}/standalone/next
           suffix: -e2e
@@ -90,7 +90,7 @@ jobs:
       # runs in the background, while the main thread prepares the local test
       # environment, and they only meet before the tests run.
       - name: Wait for Docker and Turborepo cache setup
-        wait: [ docker-build-setup, meta, turbo-cache ]
+        wait: [ docker-build-setup, config, turbo-cache ]
 
       - name: Build application image
         id: app-image
@@ -103,8 +103,8 @@ jobs:
           load: true
           allow: network.host
         env:
-          CACHE_FROM: ${{ steps.meta.outputs.cache_from }}
-          CACHE_TO: ${{ steps.meta.outputs.cache_to }}
+          CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).main.from }}
+          CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).main.to }}
           TAGS: ${{ env.IMAGE_TAG }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
           NEXT_BUILD_ENV: e2e

@@ -1,4 +1,4 @@
-import { AllowList } from '@bratislava/log-nest'
+import { LogAllowList } from '@bratislava/log-nest'
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common'
 import {
   ApiOperation,
@@ -28,7 +28,7 @@ export class CardPaymentReportingController {
     description: 'Email sent.',
   })
   @UseGuards(AdminGuard)
-  @AllowList({ date: true })
+  @LogAllowList({ date: true })
   @Post('send-report')
   async sendReport(
     @Body() data: RequestPostReportingSendReport,

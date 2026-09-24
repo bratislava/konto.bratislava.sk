@@ -111,7 +111,7 @@ export default class FilesHelper {
       // shouldn't be possible to store 2 files with same minioFileName and formId in minio - db inconsistency
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.DATABASE_ERROR,
-        message: `Multiple files with the same minioFileName: ${minioFileName} for formId: ${formId}`,
+        message: `Multiple files with the same minioFileName for formId: ${formId}`,
       })
     } else if (existingFiles.length === 1) {
       return this.prisma.files.update({
@@ -206,9 +206,7 @@ export default class FilesHelper {
     } catch (error) {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.DATABASE_ERROR,
-        message: `Unable to obtain files for formId: ${
-          formInfo.formId
-        } with minioFileName: ${minioFileName}`,
+        message: `Unable to obtain files for formId: ${formInfo.formId} with the given minioFileName`,
         error,
       })
     }
@@ -291,7 +289,7 @@ export default class FilesHelper {
   ): Promise<PostScanFileResponseDto | undefined> {
     const path = `${this.getPath(formInfo)}${minioFileName}`
 
-    this.logger.log(`Sending file ${path} to scanner...`)
+    this.logger.log(`Sending file of form ${formInfo.formId} to scanner...`)
     const responseScanner = await this.scannerClientService.scanFile(
       path,
       this.getBucketUid(),
@@ -300,7 +298,7 @@ export default class FilesHelper {
 
     if (responseScanner) {
       this.logger.log(
-        `File ${responseScanner.minioFileName} with scannerId: ${responseScanner.id} was ${responseScanner.status} for scanning.`,
+        `File with scannerId: ${responseScanner.id} was ${responseScanner.status} for scanning.`,
       )
     }
 
@@ -344,7 +342,9 @@ export default class FilesHelper {
     // slash between path and minioFileName is provided by getPath function
     const filepath = `${this.getPath(formInfo)}${minioFileName}`
     try {
-      this.logger.debug(`Checking if file exists in minio: ${filepath}`)
+      this.logger.debug(
+        `Checking if file of form ${formInfo.formId} exists in minio`,
+      )
       return await this.minioStorageService.fileExists(
         this.getBucketUid(),
         filepath,

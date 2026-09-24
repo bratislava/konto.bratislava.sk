@@ -85,11 +85,9 @@ export default class MailgunService implements Mailer {
           message: `Mailgun message was not sent to email.`,
           console: {
             formId: data.data.formId,
-            emailFrom,
-            emailTo: data.to,
-            subject,
+            template: data.template,
             mailgunResponse,
-            filenames: attachments?.map((attachment) => attachment.filename),
+            attachmentCount: attachments?.length ?? 0,
           },
         })
       }
@@ -100,10 +98,8 @@ export default class MailgunService implements Mailer {
           message: 'ERROR to send mailgun message',
           console: {
             formId: data.data.formId,
-            emailFrom,
-            emailTo: data.to,
-            subject,
-            filenames: attachments?.map((attachment) => attachment.filename),
+            template: data.template,
+            attachmentCount: attachments?.length ?? 0,
           },
           error,
         }),

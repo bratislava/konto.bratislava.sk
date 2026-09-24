@@ -252,7 +252,7 @@ export default class EmailFormsService {
         this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Error while sending confirmation email.',
-          console: { userEmail, formId: form.id },
+          console: { formId: form.id },
           error,
         }),
       )
@@ -297,7 +297,7 @@ export default class EmailFormsService {
     )
 
     this.logger.log(
-      `Sending email of form ${formId} to ${resolvedRecipientAddresses}.`,
+      `Sending email of form ${formId} to ${resolvedRecipientAddresses.split(', ').length} recipient(s).`,
     )
 
     const jwtSecret = this.baConfigService.tokens.jwtSecret
@@ -379,11 +379,7 @@ export default class EmailFormsService {
           console: {
             formId,
             emailSource: userEmail == null ? 'extracted' : 'provided',
-            userEmail,
-            userFirstName,
-            userName,
             formDefinitionSlug: formDefinition.slug,
-            formDataJson: form.formDataJson,
           },
         }),
       )

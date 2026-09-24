@@ -70,7 +70,7 @@ export default class ScannerClientService {
           },
         })
       this.logger.debug(
-        `ScannerClientService.scanFiles response.data: ${JSON.stringify(response.data)}`,
+        `ScannerClientService.scanFiles response status: ${response.status}, files: ${response.data.length}`,
       )
       return response.data
     } catch (error) {

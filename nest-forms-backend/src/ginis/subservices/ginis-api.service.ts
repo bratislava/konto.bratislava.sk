@@ -90,10 +90,12 @@ export default class GinisAPIService {
         'Id-funkce': functionId,
       })
     // if the latter call fails because of missing IdReferenta, we'll get a log of previous result to debug
-    this.logger.log(
-      'Using the following data in getting GINIS owner: ',
-      JSON.stringify(functionDetail),
-    )
+    this.logger.log('Getting GINIS owner', {
+      functionId,
+      hasReferentId: Boolean(
+        functionDetail['Detail-funkcniho-mista']['Id-referenta'],
+      ),
+    })
     return this.ginis.gin.detailReferenta({
       'Id-osoby': functionDetail['Detail-funkcniho-mista']['Id-referenta'],
     })

@@ -3,10 +3,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { getSignerData } from 'forms-shared/signer/signerData'
-import {
-  formatValidateXmlResultErrors,
-  validateXml,
-} from 'forms-shared/slovensko-sk/validateXml'
+import { validateXml } from 'forms-shared/slovensko-sk/validateXml'
 
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
@@ -42,9 +39,11 @@ export default class SignerService {
 
     throw this.errorFactoryService.BadRequestException({
       errorEnum: SignerErrorsEnum.XML_VALIDATION_ERROR,
-      message: result.errors
-        ? `${SignerErrorsResponseEnum.XML_VALIDATION_ERROR} Errors: ${formatValidateXmlResultErrors(result.errors)}`
-        : SignerErrorsResponseEnum.XML_VALIDATION_ERROR,
+      message: SignerErrorsResponseEnum.XML_VALIDATION_ERROR,
+      // Only positions: libxml error messages can quote the offending (user-entered) value
+      console: {
+        errorPositions: result.errors?.map(({ line, col }) => ({ line, col })),
+      },
     })
   }
 

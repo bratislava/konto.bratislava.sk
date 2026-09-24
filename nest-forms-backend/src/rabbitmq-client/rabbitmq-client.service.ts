@@ -34,7 +34,8 @@ export default class RabbitmqClientService {
   ): Promise<Replies.Empty> {
     this.logger.debug({
       message: 'publishing delayed rabbit message',
-      content: message,
+      formId: message.formId,
+      tries: message.tries,
     })
     return this.amqpConnection.publish(
       RABBIT_FORM_DELIVERY.EXCHANGE,

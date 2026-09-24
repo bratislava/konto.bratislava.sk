@@ -34,11 +34,10 @@ import {
 @ApiBearerAuth()
 @Controller('convert')
 export default class ConvertController {
-  private readonly logger: LineLoggerSubservice
-
-  constructor(private readonly convertService: ConvertService) {
-    this.logger = new LineLoggerSubservice('ConvertController')
-  }
+  constructor(
+    private readonly convertService: ConvertService,
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   @ApiOperation({
     summary: 'Convert JSON to XML',

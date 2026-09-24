@@ -53,11 +53,7 @@ import FilesService from './files.service'
 @ApiBearerAuth()
 @Controller('files')
 export default class FilesController {
-  private readonly logger: LineLoggerSubservice
-
-  constructor(private readonly filesService: FilesService) {
-    this.logger = new LineLoggerSubservice('FilesController')
-  }
+  constructor(private readonly filesService: FilesService) {}
 
   @ApiOperation({
     summary: 'List of files and statuses based on formId',

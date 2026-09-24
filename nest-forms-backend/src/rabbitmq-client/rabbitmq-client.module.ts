@@ -32,15 +32,16 @@ import RabbitmqClientService from './rabbitmq-client.service'
   exports: [RabbitmqClientService, RabbitMQModule],
 })
 export default class RabbitmqClientModule {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private rabbitmqClientService: RabbitmqClientService,
     private amqpConnection: AmqpConnection,
     private baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice,
   ) {
-    this.rabbitmqClientService = new RabbitmqClientService(amqpConnection)
-    this.logger = new LineLoggerSubservice('RabbitmqClientModule')
+    this.rabbitmqClientService = new RabbitmqClientService(
+      amqpConnection,
+      new LineLoggerSubservice(RabbitmqClientService.name),
+    )
     this.logger.log(
       `Setting up rabbit mq connection to: ${this.baConfigService.rabbitMq.uri}`,
     )

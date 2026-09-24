@@ -35,16 +35,13 @@ import { FormSenderService } from './form-sender.service'
 @ApiBearerAuth()
 @Controller('form-sender')
 export default class FormSenderController {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly formsService: FormsService,
     private readonly formSenderService: FormSenderService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly nasesContactsService: NasesContactsService,
-  ) {
-    this.logger = new LineLoggerSubservice(FormSenderController.name)
-  }
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   @ApiOperation({
     summary: '',
@@ -101,10 +98,10 @@ export default class FormSenderController {
   ): Promise<SendFormResponseDto> {
     const jwtTest = this.formSenderService.createUserJwtToken(data.eidToken)
     if ((await this.nasesContactsService.getUpvsIdentity(jwtTest)) === null) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+      })
     }
     const nasesUser = jwt.decode(data.eidToken, {
       json: true,

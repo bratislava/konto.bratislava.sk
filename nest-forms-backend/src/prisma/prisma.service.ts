@@ -25,12 +25,11 @@ export default class PrismaService
   extends PrismaClient<ReturnType<typeof getPrismaClientOptions>>
   implements OnModuleInit
 {
-  private readonly logger: LineLoggerSubservice
-
-  constructor(private readonly baConfigService: BaConfigService) {
+  constructor(
+    private readonly baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice,
+  ) {
     super(getPrismaClientOptions(baConfigService.database.url))
-
-    this.logger = new LineLoggerSubservice(PrismaService.name)
 
     this.$on('info', (e) => {
       this.logger.log(

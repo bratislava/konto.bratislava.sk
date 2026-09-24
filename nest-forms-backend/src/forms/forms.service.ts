@@ -49,7 +49,7 @@ const editableStatesFilter: Prisma.FormsWhereInput[] = [
 export default class FormsService {
   constructor(
     private readonly prisma: PrismaService,
-    private throwerErrorGuard: ThrowerErrorGuard,
+    private errorFactoryService: ErrorFactoryService,
     @Inject(forwardRef(() => FilesService))
     private filesService: FilesService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
@@ -59,10 +59,10 @@ export default class FormsService {
     // Try if this form with such id exists and is not archived
     const form = await this.getUniqueForm(id)
     if (form === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${id}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${id}`,
+      })
     }
 
     /* check if form contains file ids and if so, check if they are valid with this form. */
@@ -77,12 +77,11 @@ export default class FormsService {
         data,
       })
     } catch (error) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${id}`,
-        undefined,
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${id}`,
         error,
-      )
+      })
     }
     return formsResult
   }
@@ -90,17 +89,17 @@ export default class FormsService {
   async archiveForm(formId: string): Promise<void> {
     const form = await this.getUniqueForm(formId)
     if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${formId}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${formId}`,
+      })
     }
 
     if (!this.isEditable(form)) {
-      throw this.throwerErrorGuard.BadRequestException(
-        FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR,
+      })
     }
 
     try {
@@ -113,12 +112,11 @@ export default class FormsService {
         },
       })
     } catch (error) {
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.DATABASE_ERROR,
-        ErrorsResponseEnum.DATABASE_ERROR,
-        undefined,
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: ErrorEnum.DATABASE_ERROR,
+        message: ErrorResponseEnum.DATABASE_ERROR,
         error,
-      )
+      })
     }
   }
 
@@ -142,27 +140,27 @@ export default class FormsService {
         where: { id },
       })
     } catch (error) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_OR_USER_NOT_FOUND_ERROR,
-        `Form with formId: ${id} does not exist`,
-        `Form ${id} does not exist`,
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_OR_USER_NOT_FOUND_ERROR,
+        message: `Form with formId: ${id} does not exist`,
+        console: `Form ${id} does not exist`,
         error,
-      )
+      })
     }
 
     if (form.archived) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR,
+      })
     }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
 
     return form
@@ -174,10 +172,10 @@ export default class FormsService {
     const form = await this.getForm(id)
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
     return {
       ...form,
@@ -192,10 +190,10 @@ export default class FormsService {
   ): Promise<UpdateFormResponseDto> {
     const form = await this.getUniqueForm(id)
     if (form === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${id}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${id}`,
+      })
     }
 
     return this.updateForm(id, {
@@ -319,10 +317,10 @@ export default class FormsService {
     Object.values(data).forEach((form) => {
       const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
       if (!formDefinition) {
-        throw this.throwerErrorGuard.NotFoundException(
-          FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-          `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-        )
+        throw this.errorFactoryService.NotFoundException({
+          errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+          message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+        })
       }
 
       dataWithLatestFlag.push({
@@ -374,17 +372,17 @@ export default class FormsService {
       where: { id },
     })
     if (!form || form.archived) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${id}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${id}`,
+      })
     }
 
     if (!this.isEditable(form)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
-        `${FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR} Current form state is: ${form.state}.`,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
+        message: `${FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR} Current form state is: ${form.state}.`,
+      })
     }
     return form
   }
@@ -427,25 +425,25 @@ export default class FormsService {
   async bumpJsonVersion(formId: string): Promise<void> {
     const form = await this.getUniqueForm(formId)
     if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
 
     if (!this.isEditable(form)) {
-      throw this.throwerErrorGuard.BadRequestException(
-        FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR,
+      })
     }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
 
     const requiresBump = versionCompareRequiresBumpToContinue({
@@ -453,10 +451,10 @@ export default class FormsService {
       latestVersion: formDefinition.jsonVersion,
     })
     if (!requiresBump) {
-      throw this.throwerErrorGuard.BadRequestException(
-        FormsErrorsEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
-        FormsErrorsResponseEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: FormsErrorsEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
+        message: FormsErrorsResponseEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
+      })
     }
 
     await this.prisma.forms.update({

@@ -7,9 +7,7 @@ import WebhookDto from '../form-delivery-consumer/dtos/webhook.dto'
 @ApiTags('webhook')
 @Controller('webhook')
 export default class WebhookController {
-  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(
-    WebhookController.name,
-  )
+  constructor(private readonly logger: LineLoggerSubservice) {}
 
   @ApiOkResponse({})
   @ApiOperation({

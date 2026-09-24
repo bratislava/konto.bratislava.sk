@@ -13,14 +13,10 @@ import { getUserFormFields } from '../utils/get-user-form-fields'
 
 @Injectable()
 export class CreateFormService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-  ) {
-    this.logger = new LineLoggerSubservice(CreateFormService.name)
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+  ) {}
 
   async createForm(requestData: CreateFormInput, user: User) {
     const formDefinition = getFormDefinitionBySlug(
@@ -28,18 +24,18 @@ export class CreateFormService {
     )
     if (!formDefinition) {
       // TODO: Errors
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${requestData.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${requestData.formDefinitionSlug}`,
+      })
     }
 
     if (formDefinition.isDisabled) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        FormsErrorsEnum.FORM_DEFINITION_DISABLED,
-        FormsErrorsResponseEnum.FORM_DEFINITION_DISABLED,
-        { slug: requestData.formDefinitionSlug },
-      )
+      throw this.errorFactoryService.ForbiddenException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_DISABLED,
+        message: FormsErrorsResponseEnum.FORM_DEFINITION_DISABLED,
+        console: { slug: requestData.formDefinitionSlug },
+      })
     }
 
     return this.prismaService.forms.create({

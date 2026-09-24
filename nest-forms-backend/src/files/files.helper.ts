@@ -45,8 +45,6 @@ const extensionToMimeType = new Map<string, string>([
 // TODO missing tests
 @Injectable()
 export default class FilesHelper {
-  private readonly logger: LineLoggerSubservice
-
   private readonly supportedMimeTypes: string[]
 
   constructor(
@@ -54,9 +52,9 @@ export default class FilesHelper {
     private readonly baConfigService: BaConfigService,
     private minioStorageService: MinioStorageService,
     private scannerClientService: ScannerClientService,
-    private throwerErrorGuard: ThrowerErrorGuard,
+    private errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice,
   ) {
-    this.logger = new LineLoggerSubservice('FilesHelper')
     this.supportedMimeTypes =
       this.baConfigService.files.mimeTypeWhitelist.split(' ')
   }
@@ -111,10 +109,10 @@ export default class FilesHelper {
     })
     if (existingFiles.length > 1) {
       // shouldn't be possible to store 2 files with same minioFileName and formId in minio - db inconsistency
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.DATABASE_ERROR,
-        `Multiple files with the same minioFileName: ${minioFileName} for formId: ${formId}`,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.DATABASE_ERROR,
+        message: `Multiple files with the same minioFileName: ${minioFileName} for formId: ${formId}`,
+      })
     } else if (existingFiles.length === 1) {
       return this.prisma.files.update({
         where: {
@@ -164,12 +162,11 @@ export default class FilesHelper {
         },
       })
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.DATABASE_ERROR,
-        'Error while saving file to database.',
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.DATABASE_ERROR,
+        message: 'Error while saving file to database.',
         error,
-      )
+      })
     }
   }
 
@@ -181,12 +178,11 @@ export default class FilesHelper {
         },
       })
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.DATABASE_ERROR,
-        `Unable to obtain file by fileId: ${fileId}`,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.DATABASE_ERROR,
+        message: `Unable to obtain file by fileId: ${fileId}`,
         error,
-      )
+      })
     }
   }
 
@@ -208,14 +204,13 @@ export default class FilesHelper {
         },
       })
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.DATABASE_ERROR,
-        `Unable to obtain files for formId: ${
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.DATABASE_ERROR,
+        message: `Unable to obtain files for formId: ${
           formInfo.formId
         } with minioFileName: ${minioFileName}`,
-        undefined,
         error,
-      )
+      })
     }
   }
 
@@ -235,12 +230,11 @@ export default class FilesHelper {
       })
       return !!file
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.DATABASE_ERROR,
-        `Unable to obtain files for formId: ${formId} with fileId: ${fileId}.`,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.DATABASE_ERROR,
+        message: `Unable to obtain files for formId: ${formId} with fileId: ${fileId}.`,
         error,
-      )
+      })
     }
   }
 
@@ -280,11 +274,11 @@ export default class FilesHelper {
     if (errorFiles.length > 0) {
       // here we should send notification to user and to our notification service
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
-          FilesErrorsResponseEnum.FILE_SCANNING_SERVICE_ERROR,
-          { formId, errorFiles },
-        ),
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
+          message: FilesErrorsResponseEnum.FILE_SCANNING_SERVICE_ERROR,
+          console: { formId, errorFiles },
+        }),
       )
       return true
     }
@@ -318,10 +312,10 @@ export default class FilesHelper {
     scannerResponse: PostScanFileResponseDto,
   ): Promise<Files> {
     if (!isValidScanStatus(scannerResponse.status)) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        FilesErrorsEnum.FILE_WRONG_STATUS_NOT_ACCEPTED_ERROR,
-        FilesErrorsResponseEnum.FILE_WRONG_STATUS_NOT_ACCEPTED_ERROR,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: FilesErrorsEnum.FILE_WRONG_STATUS_NOT_ACCEPTED_ERROR,
+        message: FilesErrorsResponseEnum.FILE_WRONG_STATUS_NOT_ACCEPTED_ERROR,
+      })
     }
 
     try {
@@ -335,12 +329,11 @@ export default class FilesHelper {
         },
       })
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.DATABASE_ERROR,
-        ErrorsResponseEnum.DATABASE_ERROR,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.DATABASE_ERROR,
+        message: ErrorResponseEnum.DATABASE_ERROR,
         error,
-      )
+      })
     }
   }
 
@@ -357,12 +350,11 @@ export default class FilesHelper {
         filepath,
       )
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        FilesErrorsEnum.FILE_MINIO_CHECK_ERROR,
-        FilesErrorsResponseEnum.FILE_MINIO_CHECK_ERROR,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: FilesErrorsEnum.FILE_MINIO_CHECK_ERROR,
+        message: FilesErrorsResponseEnum.FILE_MINIO_CHECK_ERROR,
         error,
-      )
+      })
     }
   }
 
@@ -385,10 +377,10 @@ export default class FilesHelper {
   forms2formInfo(form: Forms): FormInfo {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
 
     return {
@@ -420,7 +412,7 @@ export default class FilesHelper {
 
   createMinioFileName(file: BufferedFileDto, fileName: string): string {
     const timestamp = Date.now().toString()
-    // eslint-disable-next-line sonarjs/hashing -- this is not used in a sensitive context
+
     const hash = createHash('sha1').update(timestamp).digest('hex').slice(0, 8)
     const extension = file.originalname.slice(
       file.originalname.lastIndexOf('.'),
@@ -440,12 +432,11 @@ export default class FilesHelper {
         },
       })
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.DATABASE_ERROR,
-        'Error while checking if file exists in the database.',
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.DATABASE_ERROR,
+        message: 'Error while checking if file exists in the database.',
         error,
-      )
+      })
     }
     const uuids: string[] = []
     files.forEach((file) => {

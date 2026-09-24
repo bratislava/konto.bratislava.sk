@@ -19,15 +19,13 @@ import MailgunHelper from './utils/mailgun.helper'
 export default class MailgunService implements Mailer {
   mailgunClient: Interfaces.IMailgunClient
 
-  logger: LineLoggerSubservice
-
   constructor(
     private readonly baConfigService: BaConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly mailgunHelper: MailgunHelper,
     private readonly prismaService: PrismaService,
+    private readonly logger: LineLoggerSubservice,
   ) {
-    this.logger = new LineLoggerSubservice(MailgunService.name)
     const mailgun = new Mailgun(FormData)
     this.mailgunClient = mailgun.client({
       username: 'api',
@@ -82,10 +80,10 @@ export default class MailgunService implements Mailer {
         },
       )
       if (mailgunResponse.status !== 200) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Mailgun message was not sent to email.`,
-          {
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Mailgun message was not sent to email.`,
+          console: {
             formId: data.data.formId,
             emailFrom,
             emailTo: data.to,
@@ -93,14 +91,14 @@ export default class MailgunService implements Mailer {
             mailgunResponse,
             filenames: attachments?.map((attachment) => attachment.filename),
           },
-        )
+        })
       }
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'ERROR to send mailgun message',
-          {
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'ERROR to send mailgun message',
+          console: {
             formId: data.data.formId,
             emailFrom,
             emailTo: data.to,
@@ -108,7 +106,7 @@ export default class MailgunService implements Mailer {
             filenames: attachments?.map((attachment) => attachment.filename),
           },
           error,
-        ),
+        }),
       )
       await this.setFormToEmailErrorState(data.data.formId)
     }

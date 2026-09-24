@@ -24,7 +24,7 @@ export default class MailgunHelper {
   mailgunClient: Interfaces.IMailgunClient
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService,
   ) {
     const mailgun = new Mailgun(FormData)
@@ -99,10 +99,10 @@ export default class MailgunHelper {
     )
 
     if (!response.version?.template) {
-      throw this.throwerErrorGuard.NotFoundException(
-        MailgunErrorsEnum.TEMPLATE_NOT_FOUND,
-        `${MailgunErrorsResponseEnum.TEMPLATE_NOT_FOUND}: ${templateName}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: MailgunErrorsEnum.TEMPLATE_NOT_FOUND,
+        message: `${MailgunErrorsResponseEnum.TEMPLATE_NOT_FOUND}: ${templateName}`,
+      })
     }
 
     const compiledTemplate = Handlebars.compile(response.version.template)

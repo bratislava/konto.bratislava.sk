@@ -39,16 +39,13 @@ import {
 @Injectable()
 @Processor('sharepoint')
 export default class SharepointService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
-    private throwerErrorGuard: ThrowerErrorGuard,
+    private errorFactoryService: ErrorFactoryService,
     private prismaService: PrismaService,
     private readonly baConfigService: BaConfigService,
     private formValidatorRegistryService: FormValidatorRegistryService,
-  ) {
-    this.logger = new LineLoggerSubservice('SharepointService')
-  }
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   @Process()
   async transcode(job: Job<{ formId: string }>): Promise<void> {
@@ -59,12 +56,12 @@ export default class SharepointService {
   @OnQueueFailed()
   handler(job: Job<{ formId: string }>, err: Error): void {
     this.logger.error(
-      this.throwerErrorGuard.InternalServerErrorException(
-        SharepointErrorsEnum.GENERAL_ERROR,
-        SharepointErrorsResponseEnum.GENERAL_ERROR,
-        `Sending form ${job.data.formId} to Sharepoint has failed.`,
-        err,
-      ),
+      this.errorFactoryService.InternalServerErrorException({
+        errorEnum: SharepointErrorsEnum.GENERAL_ERROR,
+        message: SharepointErrorsResponseEnum.GENERAL_ERROR,
+        console: `Sending form ${job.data.formId} to Sharepoint has failed.`,
+        error: err,
+      }),
     )
 
     this.prismaService.forms
@@ -78,12 +75,11 @@ export default class SharepointService {
       })
       .catch((error: unknown) => {
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            SharepointErrorsEnum.GENERAL_ERROR,
-            `Setting form error with id ${job.data.formId} to POWERAPPS_SEND_ERROR failed.`,
-            undefined,
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: SharepointErrorsEnum.GENERAL_ERROR,
+            message: `Setting form error with id ${job.data.formId} to POWERAPPS_SEND_ERROR failed.`,
             error,
-          ),
+          }),
         )
       })
   }
@@ -171,36 +167,36 @@ export default class SharepointService {
       },
     })
     if (form === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
 
     if (
       formDefinition.type !== FormDefinitionType.SlovenskoSkGeneric ||
       !formDefinition.sharepointData
     ) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        SharepointErrorsEnum.SHAREPOINT_DATA_NOT_PROVIDED,
-        SharepointErrorsResponseEnum.SHAREPOINT_DATA_NOT_PROVIDED,
-        { formId: form.id },
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: SharepointErrorsEnum.SHAREPOINT_DATA_NOT_PROVIDED,
+        message: SharepointErrorsResponseEnum.SHAREPOINT_DATA_NOT_PROVIDED,
+        console: { formId: form.id },
+      })
     }
 
     if (form.formDataJson == null) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.EMPTY_FORM_DATA,
-        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+        message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      })
     }
 
     const accessToken = await this.getAccessToken()
@@ -305,22 +301,22 @@ export default class SharepointService {
       )
       .catch((error: unknown) => {
         if (isAxiosError(error)) {
-          throw this.throwerErrorGuard.fromAxiosError(error, {})
+          throw this.errorFactoryService.fromAxiosError(error, {})
         }
 
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+        })
       })
 
     columns.forEach((col) => {
       const filtered = fields.find((field) => field.displayName === col)
       if (!filtered) {
-        throw this.throwerErrorGuard.BadRequestException(
-          SharepointErrorsEnum.UNKNOWN_COLUMN,
-          `${SharepointErrorsResponseEnum.UNKNOWN_COLUMN} Column: ${col}, dtb name: ${dbName}.`,
-        )
+        throw this.errorFactoryService.BadRequestException({
+          errorEnum: SharepointErrorsEnum.UNKNOWN_COLUMN,
+          message: `${SharepointErrorsResponseEnum.UNKNOWN_COLUMN} Column: ${col}, dtb name: ${dbName}.`,
+        })
       }
       result[col] = filtered.name
     })
@@ -418,14 +414,14 @@ export default class SharepointService {
       return { id: parseInt(res.data.id, 10) }
     } catch (error) {
       if (!isAxiosError(error)) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          'Error is not an instance of AxiosError',
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+          console: 'Error is not an instance of AxiosError',
           error,
-        )
+        })
       }
-      throw this.throwerErrorGuard.fromAxiosError(error, {
+      throw this.errorFactoryService.fromAxiosError(error, {
         errorEnumOverwrite: SharepointErrorsEnum.POST_DATA_TO_SHAREPOINT_ERROR,
         message: SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR,
         console: JSON.stringify({
@@ -455,14 +451,14 @@ export default class SharepointService {
       )
       .catch((error: unknown) => {
         if (!isAxiosError(error)) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-            'Error is not an instance of AxiosError',
+          throw this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+            console: 'Error is not an instance of AxiosError',
             error,
-          )
+          })
         }
-        throw this.throwerErrorGuard.fromAxiosError(error, {
+        throw this.errorFactoryService.fromAxiosError(error, {
           errorEnumOverwrite: SharepointErrorsEnum.ACCESS_TOKEN_ERROR,
           message: SharepointErrorsResponseEnum.ACCESS_TOKEN_ERROR,
         })

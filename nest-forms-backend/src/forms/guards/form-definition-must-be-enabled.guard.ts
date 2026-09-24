@@ -18,7 +18,7 @@ export class FormDefinitionMustBeEnabledGuard implements CanActivate {
   constructor(
     private readonly formsService: FormsService,
     private readonly reflector: Reflector,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -26,19 +26,19 @@ export class FormDefinitionMustBeEnabledGuard implements CanActivate {
     const { formId } = request.params
 
     if (!formId || typeof formId !== 'string') {
-      throw this.throwerErrorGuard.BadRequestException(
-        FormsErrorsEnum.FORM_ID_ERROR,
-        FormsErrorsResponseEnum.FORM_ID_ERROR,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: FormsErrorsEnum.FORM_ID_ERROR,
+        message: FormsErrorsResponseEnum.FORM_ID_ERROR,
+      })
     }
 
     const form = await this.formsService.getForm(formId)
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
 
     if (formDefinition.isDisabled) {
@@ -49,10 +49,10 @@ export class FormDefinitionMustBeEnabledGuard implements CanActivate {
         )
 
       if (!allowCompletedDisabledForms || this.formsService.isEditable(form)) {
-        throw this.throwerErrorGuard.ForbiddenException(
-          FormsErrorsEnum.FORM_DEFINITION_DISABLED,
-          FormsErrorsResponseEnum.FORM_DEFINITION_DISABLED,
-        )
+        throw this.errorFactoryService.ForbiddenException({
+          errorEnum: FormsErrorsEnum.FORM_DEFINITION_DISABLED,
+          message: FormsErrorsResponseEnum.FORM_DEFINITION_DISABLED,
+        })
       }
     }
 

@@ -22,11 +22,10 @@ export interface MinioUploadedObjectInfo {
 
 @Injectable()
 export class MinioStorageService {
-  private readonly logger = new LineLoggerSubservice('MinioStorageService')
-
   constructor(
     private readonly minioClientService: MinioClientService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice,
   ) {}
 
   public client(): Client {
@@ -94,12 +93,12 @@ export class MinioStorageService {
         .putObject(bucket, path, Buffer.from(''), 0)) as MinioUploadedObjectInfo
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Error creating folder in bucket.`,
-          { path, bucket },
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Error creating folder in bucket.`,
+          console: { path, bucket },
           error,
-        ),
+        }),
       )
       return false
     }
@@ -113,12 +112,11 @@ export class MinioStorageService {
       return true
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Error while deleting a folder in minio',
-          undefined,
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Error while deleting a folder in minio',
           error,
-        ),
+        }),
       )
       return false
     }
@@ -160,12 +158,13 @@ export class MinioStorageService {
           file.buffer,
         )) as MinioUploadedObjectInfo
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        FilesErrorsEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-        FilesErrorsResponseEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum:
+          FilesErrorsEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+        message:
+          FilesErrorsResponseEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
         error,
-      )
+      })
     }
   }
 
@@ -184,12 +183,13 @@ export class MinioStorageService {
         .client()
         .getObject(bucketName, fileName)
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        FilesErrorsEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-        FilesErrorsResponseEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum:
+          FilesErrorsEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+        message:
+          FilesErrorsResponseEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
         error,
-      )
+      })
     }
   }
 }

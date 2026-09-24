@@ -57,15 +57,12 @@ export interface GinContactParams {
  * Handles all communication through @bratislava/ginis-sdk
  */ @Injectable()
 export default class GinisAPIService {
-  private readonly logger: LineLoggerSubservice
-
   private readonly ginis: Ginis
 
   constructor(
     private readonly baConfigService: BaConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly logger: LineLoggerSubservice,
   ) {
-    this.logger = new LineLoggerSubservice('GinisAPIService')
     this.ginis = new Ginis({
       // connect to any subset of services needed, all the urls are optional but requests to services missing urls will fail
       urls: {

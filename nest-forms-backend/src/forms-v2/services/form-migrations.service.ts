@@ -19,9 +19,10 @@ const getMigrationExpirationDate = () => {
 
 @Injectable()
 export class FormMigrationsService {
-  constructor(private readonly prismaService: PrismaService) {}
-
-  private readonly logger = new LineLoggerSubservice(FormMigrationsService.name)
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   /**
    * Prepares a migration record if forms exist for the given guest identity.

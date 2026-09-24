@@ -8,13 +8,10 @@ import PrismaService from '../../prisma/prisma.service'
 
 @Injectable()
 export default class FormsTaskSubservice {
-  private logger: LineLoggerSubservice = new LineLoggerSubservice(
-    FormsTaskSubservice.name,
-  )
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly filesService: FilesService,
+    private readonly logger: LineLoggerSubservice,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_1AM)

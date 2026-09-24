@@ -14,8 +14,6 @@ dayjs.extend(timezone)
 
 @Injectable()
 export default class TaxImportHelperService {
-  private readonly logger: LineLoggerSubservice
-
   private readonly BRATISLAVA_TIMEZONE = 'Europe/Bratislava'
 
   private readonly UPLOAD_BIRTHNUMBERS_BATCH = 100
@@ -24,9 +22,8 @@ export default class TaxImportHelperService {
     private readonly prismaService: PrismaService,
     private readonly databaseSubservice: DatabaseSubservice,
     private readonly norisService: NorisService,
-  ) {
-    this.logger = new LineLoggerSubservice(TaxImportHelperService.name)
-  }
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   private async getImportWindowConfig(): Promise<{
     startHour: number

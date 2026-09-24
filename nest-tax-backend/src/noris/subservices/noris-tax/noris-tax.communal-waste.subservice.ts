@@ -46,10 +46,8 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     paymentSubservice: NorisPaymentSubservice,
     databaseSubservice: DatabaseSubservice,
     baConfigService: BaConfigService,
+    logger: LineLoggerSubservice,
   ) {
-    const logger = new LineLoggerSubservice(
-      NorisTaxCommunalWasteSubservice.name,
-    )
     super(
       qrCodeService,
       prismaService,
@@ -190,13 +188,11 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       if (error instanceof HttpException) {
         throw error
       }
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
-        'Failed to get taxes from Noris',
-        undefined,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
+        message: 'Failed to get taxes from Noris',
         error,
-      )
+      })
     }
 
     const taxDefinition = this.getTaxDefinition()
@@ -251,13 +247,11 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
           return true
         } catch (error) {
           this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              'Failed to update tax in database.',
-              undefined,
-              undefined,
+            this.errorFactoryService.InternalServerErrorException({
+              errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+              message: 'Failed to update tax in database.',
               error,
-            ),
+            }),
           )
           return false
         }

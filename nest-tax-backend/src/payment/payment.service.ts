@@ -38,17 +38,16 @@ interface GpWebpayProcessingStrategy {
 
 @Injectable()
 export class PaymentService {
-  private readonly logger = new LineLoggerSubservice('PaymentService')
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly gpWebpaySubservice: GpWebpaySubservice,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly bloomreachService: BloomreachService,
     private readonly baConfigService: BaConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly taxService: TaxService,
     private readonly retryService: RetryService,
+    private readonly logger: LineLoggerSubservice,
   ) {}
 
   private getRedirectUrl(taxType: TaxType) {
@@ -82,20 +81,19 @@ export class PaymentService {
         },
       })
     } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-        'Can not create order',
-        'Database error',
-        undefined,
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: CustomErrorPaymentTypesEnum.DATABASE_ERROR,
+        message: 'Can not create order',
         error,
-      )
+      })
     }
 
     try {
       // data that goes to payment gateway should not contain diacritics
       const redirectUrl = this.getRedirectUrl(options.taxType)
       const requestData = {
-        MERCHANTNUMBER: this.baConfigService.paygate[options.taxType].merchantNumber,
+        MERCHANTNUMBER:
+          this.baConfigService.paygate[options.taxType].merchantNumber,
         OPERATION: 'CREATE_ORDER',
         ORDERNUMBER: orderId,
         AMOUNT: payment.amount.toString(),
@@ -116,13 +114,11 @@ export class PaymentService {
         },
       )}`
     } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.CREATE_PAYMENT_URL,
-        'Can not create url',
-        'Create url error',
-        undefined,
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: CustomErrorPaymentTypesEnum.CREATE_PAYMENT_URL,
+        message: 'Can not create url',
         error,
-      )
+      })
     }
   }
 
@@ -188,10 +184,10 @@ export class PaymentService {
         select: { amount: true },
       })
       if (!taxData) {
-        throw this.throwerErrorGuard.NotFoundException(
-          ErrorsEnum.NOT_FOUND_ERROR,
-          `Tax with id ${taxPayment.taxId} not found.`,
-        )
+        throw this.errorFactoryService.NotFoundException({
+          errorEnum: ErrorEnum.NOT_FOUND_ERROR,
+          message: `Tax with id ${taxPayment.taxId} not found.`,
+        })
       }
       const totalPaid = await tx.taxPayment.aggregate({
         where: { taxId: taxPayment.taxId, status: PaymentStatus.SUCCESS },
@@ -213,10 +209,10 @@ export class PaymentService {
         externalId,
       )
       if (!result) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to track payment in Bloomreach.',
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to track payment in Bloomreach.',
+        })
       }
     })
   }
@@ -269,12 +265,11 @@ export class PaymentService {
 
       if (!taxPaymentWithTax) {
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
-            CustomErrorNorisTypesResponseEnum.TAX_NOT_FOUND,
-            undefined,
-            `We received a valid payment response for payment we do not have in our database. ORDERNUMBER: ${ORDERNUMBER}`,
-          ),
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
+            message: CustomErrorNorisTypesResponseEnum.TAX_NOT_FOUND,
+            console: `We received a valid payment response for payment we do not have in our database. ORDERNUMBER: ${ORDERNUMBER}`,
+          }),
         )
         return `${this.baConfigService.paygate.afterPaymentRedirectFrontend}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
       }
@@ -352,13 +347,11 @@ export class PaymentService {
 
       return `${this.baConfigService.paygate.afterPaymentRedirectFrontend}?status=${strategy.feState}&taxType=${type}&year=${year}&order=${order}`
     } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,
-        'Error to redirect to response',
-        'Error to redirect',
-        undefined,
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,
+        message: 'Error to redirect to response',
         error,
-      )
+      })
     }
   }
 

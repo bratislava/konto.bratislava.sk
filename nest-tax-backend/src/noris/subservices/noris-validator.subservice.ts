@@ -6,11 +6,10 @@ import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 @Injectable()
 export class NorisValidatorSubservice {
-  private readonly logger = new LineLoggerSubservice(
-    NorisValidatorSubservice.name,
-  )
-
-  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {}
+  constructor(
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   /**
    * Validates an array of Noris records against the given schema.
@@ -43,13 +42,11 @@ export class NorisValidatorSubservice {
   ): z.infer<T> {
     const result = schema.safeParse(data)
     if (!result.success) {
-      throw this.throwerErrorGuard.BadRequestException(
-        CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
-        result.error.message,
-        undefined,
-        undefined,
-        result.error,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
+        message: result.error.message,
+        error: result.error,
+      })
     }
     return result.data
   }

@@ -84,10 +84,10 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       userFromCityAccount?.externalId ?? undefined,
     )
     if (!trackingSuccess) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Error in send cancelled Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `Error in send cancelled Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
+      })
     }
   }
 
@@ -595,21 +595,19 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
           userFromCityAccount.externalId ?? undefined,
         )
         if (!trackingSuccess) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            `Error in send Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
-          )
+          throw this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: `Error in send Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
+          })
         }
       })
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to insert tax to database.',
-          undefined,
-          undefined,
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to insert tax to database.',
           error,
-        ),
+        }),
       )
 
       // Remove the birth number from the result set if insertion fails

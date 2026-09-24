@@ -26,7 +26,7 @@ const NORIS_SILENT_CONNECTION_ERRORS_THRESHOLD = 20
 @Injectable()
 export class TasksService {
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly notificationsEventsService: NotificationsEventsService,
     private readonly reportingTasksService: ReportingTasksService,
     private readonly norisSyncTasksService: NorisSyncTasksService,
@@ -75,12 +75,12 @@ export class TasksService {
     const stateHolidaysForNextYear = Boolean(stateHolidays[nextYear])
 
     if (!stateHolidaysForNextYear) {
-      this.throwerErrorGuard.InternalServerErrorException(
-        CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
-        CustomErrorTaxTypesResponseEnum.STATE_HOLIDAY_NOT_EXISTS,
-        undefined,
-        'Please fill in the state holidays for the next year in the `src/tax/utils/unified-tax.utils.ts`. The holidays are used to calculate taxes.',
-      )
+      this.errorFactoryService.InternalServerErrorException({
+        errorEnum: CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
+        message: CustomErrorTaxTypesResponseEnum.STATE_HOLIDAY_NOT_EXISTS,
+        console:
+          'Please fill in the state holidays for the next year in the `src/tax/utils/unified-tax.utils.ts`. The holidays are used to calculate taxes.',
+      })
     }
   }
 
@@ -125,10 +125,10 @@ export class TasksService {
     )
 
     if (Number.isNaN(numberOfErrors)) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value: ${numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY]}. Must be a number.`,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value: ${numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY]}. Must be a number.`,
+      })
     }
 
     await this.prismaService.config.updateMany({
@@ -144,9 +144,9 @@ export class TasksService {
       return
     }
 
-    throw this.throwerErrorGuard.InternalServerErrorException(
-      ErrorsEnum.INTERNAL_SERVER_ERROR,
-      `Number of silenced Noris connection errors in last 24 hours is ${numberOfErrors}.`,
-    )
+    throw this.errorFactoryService.InternalServerErrorException({
+      errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+      message: `Number of silenced Noris connection errors in last 24 hours is ${numberOfErrors}.`,
+    })
   }
 }

@@ -15,7 +15,7 @@ export class CognitoSubservice {
   cognitoClient: CognitoIdentityProviderClient
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService,
   ) {
     this.cognitoClient = new CognitoIdentityProviderClient({
@@ -37,21 +37,18 @@ export class CognitoSubservice {
       return await this.cognitoClient.send(new AdminGetUserCommand(inputParams))
     } catch (error) {
       if (error instanceof CognitoIdentityProviderServiceException) {
-        throw this.throwerErrorGuard.BadRequestException(
-          ErrorsEnum.BAD_REQUEST_ERROR,
-          error.name,
-          error.$metadata.httpStatusCode?.toString(),
-          undefined,
+        throw this.errorFactoryService.BadRequestException({
+          errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+          message: error.name,
+          console: { cognitoHttpStatusCode: error.$metadata.httpStatusCode },
           error,
-        )
+        })
       }
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        'Unknown error occurred when fetching user from Cognito',
-        undefined,
-        undefined,
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+        message: 'Unknown error occurred when fetching user from Cognito',
         error,
-      )
+      })
     }
   }
 

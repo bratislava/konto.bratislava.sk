@@ -79,13 +79,14 @@ jobs:
           buildx_driver_opts: |
             network=host
 
-      - name: Docker metadata
-        id: meta
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+      - name: Docker build config
+        id: config
+        uses: ./.github/actions/docker-build-config
         with:
           image: ${{ inputs.image }}
           prefix: ${{ env.CLUSTER_PREFIX }}
           suffix: ${{ env.ENV_SUFFIX }}
+          push: ${{ inputs.cluster != '' }}
 
       # Deploy mode only: reuse the per-env commit image across clusters. If it
       # already exists, re-tag it for this cluster and skip the build below.
@@ -110,11 +111,11 @@ jobs:
           source: .
           files: ${{ env.BAKE_FILES }}
           targets: next
-          push: ${{ inputs.cluster != '' }}
           allow: network.host
         env:
-          CACHE_FROM: ${{ steps.meta.outputs.cache_from }}
-          CACHE_TO: ${{ steps.meta.outputs.cache_to }}
-          TAGS: ${{ steps.meta.outputs.tags }}
+          CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).main.from }}
+          CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).main.to }}
+          TAGS: ${{ join(fromJSON(steps.config.outputs.meta).tags, ' ') }}
+          OUTPUT: ${{ steps.config.outputs.image_output }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
           NEXT_BUILD_ENV: ${{ inputs.build_env }}

@@ -44,12 +44,11 @@ jobs:
           harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
           harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
-      - name: Docker metadata
-        id: meta
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+      - name: Docker build config
+        id: config
+        uses: ./.github/actions/docker-build-config
         with:
           image: ${{ inputs.image }}
-          suffix: -test
 
       - name: Run tests
         uses: docker/bake-action@v7
@@ -58,5 +57,5 @@ jobs:
           files: ${{ env.BAKE_FILES }}
           targets: forms-shared-test
         env:
-          CACHE_FROM: ${{ steps.meta.outputs.cache_from }}
-          CACHE_TO: ${{ steps.meta.outputs.cache_to }}
+          CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).main.from }}
+          CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).main.to }}

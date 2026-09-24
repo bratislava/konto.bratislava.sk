@@ -44,8 +44,6 @@ import WebhookService from './webhook.service'
 
 @Injectable()
 export default class FormDeliveryConsumerService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly rabbitmqClientService: RabbitmqClientService,
     private readonly formsService: FormsService,
@@ -55,10 +53,9 @@ export default class FormDeliveryConsumerService {
     private readonly prismaService: PrismaService,
     private readonly ginisService: GinisService,
     private readonly convertPdfService: ConvertPdfService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-  ) {
-    this.logger = new LineLoggerSubservice('FormDeliveryConsumerService')
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   async nackTrueWithWait(seconds: number): Promise<Nack> {
     await setTimeout(seconds)
@@ -71,15 +68,15 @@ export default class FormDeliveryConsumerService {
     queue: RABBIT_FORM_DELIVERY.QUEUE,
     errorHandler: (channel, msg, error) => {
       const logger = new LineLoggerSubservice('FormDeliveryConsumerService')
-      const throwerErrorGuard = new ThrowerErrorGuard()
+      const errorFactoryService = new ErrorFactoryService({ alertReporting })
 
       logger.error(
-        throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Error during FormDeliveryConsumerService handling',
-          error instanceof Error ? error.message : undefined,
+        errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Error during FormDeliveryConsumerService handling',
+          console: error instanceof Error ? error.message : undefined,
           error,
-        ),
+        }),
       )
       channel.reject(msg, false)
     },
@@ -92,22 +89,22 @@ export default class FormDeliveryConsumerService {
     const form = await this.formsService.getUniqueForm(data.formId)
     if (form === null) {
       this.logger.error(
-        this.throwerErrorGuard.BadRequestException(
-          FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-          FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-          { formId: data.formId },
-        ),
+        this.errorFactoryService.BadRequestException({
+          errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+          message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+          console: { formId: data.formId },
+        }),
       )
       return new Nack(false)
     }
 
     if (form.archived) {
       this.logger.error(
-        this.throwerErrorGuard.BadRequestException(
-          FormsErrorsEnum.FORM_ARCHIVED,
-          FormsErrorsResponseEnum.FORM_ARCHIVED,
-          { formId: data.formId },
-        ),
+        this.errorFactoryService.BadRequestException({
+          errorEnum: FormsErrorsEnum.FORM_ARCHIVED,
+          message: FormsErrorsResponseEnum.FORM_ARCHIVED,
+          console: { formId: data.formId },
+        }),
       )
       return new Nack(false)
     }
@@ -115,11 +112,11 @@ export default class FormDeliveryConsumerService {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-          FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
-          { formDefinitionSug: form.formDefinitionSlug },
-        ),
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+          message: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+          console: { formDefinitionSug: form.formDefinitionSlug },
+        }),
       )
       return new Nack(false)
     }
@@ -141,11 +138,11 @@ export default class FormDeliveryConsumerService {
     // this filters out tax forms, as they should always be sent with eID and never fall under the form-delivery-consumer queue
     if (!isSlovenskoSkGenericFormDefinition(formDefinition)) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-          FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-          { formId: form.id },
-        ),
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+          message: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+          console: { formId: form.id },
+        }),
       )
       return new Nack(false)
     }
@@ -201,12 +198,11 @@ export default class FormDeliveryConsumerService {
       await this.ginisService.createDocument(form, formDefinition)
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Error during slovensko.sk form handling',
-          undefined,
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Error during slovensko.sk form handling',
           error,
-        ),
+        }),
       )
       if (data.tries <= 2) {
         const toEmail = data.userData.email || form.email
@@ -275,16 +271,16 @@ export default class FormDeliveryConsumerService {
       )
     } else {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          FormDeliveryConsumerErrorsEnum.MAX_TRIES_REACHED,
-          FormDeliveryConsumerErrorsResponseEnum.MAX_TRIES_REACHED,
-          {
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: FormDeliveryConsumerErrorsEnum.MAX_TRIES_REACHED,
+          message: FormDeliveryConsumerErrorsResponseEnum.MAX_TRIES_REACHED,
+          console: {
             formId,
             lastErrorState: error,
             nextErrorState: FormState.ERROR,
             error: FormError.RABBITMQ_MAX_TRIES,
           },
-        ),
+        }),
       )
       await this.formsService.updateForm(formId, {
         state: FormState.ERROR,
@@ -307,12 +303,12 @@ export default class FormDeliveryConsumerService {
       return new Nack(false)
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          FormDeliveryConsumerErrorsEnum.SENDING_EMAIL_FAILED,
-          FormDeliveryConsumerErrorsResponseEnum.SENDING_EMAIL_FAILED,
-          { formId: form.id },
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: FormDeliveryConsumerErrorsEnum.SENDING_EMAIL_FAILED,
+          message: FormDeliveryConsumerErrorsResponseEnum.SENDING_EMAIL_FAILED,
+          console: { formId: form.id },
           error,
-        ),
+        }),
       )
 
       await this.prismaService.forms
@@ -326,12 +322,12 @@ export default class FormDeliveryConsumerService {
         })
         .catch((error_: unknown) => {
           this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.DATABASE_ERROR,
-              'Setting form error to EMAIL_SEND_ERROR failed.',
-              { formId: form.id },
-              error_,
-            ),
+            this.errorFactoryService.InternalServerErrorException({
+              errorEnum: ErrorEnum.DATABASE_ERROR,
+              message: 'Setting form error to EMAIL_SEND_ERROR failed.',
+              console: { formId: form.id },
+              error: error_,
+            }),
           )
         })
       const requeueEmail = await this.nackTrueWithWait(20_000)
@@ -345,12 +341,12 @@ export default class FormDeliveryConsumerService {
       return new Nack(false)
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          FormDeliveryConsumerErrorsEnum.WEBHOOK_ERROR,
-          FormDeliveryConsumerErrorsResponseEnum.WEBHOOK_ERROR,
-          { formId: form.id },
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: FormDeliveryConsumerErrorsEnum.WEBHOOK_ERROR,
+          message: FormDeliveryConsumerErrorsResponseEnum.WEBHOOK_ERROR,
+          console: { formId: form.id },
           error,
-        ),
+        }),
       )
 
       await this.prismaService.forms
@@ -364,12 +360,12 @@ export default class FormDeliveryConsumerService {
         })
         .catch((error_: unknown) => {
           this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.DATABASE_ERROR,
-              `Setting form error to WEBHOOK_SEND_ERROR failed.`,
-              { formId: form.id },
-              error_,
-            ),
+            this.errorFactoryService.InternalServerErrorException({
+              errorEnum: ErrorEnum.DATABASE_ERROR,
+              message: `Setting form error to WEBHOOK_SEND_ERROR failed.`,
+              console: { formId: form.id },
+              error: error_,
+            }),
           )
         })
       const requeueEmail = await this.nackTrueWithWait(20_000)

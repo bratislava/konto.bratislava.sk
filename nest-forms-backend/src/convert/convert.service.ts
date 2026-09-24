@@ -66,7 +66,6 @@ export default class ConvertService {
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
     private readonly baConfigService: BaConfigService,
   ) {
-    this.logger = new LineLoggerSubservice('ConvertService')
     this.versioningEnabled = this.baConfigService.featureToggles.versioning
   }
 
@@ -101,10 +100,10 @@ export default class ConvertService {
         : form.formSummary
 
     if (formSummary == null) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.EMPTY_FORM_SUMMARY,
-        `convertJsonToXmlObject: ${FormsErrorsResponseEnum.EMPTY_FORM_SUMMARY}`,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.EMPTY_FORM_SUMMARY,
+        message: `convertJsonToXmlObject: ${FormsErrorsResponseEnum.EMPTY_FORM_SUMMARY}`,
+      })
     }
 
     return generateSlovenskoSkXmlObject({
@@ -128,29 +127,29 @@ export default class ConvertService {
   ): Promise<GenericObjectType> {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (formDefinition === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND}`,
-        { slug: form.formDefinitionSlug },
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND}`,
+        console: { slug: form.formDefinitionSlug },
+      })
     }
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}`,
-        {
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        message: `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}`,
+        console: {
           formDefinitionType: formDefinition.type,
           slug: form.formDefinitionSlug,
         },
-      )
+      })
     }
     const formDataJson = formDataJsonOverride ?? form.formDataJson
 
     if (formDataJson == null) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.EMPTY_FORM_DATA,
-        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+        message: `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
+      })
     }
 
     return this.convertJsonToXmlObject(form, formDefinition, formDataJson)
@@ -163,10 +162,10 @@ export default class ConvertService {
     const form = await this.formsService.getUniqueForm(formId)
 
     if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
 
     const xmlObject = await this.convertJsonToXmlObjectForForm(
@@ -183,29 +182,29 @@ export default class ConvertService {
     const form = await this.formsService.getUniqueForm(formId)
 
     if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
 
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        {
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        message: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        console: {
           formDefinitionType: formDefinition.type,
           slug: form.formDefinitionSlug,
         },
-      )
+      })
     }
 
     let extractJsonResult: {
@@ -223,17 +222,16 @@ export default class ConvertService {
       if (error instanceof ExtractJsonFromSlovenskoSkXmlError) {
         const { error: errorEnum, message: errorMessage } =
           extractJsonErrorMapping[error.type]
-        throw this.throwerErrorGuard.BadRequestException(
+        throw this.errorFactoryService.BadRequestException({
           errorEnum,
-          errorMessage,
-        )
+          message: errorMessage,
+        })
       }
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Unexpected error during XML to JSON conversion',
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: 'Unexpected error during XML to JSON conversion',
         error,
-      )
+      })
     }
 
     if (
@@ -243,10 +241,10 @@ export default class ConvertService {
         latestVersion: formDefinition.jsonVersion,
       })
     ) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        ConvertErrorsEnum.INCOMPATIBLE_JSON_VERSION,
-        ConvertErrorsResponseEnum.INCOMPATIBLE_JSON_VERSION,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: ConvertErrorsEnum.INCOMPATIBLE_JSON_VERSION,
+        message: ConvertErrorsResponseEnum.INCOMPATIBLE_JSON_VERSION,
+      })
     }
     return {
       formDataJson: extractJsonResult.formDataJson,
@@ -272,12 +270,11 @@ export default class ConvertService {
       const buffer = Buffer.from(base64Pdf, 'base64')
       return Readable.from(buffer)
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'There was an error during generating pdf.',
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: 'There was an error during generating pdf.',
         error,
-      )
+      })
     }
   }
 
@@ -300,10 +297,10 @@ export default class ConvertService {
       },
     })
     if (form === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
 
     if (
@@ -348,10 +345,10 @@ export default class ConvertService {
         })
       } else {
         if (form.formSummary == null) {
-          throw this.throwerErrorGuard.UnprocessableEntityException(
-            FormsErrorsEnum.EMPTY_FORM_SUMMARY,
-            FormsErrorsResponseEnum.EMPTY_FORM_SUMMARY,
-          )
+          throw this.errorFactoryService.UnprocessableEntityException({
+            errorEnum: FormsErrorsEnum.EMPTY_FORM_SUMMARY,
+            message: FormsErrorsResponseEnum.EMPTY_FORM_SUMMARY,
+          })
         }
 
         pdfBuffer = await renderSummaryPdf({
@@ -362,12 +359,11 @@ export default class ConvertService {
         })
       }
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ConvertErrorsEnum.PDF_GENERATION_FAILED,
-        ConvertErrorsResponseEnum.PDF_GENERATION_FAILED,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ConvertErrorsEnum.PDF_GENERATION_FAILED,
+        message: ConvertErrorsResponseEnum.PDF_GENERATION_FAILED,
         error,
-      )
+      })
     }
 
     return Readable.from(pdfBuffer)
@@ -381,28 +377,28 @@ export default class ConvertService {
     const form = await this.formsService.getUniqueForm(formId)
 
     if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
-        { slug: form.formDefinitionSlug },
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+        console: { slug: form.formDefinitionSlug },
+      })
     }
 
     const formJsonData = data.jsonData ?? form.formDataJson
 
     if (formJsonData == null) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.EMPTY_FORM_DATA,
-        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+        message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      })
     }
 
     const file = await this.generatePdf(

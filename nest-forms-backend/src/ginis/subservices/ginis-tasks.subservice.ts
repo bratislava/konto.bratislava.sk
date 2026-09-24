@@ -27,16 +27,13 @@ const GINIS_REJECTED_DOCUMENT_STATES = new Set([
 
 @Injectable()
 export default class GinisTasksSubservice {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly ginisHelper: GinisHelper,
     private readonly ginisApiService: GinisAPIService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-  ) {
-    this.logger = new LineLoggerSubservice('GinisTasksSubservice')
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   private async updateSubmissionState(submission: Forms): Promise<void> {
     const { ginisDocumentId } = submission
@@ -55,12 +52,12 @@ export default class GinisTasksSubservice {
       })
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
-          GinisTaskErrorResponseEnum.GET_DOCUMENT_DETAIL_ERROR,
-          { ginisDocumentId },
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
+          message: GinisTaskErrorResponseEnum.GET_DOCUMENT_DETAIL_ERROR,
+          console: { ginisDocumentId },
           error,
-        ),
+        }),
       )
       return
     }
@@ -85,11 +82,11 @@ export default class GinisTasksSubservice {
       })
     } else if (!GINIS_PROCESSING_DOCUMENT_STATES.has(docState)) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
-          'Unknown GINIS Document state received.',
-          { docState, ginisDocumentId },
-        ),
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
+          message: 'Unknown GINIS Document state received.',
+          console: { docState, ginisDocumentId },
+        }),
       )
     }
   }

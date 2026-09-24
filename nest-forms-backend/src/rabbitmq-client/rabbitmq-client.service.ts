@@ -9,11 +9,10 @@ import { RABBIT_FORM_DELIVERY, RABBIT_GINIS } from '../utils/constants'
 
 @Injectable()
 export default class RabbitmqClientService {
-  private readonly logger: LineLoggerSubservice
-
-  constructor(private readonly amqpConnection: AmqpConnection) {
-    this.logger = new LineLoggerSubservice('RabbitmqClientService')
-  }
+  constructor(
+    private readonly amqpConnection: AmqpConnection,
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   public async publish(message: RabbitPayloadDto): Promise<Replies.Empty> {
     this.logger.debug(

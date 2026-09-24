@@ -54,11 +54,9 @@ import userToSendPolicyAccountType from './user-to-send-policy-account-type'
 
 @Injectable()
 export class FormSenderService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly formsService: FormsService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly baConfigService: BaConfigService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
@@ -66,9 +64,8 @@ export class FormSenderService {
     private readonly convertPdfService: ConvertPdfService,
     private readonly rabbitmqClientService: RabbitmqClientService,
     private readonly nasesSenderService: NasesSenderService,
-  ) {
-    this.logger = new LineLoggerSubservice(FormSenderService.name)
-  }
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   createUserJwtToken(oboToken: string): string {
     return this.apiJwtTokensService.createUserJwtToken(
@@ -94,10 +91,10 @@ export class FormSenderService {
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
 
     // File size check at submission time — this is the authoritative point because
@@ -116,17 +113,17 @@ export class FormSenderService {
     )
 
     if (!evaluatedSendPolicy.sendPossible) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormSenderErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
-        FormSenderErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormSenderErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
+        message: FormSenderErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
+      })
     }
 
     if (!evaluatedSendPolicy.sendAllowedForUser) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        FormSenderErrorsEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
-        FormSenderErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
-      )
+      throw this.errorFactoryService.ForbiddenException({
+        errorEnum: FormSenderErrorsEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
+        message: FormSenderErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
+      })
     }
 
     if (
@@ -136,10 +133,10 @@ export class FormSenderService {
         latestVersion: formDefinition.jsonVersion,
       })
     ) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormSenderErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
-        FormSenderErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormSenderErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
+        message: FormSenderErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
+      })
     }
 
     const validator = this.formValidatorRegistryService
@@ -156,10 +153,10 @@ export class FormSenderService {
         )}`,
       )
 
-      throw this.throwerErrorGuard.NotAcceptableException(
-        FormsErrorsEnum.FORM_DATA_INVALID,
-        FormsErrorsResponseEnum.FORM_DATA_INVALID,
-      )
+      throw this.errorFactoryService.NotAcceptableException({
+        errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: FormsErrorsResponseEnum.FORM_DATA_INVALID,
+      })
     }
 
     this.checkAttachments(
@@ -186,10 +183,10 @@ export class FormSenderService {
         : undefined),
     })
     if (!claimed) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
-        `${FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR} It is already being sent.`,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
+        message: `${FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR} It is already being sent.`,
+      })
     }
 
     this.logger.log(`Sending form ${form.id} to rabbitmq`)
@@ -215,14 +212,13 @@ export class FormSenderService {
         jsonVersion: form.jsonVersion,
       })
 
-      throw this.throwerErrorGuard.NotFoundException(
-        FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
-        `${FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
+        message: `${FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
           form.id
         }`,
-        undefined,
         error,
-      )
+      })
     }
 
     return {
@@ -244,10 +240,10 @@ export class FormSenderService {
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
 
     const evaluatedSendPolicy = evaluateFormSendPolicy(
@@ -256,32 +252,32 @@ export class FormSenderService {
     )
 
     if (!evaluatedSendPolicy.eidSendPossible) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormSenderErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
-        FormSenderErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormSenderErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
+        message: FormSenderErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
+      })
     }
 
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `sendFormEid: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, form id: ${form.id}`,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        message: `sendFormEid: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, form id: ${form.id}`,
+      })
     }
 
     if (form.formDataJson == null) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.EMPTY_FORM_DATA,
-        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+        message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      })
     }
 
     if (formDefinition.isSigned) {
       if (!form.formSignature) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          NasesErrorsEnum.SIGNATURE_MISSING,
-          NasesErrorsResponseEnum.SIGNATURE_MISSING,
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: NasesErrorsEnum.SIGNATURE_MISSING,
+          message: NasesErrorsResponseEnum.SIGNATURE_MISSING,
+        })
       }
 
       try {
@@ -294,10 +290,10 @@ export class FormSenderService {
         if (error instanceof VerifyFormSignatureError) {
           const { error: errorEnum, message: errorMessage } =
             verifyFormSignatureErrorMapping[error.type]
-          throw this.throwerErrorGuard.UnprocessableEntityException(
+          throw this.errorFactoryService.UnprocessableEntityException({
             errorEnum,
-            errorMessage,
-          )
+            message: errorMessage,
+          })
         } else {
           throw error
         }
@@ -311,10 +307,10 @@ export class FormSenderService {
         latestVersion: formDefinition.jsonVersion,
       })
     ) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormSenderErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
-        FormSenderErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormSenderErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
+        message: FormSenderErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
+      })
     }
 
     const validator = this.formValidatorRegistryService
@@ -331,10 +327,10 @@ export class FormSenderService {
         )}`,
       )
 
-      throw this.throwerErrorGuard.NotAcceptableException(
-        FormsErrorsEnum.FORM_DATA_INVALID,
-        FormsErrorsResponseEnum.FORM_DATA_INVALID,
-      )
+      throw this.errorFactoryService.NotAcceptableException({
+        errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: FormsErrorsResponseEnum.FORM_DATA_INVALID,
+      })
     }
 
     const formSummary = this.getFormSummaryOrThrow(form, formDefinition)
@@ -375,10 +371,10 @@ export class FormSenderService {
         : undefined),
     })
     if (!claimed) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
-        `${FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR} It is already being sent.`,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
+        message: `${FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR} It is already being sent.`,
+      })
     }
 
     try {
@@ -393,12 +389,11 @@ export class FormSenderService {
         error: FormError.NASES_SEND_ERROR,
       })
 
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        FormSenderErrorsEnum.CREATE_PDF_IMAGE_ERROR,
-        `${FormSenderErrorsResponseEnum.CREATE_PDF_IMAGE_ERROR} Received form id: ${data.formId}.`,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: FormSenderErrorsEnum.CREATE_PDF_IMAGE_ERROR,
+        message: `${FormSenderErrorsResponseEnum.CREATE_PDF_IMAGE_ERROR} Received form id: ${data.formId}.`,
         error,
-      )
+      })
     }
 
     try {
@@ -415,10 +410,10 @@ export class FormSenderService {
         )}`,
       )
 
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        NasesErrorsEnum.SEND_TO_NASES_ERROR,
-        NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: NasesErrorsEnum.SEND_TO_NASES_ERROR,
+        message: NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
+      })
     }
 
     // Send the form to ginis if should be sent
@@ -432,12 +427,12 @@ export class FormSenderService {
       } catch (error) {
         // We do not want to show the user error when the submission was already delivered to Nases. Therefore Ginis errors should only be logged for us.
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            FormSenderErrorsEnum.SEND_TO_GINIS_ERROR,
-            FormSenderErrorsResponseEnum.SEND_TO_GINIS_ERROR,
-            { formId: data.formId },
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: FormSenderErrorsEnum.SEND_TO_GINIS_ERROR,
+            message: FormSenderErrorsResponseEnum.SEND_TO_GINIS_ERROR,
+            console: { formId: data.formId },
             error,
-          ),
+          }),
         )
       }
     }
@@ -457,16 +452,16 @@ export class FormSenderService {
     }
 
     if (formAttachmentsReady.error === FormError.INFECTED_FILES) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormSenderErrorsEnum.INFECTED_FILE,
-        FormSenderErrorsResponseEnum.INFECTED_FILE,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormSenderErrorsEnum.INFECTED_FILE,
+        message: FormSenderErrorsResponseEnum.INFECTED_FILE,
+      })
     }
 
-    throw this.throwerErrorGuard.BadRequestException(
-      FormSenderErrorsEnum.FILE_NOT_SCANNED,
-      FormSenderErrorsResponseEnum.FILE_NOT_SCANNED,
-    )
+    throw this.errorFactoryService.BadRequestException({
+      errorEnum: FormSenderErrorsEnum.FILE_NOT_SCANNED,
+      message: FormSenderErrorsResponseEnum.FILE_NOT_SCANNED,
+    })
   }
 
   public async sendToNasesAndUpdateState(
@@ -485,16 +480,16 @@ export class FormSenderService {
         error: FormError.NASES_SEND_ERROR,
       })
 
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        NasesErrorsEnum.UNABLE_SEND_FORM_TO_NASES,
-        NasesErrorsResponseEnum.UNABLE_SEND_FORM_TO_NASES,
-        {
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: NasesErrorsEnum.UNABLE_SEND_FORM_TO_NASES,
+        message: NasesErrorsResponseEnum.UNABLE_SEND_FORM_TO_NASES,
+        console: {
           status: sendData.status,
           formId: data.formId,
           error: FormError.NASES_SEND_ERROR,
           sendData: sendData.data,
         },
-      )
+      })
     }
 
     // prisma update form status to DELIVERED_NASES
@@ -518,10 +513,10 @@ export class FormSenderService {
     formDefinition: FormDefinition,
   ): FormSummary {
     if (form.formDataJson == null) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.EMPTY_FORM_DATA,
-        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+        message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      })
     }
 
     try {
@@ -535,12 +530,11 @@ export class FormSenderService {
         `Error while generating form summary for form definition ${formDefinition.slug}, formId: ${form.id}`,
         error,
       )
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        FormSenderErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
-        FormSenderErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: FormSenderErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
+        message: FormSenderErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
         error,
-      )
+      })
     }
   }
 
@@ -563,10 +557,10 @@ export class FormSenderService {
       formDefinitionFiles.maxTotalFileSize ??
       this.baConfigService.files.maxCumulativeSizeGlobal
     if (totalFileSize > maxTotalFileSize) {
-      throw this.throwerErrorGuard.BadRequestException(
-        FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
-        `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Total: ${totalFileSize}, limit: ${maxTotalFileSize}`,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
+        message: `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Total: ${totalFileSize}, limit: ${maxTotalFileSize}`,
+      })
     }
   }
 
@@ -609,22 +603,22 @@ export class FormSenderService {
     if (maxFileSize !== undefined) {
       const oversized = slotFiles.find((f) => f.fileSize > maxFileSize)
       if (oversized) {
-        throw this.throwerErrorGuard.BadRequestException(
-          FilesErrorsEnum.FILE_SIZE_EXCEEDED_ERROR,
-          FilesErrorsResponseEnum.FILE_SIZE_EXCEEDED_ERROR,
-          `Slot: ${slotId}, fileId: ${oversized.id}, size: ${oversized.fileSize}, limit: ${maxFileSize}`,
-        )
+        throw this.errorFactoryService.BadRequestException({
+          errorEnum: FilesErrorsEnum.FILE_SIZE_EXCEEDED_ERROR,
+          message: FilesErrorsResponseEnum.FILE_SIZE_EXCEEDED_ERROR,
+          console: `Slot: ${slotId}, fileId: ${oversized.id}, size: ${oversized.fileSize}, limit: ${maxFileSize}`,
+        })
       }
     }
 
     if (maxTotalFileSize !== undefined) {
       const slotTotalSize = slotFiles.reduce((sum, f) => sum + f.fileSize, 0)
       if (slotTotalSize > maxTotalFileSize) {
-        throw this.throwerErrorGuard.BadRequestException(
-          FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
-          FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
-          `Slot: ${slotId}, total: ${slotTotalSize}, limit: ${maxTotalFileSize}`,
-        )
+        throw this.errorFactoryService.BadRequestException({
+          errorEnum: FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
+          message: FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
+          console: `Slot: ${slotId}, total: ${slotTotalSize}, limit: ${maxTotalFileSize}`,
+        })
       }
     }
   }

@@ -26,17 +26,14 @@ enum FormRegistrationStatus {
 
 @Injectable()
 export default class NasesCronService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly clientsService: ClientsService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService,
     private readonly formRegistrationStatusRepository: FormRegistrationStatusRepository,
-  ) {
-    this.logger = new LineLoggerSubservice('NasesCronService')
-  }
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   private resolvePublishedResultKey(
     isPublished: boolean,
@@ -141,19 +138,20 @@ export default class NasesCronService {
             await addToResult('error', formDefinition)
             if (isAxiosError(error)) {
               this.logger.error(
-                this.throwerErrorGuard.fromAxiosError(error, {
+                this.errorFactoryService.fromAxiosError(error, {
                   message:
                     NasesErrorsResponseEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
                 }),
               )
             } else {
               this.logger.error(
-                this.throwerErrorGuard.InternalServerErrorException(
-                  NasesErrorsEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
-                  NasesErrorsResponseEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
-                  undefined,
+                this.errorFactoryService.InternalServerErrorException({
+                  errorEnum:
+                    NasesErrorsEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
+                  message:
+                    NasesErrorsResponseEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
                   error,
-                ),
+                }),
               )
             }
           }
@@ -168,11 +166,11 @@ export default class NasesCronService {
       result.error.length > 0
     ) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          NasesErrorsEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
-          NasesErrorsResponseEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
-          { validationResult: result },
-        ),
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: NasesErrorsEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
+          message: NasesErrorsResponseEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
+          console: { validationResult: result },
+        }),
       )
     } else {
       this.logger.log(

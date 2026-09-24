@@ -69,13 +69,11 @@ import GinisAPIService, {
 
 @Injectable()
 export default class GinisService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly baConfigService: BaConfigService,
     private readonly convertService: ConvertService,
     private readonly clientsService: ClientsService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly ginisHelper: GinisHelper,
     private readonly ginisApiService: GinisAPIService,
     private mailgunService: MailgunService,
@@ -84,19 +82,18 @@ export default class GinisService {
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly nasesContactsService: NasesContactsService,
     @InjectQueue('sharepoint') private readonly sharepointQueue: Queue,
+    private readonly logger: LineLoggerSubservice,
   ) {
-    this.logger = new LineLoggerSubservice('GinisService')
-
     if (
       !['production', 'development', 'staging'].includes(
         this.baConfigService.environment.nodeEnv,
       ) &&
       process.env.JEST_WORKER_ID === undefined
     ) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `.env value NODE_ENV must be set to 'production', 'development' or 'staging'`,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `.env value NODE_ENV must be set to 'production', 'development' or 'staging'`,
+      })
     }
   }
 
@@ -138,12 +135,12 @@ export default class GinisService {
       return true
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `ERROR registerGinisDocument - error while registering the document`,
-          { formId },
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `ERROR registerGinisDocument - error while registering the document`,
+          console: { formId },
           error,
-        ),
+        }),
       )
       await this.updateFailedRegistration(formId)
     }
@@ -202,12 +199,12 @@ export default class GinisService {
       await this.updateSuccessfulAttachmentUpload(file.id)
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'ERROR uploadAttachments - error upload file to ginis.',
-          { formId: file.formId, ginisDocumentId, fileId: file.id },
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'ERROR uploadAttachments - error upload file to ginis.',
+          console: { formId: file.formId, ginisDocumentId, fileId: file.id },
           error,
-        ),
+        }),
       )
       await this.updateFailedAttachmentUpload(file.id)
     }
@@ -225,11 +222,11 @@ export default class GinisService {
 
     if (!form.ginisDocumentId) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `ERROR uploadAttachments - missing ginisDocumentId.`,
-          { formId: form.id },
-        ),
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `ERROR uploadAttachments - missing ginisDocumentId.`,
+          console: { formId: form.id },
+        }),
       )
       return
     }
@@ -300,12 +297,13 @@ export default class GinisService {
       this.logger.debug('---- assigned in ginis ----')
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'ERROR assignSubmission - error assigning document in ginis.',
-          { ginisDocumentId },
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message:
+            'ERROR assignSubmission - error assigning document in ginis.',
+          console: { ginisDocumentId },
           error,
-        ),
+        }),
       )
       await this.updateFailedAssignment(ginisDocumentId)
     }
@@ -344,11 +342,11 @@ export default class GinisService {
     // checks on form
     if (!form) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'ERROR - form not exists in Ginis consumption queue.',
-          { formId: data.formId },
-        ),
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'ERROR - form not exists in Ginis consumption queue.',
+          console: { formId: data.formId },
+        }),
       )
       await this.ginisHelper.setFormToError(data.formId)
       return new Nack(false)
@@ -356,17 +354,17 @@ export default class GinisService {
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
     if (!isSlovenskoSkGenericFormDefinition(formDefinition)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `onQueueConsumption: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}`,
-        { formDefinitionType: formDefinition.type, formId: form.id },
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        message: `onQueueConsumption: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}`,
+        console: { formDefinitionType: formDefinition.type, formId: form.id },
+      })
     }
 
     const filesToUpload = form.files.filter((file) => !file.ginisUploaded)
@@ -407,11 +405,12 @@ export default class GinisService {
     ) {
       if (!form.ginisDocumentId) {
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'ERROR uploadAttachments - ginisDocumentId does not exists in form - Ginis consumption queue.',
-            { formId: form.id },
-          ),
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message:
+              'ERROR uploadAttachments - ginisDocumentId does not exists in form - Ginis consumption queue.',
+            console: { formId: form.id },
+          }),
         )
         return this.nackTrueWithWait(20_000)
       }
@@ -440,11 +439,12 @@ export default class GinisService {
     if (form.ginisState === GinisState.ATTACHMENTS_UPLOADED) {
       if (!form.ginisDocumentId) {
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'ERROR assignSubmission - ginisDocumentId does not exists in form - Ginis consumption queue.',
-            { formId: form.id },
-          ),
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message:
+              'ERROR assignSubmission - ginisDocumentId does not exists in form - Ginis consumption queue.',
+            console: { formId: form.id },
+          }),
         )
         return this.nackTrueWithWait(20_000)
       }
@@ -505,11 +505,11 @@ export default class GinisService {
     }
 
     this.logger.error(
-      this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `ERROR onQueueConsumption - ginis state ${form.ginisState} not supported in form ${form.id}`,
-        { formId: form.id, ginisState: form.ginisState },
-      ),
+      this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `ERROR onQueueConsumption - ginis state ${form.ginisState} not supported in form ${form.id}`,
+        console: { formId: form.id, ginisState: form.ginisState },
+      }),
     )
     return new Nack(false)
   }
@@ -548,39 +548,39 @@ export default class GinisService {
       .then((response) => response.data)
       .catch((error: unknown) => {
         if (!isAxiosError(error)) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-            `Failed to search nases identity for uri: ${uri}`,
+          throw this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+            console: `Failed to search nases identity for uri: ${uri}`,
             error,
-          )
+          })
         }
-        throw this.throwerErrorGuard.fromAxiosError(error, {
+        throw this.errorFactoryService.fromAxiosError(error, {
           console: `Failed to search nases identity for uri: ${uri}`,
         })
       })
 
     if (result.length === 0) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DATA_INVALID,
-        `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in nases. Uri: ${uri}`,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in nases. Uri: ${uri}`,
+      })
     }
     if (result.length > 1) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DATA_INVALID,
-        `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Multiple results found for form uri. Uri: ${uri}`,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Multiple results found for form uri. Uri: ${uri}`,
+      })
     }
     return result[0]
   }
 
   async extractContactParamsFromUri(form: Forms): Promise<GinContactParams> {
     if (!form.mainUri) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DATA_INVALID,
-        `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in form. Form id: ${form.id}`,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in form. Form id: ${form.id}`,
+      })
     }
 
     const contact = await this.fetchContactByUri(form.mainUri)
@@ -620,10 +620,10 @@ export default class GinisService {
 
     // don't throw, alert only
     this.logger.error(
-      this.throwerErrorGuard.UnprocessableEntityException(
-        NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
-        `extractContactParamsFromUri: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: Contact shape not identified from nases identity search data for uri: ${form.mainUri}.`,
-      ),
+      this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
+        message: `extractContactParamsFromUri: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: Contact shape not identified from nases identity search data for uri: ${form.mainUri}.`,
+      }),
     )
 
     // Fallback: return basic params with name if available
@@ -638,10 +638,10 @@ export default class GinisService {
     form: Forms,
   ): Promise<GinContactParams> {
     if (!form.userExternalId) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DATA_INVALID,
-        `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: External id not found in form. Form id: ${form.id}`,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: External id not found in form. Form id: ${form.id}`,
+      })
     }
 
     const params: GinContactParams = {}
@@ -657,23 +657,23 @@ export default class GinisService {
       .then((contactResponse) => contactResponse.data)
       .catch((error: unknown) => {
         if (!isAxiosError(error)) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-            `Failed to fetch contact info from city account for external id: ${form.userExternalId}`,
+          throw this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+            console: `Failed to fetch contact info from city account for external id: ${form.userExternalId}`,
             error,
-          )
+          })
         }
-        throw this.throwerErrorGuard.fromAxiosError(error, {
+        throw this.errorFactoryService.fromAxiosError(error, {
           console: `Failed to fetch contact info from city account for external id: ${form.userExternalId}`,
         })
       })
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive guard; typed as non-null but real API responses can omit the body
     if (!contactInfo) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
-        `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR}: Contact info not found in city account for external id: ${form.userExternalId}. Form id: ${form.id}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
+        message: `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR}: Contact info not found in city account for external id: ${form.userExternalId}. Form id: ${form.id}`,
+      })
     }
     params.email = contactInfo.email
 
@@ -759,11 +759,11 @@ export default class GinisService {
   ) {
     const { formDataJson } = form
     if (!formDataJson) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.EMPTY_FORM_DATA,
-        `createDocument: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
-        `No form data json in form id: ${form.id}`,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+        message: `createDocument: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
+        console: `No form data json in form id: ${form.id}`,
+      })
     }
     const senderId = await this.handleDocumentSender(form)
 

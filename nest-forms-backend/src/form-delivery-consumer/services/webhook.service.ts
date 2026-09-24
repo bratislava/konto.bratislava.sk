@@ -26,15 +26,12 @@ import {
 
 @Injectable()
 export default class WebhookService {
-  private logger: LineLoggerSubservice = new LineLoggerSubservice(
-    WebhookService.name,
-  )
-
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
+    private readonly logger: LineLoggerSubservice,
   ) {}
 
   async sendWebhook(formId: string): Promise<void> {
@@ -47,26 +44,26 @@ export default class WebhookService {
       },
     })
     if (form === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
 
     if (!isWebhookFormDefinition(formDefinition)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        WebhookErrorsEnum.NOT_WEBHOOK_FORM,
-        WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM,
-        { formId: form.id },
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: WebhookErrorsEnum.NOT_WEBHOOK_FORM,
+        message: WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM,
+        console: { formId: form.id },
+      })
     }
 
     // prepare file urls into the resulting json
@@ -75,10 +72,10 @@ export default class WebhookService {
     const fileIdInfoMap = getFileIdsToInfoMap(form, jwtSecret, selfUrl)
 
     if (form.formDataJson == null) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.EMPTY_FORM_DATA,
-        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+        message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      })
     }
 
     const formData = baOmitExtraData(
@@ -103,7 +100,7 @@ export default class WebhookService {
     } catch (error) {
       if (isAxiosError(error)) {
         this.logger.error(
-          this.throwerErrorGuard.fromAxiosError(error, {
+          this.errorFactoryService.fromAxiosError(error, {
             console: { formId },
           }),
         )
@@ -111,12 +108,12 @@ export default class WebhookService {
       }
 
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Sending webhook for form failed`,
-          { formId },
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Sending webhook for form failed`,
+          console: { formId },
           error,
-        ),
+        }),
       )
       return
     }
@@ -132,12 +129,12 @@ export default class WebhookService {
       })
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Setting form state to FINISHED failed`,
-          { formId },
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Setting form state to FINISHED failed`,
+          console: { formId },
           error,
-        ),
+        }),
       )
     }
   }

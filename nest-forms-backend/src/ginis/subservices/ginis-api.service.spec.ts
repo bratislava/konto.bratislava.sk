@@ -1,6 +1,7 @@
 import { Readable } from 'node:stream'
 
 import { GinNajdiEsuNajdiEsuItem } from '@bratislava/ginis-sdk'
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import {
@@ -9,7 +10,6 @@ import {
 } from '../../__tests__/factories/ginisDocument.factory'
 import { expectObjectContaining } from '../../__tests__/jest-matchers'
 import BaConfigService from '../../config/ba-config.service'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import GinisAPIService, {
   GinContactDatabase,
   GinContactType,
@@ -46,8 +46,9 @@ describe('GinisAPIService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         GinisAPIService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         {
           provide: BaConfigService,
           useValue: {

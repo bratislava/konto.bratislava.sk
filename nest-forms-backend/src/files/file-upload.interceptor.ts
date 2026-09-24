@@ -1,12 +1,21 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor, PayloadTooLargeException, } from '@nestjs/common'
+import { ErrorFactoryService } from '@bratislava/log-nest'
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+  PayloadTooLargeException,
+} from '@nestjs/common'
 import { Request, Response } from 'express'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import multer from 'multer'
 
 import BaConfigService from '../config/ba-config.service'
-import { FormsErrorsEnum, FormsErrorsResponseEnum, } from '../forms/forms.errors.enum'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
 
 /**
@@ -34,7 +43,7 @@ export class FileUploadInterceptor implements NestInterceptor {
   constructor(
     private readonly formsService: FormsService,
     private readonly baConfigService: BaConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
   ) {}
 
   async intercept(
@@ -90,10 +99,10 @@ export class FileUploadInterceptor implements NestInterceptor {
     }
 
     if (contentLength > effectiveMax + MULTIPART_OVERHEAD_BYTES) {
-      throw this.throwerErrorGuard.BadRequestException(
-        FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
-        `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Content-Length: ${contentLength}, remaining budget: ${effectiveMax}`,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
+        message: `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Content-Length: ${contentLength}, remaining budget: ${effectiveMax}`,
+      })
     }
   }
 
@@ -106,26 +115,26 @@ export class FileUploadInterceptor implements NestInterceptor {
 
     const { formId } = req.params
     if (!formId || typeof formId !== 'string') {
-      throw this.throwerErrorGuard.BadRequestException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
 
     const form = await this.formsService.getUniqueForm(formId)
     if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+      })
     }
 
     if (!formDefinition.files) {
@@ -134,10 +143,10 @@ export class FileUploadInterceptor implements NestInterceptor {
 
     const slotId = req.query.slotId
     if (!slotId || typeof slotId !== 'string') {
-      throw this.throwerErrorGuard.BadRequestException(
-        FilesErrorsEnum.MISSING_SLOT_ID_ERROR,
-        FilesErrorsResponseEnum.MISSING_SLOT_ID_ERROR,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: FilesErrorsEnum.MISSING_SLOT_ID_ERROR,
+        message: FilesErrorsResponseEnum.MISSING_SLOT_ID_ERROR,
+      })
     }
 
     const slot = formDefinition.files.slots.find((s) => s.slotId === slotId)

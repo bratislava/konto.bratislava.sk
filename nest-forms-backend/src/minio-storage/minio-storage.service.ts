@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Client } from 'minio'
 
@@ -7,9 +12,6 @@ import {
   FilesErrorsResponseEnum,
 } from '../files/files.errors.enum'
 import { MinioClientService } from '../minio-client/minio-client.service'
-import { ErrorsEnum } from '../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 // TS2883: inferred putObject/upload return types require MinIO's internal
 // UploadedObjectInfo path, so expose our own stable public shape instead.
@@ -20,11 +22,10 @@ export interface MinioUploadedObjectInfo {
 
 @Injectable()
 export class MinioStorageService {
-  private readonly logger = new LineLoggerSubservice('MinioStorageService')
-
   constructor(
     private readonly minioClientService: MinioClientService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice,
   ) {}
 
   public client(): Client {
@@ -92,12 +93,12 @@ export class MinioStorageService {
         .putObject(bucket, path, Buffer.from(''), 0)) as MinioUploadedObjectInfo
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Error creating folder in bucket.`,
-          { path, bucket },
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Error creating folder in bucket.`,
+          console: { path, bucket },
           error,
-        ),
+        }),
       )
       return false
     }
@@ -111,12 +112,11 @@ export class MinioStorageService {
       return true
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Error while deleting a folder in minio',
-          undefined,
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Error while deleting a folder in minio',
           error,
-        ),
+        }),
       )
       return false
     }
@@ -135,9 +135,7 @@ export class MinioStorageService {
         .client()
         .statObject(bucketName, fileName)
     } catch (error) {
-      this.logger.error(
-        `File: ${fileName} does not exist in bucket: ${bucketName}`,
-      )
+      this.logger.error(`File does not exist in bucket: ${bucketName}`)
       this.logger.error(error)
       return false
     }
@@ -158,12 +156,13 @@ export class MinioStorageService {
           file.buffer,
         )) as MinioUploadedObjectInfo
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        FilesErrorsEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-        FilesErrorsResponseEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum:
+          FilesErrorsEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+        message:
+          FilesErrorsResponseEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
         error,
-      )
+      })
     }
   }
 
@@ -182,12 +181,13 @@ export class MinioStorageService {
         .client()
         .getObject(bucketName, fileName)
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        FilesErrorsEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-        FilesErrorsResponseEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum:
+          FilesErrorsEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+        message:
+          FilesErrorsResponseEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
         error,
-      )
+      })
     }
   }
 }

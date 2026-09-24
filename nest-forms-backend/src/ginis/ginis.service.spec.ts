@@ -1,6 +1,7 @@
 import { Readable } from 'node:stream'
 
 import { SslPridatSouborPridatSoubor } from '@bratislava/ginis-sdk'
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -36,7 +37,6 @@ import MailgunService from '../mailer/mailgun.service'
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import NasesContactsService from '../nases/services/nases.contacts.service'
 import PrismaService from '../prisma/prisma.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckDeliveryPayloadDto } from './dtos/ginis.response.dto'
 import GinisService from './ginis.service'
@@ -69,6 +69,7 @@ describe('GinisService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         GinisService,
         GinisAPIService,
         GinisHelper,
@@ -81,7 +82,7 @@ describe('GinisService', () => {
             download: jest.fn(),
           },
         },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: ApiJwtTokensService,
@@ -135,8 +136,9 @@ describe('GinisService', () => {
     // Create a real NasesContactsService instance for extraction methods
     // The extraction methods are pure functions that don't need dependencies
     const realNasesContactsService = new NasesContactsService(
-      module.get(ThrowerErrorGuard),
+      module.get(ErrorFactoryService),
       module.get(ClientsService),
+      new LineLoggerSubservice(NasesContactsService.name),
     )
 
     // Use real implementations for extraction methods

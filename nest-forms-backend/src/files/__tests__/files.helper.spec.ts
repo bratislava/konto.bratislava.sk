@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test } from '@nestjs/testing'
 import {
@@ -17,7 +18,6 @@ import { Files, Forms } from '../../generated/prisma/client'
 import { MinioStorageService } from '../../minio-storage/minio-storage.service'
 import PrismaService from '../../prisma/prisma.service'
 import ScannerClientService from '../../scanner-client/scanner-client.service'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import FilesHelper from '../files.helper'
 
 jest.mock('forms-shared/definitions/formDefinitionTypes')
@@ -29,6 +29,7 @@ describe('FilesHelper', () => {
   beforeEach(async () => {
     const app = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         FilesHelper,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -53,8 +54,8 @@ describe('FilesHelper', () => {
           useValue: createMock<ScannerClientService>(),
         },
         {
-          provide: ThrowerErrorGuard,
-          useValue: createMock<ThrowerErrorGuard>(),
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>(),
         },
       ],
     }).compile()
@@ -110,13 +111,13 @@ describe('FilesHelper', () => {
       jest.mocked(getFormDefinitionBySlug).mockReturnValue(null)
 
       const mockThrowException = jest.fn()
-      service['throwerErrorGuard'].NotFoundException = mockThrowException
+      service['errorFactoryService'].NotFoundException = mockThrowException
 
       expect(() => service.forms2formInfo(mockForm)).toThrow()
-      expect(mockThrowException).toHaveBeenCalledWith(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} test-slug`,
-      )
+      expect(mockThrowException).toHaveBeenCalledWith({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} test-slug`,
+      })
     })
   })
 

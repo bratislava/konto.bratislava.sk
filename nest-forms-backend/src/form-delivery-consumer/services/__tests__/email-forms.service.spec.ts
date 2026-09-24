@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
@@ -30,8 +31,6 @@ import MailgunService from '../../../mailer/mailgun.service'
 import OloMailerService from '../../../mailer/olo-mailer.service'
 import PrismaService from '../../../prisma/prisma.service'
 import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
-import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { EmailFormsErrorsResponseEnum } from '../../errors/email-forms.errors.enum'
 import EmailFormsService from '../email-forms.service'
 
@@ -160,6 +159,10 @@ describe('EmailFormsService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        {
+          provide: LineLoggerSubservice,
+          useValue: createMock<LineLoggerSubservice>(),
+        },
         EmailFormsService,
         {
           provide: PrismaService,
@@ -185,15 +188,13 @@ describe('EmailFormsService', () => {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),
         },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
       ],
     }).compile()
 
     service = module.get<EmailFormsService>(EmailFormsService)
     mailgunService = module.get(MailgunService)
     oloMailerService = module.get(OloMailerService)
-
-    service['logger'] = createMock<LineLoggerSubservice>()
 
     jest.spyOn(console, 'log').mockImplementation(jest.fn())
     jest.spyOn(console, 'error').mockImplementation(jest.fn())

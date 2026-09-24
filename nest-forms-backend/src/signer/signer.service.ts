@@ -1,11 +1,9 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable, Logger } from '@nestjs/common'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { getSignerData } from 'forms-shared/signer/signerData'
-import {
-  formatValidateXmlResultErrors,
-  validateXml,
-} from 'forms-shared/slovensko-sk/validateXml'
+import { validateXml } from 'forms-shared/slovensko-sk/validateXml'
 
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
@@ -14,7 +12,6 @@ import {
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { SignerDataRequestDto, SignerDataResponseDto } from './signer.dto'
 import {
   SignerErrorsEnum,
@@ -26,7 +23,7 @@ export default class SignerService {
   private readonly logger: Logger
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly formsService: FormsService,
     private readonly prismaService: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
@@ -40,12 +37,14 @@ export default class SignerService {
       return
     }
 
-    throw this.throwerErrorGuard.BadRequestException(
-      SignerErrorsEnum.XML_VALIDATION_ERROR,
-      result.errors
-        ? `${SignerErrorsResponseEnum.XML_VALIDATION_ERROR} Errors: ${formatValidateXmlResultErrors(result.errors)}`
-        : SignerErrorsResponseEnum.XML_VALIDATION_ERROR,
-    )
+    throw this.errorFactoryService.BadRequestException({
+      errorEnum: SignerErrorsEnum.XML_VALIDATION_ERROR,
+      message: SignerErrorsResponseEnum.XML_VALIDATION_ERROR,
+      // Only positions: libxml error messages can quote the offending (user-entered) value
+      console: {
+        errorPositions: result.errors?.map(({ line, col }) => ({ line, col })),
+      },
+    })
   }
 
   async getSignerData(
@@ -54,28 +53,28 @@ export default class SignerService {
   ): Promise<SignerDataResponseDto> {
     const form = await this.formsService.getUniqueForm(formId)
     if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (formDefinition === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `getSignerData: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `getSignerData: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        {
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        message: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        console: {
           formDefinitionType: formDefinition.type,
           slug: form.formDefinitionSlug,
         },
-      )
+      })
     }
 
     const files = await this.prismaService.files.findMany({

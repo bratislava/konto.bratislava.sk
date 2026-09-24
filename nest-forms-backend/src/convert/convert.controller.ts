@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -21,7 +22,6 @@ import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
 import { User, UserType } from '../auth-v2/types/user'
 import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ConvertService from './convert.service'
 import {
   ConvertToPdfRequestDto,
@@ -34,11 +34,10 @@ import {
 @ApiBearerAuth()
 @Controller('convert')
 export default class ConvertController {
-  private readonly logger: LineLoggerSubservice
-
-  constructor(private readonly convertService: ConvertService) {
-    this.logger = new LineLoggerSubservice('ConvertController')
-  }
+  constructor(
+    private readonly convertService: ConvertService,
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   @ApiOperation({
     summary: 'Convert JSON to XML',
@@ -67,13 +66,8 @@ export default class ConvertController {
         user.type === UserType.Auth
           ? user.cognitoJwtPayload.sub
           : user.cognitoIdentityId
-      const email =
-        user.type === UserType.Auth ? user.cityAccountUser.email : undefined
-
       this.logger.log(
-        `Error during convertJsonToXmlV2, userId: ${userId}, email: ${email}, formId: ${formId}, data: ${JSON.stringify(
-          data.jsonData,
-        )}`,
+        `Error during convertJsonToXmlV2, userId: ${userId}, formId: ${formId}`,
       )
       throw error
     }

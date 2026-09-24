@@ -1,5 +1,10 @@
 import { Stream } from 'node:stream'
 
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { isAxiosError } from 'axios'
 import {
@@ -24,9 +29,6 @@ import { Forms } from '../../generated/prisma/client'
 import { MinioStorageService } from '../../minio-storage/minio-storage.service'
 import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
-import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { NasesSendResponse } from '../dtos/responses.dto'
 import {
   NasesErrorCodesEnum,
@@ -38,19 +40,16 @@ import { NasesAttachmentXmlObject } from '../types/xml.types'
 
 @Injectable()
 export default class NasesSenderService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly convertService: ConvertService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private prismaService: PrismaService,
     private minioStorageService: MinioStorageService,
     private taxService: TaxService,
     private readonly baConfigService: BaConfigService,
     private readonly clientsService: ClientsService,
-  ) {
-    this.logger = new LineLoggerSubservice(NasesSenderService.name)
-  }
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   private async stream2buffer(stream: Stream): Promise<Buffer> {
     return new Promise<Buffer>((resolve, reject) => {
@@ -73,10 +72,10 @@ export default class NasesSenderService {
     formDefinition: FormDefinitionSlovenskoSk,
   ): Promise<NasesAttachmentXmlObject[]> {
     if (form.formDataJson == null) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.EMPTY_FORM_DATA,
-        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+        message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      })
     }
 
     const result: NasesAttachmentXmlObject[] = []
@@ -183,20 +182,21 @@ export default class NasesSenderService {
       try {
         message = await this.convertService.convertJsonToXmlObjectForForm(form)
       } catch (error) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'There was an error during converting json form data to xml.',
-          undefined,
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message:
+            'There was an error during converting json form data to xml.',
           error,
-        )
+        })
       }
     }
 
     if (!message) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
-        'Message of body is not defined. There is no base64 nor schema',
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: ErrorEnum.UNPROCESSABLE_ENTITY_ERROR,
+        message:
+          'Message of body is not defined. There is no base64 nor schema',
+      })
     }
 
     return message
@@ -223,27 +223,27 @@ export default class NasesSenderService {
   ): Promise<string> {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}`,
-        { formDefinitionType: formDefinition.type, formId: form.id },
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        message: `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}`,
+        console: { formDefinitionType: formDefinition.type, formId: form.id },
+      })
     }
     const { isSigned, pospID, pospVersion, title } = formDefinition
 
     const message = await this.getFormMessage(formDefinition, form, isSigned)
 
     if (form.formDataJson == null) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.EMPTY_FORM_DATA,
-        `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+        message: `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
+      })
     }
     const subject = extractFormSubjectTechnical(
       formDefinition,
@@ -372,7 +372,7 @@ export default class NasesSenderService {
       if (!response.data) {
         // TODO temp SEND_TO_NASES_ERROR log, remove
         this.logger.log(
-          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: EMPTY, message: ${message}`,
+          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: EMPTY`,
         )
 
         return {
@@ -389,7 +389,7 @@ export default class NasesSenderService {
         this.logger.log(
           `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${JSON.stringify(
             response.data,
-          )}, message: ${message}`,
+          )}`,
         )
 
         return {
@@ -403,16 +403,16 @@ export default class NasesSenderService {
       return { status: 200, data: response.data }
     } catch (error) {
       if (isAxiosError(error) && error.response?.data) {
-        this.logger.error(this.throwerErrorGuard.fromAxiosError(error, {}))
+        this.logger.error(this.errorFactoryService.fromAxiosError(error, {}))
         return { status: error.response.status, data: error.response.data }
       }
 
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          NasesErrorsEnum.SEND_TO_NASES_ERROR,
-          NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
-          { formId: data.id, message },
-        ),
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: NasesErrorsEnum.SEND_TO_NASES_ERROR,
+          message: NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
+          console: { formId: data.id },
+        }),
       )
 
       return {

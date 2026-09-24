@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
@@ -6,9 +11,6 @@ import { Interfaces } from 'mailgun.js/definitions'
 import BaConfigService from '../config/ba-config.service'
 import { FormError } from '../generated/prisma/client'
 import PrismaService from '../prisma/prisma.service'
-import { ErrorsEnum } from '../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { Mailer, MailerSendEmailParams } from './mailer.interface'
 import { getMailgunConfig } from './mailgun.constants'
 import MailgunHelper from './utils/mailgun.helper'
@@ -17,15 +19,13 @@ import MailgunHelper from './utils/mailgun.helper'
 export default class MailgunService implements Mailer {
   mailgunClient: Interfaces.IMailgunClient
 
-  logger: LineLoggerSubservice
-
   constructor(
     private readonly baConfigService: BaConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly mailgunHelper: MailgunHelper,
     private readonly prismaService: PrismaService,
+    private readonly logger: LineLoggerSubservice,
   ) {
-    this.logger = new LineLoggerSubservice(MailgunService.name)
     const mailgun = new Mailgun(FormData)
     this.mailgunClient = mailgun.client({
       username: 'api',
@@ -80,33 +80,29 @@ export default class MailgunService implements Mailer {
         },
       )
       if (mailgunResponse.status !== 200) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Mailgun message was not sent to email.`,
-          {
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Mailgun message was not sent to email.`,
+          console: {
             formId: data.data.formId,
-            emailFrom,
-            emailTo: data.to,
-            subject,
+            template: data.template,
             mailgunResponse,
-            filenames: attachments?.map((attachment) => attachment.filename),
+            attachmentCount: attachments?.length ?? 0,
           },
-        )
+        })
       }
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'ERROR to send mailgun message',
-          {
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'ERROR to send mailgun message',
+          console: {
             formId: data.data.formId,
-            emailFrom,
-            emailTo: data.to,
-            subject,
-            filenames: attachments?.map((attachment) => attachment.filename),
+            template: data.template,
+            attachmentCount: attachments?.length ?? 0,
           },
           error,
-        ),
+        }),
       )
       await this.setFormToEmailErrorState(data.data.formId)
     }

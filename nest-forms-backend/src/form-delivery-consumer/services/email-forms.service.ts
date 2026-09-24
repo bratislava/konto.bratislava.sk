@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import type { GenericObjectType } from '@rjsf/utils' with {
   'resolution-mode': 'import',
@@ -35,9 +40,6 @@ import MailgunService from '../../mailer/mailgun.service'
 import OloMailerService from '../../mailer/olo-mailer.service'
 import PrismaService from '../../prisma/prisma.service'
 import { getFileIdsToInfoMap } from '../../utils/files'
-import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { EmailFormChecked, isEmailFormChecked } from '../../utils/types/prisma'
 import {
   EmailFormsErrorsEnum,
@@ -46,19 +48,16 @@ import {
 
 @Injectable()
 export default class EmailFormsService {
-  private logger: LineLoggerSubservice
-
   constructor(
-    private throwerErrorGuard: ThrowerErrorGuard,
+    private errorFactoryService: ErrorFactoryService,
     private prismaService: PrismaService,
     private mailgunService: MailgunService,
     private oloMailerService: OloMailerService,
     private baConfigService: BaConfigService,
     private convertService: ConvertService,
     private formValidatorRegistryService: FormValidatorRegistryService,
-  ) {
-    this.logger = new LineLoggerSubservice('EmailFormsService')
-  }
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   /**
    * Resolves the address based on the environment.
@@ -90,11 +89,11 @@ export default class EmailFormsService {
         return this.mailgunService
 
       default:
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Unsupported mailer',
-          { mailer: formDefinition.email.mailer },
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Unsupported mailer',
+          console: { mailer: formDefinition.email.mailer },
+        })
     }
   }
 
@@ -115,46 +114,46 @@ export default class EmailFormsService {
     })
 
     if (form === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
 
     if (formDefinition.type !== FormDefinitionType.Email) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        EmailFormsErrorsEnum.NOT_EMAIL_FORM,
-        `${EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM} Form id: ${form.id}.`,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: EmailFormsErrorsEnum.NOT_EMAIL_FORM,
+        message: `${EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM} Form id: ${form.id}.`,
+      })
     }
 
     if (form.formDataJson == null) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.EMPTY_FORM_DATA,
-        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+        message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      })
     }
 
     if (form.formSummary == null) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.EMPTY_FORM_SUMMARY,
-        FormsErrorsResponseEnum.EMPTY_FORM_SUMMARY,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.EMPTY_FORM_SUMMARY,
+        message: FormsErrorsResponseEnum.EMPTY_FORM_SUMMARY,
+      })
     }
 
     if (!isEmailFormChecked(form)) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM_AFTER_CHECK,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM_AFTER_CHECK,
+      })
     }
 
     return { form, formDefinition }
@@ -250,12 +249,12 @@ export default class EmailFormsService {
       })
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Error while sending confirmation email.',
-          { userEmail, formId: form.id },
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Error while sending confirmation email.',
+          console: { formId: form.id },
           error,
-        ),
+        }),
       )
     }
   }
@@ -276,12 +275,12 @@ export default class EmailFormsService {
       })
       .catch((error: unknown) => {
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'Setting form state to FINISHED failed.',
-            { formId: form.id },
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: 'Setting form state to FINISHED failed.',
+            console: { formId: form.id },
             error,
-          ),
+          }),
         )
       })
   }
@@ -298,7 +297,7 @@ export default class EmailFormsService {
     )
 
     this.logger.log(
-      `Sending email of form ${formId} to ${resolvedRecipientAddresses}.`,
+      `Sending email of form ${formId} to ${resolvedRecipientAddresses.split(', ').length} recipient(s).`,
     )
 
     const jwtSecret = this.baConfigService.tokens.jwtSecret
@@ -373,19 +372,16 @@ export default class EmailFormsService {
       )
     } else if (formDefinition.email.extractEmail) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'No valid user confirmation email available (provided or extracted).',
-          {
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message:
+            'No valid user confirmation email available (provided or extracted).',
+          console: {
             formId,
             emailSource: userEmail == null ? 'extracted' : 'provided',
-            userEmail,
-            userFirstName,
-            userName,
             formDefinitionSlug: formDefinition.slug,
-            formDataJson: form.formDataJson,
           },
-        ),
+        }),
       )
     }
 

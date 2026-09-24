@@ -1,4 +1,5 @@
 import { GinisError } from '@bratislava/ginis-sdk'
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -8,7 +9,6 @@ import { createMockGinisDocumentData } from '../__tests__/factories/ginisDocumen
 import ClientsService from '../clients/clients.service'
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import GinisController from './ginis.controller'
 import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService from './subservices/ginis-api.service'
@@ -23,7 +23,7 @@ describe('GinisController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [GinisController],
       providers: [
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         GinisAPIService,
         GinisHelper,
         FormsService,
@@ -65,7 +65,7 @@ describe('GinisController', () => {
 
     it('should throw error if there is some error in the ginis api', async () => {
       const internalServerErrorSpy = jest.spyOn(
-        controller['throwerErrorGuard'],
+        controller['errorFactoryService'],
         'InternalServerErrorException',
       )
 

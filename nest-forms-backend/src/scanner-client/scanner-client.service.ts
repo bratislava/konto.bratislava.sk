@@ -1,15 +1,15 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import axios, { AxiosError, AxiosResponse, isAxiosError } from 'axios'
 
 import BaConfigService from '../config/ba-config.service'
 import { Files } from '../generated/prisma/client'
 import { ServiceRunningDto } from '../status/dtos/status.dto'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import PostScanFileResponseDto, { GetScanFileDto } from './scanner-client.dto'
 import {
   ScannerClientErrorsEnum,
@@ -18,14 +18,11 @@ import {
 
 @Injectable()
 export default class ScannerClientService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly baConfigService: BaConfigService,
-    private throwerErrorGuard: ThrowerErrorGuard,
-  ) {
-    this.logger = new LineLoggerSubservice('ScannerClientService')
-  }
+    private errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   // create function which will check health status of forms client with axios and using forms client url NEST_FORMS_BACKEND
   public async isRunning(): Promise<boolean> {
@@ -41,18 +38,17 @@ export default class ScannerClientService {
     } catch (error) {
       if (isAxiosError(error)) {
         this.logger.error(
-          this.throwerErrorGuard.fromAxiosError(error, {
+          this.errorFactoryService.fromAxiosError(error, {
             message: 'ScannerClientService.health error',
           }),
         )
       } else {
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
-            'ScannerClientService.health error',
-            undefined,
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
+            message: 'ScannerClientService.health error',
             error,
-          ),
+          }),
         )
       }
       return false
@@ -74,19 +70,18 @@ export default class ScannerClientService {
           },
         })
       this.logger.debug(
-        `ScannerClientService.scanFiles response.data: ${JSON.stringify(response.data)}`,
+        `ScannerClientService.scanFiles response status: ${response.status}, files: ${response.data.length}`,
       )
       return response.data
     } catch (error) {
       if (!isAxiosError(error)) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
-          ScannerClientResponseEnum.PROBLEM_WITH_SCANNER,
-          undefined,
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
+          message: ScannerClientResponseEnum.PROBLEM_WITH_SCANNER,
           error,
-        )
+        })
       }
-      throw this.throwerErrorGuard.fromAxiosError(error, {
+      throw this.errorFactoryService.fromAxiosError(error, {
         errorEnumOverwrite: ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
         message: ScannerClientResponseEnum.PROBLEM_WITH_SCANNER,
       })
@@ -120,12 +115,12 @@ export default class ScannerClientService {
       return response.data
     } catch (error) {
       if (!isAxiosError(error)) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          'Error is not an instance of AxiosError',
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+          console: 'Error is not an instance of AxiosError',
           error,
-        )
+        })
       }
       throw this.errorHandling(
         error,
@@ -150,12 +145,12 @@ export default class ScannerClientService {
       return response.data
     } catch (error) {
       if (!isAxiosError(error)) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          'Error is not an instance of AxiosError',
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+          console: 'Error is not an instance of AxiosError',
           error,
-        )
+        })
       }
       throw this.errorHandling(error, scannerId)
     }
@@ -177,19 +172,19 @@ export default class ScannerClientService {
       return response.data
     } catch (error) {
       if (!isAxiosError(error)) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          'Error is not an instance of AxiosError',
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+          console: 'Error is not an instance of AxiosError',
           error,
-        )
+        })
       }
       throw this.errorHandling(error, scannerId)
     }
   }
 
   private errorHandling(error: AxiosError, scannerId: string): HttpException {
-    return this.throwerErrorGuard.fromAxiosError(error, {
+    return this.errorFactoryService.fromAxiosError(error, {
       message: `Error while notifying scanner backend. ScannerId if available: ${scannerId} Error: ${error.message}`,
       console: error.response?.data as string | undefined,
       statusOverrides: {

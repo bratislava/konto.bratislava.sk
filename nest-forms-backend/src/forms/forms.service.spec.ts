@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test } from '@nestjs/testing'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -17,7 +18,6 @@ import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import { EDITABLE_ERRORS } from '../utils/constants'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { GetFormsRequestDto } from './dtos/requests.dto'
 import FormsService from './forms.service'
 
@@ -60,7 +60,7 @@ describe('FormsService', () => {
         FilesHelper,
         MinioStorageService,
         ScannerClientService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         FormValidatorRegistryService,
         { provide: PrismaService, useValue: prismaMock },
         {

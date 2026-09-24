@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import {
@@ -33,7 +34,6 @@ import { NasesErrorsResponseEnum } from '../nases/nases.errors.enum'
 import NasesSenderService from '../nases/services/nases.sender.service'
 import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import {
   FormSenderErrorsEnum,
   FormSenderErrorsResponseEnum,
@@ -60,6 +60,7 @@ describe('FormSenderService', () => {
 
     const app: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         FormSenderService,
         {
           provide: FormsService,
@@ -73,7 +74,7 @@ describe('FormSenderService', () => {
           provide: RabbitmqClientService,
           useValue: createMock<RabbitmqClientService>(),
         },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         {
           provide: NasesSenderService,
           useValue: createMock<NasesSenderService>(),
@@ -109,7 +110,7 @@ describe('FormSenderService', () => {
     service = app.get<FormSenderService>(FormSenderService)
 
     Object.defineProperty(
-      app.get<ThrowerErrorGuard>(ThrowerErrorGuard),
+      app.get<ErrorFactoryService>(ErrorFactoryService),
       'logger',
       {
         value: { error: jest.fn(), debug: jest.fn(), log: jest.fn() },

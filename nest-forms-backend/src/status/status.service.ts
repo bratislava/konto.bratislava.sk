@@ -1,10 +1,9 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { ServiceRunningDto } from './dtos/status.dto'
 import {
   StatusErrorsEnum,
@@ -13,16 +12,13 @@ import {
 
 @Injectable()
 export default class StatusService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private minioStorageService: MinioStorageService,
     private readonly prismaService: PrismaService,
     private readonly scannerClientService: ScannerClientService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-  ) {
-    this.logger = new LineLoggerSubservice('StatusService')
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   // function which checks if prisma is running
   public async isPrismaRunning(): Promise<ServiceRunningDto> {
@@ -33,12 +29,11 @@ export default class StatusService {
       }
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          StatusErrorsEnum.PRISMA_NOT_RUNNING,
-          StatusResponseEnum.PRISMA_NOT_RUNNING,
-          undefined,
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: StatusErrorsEnum.PRISMA_NOT_RUNNING,
+          message: StatusResponseEnum.PRISMA_NOT_RUNNING,
           error,
-        ),
+        }),
       )
       return {
         running: false,
@@ -56,12 +51,11 @@ export default class StatusService {
       }
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          StatusErrorsEnum.SCANNER_NOT_RUNNING,
-          StatusResponseEnum.SCANNER_NOT_RUNNING,
-          undefined,
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: StatusErrorsEnum.SCANNER_NOT_RUNNING,
+          message: StatusResponseEnum.SCANNER_NOT_RUNNING,
           error,
-        ),
+        }),
       )
       return {
         running: false,
@@ -79,12 +73,11 @@ export default class StatusService {
       }
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          StatusErrorsEnum.MINIO_NOT_RUNNING,
-          StatusResponseEnum.MINIO_NOT_RUNNING,
-          undefined,
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: StatusErrorsEnum.MINIO_NOT_RUNNING,
+          message: StatusResponseEnum.MINIO_NOT_RUNNING,
           error,
-        ),
+        }),
       )
       return {
         running: false,

@@ -1,3 +1,8 @@
+import {
+  ErrorFactoryService,
+  HandleErrors,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
@@ -5,9 +10,6 @@ import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefini
 
 import { Forms, FormState } from '../../generated/prisma/client'
 import PrismaService from '../../prisma/prisma.service'
-import HandleErrors from '../../utils/decorators/errorHandler.decorators'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import {
   GinisTaskErrorEnum,
   GinisTaskErrorResponseEnum,
@@ -25,16 +27,13 @@ const GINIS_REJECTED_DOCUMENT_STATES = new Set([
 
 @Injectable()
 export default class GinisTasksSubservice {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly ginisHelper: GinisHelper,
     private readonly ginisApiService: GinisAPIService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-  ) {
-    this.logger = new LineLoggerSubservice('GinisTasksSubservice')
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   private async updateSubmissionState(submission: Forms): Promise<void> {
     const { ginisDocumentId } = submission
@@ -53,12 +52,12 @@ export default class GinisTasksSubservice {
       })
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
-          GinisTaskErrorResponseEnum.GET_DOCUMENT_DETAIL_ERROR,
-          { ginisDocumentId },
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
+          message: GinisTaskErrorResponseEnum.GET_DOCUMENT_DETAIL_ERROR,
+          console: { ginisDocumentId },
           error,
-        ),
+        }),
       )
       return
     }
@@ -83,11 +82,11 @@ export default class GinisTasksSubservice {
       })
     } else if (!GINIS_PROCESSING_DOCUMENT_STATES.has(docState)) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
-          'Unknown GINIS Document state received.',
-          { docState, ginisDocumentId },
-        ),
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
+          message: 'Unknown GINIS Document state received.',
+          console: { docState, ginisDocumentId },
+        }),
       )
     }
   }

@@ -56,7 +56,7 @@ const IframeResizerChild = ({ children, enabled = false, nonce }: IframeResizerC
   return (
     <IframeResizerChildContext.Provider value={parentProps}>
       <Script
-        src={process.env.NEXT_PUBLIC_CITY_ACCOUNT_STRAPI_URL}
+        src={process.env.IFRAME_RESIZER_PUBLIC_PATH}
         async
         onLoad={handleScriptOnLoad}
         nonce={nonce}

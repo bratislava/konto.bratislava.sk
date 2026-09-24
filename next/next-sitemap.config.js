@@ -6,7 +6,7 @@ const { ROUTES } = require('./dist/utils/routes')
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl:
-    process.env.NEXT_PUBLIC_NODE_ENV === 'production'
+    process.env.NODE_ENV === 'production'
       ? 'https://konto.bratislava.sk'
       : process.env.NEXT_PUBLIC_SELF_URL,
   generateRobotsTxt: false,

@@ -37,7 +37,7 @@ export const mockConfigService = {
   }),
 }
 
-export const mockThrowerErrorGuard = {
+export const mockErrorFactoryService = {
   InternalServerErrorException: jest
     .fn()
     .mockImplementation((error, message: string) => {
@@ -58,7 +58,7 @@ export const setupNorisConnectionSubserviceTest = () => {
   return {
     mockService,
     mockConfigService,
-    mockThrowerErrorGuard,
+    mockErrorFactoryService,
     mockConnectionPool,
   }
 }

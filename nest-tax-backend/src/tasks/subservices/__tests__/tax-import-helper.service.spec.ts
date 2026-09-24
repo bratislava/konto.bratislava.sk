@@ -21,6 +21,7 @@ describe('TaxImportHelperService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         TaxImportHelperService,
         { provide: PrismaService, useValue: prismaMock },
         {

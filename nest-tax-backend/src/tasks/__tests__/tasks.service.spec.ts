@@ -71,8 +71,8 @@ describe('TasksService', () => {
       const updateManySpy = jest
         .spyOn(service['prismaService'].config, 'updateMany')
         .mockResolvedValue({ count: 0 })
-      const throwerErrorGuardSpy = jest.spyOn(
-        service['throwerErrorGuard'],
+      const errorFactoryServiceSpy = jest.spyOn(
+        service['errorFactoryService'],
         'InternalServerErrorException',
       )
 
@@ -82,7 +82,7 @@ describe('TasksService', () => {
         where: { key: NORIS_SILENT_CONNECTION_ERRORS_KEY },
         data: { value: '0' },
       })
-      expect(throwerErrorGuardSpy).not.toHaveBeenCalled()
+      expect(errorFactoryServiceSpy).not.toHaveBeenCalled()
     })
 
     it('should return without throwing when numberOfErrors is below threshold', async () => {
@@ -95,8 +95,8 @@ describe('TasksService', () => {
       const updateManySpy = jest
         .spyOn(service['prismaService'].config, 'updateMany')
         .mockResolvedValue({ count: 0 })
-      const throwerErrorGuardSpy = jest.spyOn(
-        service['throwerErrorGuard'],
+      const errorFactoryServiceSpy = jest.spyOn(
+        service['errorFactoryService'],
         'InternalServerErrorException',
       )
 
@@ -106,7 +106,7 @@ describe('TasksService', () => {
         where: { key: NORIS_SILENT_CONNECTION_ERRORS_KEY },
         data: { value: '0' },
       })
-      expect(throwerErrorGuardSpy).not.toHaveBeenCalled()
+      expect(errorFactoryServiceSpy).not.toHaveBeenCalled()
     })
 
     it('should throw when config value is invalid (NaN)', async () => {
@@ -117,8 +117,8 @@ describe('TasksService', () => {
           [NORIS_SILENT_CONNECTION_ERRORS_KEY]: invalidValue,
         })
 
-      const throwerErrorGuardSpy = jest
-        .spyOn(service['throwerErrorGuard'], 'InternalServerErrorException')
+      const errorFactoryServiceSpy = jest
+        .spyOn(service['errorFactoryService'], 'InternalServerErrorException')
         .mockReturnValue(
           new HttpException(
             'Internal Server Error',
@@ -128,10 +128,10 @@ describe('TasksService', () => {
 
       // Method is decorated with @HandleErrors, so it catches the error and returns null
       await service.alertSilentNorisConnectionErrors()
-      expect(throwerErrorGuardSpy).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value: ${invalidValue}. Must be a number.`,
-      )
+      expect(errorFactoryServiceSpy).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value: ${invalidValue}. Must be a number.`,
+      })
     })
 
     it('should reset config to 0 and throw when numberOfErrors is at or above threshold', async () => {
@@ -144,8 +144,8 @@ describe('TasksService', () => {
       const updateManySpy = jest
         .spyOn(service['prismaService'].config, 'updateMany')
         .mockResolvedValue({ count: 1 })
-      const throwerErrorGuardSpy = jest
-        .spyOn(service['throwerErrorGuard'], 'InternalServerErrorException')
+      const errorFactoryServiceSpy = jest
+        .spyOn(service['errorFactoryService'], 'InternalServerErrorException')
         .mockReturnValue(
           new HttpException(
             'Internal Server Error',
@@ -159,10 +159,11 @@ describe('TasksService', () => {
         where: { key: NORIS_SILENT_CONNECTION_ERRORS_KEY },
         data: { value: '0' },
       })
-      expect(throwerErrorGuardSpy).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Number of silenced Noris connection errors in last 24 hours is 25.',
-      )
+      expect(errorFactoryServiceSpy).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message:
+          'Number of silenced Noris connection errors in last 24 hours is 25.',
+      })
     })
   })
 })

@@ -17,6 +17,7 @@ describe('TasksConfigSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         TasksConfigSubservice,
         { provide: PrismaService, useValue: prismaMock },
       ],

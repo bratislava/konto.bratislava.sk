@@ -170,7 +170,7 @@ describe('NorisTaxSubservice', () => {
     it('should throw for unknown tax type', async () => {
       const mockError = new Error('Unknown tax type')
       jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
+        .spyOn(errorFactoryService, 'InternalServerErrorException')
         .mockImplementation(() => {
           throw mockError
         })
@@ -184,11 +184,11 @@ describe('NorisTaxSubservice', () => {
       ).rejects.toThrow(mockError)
 
       expect(
-        throwerErrorGuard.InternalServerErrorException,
-      ).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        expect.stringContaining('Unknown tax type'),
-      )
+        errorFactoryService.InternalServerErrorException,
+      ).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: expect.stringContaining('Unknown tax type') as string,
+      })
     })
   })
 

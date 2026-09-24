@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -23,6 +28,7 @@ describe('AdminService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         AdminService,
         {
           provide: PrismaService,
@@ -272,7 +278,7 @@ describe('AdminService', () => {
       prismaMock.taxAdministrator.findFirst.mockResolvedValue(null)
 
       const internalServerErrorSpy = jest.spyOn(
-        adminService['throwerErrorGuard'],
+        adminService['errorFactoryService'],
         'InternalServerErrorException',
       )
 
@@ -284,10 +290,10 @@ describe('AdminService', () => {
       ).rejects.toThrow()
 
       expect(prismaMock.taxAdministrator.findFirst).toHaveBeenCalledWith({})
-      expect(internalServerErrorSpy).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        expect.any(String),
-      )
+      expect(internalServerErrorSpy).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: expect.any(String) as string,
+      })
     })
 
     it('should throw InternalServerErrorException when tax with variable symbol already exists', async () => {
@@ -302,7 +308,7 @@ describe('AdminService', () => {
       )
 
       const internalServerErrorSpy = jest.spyOn(
-        adminService['throwerErrorGuard'],
+        adminService['errorFactoryService'],
         'InternalServerErrorException',
       )
 
@@ -318,10 +324,10 @@ describe('AdminService', () => {
           variableSymbol: mockNorisData.variableSymbol,
         },
       })
-      expect(internalServerErrorSpy).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        expect.any(String),
-      )
+      expect(internalServerErrorSpy).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: expect.any(String) as string,
+      })
     })
   })
 
@@ -421,7 +427,7 @@ describe('AdminService', () => {
       prismaMock.taxPayer.findUnique.mockResolvedValue(null)
 
       const internalServerErrorSpy = jest.spyOn(
-        adminService['throwerErrorGuard'],
+        adminService['errorFactoryService'],
         'InternalServerErrorException',
       )
 
@@ -440,10 +446,10 @@ describe('AdminService', () => {
         },
       })
 
-      expect(internalServerErrorSpy).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        expect.any(String),
-      )
+      expect(internalServerErrorSpy).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: expect.any(String) as string,
+      })
 
       expect(prismaMock.tax.findUnique).not.toHaveBeenCalled()
       expect(prismaMock.tax.delete).not.toHaveBeenCalled()
@@ -454,7 +460,7 @@ describe('AdminService', () => {
       prismaMock.tax.findUnique.mockResolvedValue(null)
 
       const internalServerErrorSpy = jest.spyOn(
-        adminService['throwerErrorGuard'],
+        adminService['errorFactoryService'],
         'InternalServerErrorException',
       )
 
@@ -484,10 +490,10 @@ describe('AdminService', () => {
         },
       })
 
-      expect(internalServerErrorSpy).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        expect.any(String),
-      )
+      expect(internalServerErrorSpy).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: expect.any(String) as string,
+      })
 
       expect(prismaMock.tax.delete).not.toHaveBeenCalled()
     })

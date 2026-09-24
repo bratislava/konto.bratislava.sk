@@ -1,4 +1,8 @@
-import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
@@ -165,6 +169,7 @@ describe('NorisTaxRealEstateSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         NorisTaxRealEstateSubservice,
         {
           provide: NorisConnectionSubservice,
@@ -542,9 +547,11 @@ describe('NorisTaxRealEstateSubservice', () => {
       const mockError = new Error('Noris connection failed')
       connectionService.withConnection.mockRejectedValue(mockError)
 
-      throwerErrorGuard.InternalServerErrorException.mockImplementation(() => {
-        throw mockError
-      })
+      errorFactoryService.InternalServerErrorException.mockImplementation(
+        () => {
+          throw mockError
+        },
+      )
 
       await expect(
         service.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
@@ -554,14 +561,12 @@ describe('NorisTaxRealEstateSubservice', () => {
       ).rejects.toThrow()
 
       expect(
-        throwerErrorGuard.InternalServerErrorException,
-      ).toHaveBeenCalledWith(
-        CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
-        'Failed to get taxes from Noris',
-        undefined,
-        undefined,
-        mockError,
-      )
+        errorFactoryService.InternalServerErrorException,
+      ).toHaveBeenCalledWith({
+        errorEnum: CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
+        message: 'Failed to get taxes from Noris',
+        error: mockError,
+      })
     })
 
     it('should skip records that do not exist in database', async () => {
@@ -1168,11 +1173,12 @@ describe('NorisTaxRealEstateSubservice', () => {
 
         expect(birthNumbersResult.has('123456/7890')).toBe(false)
         expect(
-          throwerErrorGuard.InternalServerErrorException,
-        ).toHaveBeenCalledWith(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Error in send Tax data to Bloomreach for tax payer with ID 1 and year 2023',
-        )
+          errorFactoryService.InternalServerErrorException,
+        ).toHaveBeenCalledWith({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message:
+            'Error in send Tax data to Bloomreach for tax payer with ID 1 and year 2023',
+        })
       })
 
       it('should handle database transaction errors', async () => {

@@ -178,21 +178,21 @@ describe('TiersGuard', () => {
       })
     })
 
-    it('should call throwerErrorGuard.ForbiddenException with FORBIDDEN_ERROR', async () => {
+    it('should call errorFactoryService.ForbiddenException with FORBIDDEN_ERROR', async () => {
       reflector.getAllAndOverride.mockReturnValue([
         CognitoUserAttributesTierEnum.IdentityCard,
       ])
       cognitoSubservice.getUserTierFromCognito.mockResolvedValue(
         CognitoUserAttributesTierEnum.New,
       )
-      const spy = jest.spyOn(throwerErrorGuard, 'ForbiddenException')
+      const spy = jest.spyOn(errorFactoryService, 'ForbiddenException')
 
       await expect(guard.canActivate(makeMockContext())).rejects.toThrow()
 
-      expect(spy).toHaveBeenCalledWith(
-        ErrorsEnum.FORBIDDEN_ERROR,
-        'Forbidden tier',
-      )
+      expect(spy).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.FORBIDDEN_ERROR,
+        message: 'Forbidden tier',
+      })
     })
   })
 

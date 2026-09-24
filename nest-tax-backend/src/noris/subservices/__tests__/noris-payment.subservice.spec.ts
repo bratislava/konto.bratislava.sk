@@ -1100,8 +1100,8 @@ describe('NorisPaymentSubservice', () => {
 
       jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
 
-      const throwerErrorGuardMock = jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
+      const errorFactoryServiceMock = jest
+        .spyOn(errorFactoryService, 'InternalServerErrorException')
         .mockImplementation(() => {
           throw new Error('Internal Server Error')
         })
@@ -1114,13 +1114,11 @@ describe('NorisPaymentSubservice', () => {
         ),
       ).rejects.toThrow('Internal Server Error')
 
-      expect(throwerErrorGuardMock).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-        undefined,
-        undefined,
-        transactionError,
-      )
+      expect(errorFactoryServiceMock).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+        error: transactionError,
+      })
     })
 
     it('should handle string amount values correctly', async () => {

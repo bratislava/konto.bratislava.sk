@@ -111,7 +111,7 @@ describe('CardPaymentReportingService', () => {
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: BaConfigService, useValue: mockBaConfigService },
         {
-          provide: ThrowerErrorGuard,
+          provide: ErrorFactoryService,
           useValue: { InternalServerErrorException: jest.fn() },
         },
         { provide: EmailSubservice, useValue: mockEmailSubservice },

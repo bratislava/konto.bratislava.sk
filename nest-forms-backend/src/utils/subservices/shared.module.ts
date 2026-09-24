@@ -17,7 +17,7 @@ import ThrowerErrorGuard from '../guards/thrower-error.guard'
  *
  * ## What can be provided:
  * - Subservices: Reusable business logic services
- * - Guards: Global guards like ThrowerErrorGuard
+ * - Guards: Global guards
  * - Utilities: Cross-cutting concerns that don't belong to a specific feature
  *
  * ## What should NOT be added:
@@ -32,7 +32,7 @@ import ThrowerErrorGuard from '../guards/thrower-error.guard'
 @Global()
 @Module({
   imports: [BaConfigModule, PrismaModule],
-  providers: [ThrowerErrorGuard, FormRegistrationStatusRepository],
-  exports: [ThrowerErrorGuard, FormRegistrationStatusRepository, PrismaModule],
+  providers: [FormRegistrationStatusRepository],
+  exports: [FormRegistrationStatusRepository, PrismaModule],
 })
 export class SharedModule {}

@@ -1,3 +1,5 @@
+import { ErrorEnum } from '@bratislava/log-nest'
+
 import { CityAccountErrorsEnum } from '../../../auth/errors/city-account.errors.enum'
 import { ConvertErrorsEnum } from '../../../convert/errors/convert.errors.enum'
 import { FilesErrorsEnum } from '../../../files/files.errors.enum'
@@ -11,12 +13,11 @@ import { NasesErrorsEnum } from '../../../nases/nases.errors.enum'
 import { ScannerClientErrorsEnum } from '../../../scanner-client/scanner-client.errors.enum'
 import { SignerErrorsEnum } from '../../../signer/signer.errors.enum'
 import { StatusErrorsEnum } from '../../../status/errors/status.errors.enum'
-import { ErrorsEnum } from '../../global-enums/errors.enum'
 import { MailgunErrorsEnum } from '../../global-enums/mailgun.errors.enum'
 import { SharepointErrorsEnum } from '../../subservices/dtos/sharepoint.errors.enum'
 
 export type CustomErrorEnums =
-  | ErrorsEnum
+  | ErrorEnum
   | FormsErrorsEnum
   | FormDeliveryConsumerErrorsEnum
   | GinisTaskErrorEnum
@@ -33,44 +34,10 @@ export type CustomErrorEnums =
   | CityAccountErrorsEnum
   | FormSenderErrorsEnum
 
-export const ErrorSymbols = {
-  alert: Symbol('alert'),
-  console: Symbol('console'),
-  errorType: Symbol('errorType'),
-  stack: Symbol('stack'),
-  errorCause: Symbol('errorCause'),
-  causedByMessage: Symbol('causedByMessage'),
-  causedByConsole: Symbol('causedByConsole'),
-} as const
-
-export const errorTypeKeys: Record<string, string> = {
-  alert: `$Symbol-alert`,
-  console: `$Symbol-console`,
-  errorType: `$Symbol-errorType`,
-  stack: `$Symbol-stack`,
-  errorCause: `$Symbol-errorCause`,
-  causedByMessage: `$Symbol-causedByMessage`,
-  causedByConsole: `$Symbol-causedByConsole`,
-}
-
-export const errorTypeStrings = Object.values(errorTypeKeys)
-
-export class ResponseErrorInternalDto {
-  statusCode!: number
-
-  status!: string
-
-  message!: string
-
-  errorName!: CustomErrorEnums;
-
-  [ErrorSymbols.alert]?: number;
-
-  [ErrorSymbols.console]?: string | Record<string, unknown>;
-
-  [ErrorSymbols.errorCause]?: string;
-
-  [ErrorSymbols.causedByMessage]?: string;
-
-  [ErrorSymbols.causedByConsole]?: string | Record<string, unknown>
+// Registers `CustomErrorEnums` as this app's error-enum union, so an injected
+// `ErrorFactoryService` with no explicit generic is typed with it everywhere.
+declare module '@bratislava/log-nest' {
+  interface LogNestErrorEnumRegistry {
+    errorEnum: CustomErrorEnums
+  }
 }

@@ -75,7 +75,7 @@ export class TasksService {
     const stateHolidaysForNextYear = Boolean(stateHolidays[nextYear])
 
     if (!stateHolidaysForNextYear) {
-      this.errorFactoryService.InternalServerErrorException({
+      throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
         message: CustomErrorTaxTypesResponseEnum.STATE_HOLIDAY_NOT_EXISTS,
         console:

@@ -1,5 +1,6 @@
 import { Readable } from 'node:stream'
 
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable, StreamableFile } from '@nestjs/common'
 import type { GenericObjectType } from '@rjsf/utils' with {
   'resolution-mode': 'import',
@@ -39,9 +40,6 @@ import FormsService from '../forms/forms.service'
 import { Forms, FormState } from '../generated/prisma/client'
 import PrismaService from '../prisma/prisma.service'
 import TaxService from '../tax/tax.service'
-import { ErrorsEnum } from '../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { patchConvertServiceTaxFormDefinition } from './convert.helper'
 import {
@@ -58,13 +56,11 @@ import {
 
 @Injectable()
 export default class ConvertService {
-  private readonly logger: LineLoggerSubservice
-
   private readonly versioningEnabled: boolean
 
   constructor(
     private readonly taxService: TaxService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly formsService: FormsService,
     private readonly prismaService: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,

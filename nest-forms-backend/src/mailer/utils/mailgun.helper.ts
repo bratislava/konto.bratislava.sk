@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import FormData from 'form-data'
 import Handlebars from 'handlebars'
@@ -13,7 +14,6 @@ import {
   MailgunErrorsEnum,
   MailgunErrorsResponseEnum,
 } from '../../utils/global-enums/mailgun.errors.enum'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import {
   getMailgunConfig,
   MailgunConfigVariableType,

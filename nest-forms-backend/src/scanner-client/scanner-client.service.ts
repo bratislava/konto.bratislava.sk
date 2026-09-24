@@ -1,15 +1,15 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import axios, { AxiosError, AxiosResponse, isAxiosError } from 'axios'
 
 import BaConfigService from '../config/ba-config.service'
 import { Files } from '../generated/prisma/client'
 import { ServiceRunningDto } from '../status/dtos/status.dto'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import PostScanFileResponseDto, { GetScanFileDto } from './scanner-client.dto'
 import {
   ScannerClientErrorsEnum,

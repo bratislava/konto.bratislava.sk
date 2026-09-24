@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test } from '@nestjs/testing'
 import {
@@ -17,7 +18,6 @@ import { Files, Forms } from '../../generated/prisma/client'
 import { MinioStorageService } from '../../minio-storage/minio-storage.service'
 import PrismaService from '../../prisma/prisma.service'
 import ScannerClientService from '../../scanner-client/scanner-client.service'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import FilesHelper from '../files.helper'
 
 jest.mock('forms-shared/definitions/formDefinitionTypes')

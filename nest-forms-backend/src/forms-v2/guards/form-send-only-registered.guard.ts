@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
@@ -9,7 +10,6 @@ import {
 } from '../../forms/forms.errors.enum'
 import FormRegistrationStatusRepository from '../../nases/repositories/form-registration-status.repository'
 import PrismaService from '../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 
 @Injectable()
 export class FormSendOnlyRegisteredGuard implements CanActivate {

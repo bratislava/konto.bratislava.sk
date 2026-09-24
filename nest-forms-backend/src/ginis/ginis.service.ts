@@ -1,6 +1,12 @@
 import { Readable } from 'node:stream'
 import { setTimeout } from 'node:timers/promises'
 
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
@@ -51,12 +57,6 @@ import {
 } from '../nases/utils/nases.identity.utils'
 import PrismaService from '../prisma/prisma.service'
 import { RABBIT_FORM_DELIVERY, RABBIT_GINIS } from '../utils/constants'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckDeliveryPayloadDto } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'

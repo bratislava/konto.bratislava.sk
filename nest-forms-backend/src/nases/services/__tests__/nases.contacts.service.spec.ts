@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import {
@@ -6,7 +7,6 @@ import {
 } from 'openapi-clients/slovensko-sk'
 
 import ClientsService from '../../../clients/clients.service'
-import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import {
   isUpvsCorporateBody,
   isUpvsNaturalPerson,

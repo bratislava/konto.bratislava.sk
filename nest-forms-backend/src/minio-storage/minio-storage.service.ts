@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Client } from 'minio'
 
@@ -7,9 +12,6 @@ import {
   FilesErrorsResponseEnum,
 } from '../files/files.errors.enum'
 import { MinioClientService } from '../minio-client/minio-client.service'
-import { ErrorsEnum } from '../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 // TS2883: inferred putObject/upload return types require MinIO's internal
 // UploadedObjectInfo path, so expose our own stable public shape instead.

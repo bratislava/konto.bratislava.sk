@@ -1,7 +1,7 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
 
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { FormsErrorsEnum, FormsErrorsResponseEnum } from '../forms.errors.enum'
 import FormsService from '../forms.service'
 

@@ -11,11 +11,10 @@ import {
   SslPridatSouborPridatSoubor,
   SslPrideleniPrideleni,
 } from '@bratislava/ginis-sdk'
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import BaConfigService from '../../config/ba-config.service'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 export enum GinContactDatabase {
   COMMON = '0',

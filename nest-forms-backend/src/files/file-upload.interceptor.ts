@@ -1,12 +1,21 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor, PayloadTooLargeException, } from '@nestjs/common'
+import { ErrorFactoryService } from '@bratislava/log-nest'
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+  PayloadTooLargeException,
+} from '@nestjs/common'
 import { Request, Response } from 'express'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import multer from 'multer'
 
 import BaConfigService from '../config/ba-config.service'
-import { FormsErrorsEnum, FormsErrorsResponseEnum, } from '../forms/forms.errors.enum'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
 
 /**

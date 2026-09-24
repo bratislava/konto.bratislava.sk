@@ -1,7 +1,7 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import BaConfigService from '../../../config/ba-config.service'
-import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import { getMailgunConfig } from '../../mailgun.constants'
 import MailgunHelper from '../mailgun.helper'
 import { testEmailDefinitions } from './utils/emailDefinitions'

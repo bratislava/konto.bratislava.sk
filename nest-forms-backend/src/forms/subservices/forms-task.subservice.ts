@@ -1,10 +1,10 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 
 import FilesService from '../../files/files.service'
 import { FormState, Prisma } from '../../generated/prisma/client'
 import PrismaService from '../../prisma/prisma.service'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export default class FormsTaskSubservice {

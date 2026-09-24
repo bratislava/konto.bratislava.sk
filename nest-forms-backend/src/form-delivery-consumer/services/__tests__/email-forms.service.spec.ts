@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
@@ -30,8 +31,6 @@ import MailgunService from '../../../mailer/mailgun.service'
 import OloMailerService from '../../../mailer/olo-mailer.service'
 import PrismaService from '../../../prisma/prisma.service'
 import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
-import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { EmailFormsErrorsResponseEnum } from '../../errors/email-forms.errors.enum'
 import EmailFormsService from '../email-forms.service'
 

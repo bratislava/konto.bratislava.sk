@@ -1,3 +1,9 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { OnQueueFailed, Process, Processor } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
 import axios, { AxiosResponse, isAxiosError } from 'axios'
@@ -26,15 +32,9 @@ import {
 import { FormError, Forms, FormState } from '../../generated/prisma/client'
 import PrismaService from '../../prisma/prisma.service'
 import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import {
   SharepointErrorsEnum,
   SharepointErrorsResponseEnum,
 } from '../../utils/subservices/dtos/sharepoint.errors.enum'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 @Injectable()
 @Processor('sharepoint')

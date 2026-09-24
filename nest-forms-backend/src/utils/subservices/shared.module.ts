@@ -3,7 +3,6 @@ import { Global, Module } from '@nestjs/common'
 import BaConfigModule from '../../config/ba-config.module'
 import FormRegistrationStatusRepository from '../../nases/repositories/form-registration-status.repository'
 import PrismaModule from '../../prisma/prisma.module'
-import ThrowerErrorGuard from '../guards/thrower-error.guard'
 
 /**
  * SharedModule is a global module that provides commonly used services and utilities

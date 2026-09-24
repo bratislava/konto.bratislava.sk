@@ -2,8 +2,8 @@ import {
   AppLoggerMiddleware,
   birthNumberRedactor,
   emailRedactor,
+  LogSanitizationModule,
   NestLoggingModule,
-  SanitizationModule,
 } from '@bratislava/log-nest'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ScheduleModule } from '@nestjs/schedule'
@@ -32,7 +32,7 @@ import { SharedModule } from './utils/subservices/shared.module'
     BaConfigModule,
     PrismaModule,
     NestLoggingModule.forRoot({ alertReporting }),
-    SanitizationModule.forRoot({
+    LogSanitizationModule.forRoot({
       redactors: [emailRedactor, birthNumberRedactor],
       allowShape: {
         message: true,

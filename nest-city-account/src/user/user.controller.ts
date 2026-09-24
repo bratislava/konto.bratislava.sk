@@ -1,4 +1,4 @@
-import { AllowList, ErrorFactoryService } from '@bratislava/log-nest'
+import { ErrorFactoryService, LogAllowList } from '@bratislava/log-nest'
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
@@ -45,7 +45,7 @@ import { UserService } from './user.service'
 @ApiTags('Users manipulation')
 @ApiBearerAuth()
 @Controller('user')
-@AllowList({
+@LogAllowList({
   id: true,
   externalId: true,
   ico: true,

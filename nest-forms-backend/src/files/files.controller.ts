@@ -70,6 +70,13 @@ export default class FilesController {
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @FormAccessAllowMigrations()
   @UseGuards(UserAuthGuard, FormAccessGuard)
+  @AllowList({
+    id: true,
+    fileSize: true,
+    status: true,
+    ginisOrder: true,
+    ginisUploaded: true,
+  })
   @Get('forms/:formId')
   async getFilesStatusByForm(
     @Param('formId') formId: string,
@@ -89,6 +96,18 @@ export default class FilesController {
   })
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
+  @AllowList({
+    id: true,
+    scannerId: true,
+    createdAt: true,
+    updatedAt: true,
+    status: true,
+    fileSize: true,
+    ginisOrder: true,
+    ginisUploaded: true,
+    pospId: true,
+    formId: true,
+  })
   @Patch('scan/:scannerId')
   async updateFileStatusScannerId(
     @Body() statusObject: UpdateFileStatusRequestDto,
@@ -138,6 +157,18 @@ export default class FilesController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard, FormDefinitionMustBeEnabledGuard)
+  @AllowList({
+    id: true,
+    scannerId: true,
+    createdAt: true,
+    updatedAt: true,
+    status: true,
+    fileSize: true,
+    ginisOrder: true,
+    ginisUploaded: true,
+    pospId: true,
+    formId: true,
+  })
   @Post('upload/:formId')
   @UseInterceptors(FileUploadInterceptor)
   async uploadFile(

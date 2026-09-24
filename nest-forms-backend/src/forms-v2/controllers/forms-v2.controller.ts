@@ -30,6 +30,7 @@ export class FormsV2Controller {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard)
+  @AllowList({ formDefinitionSlug: true, formId: true })
   @Post()
   async createForm(
     @Body() data: CreateFormInput,

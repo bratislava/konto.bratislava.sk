@@ -14,6 +14,7 @@ export default class WebhookController {
     summary: 'Receive webhook data',
     description: 'Endpoint to receive webhook data and log it',
   })
+  @AllowList({ formId: true, slug: true, jsonVersion: true })
   @Post()
   receiveWebhook(@Body() data: WebhookDto): void {
     this.logger.log('Received webhook data successfully', {

@@ -51,6 +51,7 @@ export default class GinisController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth])
   @UseGuards(UserAuthGuard, FormAccessGuard)
+  @AllowList({ id: true, dossierId: true })
   @Get(':formId')
   async getGinisDocumentByFormId(
     @Param('formId') formId: string,

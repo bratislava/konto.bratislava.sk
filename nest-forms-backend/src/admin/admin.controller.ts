@@ -1,6 +1,10 @@
 import { IncomingHttpHeaders } from 'node:http'
 
-import { AllowList, ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LogAllowList,
+} from '@bratislava/log-nest'
 import { Controller, Get, Headers, UseGuards } from '@nestjs/common'
 import {
   ApiOkResponse,
@@ -84,7 +88,7 @@ export default class AdminController {
     type: ValidateFormRegistrationsResultDto,
   })
   @UseGuards(AdminGuard)
-  @AllowList(true)
+  @LogAllowList(true)
   @Get('check-form-registrations-in-nases')
   async checkFormsRegistrationsInNases(): Promise<ValidateFormRegistrationsResultDto> {
     return this.nasesCronService.validateFormRegistrations()

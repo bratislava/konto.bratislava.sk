@@ -1,9 +1,9 @@
 import {
-  AllowList,
   ErrorEnum,
   ErrorFactoryService,
   ErrorResponseEnum,
   LineLoggerSubservice,
+  LogAllowList,
 } from '@bratislava/log-nest'
 import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common'
 import {
@@ -62,7 +62,7 @@ export default class FormSenderController {
     FormDefinitionMustBeEnabledGuard,
     FormMustBeEditableGuard,
   )
-  @AllowList({ id: true, state: true })
+  @LogAllowList({ id: true, state: true })
   @Post('send-and-update-form/:formId')
   async sendAndUpdateForm(
     @Body() data: UpdateFormRequestDto,
@@ -91,7 +91,7 @@ export default class FormSenderController {
     FormDefinitionMustBeEnabledGuard,
     FormMustBeEditableGuard,
   )
-  @AllowList({ id: true, state: true })
+  @LogAllowList({ id: true, state: true })
   @Post('eid/send-and-update-form/:formId')
   async sendAndUpdateFormEid(
     @Body() data: EidUpdateSendFormRequestDto,

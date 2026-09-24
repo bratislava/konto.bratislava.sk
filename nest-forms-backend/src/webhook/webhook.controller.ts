@@ -1,4 +1,4 @@
-import { AllowList, LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerSubservice, LogAllowList } from '@bratislava/log-nest'
 import { Body, Controller, Post } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
@@ -14,7 +14,7 @@ export default class WebhookController {
     summary: 'Receive webhook data',
     description: 'Endpoint to receive webhook data and log it',
   })
-  @AllowList({ formId: true, slug: true, jsonVersion: true })
+  @LogAllowList({ formId: true, slug: true, jsonVersion: true })
   @Post()
   receiveWebhook(@Body() data: WebhookDto): void {
     this.logger.log('Received webhook data successfully', {

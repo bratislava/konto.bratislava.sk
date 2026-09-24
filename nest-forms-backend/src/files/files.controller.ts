@@ -1,4 +1,4 @@
-import { AllowList } from '@bratislava/log-nest'
+import { LogAllowList } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -70,7 +70,7 @@ export default class FilesController {
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @FormAccessAllowMigrations()
   @UseGuards(UserAuthGuard, FormAccessGuard)
-  @AllowList({
+  @LogAllowList({
     id: true,
     fileSize: true,
     status: true,
@@ -96,7 +96,7 @@ export default class FilesController {
   })
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
-  @AllowList({
+  @LogAllowList({
     id: true,
     scannerId: true,
     createdAt: true,
@@ -157,7 +157,7 @@ export default class FilesController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard, FormDefinitionMustBeEnabledGuard)
-  @AllowList({
+  @LogAllowList({
     id: true,
     scannerId: true,
     createdAt: true,

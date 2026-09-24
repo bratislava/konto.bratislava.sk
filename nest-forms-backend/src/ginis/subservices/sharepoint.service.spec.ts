@@ -37,8 +37,9 @@ describe('SharepointService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         SharepointService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: BaConfigService,

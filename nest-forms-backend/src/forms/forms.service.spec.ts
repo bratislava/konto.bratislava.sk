@@ -62,7 +62,7 @@ describe('FormsService', () => {
         FilesHelper,
         MinioStorageService,
         ScannerClientService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         FormValidatorRegistryService,
         { provide: PrismaService, useValue: prismaMock },
         {

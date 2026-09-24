@@ -31,12 +31,16 @@ describe('WebhookService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        {
+          provide: LineLoggerSubservice,
+          useValue: createMock<LineLoggerSubservice>(),
+        },
         WebhookService,
         {
           provide: PrismaService,
           useValue: prismaMock,
         },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         {
           provide: BaConfigService,
           useValue: createMock<BaConfigService>(),
@@ -49,7 +53,6 @@ describe('WebhookService', () => {
     }).compile()
 
     service = module.get<WebhookService>(WebhookService)
-    service['logger'] = createMock<LineLoggerSubservice>()
 
     jest.spyOn(console, 'log').mockImplementation(jest.fn())
     jest.spyOn(console, 'error').mockImplementation(jest.fn())

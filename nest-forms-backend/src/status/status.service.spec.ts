@@ -19,11 +19,12 @@ describe('StatusService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         // TODO we want to mock most of these
+        LineLoggerSubservice,
         StatusService,
         MinioStorageService,
         PrismaService,
         ScannerClientService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
       ],
     }).compile()
 

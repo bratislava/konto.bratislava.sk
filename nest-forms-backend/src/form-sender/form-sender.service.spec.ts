@@ -60,6 +60,7 @@ describe('FormSenderService', () => {
 
     const app: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         FormSenderService,
         {
           provide: FormsService,
@@ -73,7 +74,7 @@ describe('FormSenderService', () => {
           provide: RabbitmqClientService,
           useValue: createMock<RabbitmqClientService>(),
         },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         {
           provide: NasesSenderService,
           useValue: createMock<NasesSenderService>(),
@@ -109,7 +110,7 @@ describe('FormSenderService', () => {
     service = app.get<FormSenderService>(FormSenderService)
 
     Object.defineProperty(
-      app.get<ThrowerErrorGuard>(ThrowerErrorGuard),
+      app.get<ErrorFactoryService>(ErrorFactoryService),
       'logger',
       {
         value: { error: jest.fn(), debug: jest.fn(), log: jest.fn() },

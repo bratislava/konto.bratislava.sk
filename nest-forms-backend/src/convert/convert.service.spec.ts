@@ -16,9 +16,10 @@ describe('ConvertService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         ConvertService,
         { provide: TaxService, useValue: createMock<TaxService>() },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         {
           provide: BaConfigService,
           useValue: {

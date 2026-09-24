@@ -70,7 +70,7 @@ describe('Form send', () => {
       .setupMockAuth(
         Test.createTestingModule({
           imports: [AppV2Module],
-          providers: [ThrowerErrorGuard, FormRegistrationStatusRepository],
+          providers: [ErrorFactoryService, FormRegistrationStatusRepository],
           controllers: [TestFormSendController],
         }),
       )

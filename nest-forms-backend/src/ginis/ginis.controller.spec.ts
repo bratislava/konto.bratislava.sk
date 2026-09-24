@@ -23,7 +23,7 @@ describe('GinisController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [GinisController],
       providers: [
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         GinisAPIService,
         GinisHelper,
         FormsService,
@@ -65,7 +65,7 @@ describe('GinisController', () => {
 
     it('should throw error if there is some error in the ginis api', async () => {
       const internalServerErrorSpy = jest.spyOn(
-        controller['throwerErrorGuard'],
+        controller['errorFactoryService'],
         'InternalServerErrorException',
       )
 

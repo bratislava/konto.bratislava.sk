@@ -6,9 +6,10 @@
 # Everything here is a value only the runner can produce. Anything a laptop can
 # also produce belongs in docker-bake.hcl instead.
 #
-# The registry cache and tags arrive as environment variables rather than
-# `--set` overrides because the docker-metadata action emits cache_from as a
-# multi-line list, and a `set:` entry carries a single value per line.
+# The registry cache, tags and image exporter arrive as environment variables
+# rather than `--set` overrides because the docker-build-config action emits
+# cache_from as a multi-line list, and a `set:` entry carries a single value
+# per line.
 
 variable "CACHE_FROM" {
   default = ""
@@ -26,11 +27,16 @@ variable "TURBO_API" {
   default = ""
 }
 
+variable "OUTPUT" {
+  default = ""
+}
+
 target "_toolchain" {
   cache-from = compact(split("\n", CACHE_FROM))
   cache-to   = compact(split("\n", CACHE_TO))
-  # docker-metadata emits tags space-separated; tolerate newlines too.
-  tags = compact(split(" ", replace(TAGS, "\n", " ")))
+  # docker-build-config emits tags space-separated; tolerate newlines too.
+  tags   = compact(split(" ", replace(TAGS, "\n", " ")))
+  output = compact(split("\n", OUTPUT))
 }
 
 # Redeclaring the target merges into the one in docker-bake.hcl, so every image

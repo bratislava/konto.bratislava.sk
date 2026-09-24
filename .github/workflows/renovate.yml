@@ -1,0 +1,56 @@
+name: Renovate
+
+on:
+  # Temporary: a dry run on every push to this branch, to check the config
+  # before it is merged. Remove together with the config copy step below.
+  push:
+    branches:
+      - renovate-setup
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        description: 'Only log what would be done'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency: renovate
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DRY_RUN: ${{ github.event_name == 'push' || inputs.dryRun }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      # Renovate reads renovate.json5 from master, which has none yet, so this
+      # branch's config is passed in as global config instead. The action mounts
+      # /tmp into the Renovate container.
+      - name: Use this branch's config
+        run: cp renovate.json5 /tmp/renovate-config.json5
+
+      - id: token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.RENOVATE_APP_ID }}
+          private-key: ${{ secrets.RENOVATE_APP_PRIVATE_KEY }}
+
+      - uses: renovatebot/github-action@v46
+        with:
+          token: ${{ steps.token.outputs.token }}
+        env:
+          RENOVATE_REPOSITORIES: ${{ github.repository }}
+          RENOVATE_CONFIG_FILE: /tmp/renovate-config.json5
+          RENOVATE_REQUIRE_CONFIG: optional
+          RENOVATE_ONBOARDING: 'false'
+          RENOVATE_PLATFORM_COMMIT: enabled
+          RENOVATE_DRY_RUN: ${{ env.DRY_RUN == 'true' && 'full' || '' }}
+          LOG_LEVEL: ${{ env.DRY_RUN == 'true' && 'debug' || 'info' }}

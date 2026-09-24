@@ -1,0 +1,118 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: ['config:recommended'],
+  timezone: 'Europe/Bratislava',
+  // pnpm rejects versions published too recently (minimumReleaseAge), so a bump
+  // of a fresh release would fail to install. Our own packages are exempt there
+  // too.
+  minimumReleaseAge: '3 days',
+  // npm for the workspace, github-actions so Renovate also keeps itself and the
+  // other actions up to date, custom.jsonata for docker-bake.json below.
+  enabledManagers: ['npm', 'github-actions', 'custom.jsonata'],
+  packageRules: [
+    {
+      description: 'Dependencies outside the catalog are updated per package, never across packages in one PR.',
+      matchFileNames: ['*/package.json'],
+      additionalBranchPrefix: '{{parentDir}}-',
+      commitMessageSuffix: 'in {{parentDir}}',
+    },
+    {
+      description: 'Only security updates open PRs on their own; everything else waits for approval in the Dependency Dashboard.',
+      matchFileNames: [
+        'next/package.json',
+        'strapi/package.json',
+        'e2e-tests/package.json',
+        'scripts/package.json',
+      ],
+      dependencyDashboardApproval: true,
+    },
+    {
+      description: 'Our own packages are exempt from the release age wait, as in pnpm.',
+      matchPackageNames: ['@bratislava/*'],
+      minimumReleaseAge: null,
+    },
+
+    // Updated manually.
+    {
+      description: 'RJSF and Ajv packages must be updated manually and thoroughly checked if they work.',
+      matchPackageNames: ['@rjsf/*', 'ajv', 'ajv-*'],
+      enabled: false,
+    },
+    {
+      description: '`pnpm run generate-assets` must be executed after Tailwind update.',
+      matchFileNames: ['forms-shared/package.json'],
+      matchPackageNames: ['@tailwindcss/postcss', 'tailwindcss', 'postcss'],
+      enabled: false,
+    },
+    {
+      description: 'Node majors, and the matching @types/node majors, are upgraded manually.',
+      matchDepNames: ['node', '@types/node'],
+      matchUpdateTypes: ['major'],
+      enabled: false,
+    },
+
+    // Groups, split per package by the first rule.
+    {
+      groupName: 'nestjs',
+      matchPackageNames: ['@nestjs/*', '@nestjs-*/**'],
+    },
+    {
+      groupName: 'prisma',
+      matchPackageNames: ['prisma', 'prisma-*', '@prisma/*'],
+    },
+    {
+      groupName: 'aws',
+      matchPackageNames: ['@aws-sdk/*', 'aws-jwt-verify'],
+    },
+    {
+      groupName: 'eslint',
+      matchPackageNames: ['eslint', '@bratislava/eslint-config-nest'],
+    },
+    {
+      groupName: 'react-email',
+      matchPackageNames: ['react-email', '@react-email/*'],
+    },
+
+    // Toolchain versions pinned in several files, which scripts/verify-*.ts
+    // require to match, so each is bumped everywhere in one PR.
+    {
+      description: 'Root package.json (volta, devEngines) and docker-bake.json.',
+      groupName: 'node',
+      matchDepNames: ['node'],
+    },
+    {
+      description: 'Root package.json (packageManager, devEngines) and docker-bake.json.',
+      groupName: 'pnpm',
+      matchDepNames: ['pnpm'],
+    },
+    {
+      description: 'Root package.json and docker-bake.json.',
+      groupName: 'turbo',
+      matchDepNames: ['turbo'],
+    },
+    {
+      description: 'The catalog in pnpm-workspace.yaml and docker-bake.json.',
+      groupName: 'playwright',
+      matchDepNames: ['playwright', '@playwright/test'],
+    },
+
+    {
+      groupName: 'github-actions',
+      matchManagers: ['github-actions'],
+    },
+  ],
+  customManagers: [
+    {
+      description: 'Toolchain versions passed to the Docker builds as bake variables.',
+      customType: 'jsonata',
+      fileFormat: 'json',
+      managerFilePatterns: ['/^docker-bake\\.json$/'],
+      matchStrings: [
+        "{ 'depName': 'node', 'datasource': 'node-version', 'currentValue': variable.NODE_VERSION.default }",
+        "{ 'depName': 'pnpm', 'datasource': 'npm', 'currentValue': variable.PNPM_VERSION.default }",
+        "{ 'depName': 'turbo', 'datasource': 'npm', 'currentValue': variable.TURBO_VERSION.default }",
+        "{ 'depName': 'playwright', 'datasource': 'npm', 'currentValue': variable.PLAYWRIGHT_VERSION.default }",
+      ],
+    },
+  ],
+}

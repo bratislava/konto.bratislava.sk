@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -15,7 +16,6 @@ import {
 } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import { TaxService } from '../../tax/tax.service'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { RetryService } from '../../utils-module/retry.service'
 import { PaymentResponseQueryDto } from '../dtos/gpwebpay.dto'
@@ -49,7 +49,7 @@ const createMockBaConfigService = () => ({
 describe('PaymentService', () => {
   let service: PaymentService
   let bloomreachService: BloomreachService
-  let throwerErrorGuard: ThrowerErrorGuard
+  let errorFactoryService: ErrorFactoryService
   let gpWebpaySubservice: GpWebpaySubservice
   let retryService: RetryService
   let baConfigService: ReturnType<typeof createMockBaConfigService>
@@ -62,6 +62,7 @@ describe('PaymentService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         PaymentService,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -69,8 +70,8 @@ describe('PaymentService', () => {
           useValue: createMock<BloomreachService>(),
         },
         {
-          provide: ThrowerErrorGuard,
-          useValue: createMock<ThrowerErrorGuard>(),
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>(),
         },
         {
           provide: BaConfigService,
@@ -94,7 +95,7 @@ describe('PaymentService', () => {
 
     service = module.get<PaymentService>(PaymentService)
     bloomreachService = module.get<BloomreachService>(BloomreachService)
-    throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
     gpWebpaySubservice = module.get<GpWebpaySubservice>(GpWebpaySubservice)
     retryService = module.get<RetryService>(RetryService)
   })
@@ -284,7 +285,7 @@ describe('PaymentService', () => {
         .spyOn(bloomreachService, 'trackEventTaxPayment')
         .mockResolvedValue(false)
       jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
+        .spyOn(errorFactoryService, 'InternalServerErrorException')
         .mockReturnValue(mockInternalServerError)
 
       await expect(
@@ -329,7 +330,7 @@ describe('PaymentService', () => {
         .spyOn(bloomreachService, 'trackEventTaxPayment')
         .mockResolvedValue(false)
       jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
+        .spyOn(errorFactoryService, 'InternalServerErrorException')
         .mockImplementation(() => {
           throw new Error('Internal Server Error')
         })
@@ -363,14 +364,14 @@ describe('PaymentService', () => {
           return callback(mockTx)
         })
       jest
-        .spyOn(throwerErrorGuard, 'NotFoundException')
+        .spyOn(errorFactoryService, 'NotFoundException')
         .mockReturnValue(mockNotFoundException)
 
       await expect(
         service.trackPaymentInBloomreach(mockTaxPayment, externalId),
       ).rejects.toThrow(mockNotFoundException)
 
-      expect(throwerErrorGuard.NotFoundException).toHaveBeenCalled()
+      expect(errorFactoryService.NotFoundException).toHaveBeenCalled()
       expect(bloomreachService.trackEventTaxPayment).not.toHaveBeenCalled()
     })
 
@@ -744,7 +745,7 @@ describe('PaymentService', () => {
       })
       const mockError = new HttpException('Mapped Error', 422)
       jest
-        .spyOn(throwerErrorGuard, 'UnprocessableEntityException')
+        .spyOn(errorFactoryService, 'UnprocessableEntityException')
         .mockReturnValue(mockError)
       const trackSpy = jest
         .spyOn(service, 'trackPaymentInBloomreach')

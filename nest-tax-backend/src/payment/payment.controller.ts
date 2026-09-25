@@ -29,7 +29,6 @@ import {
   ResponseErrorDto,
   ResponseInternalServerErrorDto,
 } from '../utils/guards/dtos/error.dto'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { PaymentResponseQueryDto } from './dtos/gpwebpay.dto'
 import {
   PaymentRedirectResponseDto,
@@ -42,11 +41,7 @@ import { PaymentService } from './payment.service'
 @ApiExtraModels(PaymentRedirectResponseDto)
 @Controller('payment')
 export class PaymentController {
-  private readonly logger: LineLoggerSubservice
-
-  constructor(private readonly paymentService: PaymentService) {
-    this.logger = new LineLoggerSubservice(PaymentController.name)
-  }
+  constructor(private readonly paymentService: PaymentService) {}
 
   @HttpCode(200)
   @ApiOperation({

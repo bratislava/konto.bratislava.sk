@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
@@ -7,7 +8,6 @@ import BaConfigService from '../../../../config/ba-config.service'
 import { TaxType } from '../../../../generated/prisma/client'
 import { PrismaService } from '../../../../prisma/prisma.service'
 import { QrCodeService } from '../../../../qrcode/qrcode.service'
-import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../../utils/subservices/database.subservice'
 import { NorisCommunalWasteTax } from '../../../types/noris.types'
@@ -41,6 +41,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         NorisTaxCommunalWasteSubservice,
         {
           provide: NorisConnectionSubservice,
@@ -55,8 +56,8 @@ describe('NorisTaxCommunalWasteSubservice', () => {
           useValue: createMock<QrCodeService>(),
         },
         {
-          provide: ThrowerErrorGuard,
-          useValue: createMock<ThrowerErrorGuard>(),
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>(),
         },
         {
           provide: PrismaService,
@@ -110,7 +111,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       expect(service['connectionService']).toBeDefined()
       expect(service['norisValidatorSubservice']).toBeDefined()
       expect(service['qrCodeService']).toBeDefined()
-      expect(service['throwerErrorGuard']).toBeDefined()
+      expect(service['errorFactoryService']).toBeDefined()
       expect(service['prismaService']).toBeDefined()
       expect(service['bloomreachService']).toBeDefined()
       expect(service['cityAccountSubservice']).toBeDefined()

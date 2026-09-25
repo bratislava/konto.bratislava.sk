@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { HttpException, Injectable } from '@nestjs/common'
 import * as mssql from 'mssql'
 
@@ -6,11 +11,8 @@ import BaConfigService from '../../../config/ba-config.service'
 import { TaxType } from '../../../generated/prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { QrCodeService } from '../../../qrcode/qrcode.service'
-import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import { NorisRealEstateTaxSchema } from '../../types/noris.schema'
 import { NorisRealEstateTax } from '../../types/noris.types'
@@ -28,7 +30,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
     private readonly connectionService: NorisConnectionSubservice,
     private readonly norisValidatorSubservice: NorisValidatorSubservice,
 
-    throwerErrorGuard: ThrowerErrorGuard,
+    errorFactoryService: ErrorFactoryService,
     bloomreachService: BloomreachService,
     qrCodeService: QrCodeService,
     prismaService: PrismaService,
@@ -36,13 +38,13 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
     paymentSubservice: NorisPaymentSubservice,
     databaseSubservice: DatabaseSubservice,
     baConfigService: BaConfigService,
+    logger: LineLoggerSubservice,
   ) {
-    const logger = new LineLoggerSubservice(NorisTaxRealEstateSubservice.name)
     super(
       qrCodeService,
       prismaService,
       bloomreachService,
-      throwerErrorGuard,
+      errorFactoryService,
       databaseSubservice,
       logger,
       cityAccountSubservice,
@@ -97,13 +99,11 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
       if (error instanceof HttpException) {
         throw error
       }
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
-        'Failed to get taxes from Noris',
-        undefined,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
+        message: 'Failed to get taxes from Noris',
         error,
-      )
+      })
     }
 
     const taxDefinition = this.getTaxDefinition()
@@ -158,13 +158,11 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
           return true
         } catch (error) {
           this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              'Failed to update tax in database.',
-              undefined,
-              undefined,
+            this.errorFactoryService.InternalServerErrorException({
+              errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+              message: 'Failed to update tax in database.',
               error,
-            ),
+            }),
           )
           return false
         }

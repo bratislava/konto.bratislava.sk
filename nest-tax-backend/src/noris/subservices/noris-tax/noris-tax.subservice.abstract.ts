@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
@@ -19,11 +24,8 @@ import {
   TaxDefinition,
   TaxTypeToNorisData,
 } from '../../../tax-definitions/taxDefinitionsTypes'
-import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
 import {
   convertCurrencyToInt,
@@ -41,7 +43,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     protected readonly qrCodeService: QrCodeService,
     protected readonly prismaService: PrismaService,
     protected readonly bloomreachService: BloomreachService,
-    protected readonly throwerErrorGuard: ThrowerErrorGuard,
+    protected readonly errorFactoryService: ErrorFactoryService,
     protected readonly databaseSubservice: DatabaseSubservice,
     protected readonly logger: LineLoggerSubservice,
     protected readonly cityAccountSubservice: CityAccountSubservice,
@@ -82,10 +84,10 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       userFromCityAccount?.externalId ?? undefined,
     )
     if (!trackingSuccess) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Error in send cancelled Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `Error in send cancelled Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
+      })
     }
   }
 
@@ -593,21 +595,19 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
           userFromCityAccount.externalId ?? undefined,
         )
         if (!trackingSuccess) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            `Error in send Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
-          )
+          throw this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: `Error in send Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
+          })
         }
       })
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to insert tax to database.',
-          undefined,
-          undefined,
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to insert tax to database.',
           error,
-        ),
+        }),
       )
 
       // Remove the birth number from the result set if insertion fails

@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { HttpException, Injectable } from '@nestjs/common'
 import dayjs, { Dayjs } from 'dayjs'
 import pLimit from 'p-limit'
@@ -20,10 +25,7 @@ import {
   parseInstallmentDueDate,
 } from '../../tax/utils/unified-tax.util'
 import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { TaxPaymentWithTaxAndTaxPayer } from '../../utils/types/types.prisma'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../utils/types'
 
@@ -31,18 +33,15 @@ const UNPAID_INSTALLMENT_REMINDER_BATCH_LIMIT = 50
 
 @Injectable()
 export default class NotificationsEventsService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly bloomreachService: BloomreachService,
     private readonly cityAccountSubservice: CityAccountSubservice,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly paymentService: PaymentService,
     private readonly baConfigService: BaConfigService,
-  ) {
-    this.logger = new LineLoggerSubservice(NotificationsEventsService.name)
-  }
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   private async getTaxInstallmentsEligibleForReminder(
     reminderSentFilter: UnpaidReminderSent[],
@@ -175,23 +174,21 @@ export default class NotificationsEventsService {
               externalId,
             )
           if (!result) {
-            throw this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              `Failed to track event in Bloomreach for taxId: ${tax.id} and externalId: ${externalId}, eventData: ${JSON.stringify(eventData)}`,
-            )
+            throw this.errorFactoryService.InternalServerErrorException({
+              errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+              message: `Failed to track event in Bloomreach for taxId: ${tax.id} and externalId: ${externalId}, eventData: ${JSON.stringify(eventData)}`,
+            })
           }
           return installmentInfo.id
         } catch (error) {
           this.logger.error(
             error instanceof HttpException
               ? error
-              : this.throwerErrorGuard.InternalServerErrorException(
-                  ErrorsEnum.INTERNAL_SERVER_ERROR,
-                  `Failed to process installment reminder for taxId: ${tax.id} and externalId: ${externalId}, eventData: ${JSON.stringify(eventData)}`,
-                  undefined,
-                  undefined,
+              : this.errorFactoryService.InternalServerErrorException({
+                  errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+                  message: `Failed to process installment reminder for taxId: ${tax.id} and externalId: ${externalId}, eventData: ${JSON.stringify(eventData)}`,
                   error,
-                ),
+                }),
           )
           return undefined
         }

@@ -1,10 +1,9 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { CognitoUserAttributesTierEnum } from 'openapi-clients/city-account'
 
 import { TIERS_KEY } from '../../utils/decorators/tier.decorator'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CognitoSubservice } from '../../utils/subservices/cognito.subservice'
 
 @Injectable()
@@ -12,7 +11,7 @@ export class TiersGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly cognitoSubservice: CognitoSubservice,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -31,10 +30,10 @@ export class TiersGuard implements CanActivate {
     )
     const result = requiredRoles.includes(tier)
     if (!result) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        ErrorsEnum.FORBIDDEN_ERROR,
-        'Forbidden tier',
-      )
+      throw this.errorFactoryService.ForbiddenException({
+        errorEnum: ErrorEnum.FORBIDDEN_ERROR,
+        message: 'Forbidden tier',
+      })
     }
     return result
   }

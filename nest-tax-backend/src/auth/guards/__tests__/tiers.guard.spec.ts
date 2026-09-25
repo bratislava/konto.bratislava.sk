@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { ExecutionContext, HttpStatus } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
@@ -5,8 +6,6 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { CognitoUserAttributesTierEnum } from 'openapi-clients/city-account'
 
 import { TIERS_KEY } from '../../../utils/decorators/tier.decorator'
-import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CognitoSubservice } from '../../../utils/subservices/cognito.subservice'
 import { TiersGuard } from '../tiers.guard'
 
@@ -23,7 +22,7 @@ describe('TiersGuard', () => {
   let guard: TiersGuard
   let reflector: jest.Mocked<Reflector>
   let cognitoSubservice: jest.Mocked<CognitoSubservice>
-  let throwerErrorGuard: ThrowerErrorGuard
+  let errorFactoryService: ErrorFactoryService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -34,14 +33,14 @@ describe('TiersGuard', () => {
           provide: CognitoSubservice,
           useValue: createMock<CognitoSubservice>(),
         },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
       ],
     }).compile()
 
     guard = module.get(TiersGuard)
     reflector = module.get(Reflector)
     cognitoSubservice = module.get(CognitoSubservice)
-    throwerErrorGuard = module.get(ThrowerErrorGuard)
+    errorFactoryService = module.get(ErrorFactoryService)
   })
 
   describe('when no tiers are required', () => {
@@ -179,21 +178,21 @@ describe('TiersGuard', () => {
       })
     })
 
-    it('should call throwerErrorGuard.ForbiddenException with FORBIDDEN_ERROR', async () => {
+    it('should call errorFactoryService.ForbiddenException with FORBIDDEN_ERROR', async () => {
       reflector.getAllAndOverride.mockReturnValue([
         CognitoUserAttributesTierEnum.IdentityCard,
       ])
       cognitoSubservice.getUserTierFromCognito.mockResolvedValue(
         CognitoUserAttributesTierEnum.New,
       )
-      const spy = jest.spyOn(throwerErrorGuard, 'ForbiddenException')
+      const spy = jest.spyOn(errorFactoryService, 'ForbiddenException')
 
       await expect(guard.canActivate(makeMockContext())).rejects.toThrow()
 
-      expect(spy).toHaveBeenCalledWith(
-        ErrorsEnum.FORBIDDEN_ERROR,
-        'Forbidden tier',
-      )
+      expect(spy).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.FORBIDDEN_ERROR,
+        message: 'Forbidden tier',
+      })
     })
   })
 

@@ -1,11 +1,13 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import nodemailer from 'nodemailer'
 import { SentMessageInfo } from 'nodemailer/lib/smtp-transport'
 
 import BaConfigService from '../../config/ba-config.service'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
-import { LineLoggerSubservice } from './line-logger.subservice'
 
 /**
  * EmailSubservice handles the functionality of sending emails using an SMTP
@@ -20,13 +22,12 @@ import { LineLoggerSubservice } from './line-logger.subservice'
  */
 @Injectable()
 export default class EmailSubservice {
-  private readonly logger = new LineLoggerSubservice(EmailSubservice.name)
-
   private readonly transporter: nodemailer.Transporter<SentMessageInfo>
 
   constructor(
     private readonly baConfigService: BaConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice,
   ) {
     this.transporter = nodemailer.createTransport({
       host: `email-smtp.${this.baConfigService.cognito.region}.amazonaws.com`,
@@ -69,13 +70,11 @@ export default class EmailSubservice {
         { emailOptions },
       )
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Failed to send daily payment email report.',
-        undefined,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: 'Failed to send daily payment email report.',
         error,
-      )
+      })
     }
   }
 }

@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  HandleErrors,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import dayjs from 'dayjs'
@@ -9,9 +14,6 @@ import {
 } from '../tax/dtos/error.dto'
 import { stateHolidays } from '../tax/utils/unified-tax.util'
 import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../utils/constants'
-import HandleErrors from '../utils/decorators/errorHandler.decorator'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import CityAccountIngestionTasksService from './subservices/city-account-ingestion.tasks.service'
 import NorisSyncTasksService from './subservices/noris-sync.tasks.service'
@@ -24,7 +26,7 @@ const NORIS_SILENT_CONNECTION_ERRORS_THRESHOLD = 20
 @Injectable()
 export class TasksService {
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly notificationsEventsService: NotificationsEventsService,
     private readonly reportingTasksService: ReportingTasksService,
     private readonly norisSyncTasksService: NorisSyncTasksService,
@@ -73,12 +75,12 @@ export class TasksService {
     const stateHolidaysForNextYear = Boolean(stateHolidays[nextYear])
 
     if (!stateHolidaysForNextYear) {
-      this.throwerErrorGuard.InternalServerErrorException(
-        CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
-        CustomErrorTaxTypesResponseEnum.STATE_HOLIDAY_NOT_EXISTS,
-        undefined,
-        'Please fill in the state holidays for the next year in the `src/tax/utils/unified-tax.utils.ts`. The holidays are used to calculate taxes.',
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
+        message: CustomErrorTaxTypesResponseEnum.STATE_HOLIDAY_NOT_EXISTS,
+        console:
+          'Please fill in the state holidays for the next year in the `src/tax/utils/unified-tax.utils.ts`. The holidays are used to calculate taxes.',
+      })
     }
   }
 
@@ -123,10 +125,10 @@ export class TasksService {
     )
 
     if (Number.isNaN(numberOfErrors)) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value: ${numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY]}. Must be a number.`,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value: ${numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY]}. Must be a number.`,
+      })
     }
 
     await this.prismaService.config.updateMany({
@@ -142,9 +144,9 @@ export class TasksService {
       return
     }
 
-    throw this.throwerErrorGuard.InternalServerErrorException(
-      ErrorsEnum.INTERNAL_SERVER_ERROR,
-      `Number of silenced Noris connection errors in last 24 hours is ${numberOfErrors}.`,
-    )
+    throw this.errorFactoryService.InternalServerErrorException({
+      errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+      message: `Number of silenced Noris connection errors in last 24 hours is ${numberOfErrors}.`,
+    })
   }
 }

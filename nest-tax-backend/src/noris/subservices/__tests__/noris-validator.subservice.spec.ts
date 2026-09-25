@@ -1,8 +1,8 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
-import { ErrorSymbols } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
+import alertReporting from '../../../utils/constants/error.alerts'
 import {
   NorisCommunalWasteTaxSchema,
   NorisRealEstateTaxSchema,
@@ -37,12 +37,30 @@ import {
   validNorisRealEstateTaxes,
 } from './data/test.real-estate-tax'
 
+// log-nest doesn't export its ErrorSymbols, so look the alert flag up by the
+// symbol's description instead.
+function getAlert(response: object): unknown {
+  const alertSymbol = Object.getOwnPropertySymbols(response).find(
+    (symbol) => symbol.description === 'alert',
+  )
+  return alertSymbol === undefined
+    ? undefined
+    : Reflect.get(response, alertSymbol)
+}
+
 describe('NorisValidatorSubservice', () => {
   let service: NorisValidatorSubservice
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [NorisValidatorSubservice, ThrowerErrorGuard],
+      providers: [
+        LineLoggerSubservice,
+        NorisValidatorSubservice,
+        {
+          provide: ErrorFactoryService,
+          useValue: new ErrorFactoryService({ alertReporting }),
+        },
+      ],
     }).compile()
     service = module.get<NorisValidatorSubservice>(NorisValidatorSubservice)
   })
@@ -93,7 +111,7 @@ describe('NorisValidatorSubservice', () => {
               symbol | string,
               unknown
             >
-            expect(response[ErrorSymbols.alert]).toBe(1)
+            expect(getAlert(response)).toBe(1)
           }
         })
       })
@@ -137,7 +155,7 @@ describe('NorisValidatorSubservice', () => {
                 symbol | string,
                 unknown
               >
-              expect(response[ErrorSymbols.alert]).toBe(1)
+              expect(getAlert(response)).toBe(1)
             }
           })
         })
@@ -160,7 +178,7 @@ describe('NorisValidatorSubservice', () => {
               symbol | string,
               unknown
             >
-            expect(response[ErrorSymbols.alert]).toBe(1)
+            expect(getAlert(response)).toBe(1)
             expect(response.message).toContain('variabilny_symbol')
           }
         })
@@ -220,7 +238,7 @@ describe('NorisValidatorSubservice', () => {
                 symbol | string,
                 unknown
               >
-              expect(response[ErrorSymbols.alert]).toBe(1)
+              expect(getAlert(response)).toBe(1)
             }
           })
         })
@@ -243,7 +261,7 @@ describe('NorisValidatorSubservice', () => {
               symbol | string,
               unknown
             >
-            expect(response[ErrorSymbols.alert]).toBe(1)
+            expect(getAlert(response)).toBe(1)
             expect(response.message).toContain('variabilny_symbol')
           }
         })
@@ -288,13 +306,8 @@ describe('NorisValidatorSubservice', () => {
       expect(result).not.toContainEqual(testPaymentInvalidVariabilnySymbol)
 
       expect(errorLogSpy).toHaveBeenCalledTimes(1)
-      expect(errorLogSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          response: expect.objectContaining({
-            [ErrorSymbols.alert]: 1,
-          }) as Record<symbol | string, unknown>,
-        }),
-      )
+      const [[firstError]] = errorLogSpy.mock.calls as [[HttpException]]
+      expect(getAlert(firstError.getResponse() as object)).toBe(1)
     })
 
     it('should validate all real estate taxes, return only valid and error log the rest', () => {
@@ -313,14 +326,8 @@ describe('NorisValidatorSubservice', () => {
       expect(errorLogSpy).toHaveBeenCalledTimes(
         invalidNorisRealEstateTaxes.length,
       )
-      expect(errorLogSpy).toHaveBeenNthCalledWith(
-        1,
-        expect.objectContaining({
-          response: expect.objectContaining({
-            [ErrorSymbols.alert]: 1,
-          }) as Record<symbol | string, unknown>,
-        }),
-      )
+      const [[firstError]] = errorLogSpy.mock.calls as [[HttpException]]
+      expect(getAlert(firstError.getResponse() as object)).toBe(1)
       const [, [secondError]] = errorLogSpy.mock.calls
       expect(JSON.stringify(secondError)).toContain('det_pozemky_DAN_E') // field name that is invalid
     })
@@ -344,14 +351,8 @@ describe('NorisValidatorSubservice', () => {
       expect(errorLogSpy).toHaveBeenCalledTimes(
         invalidNorisCommunalWasteTaxes.length,
       )
-      expect(errorLogSpy).toHaveBeenNthCalledWith(
-        1,
-        expect.objectContaining({
-          response: expect.objectContaining({
-            [ErrorSymbols.alert]: 1,
-          }) as Record<symbol | string, unknown>,
-        }),
-      )
+      const [[firstError]] = errorLogSpy.mock.calls as [[HttpException]]
+      expect(getAlert(firstError.getResponse() as object)).toBe(1)
       const [, [secondError]] = errorLogSpy.mock.calls
       expect(JSON.stringify(secondError)).toContain('objem_nadoby') // field name that is invalid
     })

@@ -1,17 +1,15 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import z from 'zod'
 
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 @Injectable()
 export class NorisValidatorSubservice {
-  private readonly logger = new LineLoggerSubservice(
-    NorisValidatorSubservice.name,
-  )
-
-  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {}
+  constructor(
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   /**
    * Validates an array of Noris records against the given schema.
@@ -44,13 +42,11 @@ export class NorisValidatorSubservice {
   ): z.infer<T> {
     const result = schema.safeParse(data)
     if (!result.success) {
-      throw this.throwerErrorGuard.BadRequestException(
-        CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
-        result.error.message,
-        undefined,
-        undefined,
-        result.error,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
+        message: result.error.message,
+        error: result.error,
+      })
     }
     return result.data
   }

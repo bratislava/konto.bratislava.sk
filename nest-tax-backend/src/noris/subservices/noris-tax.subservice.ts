@@ -1,11 +1,10 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { RequestPostNorisLoadDataOptionsDto } from '../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../admin/dtos/responses.dto'
 import { TaxType } from '../../generated/prisma/client'
 import { TaxTypeToNorisData } from '../../tax-definitions/taxDefinitionsTypes'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
   NorisCommunalWasteTaxGrouped,
   NorisRealEstateTax,
@@ -23,7 +22,7 @@ export class NorisTaxSubservice {
   private readonly subservices: TaxTypeToNorisSubservice
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly norisTaxRealEstateSubservice: NorisTaxRealEstateSubservice,
     private readonly norisTaxCommunalWasteSubservice: NorisTaxCommunalWasteSubservice,
   ) {
@@ -63,10 +62,10 @@ export class NorisTaxSubservice {
     }
 
     // Fallback for exhaustiveness
-    throw this.throwerErrorGuard.InternalServerErrorException(
-      ErrorsEnum.INTERNAL_SERVER_ERROR,
-      `Unknown tax type: ${taxType}`,
-    )
+    throw this.errorFactoryService.InternalServerErrorException({
+      errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+      message: `Unknown tax type: ${taxType}`,
+    })
   }
 
   async getAndProcessNorisTaxDataByBirthNumberAndYear(

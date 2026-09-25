@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
@@ -7,7 +8,6 @@ import { TaxType } from '../../../generated/prisma/client'
 import { NorisService } from '../../../noris/noris.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { OVERPAYMENTS_LOOKBACK_DAYS } from '../../../utils/constants'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { RetryService } from '../../../utils-module/retry.service'
 import TasksConfigSubservice from '../config.service'
@@ -20,8 +20,9 @@ describe('TaxImportTasksService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         TaxImportTasksService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: NorisService, useValue: createMock<NorisService>() },
         { provide: PrismaService, useValue: prismaMock },
         {

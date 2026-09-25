@@ -1,5 +1,6 @@
 import path from 'node:path'
 
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -9,8 +10,6 @@ import SFTPClient, { FileInfo } from 'ssh2-sftp-client'
 import BaConfigService from '../../config/ba-config.service'
 import { TaxType } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -20,7 +19,7 @@ export default class SftpFileSubservice {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly baConfigService: BaConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
   ) {}
 
   async getNewFiles(sftpPath: string, taxType: TaxType, from?: Date) {
@@ -47,13 +46,11 @@ export default class SftpFileSubservice {
         }),
       )
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Error during retrieval of files form SFTP server',
-        undefined,
-        undefined,
-        error instanceof Error ? error : undefined,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: 'Error during retrieval of files form SFTP server',
+        error: error instanceof Error ? error : undefined,
+      })
     } finally {
       await sftp.end()
     }

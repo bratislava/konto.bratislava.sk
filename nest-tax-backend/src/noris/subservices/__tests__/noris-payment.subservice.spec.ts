@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+} from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
@@ -13,11 +18,6 @@ import {
   TaxType,
 } from '../../../generated/prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
 import { NorisTaxPayment } from '../../types/noris.types'
@@ -55,7 +55,7 @@ describe('NorisPaymentSubservice', () => {
   let service: NorisPaymentSubservice
   let bloomreachService: BloomreachService
   let connectionService: NorisConnectionSubservice
-  let throwerErrorGuard: ThrowerErrorGuard
+  let errorFactoryService: ErrorFactoryService
   let cityAccountSubservice: CityAccountSubservice
 
   beforeEach(async () => {
@@ -79,8 +79,8 @@ describe('NorisPaymentSubservice', () => {
           useValue: createMock<NorisConnectionSubservice>(),
         },
         {
-          provide: ThrowerErrorGuard,
-          useValue: createMock<ThrowerErrorGuard>(),
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>(),
         },
         {
           provide: NorisValidatorSubservice,
@@ -98,7 +98,7 @@ describe('NorisPaymentSubservice', () => {
     connectionService = module.get<NorisConnectionSubservice>(
       NorisConnectionSubservice,
     )
-    throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
     cityAccountSubservice = module.get<CityAccountSubservice>(
       CityAccountSubservice,
     )
@@ -1100,8 +1100,8 @@ describe('NorisPaymentSubservice', () => {
 
       jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
 
-      const throwerErrorGuardMock = jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
+      const errorFactoryServiceMock = jest
+        .spyOn(errorFactoryService, 'InternalServerErrorException')
         .mockImplementation(() => {
           throw new Error('Internal Server Error')
         })
@@ -1114,13 +1114,11 @@ describe('NorisPaymentSubservice', () => {
         ),
       ).rejects.toThrow('Internal Server Error')
 
-      expect(throwerErrorGuardMock).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-        undefined,
-        undefined,
-        transactionError,
-      )
+      expect(errorFactoryServiceMock).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+        error: transactionError,
+      })
     })
 
     it('should handle string amount values correctly', async () => {

@@ -1,3 +1,4 @@
+import { LogAllowList } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -49,6 +50,7 @@ export class AdminController {
     type: CreateBirthNumbersResponseDto,
   })
   @UseGuards(AdminGuard)
+  @LogAllowList({ year: true, taxType: true, options: true })
   @Post('create-data-from-noris')
   async loadDataFromNoris(
     @Body() data: RequestPostNorisLoadDataDto,
@@ -68,6 +70,7 @@ export class AdminController {
     description: 'Number of records updated in Noris',
   })
   @UseGuards(AdminGuard)
+  @LogAllowList({ year: true, taxType: true, options: true, updated: true })
   @Post('update-data-from-noris')
   async updateDataFromNoris(
     @Body() data: RequestPostNorisLoadDataDto,
@@ -87,6 +90,14 @@ export class AdminController {
     type: ResponseCreatedAlreadyCreatedDto,
   })
   @UseGuards(AdminGuard)
+  @LogAllowList({
+    year: true,
+    fromDate: true,
+    toDate: true,
+    overPayments: true,
+    created: true,
+    alreadyCreated: true,
+  })
   @Post('payments-from-noris')
   async updatePaymentsFromNoris(
     @Body() data: RequestPostNorisPaymentDataLoadDto,
@@ -108,6 +119,12 @@ export class AdminController {
     type: ResponseCreatedAlreadyCreatedDto,
   })
   @UseGuards(AdminGuard)
+  @LogAllowList({
+    fromDate: true,
+    toDate: true,
+    created: true,
+    alreadyCreated: true,
+  })
   @Post('overpayments-from-noris')
   async updateOverpaymentsFromNoris(
     @Body() data: DateRangeDto,
@@ -129,6 +146,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @UseGuards(NotProductionGuard)
+  @LogAllowList({ year: true })
   @Post('create-testing-tax')
   async createTestingTax(
     @Body() request: RequestAdminCreateTestingTaxDto,
@@ -149,6 +167,7 @@ export class AdminController {
     description: 'Internal server error or tax payer not found',
   })
   @UseGuards(AdminGuard)
+  @LogAllowList({ year: true, taxType: true, order: true })
   @Post('delete-tax')
   async deleteTax(@Body() request: RequestAdminDeleteTaxDto): Promise<void> {
     await this.adminService.deleteTax(request)

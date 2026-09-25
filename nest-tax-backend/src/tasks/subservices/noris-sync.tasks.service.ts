@@ -1,3 +1,9 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import BaConfigService from '../../config/ba-config.service'
@@ -11,28 +17,19 @@ import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
 } from '../../utils/constants'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { getNextTaxType } from '../utils/tax-type-switch'
 
 @Injectable()
 export default class NorisSyncTasksService {
   private lastUpdateTaxType: TaxType = TaxType.KO
 
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly baConfigService: BaConfigService,
     private readonly prismaService: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly norisService: NorisService,
-  ) {
-    this.logger = new LineLoggerSubservice(NorisSyncTasksService.name)
-  }
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   async updatePaymentsFromNoris() {
     let variableSymbolsDb: {
@@ -70,21 +67,17 @@ export default class NorisSyncTasksService {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.meta?.code === '57014'
       ) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Query timed out after 2 minutes',
-          undefined,
-          undefined,
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Query timed out after 2 minutes',
           error,
-        )
+        })
       }
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-        undefined,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
         error,
-      )
+      })
     }
 
     if (variableSymbolsDb.length === 0) {
@@ -118,13 +111,11 @@ export default class NorisSyncTasksService {
           norisPaymentData,
         )
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        CustomErrorNorisTypesEnum.UPDATE_PAYMENTS_FROM_NORIS_ERROR,
-        'Failed to update payments from Noris',
-        undefined,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: CustomErrorNorisTypesEnum.UPDATE_PAYMENTS_FROM_NORIS_ERROR,
+        message: 'Failed to update payments from Noris',
         error,
-      )
+      })
     }
 
     await this.prismaService.tax.updateMany({

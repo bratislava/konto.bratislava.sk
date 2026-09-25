@@ -1,6 +1,4 @@
-import type { GenericObjectType } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { GenericObjectType } from '@rjsf/utils'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import { ClientFileInfo } from '../form-files/fileStatus'
 import { SharepointDataAllColumnMappingsToFields } from '../sharepoint/types'

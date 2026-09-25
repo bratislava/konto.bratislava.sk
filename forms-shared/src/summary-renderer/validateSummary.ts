@@ -1,6 +1,4 @@
-import type { GenericObjectType, RJSFSchema, ValidationData } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { GenericObjectType, RJSFSchema, ValidationData } from '@rjsf/utils'
 import { FileInfoSummary, isErrorFileStatusType } from '../form-files/fileStatus'
 import { SchemaValidateFunction } from 'ajv'
 import { getFileValidatorBaRjsf } from '../form-utils/validators'

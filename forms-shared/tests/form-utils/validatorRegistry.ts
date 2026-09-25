@@ -5,7 +5,7 @@ import {
   createSingleUseValidatorRegistry,
   createWeakMapRegistry,
 } from '../../src/form-utils/validatorRegistry'
-import Ajv from 'ajv'
+import { Ajv } from 'ajv'
 
 describe('Validator Registry', () => {
   let addSchemaSpy = vi.spyOn(Ajv.prototype, 'addSchema')

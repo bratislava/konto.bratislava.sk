@@ -7,9 +7,7 @@ import { ClientFileInfo } from '../form-files/fileStatus'
 import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
 import summaryPdfCss from '../generated-assets/summaryPdfCss'
 import { FormSummary } from '../summary/summary'
-import type { GenericObjectType, ValidationData } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { GenericObjectType, ValidationData } from '@rjsf/utils'
 
 export type RenderSummaryPdfPayload = {
   formSummary: FormSummary

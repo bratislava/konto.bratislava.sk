@@ -1,4 +1,4 @@
-import type { GenericObjectType } from '@rjsf/utils' with { 'resolution-mode': 'import' }
+import type { GenericObjectType } from '@rjsf/utils'
 import { FormDefinition } from '../definitions/formDefinitionTypes'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 import { renderFormAdditionalInfo } from '../string-templates/renderTemplate'

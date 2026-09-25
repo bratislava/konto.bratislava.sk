@@ -38,6 +38,7 @@ import EmailFormsService from '../email-forms.service'
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/summary-email/renderSummaryEmail')
 jest.mock('forms-shared/form-utils/omitExtraData')
+jest.mock('forms-shared/form-utils/formDataExtractors')
 
 const formId = 'test-form-id'
 const userEmail = 'test@example.com'
@@ -235,6 +236,13 @@ describe('EmailFormsService', () => {
       jest
         .spyOn(baOmitExtraData, 'baOmitExtraData')
         .mockReturnValue({ test: 'data' })
+      jest
+        .spyOn(formDataExtractors, 'extractEmailFormAddress')
+        .mockImplementation(
+          jest.requireActual<typeof formDataExtractors>(
+            'forms-shared/form-utils/formDataExtractors',
+          ).extractEmailFormAddress,
+        )
 
       extractEmailFormEmailSpy = jest
         .spyOn(formDataExtractors, 'extractEmailFormEmail')

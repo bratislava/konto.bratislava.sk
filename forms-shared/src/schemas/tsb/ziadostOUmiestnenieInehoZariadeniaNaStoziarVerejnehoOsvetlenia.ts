@@ -9,9 +9,7 @@ import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
 import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
-import type { GenericObjectType } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { GenericObjectType } from '@rjsf/utils'
 
 export default schema(
   { title: 'Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia' },

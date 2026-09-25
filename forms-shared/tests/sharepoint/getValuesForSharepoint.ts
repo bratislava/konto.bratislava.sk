@@ -10,7 +10,7 @@ import {
   getValueAtJsonPath,
   getValuesForFields,
 } from '../../src/sharepoint/getValuesForSharepoint'
-import { get as lodashGet } from 'lodash'
+import lodashGet from 'lodash/get'
 
 describe('getArrayForOneToMany', () => {
   test('should throw error if at the path there is no array', () => {

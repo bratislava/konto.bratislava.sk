@@ -20,7 +20,6 @@ const config: Config = {
   // eslint-disable-next-line xss/no-mixed-html
   setupFilesAfterEnv: ['<rootDir>/../test/singleton.ts'],
   moduleNameMapper: {
-    ...sharedConfig.moduleNameMapper,
     // eslint-disable-next-line no-secrets/no-secrets
     '^@golevelup/nestjs-rabbitmq$': '<rootDir>/../test/rabbitmq-client-mock.js',
   },

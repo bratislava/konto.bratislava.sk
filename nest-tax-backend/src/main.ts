@@ -16,7 +16,12 @@ async function bootstrap() {
   const logger = new LineLoggerSubservice('Nest')
   const app = await NestFactory.create(AppModule, {
     logger,
+    routeConflictPolicy: { duplicate: 'error', shadow: 'warn' },
+    return503OnClosing: true,
   })
+  // On SIGTERM, reply 503 to new requests, let in-flight ones finish, then
+  // run the lifecycle shutdown hooks.
+  app.enableShutdownHooks()
   const baConfigService = app.get(BaConfigService)
   app.enableVersioning({
     type: VersioningType.URI,

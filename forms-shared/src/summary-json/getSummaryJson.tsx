@@ -1,6 +1,4 @@
-import type { GenericObjectType, RJSFSchema } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 

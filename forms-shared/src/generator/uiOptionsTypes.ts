@@ -1,4 +1,4 @@
-import type { IntClosedRange } from 'type-fest' with { 'resolution-mode': 'import' }
+import type { IntClosedRange } from 'type-fest'
 
 import { EnumMetadata } from './optionItems'
 

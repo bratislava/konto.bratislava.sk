@@ -60,17 +60,29 @@ describe('NorisConnectionSubservice', () => {
     await module.close()
   })
 
-  describe('onModuleDestroy', () => {
-    it('should close the pool connection on shutdown', async () => {
+  describe('onApplicationShutdown', () => {
+    it('should close the pool opened by the app on shutdown', async () => {
       mockMssqlConnect.mockResolvedValue(mockConnectionPool)
+      await service.withConnection(async () => Promise.resolve(), 'err')
 
       await module.close()
 
       expect(mockConnectionPool.close).toHaveBeenCalledTimes(1)
     })
 
-    it('should not throw when connect() fails during shutdown', async () => {
-      mockMssqlConnect.mockRejectedValue(new Error('MSSQL unreachable'))
+    it('should not connect on shutdown when no pool was opened', async () => {
+      await module.close()
+
+      expect(mockMssqlConnect).not.toHaveBeenCalled()
+      expect(mockConnectionPool.close).not.toHaveBeenCalled()
+    })
+
+    it('should not throw when closing the pool fails during shutdown', async () => {
+      mockMssqlConnect.mockResolvedValue(mockConnectionPool)
+      mockConnectionPool.close.mockRejectedValueOnce(
+        new Error('MSSQL unreachable'),
+      )
+      await service.withConnection(async () => Promise.resolve(), 'err')
       const warnSpy = jest.spyOn(service['logger'], 'warn')
 
       await expect(module.close()).resolves.not.toThrow()

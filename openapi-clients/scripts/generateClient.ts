@@ -4,7 +4,7 @@ import path from 'node:path'
 import { rimrafSync } from 'rimraf'
 import camelcase from 'camelcase'
 import { get as getAppRootDir } from 'app-root-dir'
-import fetch from 'node-fetch'
+import { Command } from 'commander'
 import semver from 'semver'
 
 interface GenerateClientOptions {
@@ -221,26 +221,24 @@ const isValidType = (type: string): type is ValidType => {
   return validTypes.includes(type as ValidType)
 }
 
-if (require.main === module) {
-  import('commander').then(({ Command }) => {
-    const program = new Command()
+if (import.meta.main) {
+  const program = new Command()
 
-    program
-      .name('generateClient')
-      .description('Generate OpenAPI client for specified type')
-      .argument('<type>', `Type of client to generate (${validTypes.join(', ')})`)
-      .option('--local-url <url>', 'Local URL to use (e.g., localhost:3000)')
-      .action((type: string, options) => {
-        if (!isValidType(type)) {
-          console.error(`Invalid type: ${type}. Valid types are: ${validTypes.join(', ')}.`)
-          process.exit(1)
-        }
+  program
+    .name('generateClient')
+    .description('Generate OpenAPI client for specified type')
+    .argument('<type>', `Type of client to generate (${validTypes.join(', ')})`)
+    .option('--local-url <url>', 'Local URL to use (e.g., localhost:3000)')
+    .action((type: string, options) => {
+      if (!isValidType(type)) {
+        console.error(`Invalid type: ${type}. Valid types are: ${validTypes.join(', ')}.`)
+        process.exit(1)
+      }
 
-        generateClient(type, {
-          localUrl: options.localUrl ? options.localUrl : undefined,
-        }).catch(() => process.exit(1))
-      })
+      generateClient(type, {
+        localUrl: options.localUrl ? options.localUrl : undefined,
+      }).catch(() => process.exit(1))
+    })
 
-    program.parse()
-  })
+  program.parse()
 }

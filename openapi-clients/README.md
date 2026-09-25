@@ -51,6 +51,11 @@ pnpm run generate:forms -- --local-url localhost:8080
 
 The `check-for-changes` script compares newly generated clients with existing ones and shows git-style diffs for any changes. This is useful for CI to ensure clients are up-to-date with their OpenAPI specs.
 
+## Notes
+
+- The package is native ESM (`"type": "module"`). CommonJS consumers such as the Nest backends load it through Node's `require(esm)`.
+- The generated clients import each other without file extensions. The build (`tsdown`) adds the ones Node's ESM loader needs to `dist`.
+
 ## License
 
 EUPL-1.2

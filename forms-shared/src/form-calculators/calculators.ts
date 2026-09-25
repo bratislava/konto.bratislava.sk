@@ -1,6 +1,6 @@
-import type { GenericObjectType } from '@rjsf/utils' with { 'resolution-mode': 'import' }
+import type { GenericObjectType } from '@rjsf/utils'
 import { Expression, Parser } from 'expr-eval'
-import { clone } from 'lodash'
+import clone from 'lodash/clone'
 
 import { parseRatio } from '../form-utils/ajvFormats'
 

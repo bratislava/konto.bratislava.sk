@@ -1,15 +1,11 @@
-import type { FormProps, ThemeProps } from '@rjsf/core' with {
-  'resolution-mode': 'import',
-}
+import type { FormProps, ThemeProps } from '@rjsf/core'
 import type {
   ArrayFieldItemTemplateProps,
   ArrayFieldTemplateProps,
   FieldProps,
   ObjectFieldTemplateProps,
   WidgetProps,
-} from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+} from '@rjsf/utils'
 import React, {
   type ComponentType,
   DetailedHTMLProps,
@@ -26,8 +22,8 @@ import { getObjectFieldInfo } from '../form-utils/getObjectFieldInfo'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 import { defaultFormFields, DefaultFormFieldType } from '../form-utils/defaultFormFields'
 
-const { withTheme } = require('@rjsf/core')
-const { getUiOptions } = require('@rjsf/utils')
+import { withTheme } from '@rjsf/core'
+import { getUiOptions } from '@rjsf/utils'
 
 export enum SummaryXmlFormTag {
   Form = 'summary-form',

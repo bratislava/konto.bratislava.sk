@@ -1,8 +1,6 @@
 import 'json-schema'
 import { JSONSchema7 } from 'json-schema'
-import type { GenericObjectType } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { GenericObjectType } from '@rjsf/utils'
 
 declare module 'json-schema' {
   export interface JSONSchema7 {

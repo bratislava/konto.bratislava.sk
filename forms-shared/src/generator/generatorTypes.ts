@@ -1,6 +1,4 @@
-import type { RJSFSchema } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { RJSFSchema } from '@rjsf/utils'
 
 export type GeneratorField = {
   property: string

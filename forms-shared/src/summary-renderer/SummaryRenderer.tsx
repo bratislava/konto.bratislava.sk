@@ -13,9 +13,7 @@ import {
   SummaryDisplayValue,
   SummaryDisplayValueType,
 } from '../summary-json/getSummaryDisplayValue'
-import type { GenericObjectType, ValidationData } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { GenericObjectType, ValidationData } from '@rjsf/utils'
 import { checkPathForErrors } from './checkPathForErrors'
 
 type ComponentPropsBase = {

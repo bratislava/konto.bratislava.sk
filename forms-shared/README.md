@@ -120,5 +120,6 @@ pnpm run docker:test:update
 ## Notes
 
 - `ts-config` based on <https://github.com/tsconfig/bases/blob/main/bases/node-lts.json>
-- `react-markdown` is fixed on version 6, until we use a compiler, see <https://stackoverflow.com/a/69469619>
+- The package is native ESM (`"type": "module"`). CommonJS consumers such as `nest-forms-backend` load it through Node's `require(esm)`, which fails on top-level `await`, so the package must not use it.
+- Imports in the source have no file extensions. The build (`tsdown`) adds the ones Node's ESM loader needs to `dist`, and scripts run through `tsx`, which resolves them too.
 - We are using a patched version of `@rjsf/core`. This patch must be present until [PR #4978](https://github.com/rjsf-team/react-jsonschema-form/pull/4978) is released.

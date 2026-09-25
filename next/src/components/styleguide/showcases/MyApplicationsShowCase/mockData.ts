@@ -1,10 +1,11 @@
 import { QueryClient } from '@tanstack/react-query'
 import {
+  FormState,
   GetFormResponseDto,
   GetFormResponseDtoErrorEnum,
   GetFormResponseDtoStateEnum,
-  GetFormResponseSimpleDto,
   GetFormsResponseDto,
+  GetFormsResponseDtoItemsInner as GetFormResponseSimpleDto,
   GinisDocumentDetailResponseDto,
 } from 'openapi-clients/forms'
 
@@ -103,16 +104,24 @@ const sectionItemDrafts: Record<ApplicationsListVariant, SimpleItemDraft[]> = {
   ],
 }
 
-const createSimpleItem = (draft: SimpleItemDraft, index: number): GetFormResponseSimpleDto => ({
-  id: `mock-application-${index}`,
-  createdAt: '2024-04-15T08:48:15.346Z',
-  updatedAt: '2024-04-18T10:12:22.121Z',
-  state: draft.state,
-  error: draft.error,
-  formDataJson: { mestoPSCstep: { mestoPSC: { mesto: 'Bratislava' } } },
-  formSubject: draft.subject,
-  formDefinitionSlug: MOCK_FORM_SLUG,
-})
+const createSimpleItem = (
+  draft: SimpleItemDraft,
+  index: number,
+): GetFormResponseSimpleDto => {
+  const base = {
+    id: `mock-application-${index}`,
+    createdAt: '2024-04-15T08:48:15.346Z',
+    updatedAt: '2024-04-18T10:12:22.121Z',
+    error: draft.error,
+    formDataJson: { mestoPSCstep: { mestoPSC: { mesto: 'Bratislava' } } },
+    formSubject: draft.subject,
+    formDefinitionSlug: MOCK_FORM_SLUG,
+  }
+
+  return draft.state === FormState.Draft
+    ? { ...base, state: FormState.Draft, formSentAt: null }
+    : { ...base, state: draft.state, formSentAt: '2024-04-18T10:00:00.000Z' }
+}
 
 export const createMockApplications = (
   section: ApplicationsListVariant,

@@ -9,7 +9,12 @@ async function main(): Promise<void> {
   const logger = new LineLoggerSubservice('Nest')
   const app = await NestFactory.create(AppModule, {
     logger,
+    routeConflictPolicy: { duplicate: 'error', shadow: 'warn' },
+    return503OnClosing: true,
   })
+  // On SIGTERM, reply 503 to new requests, let in-flight ones finish, then
+  // run the lifecycle shutdown hooks.
+  app.enableShutdownHooks()
 
   bootstrap({ app })
 

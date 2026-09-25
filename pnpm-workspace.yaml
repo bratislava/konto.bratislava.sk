@@ -43,6 +43,10 @@ packages:
 allowBuilds:
   '@apollo/protobufjs': true
   '@openapitools/openapi-generator-cli': true
+  # Pulled in by jest-haste-map 30.5. Its install script only compiles when a
+  # source build is forced; the prebuilt binary comes from a per-platform
+  # optional dependency.
+  '@parcel/watcher': false
   '@prisma/engines': true
   '@scarf/scarf': true
   '@swc/core': true
@@ -58,6 +62,24 @@ allowBuilds:
 
 minimumReleaseAgeExclude:
   - '@bratislava/*'
+  # Temporary, remove after 2026-09-26: @nestjs-cognito/auth 2.6.0 (with its
+  # @nestjs-cognito/core 2.5.0) is the first release that accepts NestJS 12 and
+  # was published on 2026-09-25, inside the default one-day release age window.
+  - '@nestjs-cognito/*'
+
+# @golevelup/nestjs-rabbitmq 9.0.2 and its @golevelup/nestjs-discovery still cap
+# their NestJS peers at v11. They run on NestJS 12 unchanged: the only Nest
+# internals they import (`@nestjs/common/constants`,
+# `@nestjs/core/helpers/external-context-creator`) resolve through Nest 12's
+# `./*` export. Support is pending upstream in
+# https://github.com/golevelup/nestjs/pull/1262; drop these rules once a release
+# widens the peer range.
+peerDependencyRules:
+  allowedVersions:
+    '@golevelup/nestjs-rabbitmq>@nestjs/common': '12'
+    '@golevelup/nestjs-rabbitmq>@nestjs/core': '12'
+    '@golevelup/nestjs-discovery>@nestjs/common': '12'
+    '@golevelup/nestjs-discovery>@nestjs/core': '12'
 
 # The root package.json pins Node and pnpm in devEngines with `onFail: error`,
 # so any tool that reads that contract and finds the wrong version stops instead

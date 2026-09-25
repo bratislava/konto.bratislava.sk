@@ -1,11 +1,11 @@
 import path from 'node:path'
 
-import { Injectable, OnModuleDestroy } from '@nestjs/common'
+import { Injectable, OnApplicationShutdown } from '@nestjs/common'
 import { GenerateTaxPdfPayload } from 'forms-shared/tax-form/generateTaxPdf'
 import Piscina from 'piscina'
 
 @Injectable()
-export default class TaxService implements OnModuleDestroy {
+export default class TaxService implements OnApplicationShutdown {
   private readonly pdfPool: Piscina<GenerateTaxPdfPayload, string>
 
   constructor() {
@@ -14,7 +14,8 @@ export default class TaxService implements OnModuleDestroy {
     })
   }
 
-  onModuleDestroy(): void {
+  // Runs after the HTTP server has drained, so in-flight PDF requests finish.
+  onApplicationShutdown(): void {
     void this.pdfPool.destroy()
   }
 

@@ -1,4 +1,4 @@
-import { Injectable, OnModuleDestroy } from '@nestjs/common'
+import { Injectable, OnApplicationShutdown } from '@nestjs/common'
 import { connect, ConnectionError, ConnectionPool, MSSQLError } from 'mssql'
 
 import BaConfigService from '../../config/ba-config.service'
@@ -11,8 +11,11 @@ import { CustomErrorNorisTypesEnum } from '../noris.errors'
 const NORIS_SILENT_CONNECTION_ERRORS_KEY = 'NORIS_SILENT_CONNECTION_ERRORS'
 
 @Injectable()
-export class NorisConnectionService implements OnModuleDestroy {
+export class NorisConnectionService implements OnApplicationShutdown {
   private readonly logger = new LineLoggerSubservice(NorisConnectionService.name)
+
+  // The mssql global pool, once this app has used Noris.
+  private pool: ConnectionPool | null = null
 
   constructor(
     private readonly baConfigService: BaConfigService,
@@ -20,10 +23,17 @@ export class NorisConnectionService implements OnModuleDestroy {
     private readonly prismaService: PrismaService
   ) {}
 
-  async onModuleDestroy(): Promise<void> {
+  // Runs after the HTTP server has drained, so in-flight requests keep the pool. Only closes a
+  // pool this app opened: connecting just to close it could hold up shutdown for the whole
+  // connection timeout when Noris is unreachable.
+  async onApplicationShutdown(): Promise<void> {
+    const { pool } = this
+    if (!pool) {
+      return
+    }
+    this.pool = null
     try {
-      const connection = await this.createConnection()
-      await connection.close()
+      await pool.close()
     } catch (error) {
       this.logger.warn(
         this.throwerErrorGuard.BadRequestException(
@@ -38,7 +48,7 @@ export class NorisConnectionService implements OnModuleDestroy {
 
   private async createConnection(): Promise<ConnectionPool> {
     const noris = this.baConfigService.noris
-    return await connect({
+    const pool = await connect({
       server: noris.host,
       port: noris.port,
       database: noris.database,
@@ -51,6 +61,8 @@ export class NorisConnectionService implements OnModuleDestroy {
         trustServerCertificate: true,
       },
     })
+    this.pool = pool
+    return pool
   }
 
   private async waitForConnection(connection: ConnectionPool, maxWaitTime = 10_000): Promise<void> {

@@ -7,7 +7,13 @@ import BaConfigService from './config/ba-config.service'
 async function bootstrap() {
   globalThis.cronRunning = false
 
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, {
+    routeConflictPolicy: { duplicate: 'error', shadow: 'warn' },
+    return503OnClosing: true,
+  })
+  // On SIGTERM, reply 503 to new requests, let in-flight ones finish, then
+  // run the lifecycle shutdown hooks.
+  app.enableShutdownHooks()
   const baConfigService = app.get(BaConfigService)
   const config = new DocumentBuilder()
     .setTitle('Nest clamav scanner')

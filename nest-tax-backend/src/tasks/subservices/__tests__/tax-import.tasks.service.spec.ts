@@ -1,7 +1,8 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
+import type { MockInstance } from 'vitest'
 
 import prismaMock from '../../../../test/singleton'
 import { TaxType } from '../../../generated/prisma/client'
@@ -46,11 +47,9 @@ describe('TaxImportTasksService', () => {
 
     service = module.get<TaxImportTasksService>(TaxImportTasksService)
     const retryServiceInstance = new RetryService()
-    jest
-      .spyOn(service['retryService'], 'retryWithDelay')
-      .mockImplementation(
-        retryServiceInstance.retryWithDelay.bind(retryServiceInstance),
-      )
+    vi.mocked(service['retryService'].retryWithDelay).mockImplementation(
+      retryServiceInstance.retryWithDelay.bind(retryServiceInstance),
+    )
   })
 
   it('should be defined', () => {
@@ -68,21 +67,17 @@ describe('TaxImportTasksService', () => {
     it('should alternate between DZN and KO on subsequent calls', async () => {
       const mockTaxImportHelper = service['taxImportHelperService']
 
-      jest
-        .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
-        .mockResolvedValue(true)
-      jest
-        .spyOn(mockTaxImportHelper, 'getTodayTaxCount')
-        .mockResolvedValue(1000)
-      jest
-        .spyOn(mockTaxImportHelper, 'getDailyTaxLimit')
-        .mockResolvedValue(7200)
-      jest
-        .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
-        .mockResolvedValue({
-          birthNumbers: [],
-          newlyCreated: [],
-        })
+      vi.mocked(mockTaxImportHelper.isWithinImportWindow).mockResolvedValue(
+        true,
+      )
+      vi.mocked(mockTaxImportHelper.getTodayTaxCount).mockResolvedValue(1000)
+      vi.mocked(mockTaxImportHelper.getDailyTaxLimit).mockResolvedValue(7200)
+      vi.mocked(
+        mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
+      ).mockResolvedValue({
+        birthNumbers: [],
+        newlyCreated: [],
+      })
 
       // First call should use DZN (because lastLoadedTaxType starts as KO)
       await service.loadTaxesForUsers()
@@ -108,26 +103,22 @@ describe('TaxImportTasksService', () => {
       const newlyCreated = ['123456/7890', '111111/2222']
       const birthNumbers = ['987654/3210']
 
-      jest
-        .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
-        .mockResolvedValue(false) // Outside window
-      jest
-        .spyOn(mockTaxImportHelper, 'getTodayTaxCount')
-        .mockResolvedValue(8000) // Over limit
-      jest
-        .spyOn(mockTaxImportHelper, 'getDailyTaxLimit')
-        .mockResolvedValue(7200)
-      jest
-        .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
-        .mockResolvedValue({
-          birthNumbers,
-          newlyCreated,
-        })
-      const importTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'importTaxes')
+      vi.mocked(mockTaxImportHelper.isWithinImportWindow).mockResolvedValue(
+        false,
+      ) // Outside window
+      vi.mocked(mockTaxImportHelper.getTodayTaxCount).mockResolvedValue(8000) // Over limit
+      vi.mocked(mockTaxImportHelper.getDailyTaxLimit).mockResolvedValue(7200)
+      vi.mocked(
+        mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
+      ).mockResolvedValue({
+        birthNumbers,
+        newlyCreated,
+      })
+      const importTaxesSpy = vi
+        .mocked(mockTaxImportHelper.importTaxes)
         .mockResolvedValue()
-      const prepareTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'prepareTaxes')
+      const prepareTaxesSpy = vi
+        .mocked(mockTaxImportHelper.prepareTaxes)
         .mockResolvedValue()
 
       await service.loadTaxesForUsers()
@@ -154,26 +145,22 @@ describe('TaxImportTasksService', () => {
       const newlyCreated = ['123456/7890']
       const birthNumbers = ['987654/3210']
 
-      jest
-        .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
-        .mockResolvedValue(false) // Outside window
-      jest
-        .spyOn(mockTaxImportHelper, 'getTodayTaxCount')
-        .mockResolvedValue(1000) // Under limit
-      jest
-        .spyOn(mockTaxImportHelper, 'getDailyTaxLimit')
-        .mockResolvedValue(7200)
-      jest
-        .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
-        .mockResolvedValue({
-          birthNumbers,
-          newlyCreated,
-        })
-      const importTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'importTaxes')
+      vi.mocked(mockTaxImportHelper.isWithinImportWindow).mockResolvedValue(
+        false,
+      ) // Outside window
+      vi.mocked(mockTaxImportHelper.getTodayTaxCount).mockResolvedValue(1000) // Under limit
+      vi.mocked(mockTaxImportHelper.getDailyTaxLimit).mockResolvedValue(7200)
+      vi.mocked(
+        mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
+      ).mockResolvedValue({
+        birthNumbers,
+        newlyCreated,
+      })
+      const importTaxesSpy = vi
+        .mocked(mockTaxImportHelper.importTaxes)
         .mockResolvedValue()
-      const prepareTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'prepareTaxes')
+      const prepareTaxesSpy = vi
+        .mocked(mockTaxImportHelper.prepareTaxes)
         .mockResolvedValue()
 
       await service.loadTaxesForUsers()
@@ -200,27 +187,22 @@ describe('TaxImportTasksService', () => {
       const newlyCreated = ['123456/7890']
       const birthNumbers = ['987654/3210']
 
-      jest
-        .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
-        .mockResolvedValue(true) // Within window
-      jest
-        .spyOn(mockTaxImportHelper, 'getTodayTaxCount')
-        .mockResolvedValue(8000) // Over limit
-      jest
-        .spyOn(mockTaxImportHelper, 'getDailyTaxLimit')
-        .mockResolvedValue(7200)
-      jest
-        .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
-
-        .mockResolvedValue({
-          birthNumbers,
-          newlyCreated,
-        })
-      const importTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'importTaxes')
+      vi.mocked(mockTaxImportHelper.isWithinImportWindow).mockResolvedValue(
+        true,
+      ) // Within window
+      vi.mocked(mockTaxImportHelper.getTodayTaxCount).mockResolvedValue(8000) // Over limit
+      vi.mocked(mockTaxImportHelper.getDailyTaxLimit).mockResolvedValue(7200)
+      vi.mocked(
+        mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
+      ).mockResolvedValue({
+        birthNumbers,
+        newlyCreated,
+      })
+      const importTaxesSpy = vi
+        .mocked(mockTaxImportHelper.importTaxes)
         .mockResolvedValue()
-      const prepareTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'prepareTaxes')
+      const prepareTaxesSpy = vi
+        .mocked(mockTaxImportHelper.prepareTaxes)
         .mockResolvedValue()
 
       await service.loadTaxesForUsers()
@@ -247,26 +229,22 @@ describe('TaxImportTasksService', () => {
       const newlyCreated = ['123456/7890']
       const birthNumbers = ['987654/3210']
 
-      jest
-        .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
-        .mockResolvedValue(true) // Within window
-      jest
-        .spyOn(mockTaxImportHelper, 'getTodayTaxCount')
-        .mockResolvedValue(1000) // Under limit
-      jest
-        .spyOn(mockTaxImportHelper, 'getDailyTaxLimit')
-        .mockResolvedValue(7200)
-      jest
-        .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
-        .mockResolvedValue({
-          birthNumbers,
-          newlyCreated,
-        })
-      const importTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'importTaxes')
+      vi.mocked(mockTaxImportHelper.isWithinImportWindow).mockResolvedValue(
+        true,
+      ) // Within window
+      vi.mocked(mockTaxImportHelper.getTodayTaxCount).mockResolvedValue(1000) // Under limit
+      vi.mocked(mockTaxImportHelper.getDailyTaxLimit).mockResolvedValue(7200)
+      vi.mocked(
+        mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
+      ).mockResolvedValue({
+        birthNumbers,
+        newlyCreated,
+      })
+      const importTaxesSpy = vi
+        .mocked(mockTaxImportHelper.importTaxes)
         .mockResolvedValue()
-      const prepareTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'prepareTaxes')
+      const prepareTaxesSpy = vi
+        .mocked(mockTaxImportHelper.prepareTaxes)
         .mockResolvedValue()
 
       await service.loadTaxesForUsers()
@@ -292,23 +270,19 @@ describe('TaxImportTasksService', () => {
       const mockTaxImportHelper = service['taxImportHelperService']
       const birthNumbers = ['987654/3210', '555555/6666']
 
-      jest
-        .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
-        .mockResolvedValue(true)
-      jest
-        .spyOn(mockTaxImportHelper, 'getTodayTaxCount')
-        .mockResolvedValue(1000)
-      jest
-        .spyOn(mockTaxImportHelper, 'getDailyTaxLimit')
-        .mockResolvedValue(7200)
-      jest
-        .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
-        .mockResolvedValue({
-          birthNumbers,
-          newlyCreated: [],
-        })
-      const importTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'importTaxes')
+      vi.mocked(mockTaxImportHelper.isWithinImportWindow).mockResolvedValue(
+        true,
+      )
+      vi.mocked(mockTaxImportHelper.getTodayTaxCount).mockResolvedValue(1000)
+      vi.mocked(mockTaxImportHelper.getDailyTaxLimit).mockResolvedValue(7200)
+      vi.mocked(
+        mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
+      ).mockResolvedValue({
+        birthNumbers,
+        newlyCreated: [],
+      })
+      const importTaxesSpy = vi
+        .mocked(mockTaxImportHelper.importTaxes)
         .mockResolvedValue()
 
       await service.loadTaxesForUsers()
@@ -327,26 +301,22 @@ describe('TaxImportTasksService', () => {
       const newlyCreated = ['123456/7890']
       const birthNumbers = ['987654/3210']
 
-      jest
-        .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
-        .mockResolvedValue(false) // Outside window
-      jest
-        .spyOn(mockTaxImportHelper, 'getTodayTaxCount')
-        .mockResolvedValue(1000)
-      jest
-        .spyOn(mockTaxImportHelper, 'getDailyTaxLimit')
-        .mockResolvedValue(7200)
-      jest
-        .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
-        .mockResolvedValue({
-          birthNumbers,
-          newlyCreated,
-        })
-      const importTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'importTaxes')
+      vi.mocked(mockTaxImportHelper.isWithinImportWindow).mockResolvedValue(
+        false,
+      ) // Outside window
+      vi.mocked(mockTaxImportHelper.getTodayTaxCount).mockResolvedValue(1000)
+      vi.mocked(mockTaxImportHelper.getDailyTaxLimit).mockResolvedValue(7200)
+      vi.mocked(
+        mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
+      ).mockResolvedValue({
+        birthNumbers,
+        newlyCreated,
+      })
+      const importTaxesSpy = vi
+        .mocked(mockTaxImportHelper.importTaxes)
         .mockResolvedValue()
-      const prepareTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'prepareTaxes')
+      const prepareTaxesSpy = vi
+        .mocked(mockTaxImportHelper.prepareTaxes)
         .mockResolvedValue()
 
       await service.loadTaxesForUsers()
@@ -368,26 +338,22 @@ describe('TaxImportTasksService', () => {
     it('should return early when no birth numbers found', async () => {
       const mockTaxImportHelper = service['taxImportHelperService']
 
-      jest
-        .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
-        .mockResolvedValue(true)
-      jest
-        .spyOn(mockTaxImportHelper, 'getTodayTaxCount')
-        .mockResolvedValue(1000)
-      jest
-        .spyOn(mockTaxImportHelper, 'getDailyTaxLimit')
-        .mockResolvedValue(7200)
-      jest
-        .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
-        .mockResolvedValue({
-          birthNumbers: [],
-          newlyCreated: [],
-        })
-      const importTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'importTaxes')
+      vi.mocked(mockTaxImportHelper.isWithinImportWindow).mockResolvedValue(
+        true,
+      )
+      vi.mocked(mockTaxImportHelper.getTodayTaxCount).mockResolvedValue(1000)
+      vi.mocked(mockTaxImportHelper.getDailyTaxLimit).mockResolvedValue(7200)
+      vi.mocked(
+        mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
+      ).mockResolvedValue({
+        birthNumbers: [],
+        newlyCreated: [],
+      })
+      const importTaxesSpy = vi
+        .mocked(mockTaxImportHelper.importTaxes)
         .mockResolvedValue()
-      const prepareTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'prepareTaxes')
+      const prepareTaxesSpy = vi
+        .mocked(mockTaxImportHelper.prepareTaxes)
         .mockResolvedValue()
 
       await service.loadTaxesForUsers()
@@ -401,26 +367,22 @@ describe('TaxImportTasksService', () => {
       const newlyCreated = ['123456/7890']
       const birthNumbers: string[] = []
 
-      jest
-        .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
-        .mockResolvedValue(true)
-      jest
-        .spyOn(mockTaxImportHelper, 'getTodayTaxCount')
-        .mockResolvedValue(1000)
-      jest
-        .spyOn(mockTaxImportHelper, 'getDailyTaxLimit')
-        .mockResolvedValue(7200)
-      jest
-        .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
-        .mockResolvedValue({
-          birthNumbers,
-          newlyCreated,
-        })
-      const importTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'importTaxes')
+      vi.mocked(mockTaxImportHelper.isWithinImportWindow).mockResolvedValue(
+        true,
+      )
+      vi.mocked(mockTaxImportHelper.getTodayTaxCount).mockResolvedValue(1000)
+      vi.mocked(mockTaxImportHelper.getDailyTaxLimit).mockResolvedValue(7200)
+      vi.mocked(
+        mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
+      ).mockResolvedValue({
+        birthNumbers,
+        newlyCreated,
+      })
+      const importTaxesSpy = vi
+        .mocked(mockTaxImportHelper.importTaxes)
         .mockResolvedValue()
-      const prepareTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'prepareTaxes')
+      const prepareTaxesSpy = vi
+        .mocked(mockTaxImportHelper.prepareTaxes)
         .mockResolvedValue()
 
       await service.loadTaxesForUsers()
@@ -440,23 +402,19 @@ describe('TaxImportTasksService', () => {
       const mockTaxImportHelper = service['taxImportHelperService']
       const birthNumbers = ['987654/3210']
 
-      jest
-        .spyOn(mockTaxImportHelper, 'isWithinImportWindow')
-        .mockResolvedValue(true)
-      jest
-        .spyOn(mockTaxImportHelper, 'getTodayTaxCount')
-        .mockResolvedValue(1000)
-      jest
-        .spyOn(mockTaxImportHelper, 'getDailyTaxLimit')
-        .mockResolvedValue(7200)
-      jest
-        .spyOn(mockTaxImportHelper, 'getPrioritizedBirthNumbersWithMetadata')
-        .mockResolvedValue({
-          birthNumbers,
-          newlyCreated: [],
-        })
-      const importTaxesSpy = jest
-        .spyOn(mockTaxImportHelper, 'importTaxes')
+      vi.mocked(mockTaxImportHelper.isWithinImportWindow).mockResolvedValue(
+        true,
+      )
+      vi.mocked(mockTaxImportHelper.getTodayTaxCount).mockResolvedValue(1000)
+      vi.mocked(mockTaxImportHelper.getDailyTaxLimit).mockResolvedValue(7200)
+      vi.mocked(
+        mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
+      ).mockResolvedValue({
+        birthNumbers,
+        newlyCreated: [],
+      })
+      const importTaxesSpy = vi
+        .mocked(mockTaxImportHelper.importTaxes)
         .mockResolvedValue()
 
       // First call (DZN)
@@ -474,14 +432,14 @@ describe('TaxImportTasksService', () => {
   })
 
   describe('loadOverpaymentsFromNoris', () => {
-    let getConfigByKeysMock: jest.SpyInstance
+    let getConfigByKeysMock: MockInstance
 
     beforeEach(() => {
-      jest.clearAllMocks()
-      jest.useFakeTimers()
+      vi.clearAllMocks()
+      vi.useFakeTimers()
 
-      getConfigByKeysMock = jest
-        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
+      getConfigByKeysMock = vi
+        .mocked(service['databaseSubservice'].getConfigByKeys)
         .mockResolvedValue({
           OVERPAYMENTS_FROM_NORIS_ENABLED: 'true',
           OVERPAYMENTS_LOOKBACK_DAYS: '3',
@@ -489,12 +447,12 @@ describe('TaxImportTasksService', () => {
     })
 
     afterEach(() => {
-      jest.useRealTimers()
+      vi.useRealTimers()
     })
 
     it('should skip execution when feature toggle is disabled', async () => {
-      getConfigByKeysMock = jest
-        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
+      getConfigByKeysMock = vi
+        .mocked(service['databaseSubservice'].getConfigByKeys)
         .mockResolvedValue({
           OVERPAYMENTS_FROM_NORIS_ENABLED: 'false',
           OVERPAYMENTS_LOOKBACK_DAYS: '3',
@@ -520,12 +478,11 @@ describe('TaxImportTasksService', () => {
         alreadyCreated: 0,
       }
 
-      jest.setSystemTime(new Date('2025-01-01T12:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-01-01T12:00:00.000Z'))
 
-      const getOverpaymentsDataMock = jest
-        .spyOn(
-          service['norisService'],
-          'updateOverpaymentsDataFromNorisByDateRange',
+      const getOverpaymentsDataMock = vi
+        .mocked(
+          service['norisService'].updateOverpaymentsDataFromNorisByDateRange,
         )
         .mockResolvedValue(mockResult)
 
@@ -548,19 +505,18 @@ describe('TaxImportTasksService', () => {
         alreadyCreated: 0,
       }
 
-      jest.setSystemTime(new Date('2025-01-01T12:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-01-01T12:00:00.000Z'))
 
-      getConfigByKeysMock = jest
-        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
+      getConfigByKeysMock = vi
+        .mocked(service['databaseSubservice'].getConfigByKeys)
         .mockResolvedValue({
           OVERPAYMENTS_FROM_NORIS_ENABLED: 'true',
           OVERPAYMENTS_LOOKBACK_DAYS: '7',
         })
 
-      const getOverpaymentsDataMock = jest
-        .spyOn(
-          service['norisService'],
-          'updateOverpaymentsDataFromNorisByDateRange',
+      const getOverpaymentsDataMock = vi
+        .mocked(
+          service['norisService'].updateOverpaymentsDataFromNorisByDateRange,
         )
         .mockResolvedValue(mockResult)
 
@@ -578,16 +534,15 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should throw error when config is invalid', async () => {
-      getConfigByKeysMock = jest
-        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
+      getConfigByKeysMock = vi
+        .mocked(service['databaseSubservice'].getConfigByKeys)
         .mockResolvedValue({
           OVERPAYMENTS_FROM_NORIS_ENABLED: 'true',
           OVERPAYMENTS_LOOKBACK_DAYS: 'invalid',
         })
 
-      const updateOverpaymentsDataFromNorisByDateRangeSpy = jest.spyOn(
-        service['norisService'],
-        'updateOverpaymentsDataFromNorisByDateRange',
+      const updateOverpaymentsDataFromNorisByDateRangeSpy = vi.mocked(
+        service['norisService'].updateOverpaymentsDataFromNorisByDateRange,
       )
 
       await expect(service.loadOverpaymentsFromNoris()).rejects.toThrow()
@@ -607,17 +562,16 @@ describe('TaxImportTasksService', () => {
         alreadyCreated: 0,
       }
 
-      jest.setSystemTime(new Date('2025-01-01T12:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-01-01T12:00:00.000Z'))
 
-      const getOverpaymentsDataMock = jest
-        .spyOn(
-          service['norisService'],
-          'updateOverpaymentsDataFromNorisByDateRange',
+      const getOverpaymentsDataMock = vi
+        .mocked(
+          service['norisService'].updateOverpaymentsDataFromNorisByDateRange,
         )
         .mockResolvedValue(mockResult)
 
-      const configSubserviceMock = jest
-        .spyOn(service['configSubservice'], 'resetOverpaymentsLookbackDays')
+      const configSubserviceMock = vi
+        .mocked(service['configSubservice'].resetOverpaymentsLookbackDays)
         .mockResolvedValue()
 
       await service.loadOverpaymentsFromNoris()
@@ -636,16 +590,16 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should increment lookback days on failure', async () => {
-      jest.setSystemTime(new Date('2025-01-01T12:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-01-01T12:00:00.000Z'))
 
       const error = new Error('Noris service failed')
 
-      const retryWithDelayMock = jest
-        .spyOn(service['retryService'], 'retryWithDelay')
+      const retryWithDelayMock = vi
+        .mocked(service['retryService'].retryWithDelay)
         .mockRejectedValue(error)
 
-      const configSubserviceMock = jest
-        .spyOn(service['configSubservice'], 'incrementOverpaymentsLookbackDays')
+      const configSubserviceMock = vi
+        .mocked(service['configSubservice'].incrementOverpaymentsLookbackDays)
         .mockResolvedValue()
 
       await expect(service.loadOverpaymentsFromNoris()).rejects.toThrow()
@@ -655,21 +609,19 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should handle error when updating payments fails', async () => {
-      jest
-        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
-        .mockResolvedValue({
-          OVERPAYMENTS_FROM_NORIS_ENABLED: 'true',
-          OVERPAYMENTS_LOOKBACK_DAYS: '3',
-        })
+      vi.mocked(
+        service['databaseSubservice'].getConfigByKeys,
+      ).mockResolvedValue({
+        OVERPAYMENTS_FROM_NORIS_ENABLED: 'true',
+        OVERPAYMENTS_LOOKBACK_DAYS: '3',
+      })
 
       const error = new Error('Payment update failed')
 
-      jest
-        .spyOn(service['retryService'], 'retryWithDelay')
-        .mockRejectedValue(error)
+      vi.mocked(service['retryService'].retryWithDelay).mockRejectedValue(error)
 
-      const configSubserviceMock = jest
-        .spyOn(service['configSubservice'], 'incrementOverpaymentsLookbackDays')
+      const configSubserviceMock = vi
+        .mocked(service['configSubservice'].incrementOverpaymentsLookbackDays)
         .mockResolvedValue()
 
       await expect(service.loadOverpaymentsFromNoris()).rejects.toThrow()
@@ -678,18 +630,16 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should handle error when retryWithDelay fails', async () => {
-      jest
-        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
-        .mockResolvedValue({
-          OVERPAYMENTS_FROM_NORIS_ENABLED: 'true',
-          OVERPAYMENTS_LOOKBACK_DAYS: '3',
-        })
+      vi.mocked(
+        service['databaseSubservice'].getConfigByKeys,
+      ).mockResolvedValue({
+        OVERPAYMENTS_FROM_NORIS_ENABLED: 'true',
+        OVERPAYMENTS_LOOKBACK_DAYS: '3',
+      })
 
       const error = new Error('Retry failed')
 
-      jest
-        .spyOn(service['retryService'], 'retryWithDelay')
-        .mockRejectedValue(error)
+      vi.mocked(service['retryService'].retryWithDelay).mockRejectedValue(error)
 
       await expect(service.loadOverpaymentsFromNoris()).rejects.toThrow(
         'Failed to load overpayments from Noris after all retry attempts',

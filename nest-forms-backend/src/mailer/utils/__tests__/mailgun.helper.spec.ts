@@ -3,8 +3,9 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import Handlebars from 'handlebars'
+import type { Mock } from 'vitest'
 
-import { expectStringContaining } from '../../../__tests__/jest-matchers'
+import { expectStringContaining } from '../../../__tests__/matchers'
 import BaConfigService from '../../../config/ba-config.service'
 import StrapiService from '../../../strapi/strapi.service'
 import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
@@ -18,22 +19,22 @@ import MailgunHelper from '../mailgun.helper'
 const mockMailgunClient = {
   domains: {
     domainTemplates: {
-      get: jest.fn(),
+      get: vi.fn(),
     },
   },
 }
 
 // Mock for Handlebars.compile
-jest.mock('handlebars', () => ({
-  compile: jest.fn(),
+vi.mock('handlebars', () => ({
+  default: { compile: vi.fn() },
 }))
 
 // Mock for Mailgun
-jest.mock('mailgun.js', () =>
-  jest.fn().mockImplementation(() => ({
-    client: jest.fn().mockReturnValue(mockMailgunClient),
-  })),
-)
+vi.mock('mailgun.js', () => ({
+  default: vi.fn().mockImplementation(function () {
+    return { client: vi.fn().mockReturnValue(mockMailgunClient) }
+  }),
+}))
 
 describe('MailgunHelper', () => {
   let mailgunHelper: MailgunHelper
@@ -63,7 +64,7 @@ describe('MailgunHelper', () => {
         {
           provide: ErrorFactoryService,
           useValue: {
-            NotFoundException: jest
+            NotFoundException: vi
               .fn()
               .mockImplementation(
                 ({
@@ -86,7 +87,7 @@ describe('MailgunHelper', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('constructor', () => {
@@ -256,12 +257,12 @@ describe('MailgunHelper', () => {
       })
 
       // Mock Handlebars.compile
-      const mockCompiledTemplate = jest
+      const mockCompiledTemplate = vi
         .fn()
         .mockReturnValue(
           '<p>Hello John, your application Test Application is being processed.</p>',
         )
-      ;(Handlebars.compile as jest.Mock).mockReturnValue(mockCompiledTemplate)
+      ;(Handlebars.compile as Mock).mockReturnValue(mockCompiledTemplate)
 
       const variables = {
         firstName: 'John',

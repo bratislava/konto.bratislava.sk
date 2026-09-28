@@ -5,20 +5,20 @@ import FormsService from '../../forms/forms.service'
 import { Forms } from '../../generated/prisma/client'
 import GinisHelper from './ginis.helper'
 
-jest.mock('../../forms/forms.service')
+vi.mock('../../forms/forms.service')
 
 describe('GinisHelper', () => {
   let helper: GinisHelper
   const { console } = global
 
   beforeEach(async () => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
 
     global.console = {
       ...console,
-      log: jest.fn(),
-      debug: jest.fn(),
-      info: jest.fn(),
+      log: vi.fn(),
+      debug: vi.fn(),
+      info: vi.fn(),
     }
 
     const module: TestingModule = await Test.createTestingModule({
@@ -28,7 +28,7 @@ describe('GinisHelper', () => {
     helper = module.get<GinisHelper>(GinisHelper)
 
     Object.defineProperty(helper, 'logger', {
-      value: { error: jest.fn(), warn: jest.fn(), debug: jest.fn() },
+      value: { error: vi.fn(), warn: vi.fn(), debug: vi.fn() },
     })
   })
 
@@ -42,7 +42,7 @@ describe('GinisHelper', () => {
 
   describe('setFormToError', () => {
     it('should just call update form', async () => {
-      const spy = jest
+      const spy = vi
         .spyOn(helper['formsService'], 'updateForm')
         .mockImplementation(async () => Promise.resolve({} as Forms))
       await helper.setFormToError('sss')
@@ -51,7 +51,7 @@ describe('GinisHelper', () => {
     })
 
     it('should be okay even if update form fails because of nonexistent id', async () => {
-      const spy = jest
+      const spy = vi
         .spyOn(helper['formsService'], 'updateForm')
         .mockRejectedValue(new HttpException('response', 500))
       await helper.setFormToError('sss')

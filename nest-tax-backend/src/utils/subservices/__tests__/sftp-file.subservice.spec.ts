@@ -7,12 +7,12 @@ import { PrismaService } from '../../../prisma/prisma.service'
 import SftpFileSubservice from '../sftp-file.subservice'
 
 // Mock SFTPClient
-jest.mock('ssh2-sftp-client')
+vi.mock('ssh2-sftp-client')
 
 // Mock dependencies
 const mockPrismaService = {
   csvFile: {
-    findMany: jest.fn(),
+    findMany: vi.fn(),
   },
 }
 
@@ -28,7 +28,7 @@ const mockBaConfigService = {
 }
 
 const mockErrorFactoryService = {
-  InternalServerErrorException: jest.fn(),
+  InternalServerErrorException: vi.fn(),
 }
 
 describe('SftpFileSubservice', () => {
@@ -48,7 +48,7 @@ describe('SftpFileSubservice', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('filterAlreadyReportedFiles should filter out already reported files', async () => {

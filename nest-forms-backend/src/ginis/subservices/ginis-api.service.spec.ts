@@ -8,21 +8,21 @@ import {
   createTestPrehledDokumentuItem,
   createTestPrehledDokumentuResponse,
 } from '../../__tests__/factories/ginisDocument.factory'
-import { expectObjectContaining } from '../../__tests__/jest-matchers'
+import { expectObjectContaining } from '../../__tests__/matchers'
 import BaConfigService from '../../config/ba-config.service'
 import GinisAPIService, {
   GinContactDatabase,
   GinContactType,
 } from './ginis-api.service'
 
-jest.mock('@bratislava/ginis-sdk', () => ({
+vi.mock('@bratislava/ginis-sdk', () => ({
   Ginis: class {
     ssl = {
-      detailDokumentu: jest.fn((bodyObj: object) => bodyObj),
-      pridatSouborMtom: jest.fn((bodyObj: object) => bodyObj),
-      prehledDokumentu: jest.fn((bodyObj: object) => bodyObj),
-      prideleni: jest.fn((bodyObj: object) => bodyObj),
-      zalozPisemnost: jest.fn(() => ({
+      detailDokumentu: vi.fn((bodyObj: object) => bodyObj),
+      pridatSouborMtom: vi.fn((bodyObj: object) => bodyObj),
+      prehledDokumentu: vi.fn((bodyObj: object) => bodyObj),
+      prideleni: vi.fn((bodyObj: object) => bodyObj),
+      zalozPisemnost: vi.fn(() => ({
         'Zaloz-pisemnost': {
           'Id-dokumentu': 'test-doc-id',
         },
@@ -30,10 +30,10 @@ jest.mock('@bratislava/ginis-sdk', () => ({
     }
 
     gin = {
-      detailFunkcnihoMista: jest.fn((bodyObj: object) => bodyObj),
-      detailReferenta: jest.fn((bodyObj: object) => bodyObj),
-      najdiEsu: jest.fn((bodyObj: object) => bodyObj),
-      editEsu: jest.fn((bodyObj: object) => bodyObj),
+      detailFunkcnihoMista: vi.fn((bodyObj: object) => bodyObj),
+      detailReferenta: vi.fn((bodyObj: object) => bodyObj),
+      najdiEsu: vi.fn((bodyObj: object) => bodyObj),
+      editEsu: vi.fn((bodyObj: object) => bodyObj),
     }
   },
 }))
@@ -42,7 +42,7 @@ describe('GinisAPIService', () => {
   let service: GinisAPIService
 
   beforeEach(async () => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -69,7 +69,7 @@ describe('GinisAPIService', () => {
     service = module.get<GinisAPIService>(GinisAPIService)
 
     Object.defineProperty(service, 'logger', {
-      value: { error: jest.fn(), log: jest.fn() },
+      value: { error: vi.fn(), log: vi.fn() },
     })
   })
 
@@ -79,7 +79,7 @@ describe('GinisAPIService', () => {
 
   describe('getDocumentDetail', () => {
     it('should just call with documentId', async () => {
-      const detailSpy = jest.spyOn(service['ginis'].ssl, 'detailDokumentu')
+      const detailSpy = vi.spyOn(service['ginis'].ssl, 'detailDokumentu')
       await service.getDocumentDetail('docId')
       expect(detailSpy).toHaveBeenCalledWith({
         'Id-dokumentu': 'docId',
@@ -90,12 +90,12 @@ describe('GinisAPIService', () => {
   describe('getOwnerDetail', () => {
     it('should call both functions', async () => {
       const gin = service['ginis'].gin
-      const detailFunkcnihoMistaSpy = jest
+      const detailFunkcnihoMistaSpy = vi
         .spyOn(gin, 'detailFunkcnihoMista')
         .mockResolvedValue({
           'Detail-funkcniho-mista': { 'Id-referenta': '1' },
         } as Awaited<ReturnType<typeof gin.detailFunkcnihoMista>>)
-      const detailReferentaSpy = jest
+      const detailReferentaSpy = vi
         .spyOn(gin, 'detailReferenta')
         .mockResolvedValue({
           'Detail-referenta': { 'Id-osoby': 'id1' },
@@ -116,7 +116,7 @@ describe('GinisAPIService', () => {
 
   describe('uploadFile', () => {
     it('should propagate and trim values correctly', async () => {
-      const uploadSpy = jest.spyOn(service['ginis'].ssl, 'pridatSouborMtom')
+      const uploadSpy = vi.spyOn(service['ginis'].ssl, 'pridatSouborMtom')
       const mockStream = new Readable({
         read() {
           this.push('file content')
@@ -150,7 +150,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should extract base name of the file correctly', async () => {
-      const uploadSpy = jest.spyOn(service['ginis'].ssl, 'pridatSouborMtom')
+      const uploadSpy = vi.spyOn(service['ginis'].ssl, 'pridatSouborMtom')
       const mockStream = new Readable({
         read() {
           this.push('file content')
@@ -175,13 +175,13 @@ describe('GinisAPIService', () => {
 
   describe('findDocumentId', () => {
     beforeEach(() => {
-      jest
-        .spyOn(service['ginis'].ssl, 'prehledDokumentu')
-        .mockResolvedValue(createTestPrehledDokumentuResponse())
+      vi.spyOn(service['ginis'].ssl, 'prehledDokumentu').mockResolvedValue(
+        createTestPrehledDokumentuResponse(),
+      )
     })
 
     it('should use current date in field Datum-podani-do', async () => {
-      const findSpy = jest
+      const findSpy = vi
         .spyOn(service['ginis'].ssl, 'prehledDokumentu')
         .mockResolvedValueOnce(createTestPrehledDokumentuResponse())
       const currentDate = new Date().toISOString().slice(0, 10)
@@ -206,9 +206,9 @@ describe('GinisAPIService', () => {
     })
 
     it('should throw error if Ginis throws error', async () => {
-      jest
-        .spyOn(service['ginis'].ssl, 'prehledDokumentu')
-        .mockRejectedValueOnce(new Error('Ginis find failed'))
+      vi.spyOn(service['ginis'].ssl, 'prehledDokumentu').mockRejectedValueOnce(
+        new Error('Ginis find failed'),
+      )
 
       await expect(service.findDocumentId('formId')).rejects.toThrow(
         'Ginis find failed',
@@ -221,26 +221,22 @@ describe('GinisAPIService', () => {
     })
 
     it('should throw error if more than 1 document is found', async () => {
-      jest
-        .spyOn(service['ginis'].ssl, 'prehledDokumentu')
-        .mockResolvedValueOnce(
-          createTestPrehledDokumentuResponse([
-            createTestPrehledDokumentuItem({ 'Id-dokumentu': 'docId1' }),
-            createTestPrehledDokumentuItem({ 'Id-dokumentu': 'docId2' }),
-          ]),
-        )
+      vi.spyOn(service['ginis'].ssl, 'prehledDokumentu').mockResolvedValueOnce(
+        createTestPrehledDokumentuResponse([
+          createTestPrehledDokumentuItem({ 'Id-dokumentu': 'docId1' }),
+          createTestPrehledDokumentuItem({ 'Id-dokumentu': 'docId2' }),
+        ]),
+      )
 
       await expect(service.findDocumentId('formId')).rejects.toThrow()
     })
 
     it('should return document ID if exactly 1 is found', async () => {
-      jest
-        .spyOn(service['ginis'].ssl, 'prehledDokumentu')
-        .mockResolvedValueOnce(
-          createTestPrehledDokumentuResponse([
-            createTestPrehledDokumentuItem({ 'Id-dokumentu': 'docId1' }),
-          ]),
-        )
+      vi.spyOn(service['ginis'].ssl, 'prehledDokumentu').mockResolvedValueOnce(
+        createTestPrehledDokumentuResponse([
+          createTestPrehledDokumentuItem({ 'Id-dokumentu': 'docId1' }),
+        ]),
+      )
 
       const documentId = await service.findDocumentId('formId')
       expect(documentId).toBe('docId1')
@@ -249,7 +245,7 @@ describe('GinisAPIService', () => {
 
   describe('assignDocument', () => {
     beforeEach(() => {
-      jest.spyOn(service['ginis'].ssl, 'prideleni').mockResolvedValue({
+      vi.spyOn(service['ginis'].ssl, 'prideleni').mockResolvedValue({
         Prideleni: {
           'Datum-zmeny': '2025-06-02T19:06:00',
         },
@@ -257,7 +253,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should use functionId if present', async () => {
-      const assignSpy = jest
+      const assignSpy = vi
         .spyOn(service['ginis'].ssl, 'prideleni')
         .mockResolvedValue({
           Prideleni: {
@@ -276,7 +272,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should ommit functionId if not present', async () => {
-      const assignSpy = jest
+      const assignSpy = vi
         .spyOn(service['ginis'].ssl, 'prideleni')
         .mockResolvedValue({
           Prideleni: {
@@ -294,9 +290,9 @@ describe('GinisAPIService', () => {
     })
 
     it('should throw error if Ginis throws error', async () => {
-      jest
-        .spyOn(service['ginis'].ssl, 'prideleni')
-        .mockRejectedValueOnce(new Error('Ginis find failed'))
+      vi.spyOn(service['ginis'].ssl, 'prideleni').mockRejectedValueOnce(
+        new Error('Ginis find failed'),
+      )
 
       await expect(service.assignDocument('docId', 'nodeId')).rejects.toThrow(
         'Ginis find failed',
@@ -356,7 +352,7 @@ describe('GinisAPIService', () => {
     } as GinNajdiEsuNajdiEsuItem
 
     beforeEach(() => {
-      jest.spyOn(service['ginis'].gin, 'editEsu').mockResolvedValue({
+      vi.spyOn(service['ginis'].gin, 'editEsu').mockResolvedValue({
         'Vytvor-esu': {
           'Id-esu': 'updated-id',
           'Datum-zmeny': '2025-01-01',
@@ -505,10 +501,10 @@ describe('GinisAPIService', () => {
 
   describe('findAndUpdateContactInContactDatabase', () => {
     beforeEach(() => {
-      jest
-        .spyOn(service['ginis'].gin, 'najdiEsu')
-        .mockResolvedValue({ 'Najdi-esu': [] })
-      jest.spyOn(service['ginis'].gin, 'editEsu').mockResolvedValue({
+      vi.spyOn(service['ginis'].gin, 'najdiEsu').mockResolvedValue({
+        'Najdi-esu': [],
+      })
+      vi.spyOn(service['ginis'].gin, 'editEsu').mockResolvedValue({
         'Vytvor-esu': {
           'Id-esu': 'updated-id',
           'Datum-zmeny': '2025-01-01',
@@ -518,7 +514,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should search databases in order', async () => {
-      const findSpy = jest.spyOn(service['ginis'].gin, 'najdiEsu')
+      const findSpy = vi.spyOn(service['ginis'].gin, 'najdiEsu')
 
       await service.findAndUpdateContactInContactDatabase(
         { 'Id-dat-schranky': 'test-uri' },
@@ -538,7 +534,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should use extended search when extended is true', async () => {
-      const findSpy = jest.spyOn(service['ginis'].gin, 'najdiEsu')
+      const findSpy = vi.spyOn(service['ginis'].gin, 'najdiEsu')
 
       await service.findAndUpdateContactInContactDatabase(
         { 'Id-dat-schranky': 'test-uri' },
@@ -556,11 +552,11 @@ describe('GinisAPIService', () => {
         'Id-esu': 'found-contact-id',
       } as GinNajdiEsuNajdiEsuItem
 
-      jest.spyOn(service['ginis'].gin, 'najdiEsu').mockResolvedValueOnce({
+      vi.spyOn(service['ginis'].gin, 'najdiEsu').mockResolvedValueOnce({
         'Najdi-esu': [mockContact],
       })
 
-      const updateSpy = jest.spyOn(service, 'updateContactInContactDatabase')
+      const updateSpy = vi.spyOn(service, 'updateContactInContactDatabase')
       updateSpy.mockResolvedValueOnce('updated-contact-id')
 
       const result = await service.findAndUpdateContactInContactDatabase(
@@ -595,7 +591,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should call findAndUpdateContactInContactDatabase with uri', async () => {
-      const findAndUpdateSpy = jest
+      const findAndUpdateSpy = vi
         .spyOn(service, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
@@ -614,7 +610,7 @@ describe('GinisAPIService', () => {
 
   describe('findAndUpdateContactByIdentifier', () => {
     it('should search by firstName, lastName, and birthNumber', async () => {
-      const findAndUpdateSpy = jest
+      const findAndUpdateSpy = vi
         .spyOn(service, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
@@ -644,7 +640,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should search by name and ico for legal entity', async () => {
-      const findAndUpdateSpy = jest
+      const findAndUpdateSpy = vi
         .spyOn(service, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
@@ -679,7 +675,7 @@ describe('GinisAPIService', () => {
 
   describe('findAndUpdateContactByEmail', () => {
     it('should search by firstName, lastName, and email', async () => {
-      const findAndUpdateSpy = jest
+      const findAndUpdateSpy = vi
         .spyOn(service, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
@@ -708,7 +704,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should search by name and email for legal entity', async () => {
-      const findAndUpdateSpy = jest
+      const findAndUpdateSpy = vi
         .spyOn(service, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
@@ -742,13 +738,14 @@ describe('GinisAPIService', () => {
 
   describe('findAndUpdateContact', () => {
     it('should try uri first, then identifier, then email', async () => {
-      jest
-        .spyOn(service, 'findAndUpdateContactInContactDatabase')
-        .mockResolvedValue(undefined)
-      const identifierSpy = jest
+      vi.spyOn(
+        service,
+        'findAndUpdateContactInContactDatabase',
+      ).mockResolvedValue(undefined)
+      const identifierSpy = vi
         .spyOn(service, 'findAndUpdateContactByIdentifier')
         .mockResolvedValue(undefined)
-      const emailSpy = jest
+      const emailSpy = vi
         .spyOn(service, 'findAndUpdateContactByEmail')
         .mockResolvedValue('contact-id')
 
@@ -767,14 +764,15 @@ describe('GinisAPIService', () => {
     })
 
     it('should return immediately when uri search succeeds', async () => {
-      jest
-        .spyOn(service, 'findAndUpdateContactInContactDatabase')
-        .mockResolvedValue('contact-id')
-      const identifierSpy = jest.spyOn(
+      vi.spyOn(
+        service,
+        'findAndUpdateContactInContactDatabase',
+      ).mockResolvedValue('contact-id')
+      const identifierSpy = vi.spyOn(
         service,
         'findAndUpdateContactByIdentifier',
       )
-      const emailSpy = jest.spyOn(service, 'findAndUpdateContactByEmail')
+      const emailSpy = vi.spyOn(service, 'findAndUpdateContactByEmail')
 
       const result = await service.findAndUpdateContact({
         uri: 'test-uri',
@@ -788,15 +786,16 @@ describe('GinisAPIService', () => {
     })
 
     it('should return undefined when all searches fail', async () => {
-      jest
-        .spyOn(service, 'findAndUpdateContactInContactDatabase')
-        .mockResolvedValue(undefined)
-      jest
-        .spyOn(service, 'findAndUpdateContactByIdentifier')
-        .mockResolvedValue(undefined)
-      jest
-        .spyOn(service, 'findAndUpdateContactByEmail')
-        .mockResolvedValue(undefined)
+      vi.spyOn(
+        service,
+        'findAndUpdateContactInContactDatabase',
+      ).mockResolvedValue(undefined)
+      vi.spyOn(service, 'findAndUpdateContactByIdentifier').mockResolvedValue(
+        undefined,
+      )
+      vi.spyOn(service, 'findAndUpdateContactByEmail').mockResolvedValue(
+        undefined,
+      )
 
       const result = await service.findAndUpdateContact({
         email: 'test@example.com',
@@ -809,7 +808,7 @@ describe('GinisAPIService', () => {
 
   describe('createContact', () => {
     beforeEach(() => {
-      jest.spyOn(service['ginis'].gin, 'editEsu').mockResolvedValue({
+      vi.spyOn(service['ginis'].gin, 'editEsu').mockResolvedValue({
         'Vytvor-esu': {
           'Id-esu': 'new-contact-id',
           'Datum-zmeny': '2025-01-01',
@@ -905,10 +904,10 @@ describe('GinisAPIService', () => {
 
   describe('upsertContact', () => {
     it('should return existing contact when found', async () => {
-      jest
-        .spyOn(service, 'findAndUpdateContact')
-        .mockResolvedValue('existing-contact-id')
-      const createSpy = jest.spyOn(service, 'createContact')
+      vi.spyOn(service, 'findAndUpdateContact').mockResolvedValue(
+        'existing-contact-id',
+      )
+      const createSpy = vi.spyOn(service, 'createContact')
 
       const result = await service.upsertContact({
         email: 'test@example.com',
@@ -920,8 +919,8 @@ describe('GinisAPIService', () => {
     })
 
     it('should create contact when not found', async () => {
-      jest.spyOn(service, 'findAndUpdateContact').mockResolvedValue(undefined)
-      jest.spyOn(service, 'createContact').mockResolvedValue('new-contact-id')
+      vi.spyOn(service, 'findAndUpdateContact').mockResolvedValue(undefined)
+      vi.spyOn(service, 'createContact').mockResolvedValue('new-contact-id')
 
       const result = await service.upsertContact({
         email: 'test@example.com',
@@ -938,10 +937,7 @@ describe('GinisAPIService', () => {
 
   describe('createDocument', () => {
     it('should trim subject to first 100 characters and detail subject to first 254 characters', async () => {
-      const zalozPisemnostSpy = jest.spyOn(
-        service['ginis'].ssl,
-        'zalozPisemnost',
-      )
+      const zalozPisemnostSpy = vi.spyOn(service['ginis'].ssl, 'zalozPisemnost')
 
       // Create a subject that exceeds both limits with distinct start/end to verify first characters are used
       const firstPart = 'START'.repeat(20) // 100 characters
@@ -978,10 +974,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should not trim subject and detail subject when subject is shorter than limits', async () => {
-      const zalozPisemnostSpy = jest.spyOn(
-        service['ginis'].ssl,
-        'zalozPisemnost',
-      )
+      const zalozPisemnostSpy = vi.spyOn(service['ginis'].ssl, 'zalozPisemnost')
 
       const shortSubject = 'Short subject' // 14 characters
       const sentAtDate = new Date('2025-01-15')

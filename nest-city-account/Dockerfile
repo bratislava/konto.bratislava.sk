@@ -40,6 +40,9 @@ RUN pnpm turbo run build --filter=nest-city-account
 FROM builder-deps AS test
 RUN pnpm turbo run test --filter=nest-city-account
 
+FROM builder-deps AS typecheck
+RUN pnpm turbo run typecheck --filter=nest-city-account
+
 FROM builder AS lint
 RUN pnpm turbo run lint --filter=nest-city-account
 

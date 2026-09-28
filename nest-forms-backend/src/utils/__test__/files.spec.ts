@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken'
+import type { Mock } from 'vitest'
 
 import { createTestFile } from '../../__tests__/factories/files.factory'
 import {
@@ -11,7 +12,11 @@ import {
   PDF_FORM_FAKE_FILE_ID,
 } from '../files'
 
-jest.mock('jsonwebtoken')
+// jsonwebtoken is CommonJS, so its exports are only on `default` and are spread into the named exports.
+vi.mock('jsonwebtoken', async (importOriginal) => {
+  const actual = await importOriginal<typeof jwt & { default: typeof jwt }>()
+  return { ...actual, ...actual.default, sign: vi.fn() }
+})
 
 describe('files utils', () => {
   describe('fileIdIsValid', () => {
@@ -32,8 +37,8 @@ describe('files utils', () => {
     const mockJwtSecret = 'test-secret'
 
     beforeEach(() => {
-      jest.clearAllMocks()
-      ;(jwt.sign as jest.Mock).mockReturnValue(mockJwtToken)
+      vi.clearAllMocks()
+      ;(jwt.sign as Mock).mockReturnValue(mockJwtToken)
     })
 
     it('should create a map of file IDs to download URLs', () => {

@@ -88,7 +88,7 @@ export default class GinisService {
       !['production', 'development', 'staging'].includes(
         this.baConfigService.environment.nodeEnv,
       ) &&
-      process.env.JEST_WORKER_ID === undefined
+      process.env.VITEST === undefined
     ) {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
@@ -310,7 +310,7 @@ export default class GinisService {
   }
 
   async nackTrueWithWait(seconds: number): Promise<Nack> {
-    if (process.env.JEST_WORKER_ID === undefined) {
+    if (process.env.VITEST === undefined) {
       await setTimeout(seconds)
     }
     return new Nack(true)

@@ -1,7 +1,7 @@
 name: Build Nest
 # Two modes, selected by the `cluster` input:
-#   - CI (cluster == ''): build the validation/test/lint[/e2e] images and the
-#     final `runner` image, do not push.
+#   - CI (cluster == ''): build the validation/test/typecheck/lint[/e2e] images
+#     and the final `runner` image, do not push.
 #   - Deploy (cluster != ''): reuse an existing commit image or build+push the
 #     `runner` image and re-tag it for the cluster. Pass skip_tests: true to skip
 #     the test images. The infrastructure deploy is triggered separately by the
@@ -28,7 +28,7 @@ on:
         required: false
         default: false
       skip_tests:
-        description: "Skip the validation/test/lint/e2e images (used in deploy mode)."
+        description: "Skip the validation/test/typecheck/lint/e2e images (used in deploy mode)."
         type: boolean
         required: false
         default: false
@@ -118,7 +118,7 @@ jobs:
         with:
           image: ${{ inputs.image }}
           prefix: ${{ env.CLUSTER_PREFIX }}
-          caches: builder-deps,test,lint,test-e2e,verify-bootstrap
+          caches: builder-deps,test,typecheck,lint,test-e2e,verify-bootstrap
           push: ${{ inputs.cluster != '' }}
 
       - name: Set up Turborepo cache
@@ -153,6 +153,19 @@ jobs:
         env:
           CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).test.from }}
           CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).test.to }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
+
+      - name: Run type check
+        if: ${{ !inputs.skip_tests }}
+        uses: docker/bake-action@v7
+        with:
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: ${{ inputs.service }}-typecheck
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).typecheck.from }}
+          CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).typecheck.to }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Run ESLint

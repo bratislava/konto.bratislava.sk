@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
+import type { Mock } from 'vitest'
 
 import BaConfigService from '../../config/ba-config.service'
 import { Prisma, TaxType } from '../../generated/prisma/client'
@@ -67,23 +68,25 @@ describe('CardPaymentReportingService', () => {
       }
     }
   }
-  let mockSftpFileSubservice: { getNewFiles: jest.Mock }
+  let mockSftpFileSubservice: { getNewFiles: Mock }
   let mockDatabaseSubservice: {
-    getVariableSymbolsByOrderIds: jest.Mock
-    getConfigByKeys: jest.Mock
+    getVariableSymbolsByOrderIds: Mock
+    getConfigByKeys: Mock
   }
-  let mockEmailSubservice: { send: jest.Mock<Promise<void>, EmailSendCall> }
+  let mockEmailSubservice: {
+    send: Mock<(...args: EmailSendCall) => Promise<void>>
+  }
   let mockPrismaService: {
-    tax: { findMany: jest.Mock }
-    config: { findMany: jest.Mock }
-    csvFile: { createMany: jest.Mock }
+    tax: { findMany: Mock }
+    config: { findMany: Mock }
+    csvFile: { createMany: Mock }
   }
 
   beforeEach(async () => {
     mockPrismaService = {
-      tax: { findMany: jest.fn() },
-      config: { findMany: jest.fn() },
-      csvFile: { createMany: jest.fn() },
+      tax: { findMany: vi.fn() },
+      config: { findMany: vi.fn() },
+      csvFile: { createMany: vi.fn() },
     }
     mockBaConfigService = {
       cardPaymentReporting: {
@@ -92,18 +95,20 @@ describe('CardPaymentReportingService', () => {
       },
     }
     mockSftpFileSubservice = {
-      getNewFiles: jest.fn().mockResolvedValue([]),
+      getNewFiles: vi.fn().mockResolvedValue([]),
     }
     mockDatabaseSubservice = {
-      getVariableSymbolsByOrderIds: jest.fn().mockResolvedValue([]),
-      getConfigByKeys: jest.fn().mockResolvedValue({
+      getVariableSymbolsByOrderIds: vi.fn().mockResolvedValue([]),
+      getConfigByKeys: vi.fn().mockResolvedValue({
         REPORTING_USER_CONSTANT_SYMBOL: '0000000001',
         REPORTING_VARIABLE_SYMBOL: '0000000002',
         REPORTING_SPECIFIC_SYMBOL: '0000000003',
         REPORTING_CONSTANT_SYMBOL: '0000000004',
       }),
     }
-    mockEmailSubservice = { send: jest.fn<Promise<void>, EmailSendCall>() }
+    mockEmailSubservice = {
+      send: vi.fn<(...args: EmailSendCall) => Promise<void>>(),
+    }
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -112,7 +117,7 @@ describe('CardPaymentReportingService', () => {
         { provide: BaConfigService, useValue: mockBaConfigService },
         {
           provide: ErrorFactoryService,
-          useValue: { InternalServerErrorException: jest.fn() },
+          useValue: { InternalServerErrorException: vi.fn() },
         },
         { provide: EmailSubservice, useValue: mockEmailSubservice },
         { provide: SftpFileSubservice, useValue: mockSftpFileSubservice },

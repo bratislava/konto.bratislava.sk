@@ -1,6 +1,7 @@
 import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { Mocked } from 'vitest'
 
 import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto'
 import { TaxType } from '../../../generated/prisma/client'
@@ -13,11 +14,11 @@ import { createTestNorisRealEstateTax } from './factories/noris-real-estate-tax.
 describe('NorisTaxSubservice', () => {
   let service: NorisTaxSubservice
   let errorFactoryService: ErrorFactoryService
-  let norisTaxRealEstateSubservice: jest.Mocked<NorisTaxRealEstateSubservice>
-  let norisTaxCommunalWasteSubservice: jest.Mocked<NorisTaxCommunalWasteSubservice>
+  let norisTaxRealEstateSubservice: Mocked<NorisTaxRealEstateSubservice>
+  let norisTaxCommunalWasteSubservice: Mocked<NorisTaxCommunalWasteSubservice>
 
   beforeEach(async () => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -169,11 +170,11 @@ describe('NorisTaxSubservice', () => {
 
     it('should throw for unknown tax type', async () => {
       const mockError = new Error('Unknown tax type')
-      jest
-        .spyOn(errorFactoryService, 'InternalServerErrorException')
-        .mockImplementation(() => {
-          throw mockError
-        })
+      vi.mocked(
+        errorFactoryService.InternalServerErrorException,
+      ).mockImplementation(() => {
+        throw mockError
+      })
 
       const unknownTaxType = 'UNKNOWN' as TaxType
 

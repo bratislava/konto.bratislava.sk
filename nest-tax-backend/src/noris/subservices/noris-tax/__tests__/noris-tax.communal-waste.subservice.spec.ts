@@ -1,7 +1,8 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
+import type { Mocked } from 'vitest'
 
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import BaConfigService from '../../../../config/ba-config.service'
@@ -24,19 +25,21 @@ import { NorisPaymentSubservice } from '../../noris-payment.subservice'
 import { NorisValidatorSubservice } from '../../noris-validator.subservice'
 import { NorisTaxCommunalWasteSubservice } from '../noris-tax.communal-waste.subservice'
 
-jest.mock('mssql', () => ({
-  Request: jest.fn().mockImplementation(() => ({
-    input: jest.fn(),
-    query: jest.fn().mockResolvedValue({ recordset: [] }),
-  })),
-  VarChar: jest.fn(),
-  Int: jest.fn(),
+vi.mock('mssql', () => ({
+  Request: vi.fn().mockImplementation(function () {
+    return {
+      input: vi.fn(),
+      query: vi.fn().mockResolvedValue({ recordset: [] }),
+    }
+  }),
+  VarChar: vi.fn(),
+  Int: vi.fn(),
 }))
 
 describe('NorisTaxCommunalWasteSubservice', () => {
   let service: NorisTaxCommunalWasteSubservice
-  let connectionService: jest.Mocked<NorisConnectionSubservice>
-  let norisValidatorSubservice: jest.Mocked<NorisValidatorSubservice>
+  let connectionService: Mocked<NorisConnectionSubservice>
+  let norisValidatorSubservice: Mocked<NorisValidatorSubservice>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -99,7 +102,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('constructor', () => {
@@ -147,9 +150,9 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         orientacne_cislo: '22',
         ...container,
       }
-      jest
-        .spyOn(connectionService, 'withConnection')
-        .mockResolvedValue({ recordset: [flatRecord] })
+      vi.mocked(connectionService.withConnection).mockResolvedValue({
+        recordset: [flatRecord],
+      })
 
       const result = await service['getTaxDataByYearAndBirthNumber'](2025, [
         '123456/7890',
@@ -171,9 +174,9 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         testCommunalWasteTax2,
       ]
 
-      jest
-        .spyOn(connectionService, 'withConnection')
-        .mockResolvedValue({ recordset: mockData })
+      vi.mocked(connectionService.withConnection).mockResolvedValue({
+        recordset: mockData,
+      })
 
       const result = await service['getTaxDataByYearAndBirthNumber'](2025, [
         '123456/7890',
@@ -184,9 +187,9 @@ describe('NorisTaxCommunalWasteSubservice', () => {
     })
 
     it('should return empty array when no records found', async () => {
-      jest
-        .spyOn(connectionService, 'withConnection')
-        .mockResolvedValue({ recordset: [] })
+      vi.mocked(connectionService.withConnection).mockResolvedValue({
+        recordset: [],
+      })
 
       const result = await service['getTaxDataByYearAndBirthNumber'](2025, [
         '123456/7890',
@@ -200,19 +203,19 @@ describe('NorisTaxCommunalWasteSubservice', () => {
     it('should fetch data from Noris via connection service successfully', async () => {
       const mockData: NorisCommunalWasteTax[] = [testCommunalWasteTax1]
       const mockRequest = {
-        input: jest.fn(),
-        query: jest.fn().mockResolvedValue({ recordset: mockData }),
+        input: vi.fn(),
+        query: vi.fn().mockResolvedValue({ recordset: mockData }),
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      jest.mocked(mssql.Request).mockImplementation(() =>
-        createMock<mssql.Request>({
+      vi.mocked(mssql.Request).mockImplementation(function () {
+        return createMock<mssql.Request>({
           input: mockRequest.input,
           query: mockRequest.query,
-        }),
-      )
+        })
+      })
 
       const result = await service[
         'getCommunalWasteTaxDataByBirthNumberAndYear'
@@ -228,19 +231,19 @@ describe('NorisTaxCommunalWasteSubservice', () => {
 
     it('should build SQL query with correct birth number placeholders', async () => {
       const mockRequest = {
-        input: jest.fn(),
-        query: jest.fn().mockResolvedValue({ recordset: [] }),
+        input: vi.fn(),
+        query: vi.fn().mockResolvedValue({ recordset: [] }),
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      jest.mocked(mssql.Request).mockImplementation(() =>
-        createMock<mssql.Request>({
+      vi.mocked(mssql.Request).mockImplementation(function () {
+        return createMock<mssql.Request>({
           input: mockRequest.input,
           query: mockRequest.query,
-        }),
-      )
+        })
+      })
 
       await service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [
         '123456/7890',
@@ -254,19 +257,19 @@ describe('NorisTaxCommunalWasteSubservice', () => {
 
     it('should pass year and birth numbers as parameters to the SQL request', async () => {
       const mockRequest = {
-        input: jest.fn(),
-        query: jest.fn().mockResolvedValue({ recordset: [] }),
+        input: vi.fn(),
+        query: vi.fn().mockResolvedValue({ recordset: [] }),
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      jest.mocked(mssql.Request).mockImplementation(() =>
-        createMock<mssql.Request>({
+      vi.mocked(mssql.Request).mockImplementation(function () {
+        return createMock<mssql.Request>({
           input: mockRequest.input,
           query: mockRequest.query,
-        }),
-      )
+        })
+      })
 
       await service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [
         '123456/7890',
@@ -282,19 +285,19 @@ describe('NorisTaxCommunalWasteSubservice', () => {
 
     it('should handle multiple birth numbers correctly', async () => {
       const mockRequest = {
-        input: jest.fn(),
-        query: jest.fn().mockResolvedValue({ recordset: [] }),
+        input: vi.fn(),
+        query: vi.fn().mockResolvedValue({ recordset: [] }),
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      jest.mocked(mssql.Request).mockImplementation(() =>
-        createMock<mssql.Request>({
+      vi.mocked(mssql.Request).mockImplementation(function () {
+        return createMock<mssql.Request>({
           input: mockRequest.input,
           query: mockRequest.query,
-        }),
-      )
+        })
+      })
 
       const birthNumbers = ['123456/7890', '987654/3210', '111111/1111']
       await service['getCommunalWasteTaxDataByBirthNumberAndYear'](
@@ -322,19 +325,19 @@ describe('NorisTaxCommunalWasteSubservice', () => {
     it('should validate returned data using norisValidatorSubservice', async () => {
       const mockData: NorisCommunalWasteTax[] = [testCommunalWasteTax1]
       const mockRequest = {
-        input: jest.fn(),
-        query: jest.fn().mockResolvedValue({ recordset: mockData }),
+        input: vi.fn(),
+        query: vi.fn().mockResolvedValue({ recordset: mockData }),
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      jest.mocked(mssql.Request).mockImplementation(() =>
-        createMock<mssql.Request>({
+      vi.mocked(mssql.Request).mockImplementation(function () {
+        return createMock<mssql.Request>({
           input: mockRequest.input,
           query: mockRequest.query,
-        }),
-      )
+        })
+      })
 
       await service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [
         '123456/7890',
@@ -363,9 +366,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
     it('should handle non-Error objects in connection failures', async () => {
       const mockError = new Error('String error')
 
-      jest
-        .spyOn(connectionService, 'withConnection')
-        .mockRejectedValue(mockError)
+      vi.mocked(connectionService.withConnection).mockRejectedValue(mockError)
 
       await expect(
         service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [

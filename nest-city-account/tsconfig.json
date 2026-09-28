@@ -18,9 +18,6 @@
     "strict": true,
     "strictPropertyInitialization": false,
     "esModuleInterop": true,
-    "types": [
-      "node",
-      "jest"
-    ]
+    "types": ["vitest/globals", "node"]
   }
 }

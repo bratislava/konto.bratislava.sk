@@ -1,5 +1,5 @@
 import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -62,16 +62,16 @@ describe('TasksService', () => {
 
   describe('alertSilentNorisConnectionErrors', () => {
     it('should return without throwing when numberOfErrors is 0', async () => {
-      jest
-        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
-        .mockResolvedValue({
-          [NORIS_SILENT_CONNECTION_ERRORS_KEY]: '0',
-        })
+      vi.mocked(
+        service['databaseSubservice'].getConfigByKeys,
+      ).mockResolvedValue({
+        [NORIS_SILENT_CONNECTION_ERRORS_KEY]: '0',
+      })
 
-      const updateManySpy = jest
-        .spyOn(service['prismaService'].config, 'updateMany')
+      const updateManySpy = vi
+        .mocked(service['prismaService'].config.updateMany)
         .mockResolvedValue({ count: 0 })
-      const errorFactoryServiceSpy = jest.spyOn(
+      const errorFactoryServiceSpy = vi.spyOn(
         service['errorFactoryService'],
         'InternalServerErrorException',
       )
@@ -86,16 +86,16 @@ describe('TasksService', () => {
     })
 
     it('should return without throwing when numberOfErrors is below threshold', async () => {
-      jest
-        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
-        .mockResolvedValue({
-          [NORIS_SILENT_CONNECTION_ERRORS_KEY]: '19',
-        })
+      vi.mocked(
+        service['databaseSubservice'].getConfigByKeys,
+      ).mockResolvedValue({
+        [NORIS_SILENT_CONNECTION_ERRORS_KEY]: '19',
+      })
 
-      const updateManySpy = jest
-        .spyOn(service['prismaService'].config, 'updateMany')
+      const updateManySpy = vi
+        .mocked(service['prismaService'].config.updateMany)
         .mockResolvedValue({ count: 0 })
-      const errorFactoryServiceSpy = jest.spyOn(
+      const errorFactoryServiceSpy = vi.spyOn(
         service['errorFactoryService'],
         'InternalServerErrorException',
       )
@@ -111,13 +111,13 @@ describe('TasksService', () => {
 
     it('should throw when config value is invalid (NaN)', async () => {
       const invalidValue = 'not-a-number'
-      jest
-        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
-        .mockResolvedValue({
-          [NORIS_SILENT_CONNECTION_ERRORS_KEY]: invalidValue,
-        })
+      vi.mocked(
+        service['databaseSubservice'].getConfigByKeys,
+      ).mockResolvedValue({
+        [NORIS_SILENT_CONNECTION_ERRORS_KEY]: invalidValue,
+      })
 
-      const errorFactoryServiceSpy = jest
+      const errorFactoryServiceSpy = vi
         .spyOn(service['errorFactoryService'], 'InternalServerErrorException')
         .mockReturnValue(
           new HttpException(
@@ -135,16 +135,16 @@ describe('TasksService', () => {
     })
 
     it('should reset config to 0 and throw when numberOfErrors is at or above threshold', async () => {
-      jest
-        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
-        .mockResolvedValue({
-          [NORIS_SILENT_CONNECTION_ERRORS_KEY]: '25',
-        })
+      vi.mocked(
+        service['databaseSubservice'].getConfigByKeys,
+      ).mockResolvedValue({
+        [NORIS_SILENT_CONNECTION_ERRORS_KEY]: '25',
+      })
 
-      const updateManySpy = jest
-        .spyOn(service['prismaService'].config, 'updateMany')
+      const updateManySpy = vi
+        .mocked(service['prismaService'].config.updateMany)
         .mockResolvedValue({ count: 1 })
-      const errorFactoryServiceSpy = jest
+      const errorFactoryServiceSpy = vi
         .spyOn(service['errorFactoryService'], 'InternalServerErrorException')
         .mockReturnValue(
           new HttpException(

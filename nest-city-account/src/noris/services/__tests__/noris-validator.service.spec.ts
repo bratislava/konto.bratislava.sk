@@ -132,7 +132,7 @@ describe('NorisValidatorService', () => {
 
     describe('validateNorisData with array', () => {
       it('should return only valid records and error log the rest', () => {
-        const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(noop)
+        const errorLogSpy = vi.spyOn(service['logger'], 'error').mockImplementation(noop)
         const result = service.validateNorisData(EdeskRecordSchema, allEdeskRecords)
         expect(result).toHaveLength(validEdeskRecords.length)
         expect(result).toContainEqual(testEdeskRecord1)
@@ -141,14 +141,14 @@ describe('NorisValidatorService', () => {
       })
 
       it('should return empty array when all records are invalid', () => {
-        const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(noop)
+        const errorLogSpy = vi.spyOn(service['logger'], 'error').mockImplementation(noop)
         const result = service.validateNorisData(EdeskRecordSchema, invalidEdeskRecords)
         expect(result).toHaveLength(0)
         expect(errorLogSpy).toHaveBeenCalledTimes(invalidEdeskRecords.length)
       })
 
       it('should return all records when all are valid', () => {
-        const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(noop)
+        const errorLogSpy = vi.spyOn(service['logger'], 'error').mockImplementation(noop)
         const result = service.validateNorisData(EdeskRecordSchema, validEdeskRecords)
         expect(result).toEqual(validEdeskRecords)
         expect(errorLogSpy).not.toHaveBeenCalled()

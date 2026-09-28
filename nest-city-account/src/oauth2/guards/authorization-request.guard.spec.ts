@@ -1,4 +1,4 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { ExecutionContext, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -13,12 +13,12 @@ describe('AuthorizationRequestGuard', () => {
 
   function createMockContext(query: Record<string, string> = {}): ExecutionContext {
     return createMock<ExecutionContext>({
-      switchToHttp: jest.fn().mockReturnValue({ getRequest: () => ({ query }) }),
+      switchToHttp: vi.fn().mockReturnValue({ getRequest: () => ({ query }) }),
     })
   }
 
   beforeEach(async () => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthorizationRequestGuard,
@@ -133,7 +133,7 @@ describe('AuthorizationRequestGuard', () => {
         },
         HttpStatus.BAD_REQUEST
       )
-      jest.spyOn(validationSubservice, 'validateAuthorizationRequest').mockImplementation(() => {
+      vi.mocked(validationSubservice.validateAuthorizationRequest).mockImplementation(() => {
         throw error
       })
       expect(() => guard.canActivate(createMockContext({ response_type: 'code' }))).toThrow(error)
@@ -147,7 +147,7 @@ describe('AuthorizationRequestGuard', () => {
         },
         HttpStatus.BAD_REQUEST
       )
-      jest.spyOn(validationSubservice, 'validateAuthorizationRequest').mockImplementation(() => {
+      vi.mocked(validationSubservice.validateAuthorizationRequest).mockImplementation(() => {
         throw error
       })
       expect(() => guard.canActivate(createMockContext({ client_id: 'unknown' }))).toThrow(error)
@@ -161,7 +161,7 @@ describe('AuthorizationRequestGuard', () => {
         },
         HttpStatus.BAD_REQUEST
       )
-      jest.spyOn(validationSubservice, 'validateAuthorizationRequest').mockImplementation(() => {
+      vi.mocked(validationSubservice.validateAuthorizationRequest).mockImplementation(() => {
         throw error
       })
       expect(() => guard.canActivate(createMockContext({ response_type: 'token' }))).toThrow(error)
@@ -172,7 +172,7 @@ describe('AuthorizationRequestGuard', () => {
         { error: OAuth2AuthorizationErrorCode.INVALID_SCOPE, error_description: 'Invalid scope' },
         HttpStatus.BAD_REQUEST
       )
-      jest.spyOn(validationSubservice, 'validateAuthorizationRequest').mockImplementation(() => {
+      vi.mocked(validationSubservice.validateAuthorizationRequest).mockImplementation(() => {
         throw error
       })
       expect(() => guard.canActivate(createMockContext({ scope: 'admin' }))).toThrow(error)

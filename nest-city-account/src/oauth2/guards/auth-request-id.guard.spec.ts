@@ -1,4 +1,4 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { ExecutionContext, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -66,7 +66,7 @@ describe('AuthRequestIdGuard', () => {
       method: overrides.method ?? 'GET',
     }
     return createMock<ExecutionContext>({
-      switchToHttp: jest.fn().mockReturnValue({ getRequest: () => mockRequest }),
+      switchToHttp: vi.fn().mockReturnValue({ getRequest: () => mockRequest }),
     })
   }
 
@@ -75,7 +75,7 @@ describe('AuthRequestIdGuard', () => {
   }
 
   beforeEach(async () => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthRequestIdGuard,
@@ -90,7 +90,7 @@ describe('AuthRequestIdGuard', () => {
     validationSubservice = module.get<OAuth2ValidationSubservice>(OAuth2ValidationSubservice)
     oAuth2ErrorThrower = module.get<OAuth2ErrorThrower>(OAuth2ErrorThrower)
 
-    jest.spyOn(oAuth2ErrorThrower, 'authorizationException')
+    vi.spyOn(oAuth2ErrorThrower, 'authorizationException')
   })
 
   it('should be defined', () => {
@@ -106,7 +106,7 @@ describe('AuthRequestIdGuard', () => {
    */
   describe('canActivate - authRequestId extraction', () => {
     beforeEach(() => {
-      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(validAuthRequestData)
+      vi.mocked(oauth2Service.loadAuthorizationRequest).mockResolvedValue(validAuthRequestData)
     })
 
     it('should extract authRequestId from POST body', async () => {
@@ -287,7 +287,7 @@ describe('AuthRequestIdGuard', () => {
    */
   describe('canActivate - loading authorization request from database', () => {
     it('should load authorization request via oauth2Service.loadAuthorizationRequest()', async () => {
-      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(validAuthRequestData)
+      vi.mocked(oauth2Service.loadAuthorizationRequest).mockResolvedValue(validAuthRequestData)
       const context = createMockContext({
         body: { authRequestId: validAuthRequestId },
         method: 'POST',
@@ -299,7 +299,7 @@ describe('AuthRequestIdGuard', () => {
 
     it('should throw SERVER_ERROR when loadAuthorizationRequest() throws (database failure)', async () => {
       const dbError = new Error('Connection refused')
-      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockRejectedValue(dbError)
+      vi.mocked(oauth2Service.loadAuthorizationRequest).mockRejectedValue(dbError)
       const context = createMockContext({
         body: { authRequestId: validAuthRequestId },
         method: 'POST',
@@ -315,7 +315,7 @@ describe('AuthRequestIdGuard', () => {
     })
 
     it('should throw SERVER_ERROR when authorization request is not found (null)', async () => {
-      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(undefined)
+      vi.mocked(oauth2Service.loadAuthorizationRequest).mockResolvedValue(undefined)
       const context = createMockContext({
         body: { authRequestId: validAuthRequestId },
         method: 'POST',
@@ -331,7 +331,7 @@ describe('AuthRequestIdGuard', () => {
     })
 
     it('should include authRequestId in error metadata for not-found errors', async () => {
-      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(undefined)
+      vi.mocked(oauth2Service.loadAuthorizationRequest).mockResolvedValue(undefined)
       const context = createMockContext({
         query: { authRequestId: validAuthRequestId },
         method: 'GET',
@@ -363,7 +363,7 @@ describe('AuthRequestIdGuard', () => {
    */
   describe('canActivate - re-validation of stored authorization parameters', () => {
     beforeEach(() => {
-      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(validAuthRequestData)
+      vi.mocked(oauth2Service.loadAuthorizationRequest).mockResolvedValue(validAuthRequestData)
     })
 
     it('should call validateAuthorizationRequest() with mapped parameters from loaded data', async () => {
@@ -384,7 +384,7 @@ describe('AuthRequestIdGuard', () => {
     })
 
     it('should throw SERVER_ERROR when re-validation fails (corrupted stored parameters)', async () => {
-      jest.spyOn(validationSubservice, 'validateAuthorizationRequest').mockImplementation(() => {
+      vi.mocked(validationSubservice.validateAuthorizationRequest).mockImplementation(() => {
         throw new OAuth2Exception(
           {
             error: OAuth2AuthorizationErrorCode.UNAUTHORIZED_CLIENT,
@@ -412,7 +412,7 @@ describe('AuthRequestIdGuard', () => {
       // The original error (e.g., INVALID_SCOPE, UNAUTHORIZED_CLIENT) is only
       // logged internally — it would be confusing to the client since they didn't
       // send these parameters in this request.
-      jest.spyOn(validationSubservice, 'validateAuthorizationRequest').mockImplementation(() => {
+      vi.mocked(validationSubservice.validateAuthorizationRequest).mockImplementation(() => {
         throw new OAuth2Exception(
           {
             error: OAuth2AuthorizationErrorCode.INVALID_SCOPE,
@@ -446,7 +446,7 @@ describe('AuthRequestIdGuard', () => {
    */
   describe('canActivate - request enrichment and return value', () => {
     beforeEach(() => {
-      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(validAuthRequestData)
+      vi.mocked(oauth2Service.loadAuthorizationRequest).mockResolvedValue(validAuthRequestData)
     })
 
     it('should attach authorizationRequestData to the request object', async () => {

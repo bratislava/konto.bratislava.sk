@@ -1,5 +1,5 @@
 import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -7,7 +7,7 @@ import { AxiosError, AxiosResponse } from 'axios'
 import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 
 import prismaMock from '../../test/singleton'
-import { expectArrayContaining, expectObjectContaining } from '../__tests__/jest-matchers'
+import { expectArrayContaining, expectObjectContaining } from '../__tests__/matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
@@ -22,7 +22,7 @@ describe('NasesService', () => {
   let clientsService: ClientsService
 
   const mockSearchResults = (results: ApiIamIdentitiesIdGet200Response[]) =>
-    jest
+    vi
       .mocked(clientsService.slovenskoSkApi.apiIamIdentitiesSearchPost)
       .mockResolvedValue(
         createMock<AxiosResponse<ApiIamIdentitiesIdGet200Response[]>>({ data: results })
@@ -56,7 +56,7 @@ describe('NasesService', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('should be defined', () => {
@@ -214,7 +214,7 @@ describe('NasesService', () => {
     })
 
     it('should throw error for invalid input size', async () => {
-      const throwerSpy = jest.spyOn(errorFactoryService, 'BadRequestException')
+      const throwerSpy = vi.spyOn(errorFactoryService, 'BadRequestException')
 
       await expect(service.getIdentitiesByUris([])).rejects.toThrow()
       expect(throwerSpy).toHaveBeenCalled()
@@ -249,7 +249,7 @@ describe('NasesService', () => {
         { uri: 'rc://sk/same_uri', physicalEntityId: 'entity-2' },
       ]
 
-      const searchSpy = jest
+      const searchSpy = vi
         .mocked(clientsService.slovenskoSkApi.apiIamIdentitiesSearchPost)
         .mockRejectedValue(new Error('UPVS server is down'))
 
@@ -260,7 +260,7 @@ describe('NasesService', () => {
 
   describe('lookupIdentityFO', () => {
     const apiIamIdentitiesLookupGetSpy = () =>
-      jest.spyOn(clientsService.slovenskoSkApi, 'apiIamIdentitiesLookupGet')
+      vi.mocked(clientsService.slovenskoSkApi.apiIamIdentitiesLookupGet)
 
     const axiosErrorWithStatus = (status: number, data: object = {}, headers: object = {}) =>
       new AxiosError('Request failed', String(status), undefined, undefined, {

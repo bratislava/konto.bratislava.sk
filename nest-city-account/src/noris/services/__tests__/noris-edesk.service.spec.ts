@@ -1,4 +1,4 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
@@ -16,7 +16,7 @@ describe('NorisEdeskService', () => {
   let connectionService: NorisConnectionService
 
   beforeEach(async () => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -56,19 +56,19 @@ describe('NorisEdeskService', () => {
         uri_new: undefined,
       }))
       const mockRequest = {
-        input: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({ recordset: mockRecordset }),
+        input: vi.fn().mockReturnThis(),
+        execute: vi.fn().mockResolvedValue({ recordset: mockRecordset }),
       }
       const mockConnection = createMock<ConnectionPool>({
         connected: true,
-        close: jest.fn().mockResolvedValue(undefined),
-        request: jest.fn().mockReturnValue(mockRequest),
+        close: vi.fn().mockResolvedValue(undefined),
+        request: vi.fn().mockReturnValue(mockRequest),
       })
 
-      jest
-        .mocked(connectionService.withConnection)
-        .mockImplementation(async (operation) => operation(mockConnection))
-      jest.mocked(validatorService.validateNorisData).mockReturnValue(validatedData)
+      vi.mocked(connectionService.withConnection).mockImplementation(async (operation) =>
+        operation(mockConnection)
+      )
+      vi.mocked(validatorService.validateNorisData).mockReturnValue(validatedData)
 
       const result = await service.getExternalEdeskChecks(physicalPersons, legalPersons)
 
@@ -86,17 +86,17 @@ describe('NorisEdeskService', () => {
       const validatorError = new HttpException('Validation failed', 400)
       const mockConnection = createMock<ConnectionPool>({
         connected: true,
-        close: jest.fn().mockResolvedValue(undefined),
-        request: jest.fn().mockReturnValue({
-          input: jest.fn().mockReturnThis(),
-          execute: jest.fn().mockResolvedValue({ recordset: [{}] }),
+        close: vi.fn().mockResolvedValue(undefined),
+        request: vi.fn().mockReturnValue({
+          input: vi.fn().mockReturnThis(),
+          execute: vi.fn().mockResolvedValue({ recordset: [{}] }),
         }),
       })
 
-      jest
-        .mocked(connectionService.withConnection)
-        .mockImplementation(async (operation) => operation(mockConnection))
-      jest.mocked(validatorService.validateNorisData).mockImplementation(() => {
+      vi.mocked(connectionService.withConnection).mockImplementation(async (operation) =>
+        operation(mockConnection)
+      )
+      vi.mocked(validatorService.validateNorisData).mockImplementation(() => {
         throw validatorError
       })
 
@@ -107,16 +107,16 @@ describe('NorisEdeskService', () => {
       const dbError = new Error('Execute failed')
       const mockConnection = createMock<ConnectionPool>({
         connected: true,
-        close: jest.fn().mockResolvedValue(undefined),
-        request: jest.fn().mockReturnValue({
-          input: jest.fn().mockReturnThis(),
-          execute: jest.fn().mockRejectedValue(dbError),
+        close: vi.fn().mockResolvedValue(undefined),
+        request: vi.fn().mockReturnValue({
+          input: vi.fn().mockReturnThis(),
+          execute: vi.fn().mockRejectedValue(dbError),
         }),
       })
 
-      jest
-        .mocked(connectionService.withConnection)
-        .mockImplementation(async (operation) => operation(mockConnection))
+      vi.mocked(connectionService.withConnection).mockImplementation(async (operation) =>
+        operation(mockConnection)
+      )
 
       await expect(service.getExternalEdeskChecks(10, 20)).rejects.toThrow(dbError)
     })
@@ -124,11 +124,11 @@ describe('NorisEdeskService', () => {
 
   describe('updateEdeskChecks', () => {
     beforeEach(() => {
-      jest.mocked(connectionService.withConnection).mockResolvedValue(undefined)
+      vi.mocked(connectionService.withConnection).mockResolvedValue(undefined)
     })
 
     afterEach(() => {
-      jest.clearAllMocks()
+      vi.clearAllMocks()
     })
 
     it('should call withConnection for each edesk check', async () => {
@@ -154,7 +154,7 @@ describe('NorisEdeskService', () => {
 
     it('should reject when withConnection rejects', async () => {
       const internalError = new HttpException('Internal', 500)
-      jest.mocked(connectionService.withConnection).mockRejectedValue(internalError)
+      vi.mocked(connectionService.withConnection).mockRejectedValue(internalError)
 
       await expect(
         service.updateEdeskChecks([
@@ -178,9 +178,9 @@ describe('NorisEdeskService', () => {
       const mockPool = createMock<ConnectionPool>()
       mockPool.request.mockReturnValue(mockRequest)
 
-      jest
-        .mocked(connectionService.withConnection)
-        .mockImplementation(async (operation) => operation(mockPool))
+      vi.mocked(connectionService.withConnection).mockImplementation(async (operation) =>
+        operation(mockPool)
+      )
 
       await service.updateEdeskChecks([
         {
@@ -203,9 +203,9 @@ describe('NorisEdeskService', () => {
       const mockPool = createMock<ConnectionPool>()
       mockPool.request.mockReturnValue(mockRequest)
 
-      jest
-        .mocked(connectionService.withConnection)
-        .mockImplementation(async (operation) => operation(mockPool))
+      vi.mocked(connectionService.withConnection).mockImplementation(async (operation) =>
+        operation(mockPool)
+      )
 
       await service.updateEdeskChecks([
         {

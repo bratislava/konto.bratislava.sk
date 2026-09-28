@@ -1,5 +1,5 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
@@ -11,6 +11,7 @@ import * as formDataExtractors from 'forms-shared/form-utils/formDataExtractors'
 import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 import { FormSendPolicy } from 'forms-shared/send-policy/sendPolicy'
 import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
+import type { Mocked, MockInstance } from 'vitest'
 
 import prismaMock from '../../../../test/singleton'
 import { createTestFormSummary } from '../../../__tests__/factories/form.factory'
@@ -19,7 +20,7 @@ import {
   expectArrayContaining,
   expectObjectContaining,
   expectStringContaining,
-} from '../../../__tests__/jest-matchers'
+} from '../../../__tests__/matchers'
 import BaConfigService from '../../../config/ba-config.service'
 import { ClusterEnv } from '../../../config/environment-variables'
 import ConvertService from '../../../convert/convert.service'
@@ -34,10 +35,10 @@ import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
 import { EmailFormsErrorsResponseEnum } from '../../errors/email-forms.errors.enum'
 import EmailFormsService from '../email-forms.service'
 
-jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
-jest.mock('forms-shared/summary-email/renderSummaryEmail')
-jest.mock('forms-shared/form-utils/omitExtraData')
-jest.mock('forms-shared/form-utils/formDataExtractors')
+vi.mock('forms-shared/definitions/getFormDefinitionBySlug')
+vi.mock('forms-shared/summary-email/renderSummaryEmail')
+vi.mock('forms-shared/form-utils/omitExtraData')
+vi.mock('forms-shared/form-utils/formDataExtractors')
 
 const formId = 'test-form-id'
 const userEmail = 'test@example.com'
@@ -152,8 +153,8 @@ const mockBaConfigService = {
 
 describe('EmailFormsService', () => {
   let service: EmailFormsService
-  let mailgunService: jest.Mocked<MailgunService>
-  let oloMailerService: jest.Mocked<OloMailerService>
+  let mailgunService: Mocked<MailgunService>
+  let oloMailerService: Mocked<OloMailerService>
 
   beforeEach(async () => {
     mockBaConfigService.environment = { clusterEnv: ClusterEnv.Production }
@@ -197,14 +198,14 @@ describe('EmailFormsService', () => {
     mailgunService = module.get(MailgunService)
     oloMailerService = module.get(OloMailerService)
 
-    jest.spyOn(console, 'log').mockImplementation(jest.fn())
-    jest.spyOn(console, 'error').mockImplementation(jest.fn())
-    jest.spyOn(console, 'warn').mockImplementation(jest.fn())
-    jest.spyOn(console, 'info').mockImplementation(jest.fn())
+    vi.spyOn(console, 'log').mockImplementation(vi.fn())
+    vi.spyOn(console, 'error').mockImplementation(vi.fn())
+    vi.spyOn(console, 'warn').mockImplementation(vi.fn())
+    vi.spyOn(console, 'info').mockImplementation(vi.fn())
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should be defined', () => {
@@ -212,46 +213,50 @@ describe('EmailFormsService', () => {
   })
 
   describe('sendEmailForm', () => {
-    let extractEmailFormEmailSpy: jest.SpyInstance
-    let extractEmailFormNameSpy: jest.SpyInstance
-    let extractFormSubjectSpy: jest.SpyInstance
+    let extractEmailFormEmailSpy: MockInstance
+    let extractEmailFormNameSpy: MockInstance
+    let extractFormSubjectSpy: MockInstance
 
-    beforeEach(() => {
-      jest.clearAllMocks()
+    beforeEach(async () => {
+      vi.clearAllMocks()
       prismaMock.forms.findUnique.mockResolvedValue(mockForm)
       prismaMock.forms.update.mockResolvedValue(mockForm)
-      jest
-        .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
-        .mockImplementation((slug: string) => {
-          if (slug === 'test-form-email') {
-            return mockFormDefinitionWithSendEmail as FormDefinitionEmail
-          }
-          if (slug === 'test-form-olo') {
-            return mockFormDefinitionWithSendOloEmail as FormDefinitionEmail
-          }
-          return null
-        })
-      jest
-        .spyOn(renderSummaryEmail, 'renderSummaryEmail')
-        .mockResolvedValue('<html>Test Email Content</html>')
-      jest
-        .spyOn(baOmitExtraData, 'baOmitExtraData')
-        .mockReturnValue({ test: 'data' })
-      jest
-        .spyOn(formDataExtractors, 'extractEmailFormAddress')
-        .mockImplementation(
-          jest.requireActual<typeof formDataExtractors>(
+      vi.spyOn(
+        getFormDefinitionBySlug,
+        'getFormDefinitionBySlug',
+      ).mockImplementation((slug: string) => {
+        if (slug === 'test-form-email') {
+          return mockFormDefinitionWithSendEmail as FormDefinitionEmail
+        }
+        if (slug === 'test-form-olo') {
+          return mockFormDefinitionWithSendOloEmail as FormDefinitionEmail
+        }
+        return null
+      })
+      vi.spyOn(renderSummaryEmail, 'renderSummaryEmail').mockResolvedValue(
+        '<html>Test Email Content</html>',
+      )
+      vi.spyOn(baOmitExtraData, 'baOmitExtraData').mockReturnValue({
+        test: 'data',
+      })
+      vi.spyOn(
+        formDataExtractors,
+        'extractEmailFormAddress',
+      ).mockImplementation(
+        (
+          await vi.importActual<typeof formDataExtractors>(
             'forms-shared/form-utils/formDataExtractors',
-          ).extractEmailFormAddress,
-        )
+          )
+        ).extractEmailFormAddress,
+      )
 
-      extractEmailFormEmailSpy = jest
+      extractEmailFormEmailSpy = vi
         .spyOn(formDataExtractors, 'extractEmailFormEmail')
         .mockReturnValue(mockExtractedEmail)
-      extractEmailFormNameSpy = jest
+      extractEmailFormNameSpy = vi
         .spyOn(formDataExtractors, 'extractEmailFormName')
         .mockReturnValue(mockExtractedName)
-      extractFormSubjectSpy = jest
+      extractFormSubjectSpy = vi
         .spyOn(formDataExtractors, 'extractFormSubjectPlain')
         .mockReturnValue(mockExtractedSubject)
 
@@ -431,9 +436,10 @@ describe('EmailFormsService', () => {
     })
 
     it('should throw NotFoundException when form definition is not found', async () => {
-      jest
-        .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
-        .mockReturnValue(null)
+      vi.spyOn(
+        getFormDefinitionBySlug,
+        'getFormDefinitionBySlug',
+      ).mockReturnValue(null)
 
       await expect(
         service.sendEmailForm(formId, userEmail, userFirstName),
@@ -441,9 +447,10 @@ describe('EmailFormsService', () => {
     })
 
     it('should throw UnprocessableEntityException when form is not an email form', async () => {
-      jest
-        .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
-        .mockReturnValue(createTestFormDefinitionSlovenskoSkGeneric())
+      vi.spyOn(
+        getFormDefinitionBySlug,
+        'getFormDefinitionBySlug',
+      ).mockReturnValue(createTestFormDefinitionSlovenskoSkGeneric())
 
       await expect(
         service.sendEmailForm(formId, userEmail, userFirstName),
@@ -452,7 +459,7 @@ describe('EmailFormsService', () => {
           message: expectStringContaining(
             EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM,
           ),
-        }) as Error,
+        }),
       )
     })
 
@@ -523,7 +530,7 @@ describe('EmailFormsService', () => {
       mailgunService.sendEmail.mockRejectedValueOnce(
         new Error('Email sending failed'),
       ) // Second call fails (user email)
-      const errorSpy = jest.spyOn(service['logger'], 'error')
+      const errorSpy = vi.mocked(service['logger'].error)
 
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
@@ -535,7 +542,7 @@ describe('EmailFormsService', () => {
     it('should log error but continue when sending confirmation email fails with sendOloEmail', async () => {
       prismaMock.forms.findUnique.mockResolvedValue(mockFormWithOloDefinition)
       prismaMock.forms.update.mockResolvedValue(mockFormWithOloDefinition)
-      const errorSpy = jest.spyOn(service['logger'], 'error')
+      const errorSpy = vi.mocked(service['logger'].error)
 
       oloMailerService.sendEmail.mockResolvedValueOnce() // First call succeeds (department email)
       oloMailerService.sendEmail.mockRejectedValueOnce(
@@ -597,9 +604,10 @@ describe('EmailFormsService', () => {
           sendJsonDataAttachmentInTechnicalMail: false,
         },
       } as FormDefinitionEmail
-      jest
-        .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
-        .mockReturnValue(mockFormDefinitionWithNoJsonAttachment)
+      vi.spyOn(
+        getFormDefinitionBySlug,
+        'getFormDefinitionBySlug',
+      ).mockReturnValue(mockFormDefinitionWithNoJsonAttachment)
 
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
@@ -614,7 +622,7 @@ describe('EmailFormsService', () => {
 
     it('should log error but continue when updating form state fails', async () => {
       prismaMock.forms.update.mockRejectedValue(new Error('Database error'))
-      const errorSpy = jest.spyOn(service['logger'], 'error')
+      const errorSpy = vi.mocked(service['logger'].error)
 
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
@@ -688,12 +696,14 @@ describe('EmailFormsService', () => {
           },
         },
       }
-      jest
-        .spyOn(formDataExtractors, 'extractFormSubjectTechnical')
-        .mockReturnValue(mockExtractedTechnicalSubject)
-      jest
-        .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
-        .mockReturnValue(formDefinitionWithSubject as FormDefinitionEmail)
+      vi.spyOn(
+        formDataExtractors,
+        'extractFormSubjectTechnical',
+      ).mockReturnValue(mockExtractedTechnicalSubject)
+      vi.spyOn(
+        getFormDefinitionBySlug,
+        'getFormDefinitionBySlug',
+      ).mockReturnValue(formDefinitionWithSubject as FormDefinitionEmail)
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
@@ -718,12 +728,14 @@ describe('EmailFormsService', () => {
           technicalEmailSubjectAppendId: true,
         },
       }
-      jest
-        .spyOn(formDataExtractors, 'extractFormSubjectTechnical')
-        .mockReturnValue(mockExtractedTechnicalSubject)
-      jest
-        .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
-        .mockReturnValue(formDefinitionWithSubjectAndId as FormDefinitionEmail)
+      vi.spyOn(
+        formDataExtractors,
+        'extractFormSubjectTechnical',
+      ).mockReturnValue(mockExtractedTechnicalSubject)
+      vi.spyOn(
+        getFormDefinitionBySlug,
+        'getFormDefinitionBySlug',
+      ).mockReturnValue(formDefinitionWithSubjectAndId as FormDefinitionEmail)
 
       await service.sendEmailForm(formId, userEmail, userFirstName)
 

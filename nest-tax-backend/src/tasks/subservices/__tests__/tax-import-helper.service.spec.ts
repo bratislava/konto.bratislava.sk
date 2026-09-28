@@ -35,13 +35,13 @@ describe('TaxImportHelperService', () => {
         {
           provide: DatabaseSubservice,
           useValue: {
-            getConfigByKeys: jest.fn(),
+            getConfigByKeys: vi.fn(),
           },
         },
         {
           provide: NorisService,
           useValue: {
-            getAndProcessNewNorisTaxDataByBirthNumberAndYear: jest.fn(),
+            getAndProcessNewNorisTaxDataByBirthNumberAndYear: vi.fn(),
           },
         },
       ],
@@ -52,36 +52,36 @@ describe('TaxImportHelperService', () => {
     databaseSubservice = module.get<DatabaseSubservice>(DatabaseSubservice)
     norisService = module.get<NorisService>(NorisService)
 
-    jest.spyOn(LineLoggerService.prototype, 'log').mockImplementation()
+    vi.spyOn(LineLoggerService.prototype, 'log').mockImplementation(vi.fn())
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('isWithinImportWindow', () => {
     beforeEach(() => {
-      jest.useFakeTimers()
+      vi.useFakeTimers()
     })
 
     afterEach(() => {
-      jest.useRealTimers()
-      jest.clearAllMocks()
+      vi.useRealTimers()
+      vi.clearAllMocks()
     })
 
     it('should return true when current time is within the window (7-20)', async () => {
       // Set time to 12:00 in Bratislava (UTC+1 in winter, UTC+2 in summer)
       // Using a date in January (winter time, UTC+1)
       // 12:00 CET = 11:00 UTC
-      jest.setSystemTime(new Date('2025-01-15T11:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-01-15T11:00:00.000Z'))
 
       const mockConfig = {
         TAX_IMPORT_WINDOW_START_HOUR: '7',
         TAX_IMPORT_WINDOW_END_HOUR: '20',
       }
-      jest
-        .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig)
+      vi.spyOn(databaseSubservice, 'getConfigByKeys').mockResolvedValue(
+        mockConfig,
+      )
 
       const result = await service.isWithinImportWindow()
 
@@ -132,15 +132,15 @@ describe('TaxImportHelperService', () => {
     ])(
       'should return $expected when current time is $scenario',
       async ({ now, expected }) => {
-        jest.setSystemTime(new Date(now))
+        vi.setSystemTime(new Date(now))
 
         const mockConfig = {
           TAX_IMPORT_WINDOW_START_HOUR: '7',
           TAX_IMPORT_WINDOW_END_HOUR: '20',
         }
-        jest
-          .spyOn(databaseSubservice, 'getConfigByKeys')
-          .mockResolvedValue(mockConfig)
+        vi.spyOn(databaseSubservice, 'getConfigByKeys').mockResolvedValue(
+          mockConfig,
+        )
 
         const result = await service.isWithinImportWindow()
 
@@ -149,10 +149,10 @@ describe('TaxImportHelperService', () => {
     )
 
     it('should propagate error when getConfigByKeys fails', async () => {
-      jest.setSystemTime(new Date('2025-01-15T11:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-01-15T11:00:00.000Z'))
 
       const error = new Error('Database connection failed')
-      jest.spyOn(databaseSubservice, 'getConfigByKeys').mockRejectedValue(error)
+      vi.spyOn(databaseSubservice, 'getConfigByKeys').mockRejectedValue(error)
 
       await expect(service.isWithinImportWindow()).rejects.toThrow(error)
     })
@@ -160,12 +160,12 @@ describe('TaxImportHelperService', () => {
 
   describe('getTodayTaxCount', () => {
     beforeEach(() => {
-      jest.useFakeTimers()
+      vi.useFakeTimers()
     })
 
     afterEach(() => {
-      jest.useRealTimers()
-      jest.clearAllMocks()
+      vi.useRealTimers()
+      vi.clearAllMocks()
     })
 
     it('should return count of taxes created today', async () => {
@@ -173,11 +173,11 @@ describe('TaxImportHelperService', () => {
       // Using a date in January (winter time, UTC+1)
       // 12:00 CET = 11:00 UTC
       const testDate = new Date('2025-01-15T11:00:00.000Z')
-      jest.setSystemTime(testDate)
+      vi.setSystemTime(testDate)
 
       const mockCount = 150
-      const countSpy = jest
-        .spyOn(prismaService.tax, 'count')
+      const countSpy = vi
+        .mocked(prismaService.tax.count)
         .mockResolvedValue(mockCount)
 
       const result = await service.getTodayTaxCount()
@@ -202,9 +202,9 @@ describe('TaxImportHelperService', () => {
 
     it('should return 0 when no taxes created today', async () => {
       // Set time to 12:00 in Bratislava
-      jest.setSystemTime(new Date('2025-01-15T11:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-01-15T11:00:00.000Z'))
 
-      jest.spyOn(prismaService.tax, 'count').mockResolvedValue(0)
+      vi.mocked(prismaService.tax.count).mockResolvedValue(0)
 
       const result = await service.getTodayTaxCount()
 
@@ -212,10 +212,10 @@ describe('TaxImportHelperService', () => {
     })
 
     it('should propagate error when database count fails', async () => {
-      jest.setSystemTime(new Date('2025-01-15T11:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-01-15T11:00:00.000Z'))
 
       const error = new Error('Database query failed')
-      jest.spyOn(prismaService.tax, 'count').mockRejectedValue(error)
+      vi.mocked(prismaService.tax.count).mockRejectedValue(error)
 
       await expect(service.getTodayTaxCount()).rejects.toThrow(error)
     })
@@ -226,9 +226,9 @@ describe('TaxImportHelperService', () => {
       const mockConfig = {
         TAX_IMPORT_DAILY_LIMIT: '7200',
       }
-      jest
-        .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig)
+      vi.spyOn(databaseSubservice, 'getConfigByKeys').mockResolvedValue(
+        mockConfig,
+      )
 
       const result = await service.getDailyTaxLimit()
 
@@ -242,9 +242,9 @@ describe('TaxImportHelperService', () => {
       const mockConfig = {
         TAX_IMPORT_DAILY_LIMIT: '5000',
       }
-      jest
-        .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig)
+      vi.spyOn(databaseSubservice, 'getConfigByKeys').mockResolvedValue(
+        mockConfig,
+      )
 
       const result = await service.getDailyTaxLimit()
 
@@ -253,7 +253,7 @@ describe('TaxImportHelperService', () => {
 
     it('should propagate error when getConfigByKeys fails', async () => {
       const error = new Error('Database connection failed')
-      jest.spyOn(databaseSubservice, 'getConfigByKeys').mockRejectedValue(error)
+      vi.spyOn(databaseSubservice, 'getConfigByKeys').mockRejectedValue(error)
 
       await expect(service.getDailyTaxLimit()).rejects.toThrow(error)
     })
@@ -268,11 +268,11 @@ describe('TaxImportHelperService', () => {
         createTestTaxPayer({ birthNumber: '111111/2222' }),
       ]
       const mockExisting = [createTestTaxPayer({ birthNumber: '987654/3210' })]
-      jest
-        .spyOn(prismaService.taxPayer, 'findMany')
-        .mockResolvedValueOnce(mockNewlyCreated)
-      const queryRawSpy = jest
-        .spyOn(prismaService, '$queryRaw')
+      vi.mocked(prismaService.taxPayer.findMany).mockResolvedValueOnce(
+        mockNewlyCreated,
+      )
+      const queryRawSpy = vi
+        .mocked(prismaService.$queryRaw)
         .mockResolvedValueOnce(mockExisting)
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
@@ -289,8 +289,8 @@ describe('TaxImportHelperService', () => {
     it('should return empty arrays when no birth numbers found', async () => {
       const taxType = TaxType.DZN
       const year = 2024
-      jest.spyOn(prismaService.taxPayer, 'findMany').mockResolvedValueOnce([])
-      jest.spyOn(prismaService, '$queryRaw').mockResolvedValueOnce([])
+      vi.mocked(prismaService.taxPayer.findMany).mockResolvedValueOnce([])
+      vi.mocked(prismaService.$queryRaw).mockResolvedValueOnce([])
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
         taxType,
@@ -309,8 +309,8 @@ describe('TaxImportHelperService', () => {
         { birthNumber: '123456/7890' },
         { birthNumber: '987654/3210' },
       ]
-      jest.spyOn(prismaService.taxPayer, 'findMany').mockResolvedValueOnce([])
-      jest.spyOn(prismaService, '$queryRaw').mockResolvedValueOnce(mockExisting)
+      vi.mocked(prismaService.taxPayer.findMany).mockResolvedValueOnce([])
+      vi.mocked(prismaService.$queryRaw).mockResolvedValueOnce(mockExisting)
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
         taxType,
@@ -326,8 +326,8 @@ describe('TaxImportHelperService', () => {
       const taxType = TaxType.DZN
       const year = 2024
       const error = new Error('Database query failed')
-      jest.spyOn(prismaService.taxPayer, 'findMany').mockResolvedValueOnce([])
-      jest.spyOn(prismaService, '$queryRaw').mockRejectedValueOnce(error)
+      vi.mocked(prismaService.taxPayer.findMany).mockResolvedValueOnce([])
+      vi.mocked(prismaService.$queryRaw).mockRejectedValueOnce(error)
 
       await expect(
         service.getPrioritizedBirthNumbersWithMetadata(
@@ -345,11 +345,11 @@ describe('TaxImportHelperService', () => {
         createTestTaxPayer({ birthNumber: '111111/2222' }),
       ]
       const mockExisting = [createTestTaxPayer({ birthNumber: '123456/7890' })]
-      jest
-        .spyOn(prismaService.taxPayer, 'findMany')
-        .mockResolvedValueOnce(mockNewlyCreated)
-      const queryRawSpy = jest
-        .spyOn(prismaService, '$queryRaw')
+      vi.mocked(prismaService.taxPayer.findMany).mockResolvedValueOnce(
+        mockNewlyCreated,
+      )
+      const queryRawSpy = vi
+        .mocked(prismaService.$queryRaw)
         .mockResolvedValueOnce(mockExisting)
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
@@ -371,11 +371,11 @@ describe('TaxImportHelperService', () => {
         createTestTaxPayer({ birthNumber: '111111/2222' }),
       ]
       const mockExisting = [createTestTaxPayer({ birthNumber: '123456/7890' })]
-      jest
-        .spyOn(prismaService.taxPayer, 'findMany')
-        .mockResolvedValueOnce(mockNewlyCreated)
-      const queryRawSpy = jest
-        .spyOn(prismaService, '$queryRaw')
+      vi.mocked(prismaService.taxPayer.findMany).mockResolvedValueOnce(
+        mockNewlyCreated,
+      )
+      const queryRawSpy = vi
+        .mocked(prismaService.$queryRaw)
         .mockResolvedValueOnce(mockExisting)
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
@@ -466,12 +466,13 @@ describe('TaxImportHelperService', () => {
         foundInNoris: ['123456/7890'],
       }
 
-      jest
-        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
-        .mockResolvedValue(mockResult)
+      vi.spyOn(
+        norisService,
+        'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      ).mockResolvedValue(mockResult)
 
-      const updateManySpy = jest
-        .spyOn(prismaService.taxImportAttempt, 'updateMany')
+      const updateManySpy = vi
+        .mocked(prismaService.taxImportAttempt.updateMany)
         .mockResolvedValue({ count: 1 })
 
       await service.importTaxes(taxType, birthNumbers, year)
@@ -503,7 +504,7 @@ describe('TaxImportHelperService', () => {
 
     it('should not process when birth numbers array is empty', async () => {
       const taxType = TaxType.DZN
-      const getAndProcessSpy = jest.spyOn(
+      const getAndProcessSpy = vi.spyOn(
         norisService,
         'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
       )
@@ -518,9 +519,10 @@ describe('TaxImportHelperService', () => {
       const birthNumbers = ['123456/7890', '987654/3210']
       const year = 2024
       const error = new Error('Noris service failed')
-      jest
-        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
-        .mockRejectedValue(error)
+      vi.spyOn(
+        norisService,
+        'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      ).mockRejectedValue(error)
 
       await expect(
         service.importTaxes(taxType, birthNumbers, year),
@@ -536,14 +538,15 @@ describe('TaxImportHelperService', () => {
         foundInNoris: ['123456/7890'],
       }
 
-      jest
-        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
-        .mockResolvedValue(mockResult)
+      vi.spyOn(
+        norisService,
+        'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      ).mockResolvedValue(mockResult)
 
       const error = new Error('Database update failed')
-      jest
-        .spyOn(prismaService.taxImportAttempt, 'updateMany')
-        .mockRejectedValue(error)
+      vi.mocked(prismaService.taxImportAttempt.updateMany).mockRejectedValue(
+        error,
+      )
 
       await expect(
         service.importTaxes(taxType, birthNumbers, year),
@@ -559,12 +562,13 @@ describe('TaxImportHelperService', () => {
         foundInNoris: ['123456/7890', '987654/3210'],
       }
 
-      jest
-        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
-        .mockResolvedValue(mockResult)
+      vi.spyOn(
+        norisService,
+        'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      ).mockResolvedValue(mockResult)
 
-      const updateManySpy = jest
-        .spyOn(prismaService.taxImportAttempt, 'updateMany')
+      const updateManySpy = vi
+        .mocked(prismaService.taxImportAttempt.updateMany)
         .mockResolvedValue({ count: 0 })
 
       await service.importTaxes(taxType, birthNumbers, year)
@@ -581,12 +585,13 @@ describe('TaxImportHelperService', () => {
         foundInNoris: ['123456/7890', '987654/3210'],
       }
 
-      jest
-        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
-        .mockResolvedValue(mockResult)
+      vi.spyOn(
+        norisService,
+        'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      ).mockResolvedValue(mockResult)
 
-      const updateManySpy = jest
-        .spyOn(prismaService.taxImportAttempt, 'updateMany')
+      const updateManySpy = vi
+        .mocked(prismaService.taxImportAttempt.updateMany)
         .mockResolvedValue({ count: 1 })
 
       await service.importTaxes(taxType, birthNumbers, year)
@@ -618,12 +623,13 @@ describe('TaxImportHelperService', () => {
         foundInNoris: [],
       }
 
-      jest
-        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
-        .mockResolvedValue(mockResult)
+      vi.spyOn(
+        norisService,
+        'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      ).mockResolvedValue(mockResult)
 
-      const updateManySpy = jest
-        .spyOn(prismaService.taxImportAttempt, 'updateMany')
+      const updateManySpy = vi
+        .mocked(prismaService.taxImportAttempt.updateMany)
         .mockResolvedValue({ count: 2 })
 
       await service.importTaxes(taxType, birthNumbers, year)
@@ -655,12 +661,13 @@ describe('TaxImportHelperService', () => {
         // foundInNoris is undefined
       }
 
-      jest
-        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
-        .mockResolvedValue(mockResult)
+      vi.spyOn(
+        norisService,
+        'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      ).mockResolvedValue(mockResult)
 
-      const updateManySpy = jest
-        .spyOn(prismaService.taxImportAttempt, 'updateMany')
+      const updateManySpy = vi
+        .mocked(prismaService.taxImportAttempt.updateMany)
         .mockResolvedValue({ count: 2 })
 
       await service.importTaxes(taxType, birthNumbers, year)
@@ -694,9 +701,10 @@ describe('TaxImportHelperService', () => {
         birthNumbers: ['123456/7890'],
       }
 
-      jest
-        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
-        .mockResolvedValue(mockResult)
+      vi.spyOn(
+        norisService,
+        'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      ).mockResolvedValue(mockResult)
 
       await service.prepareTaxes(taxType, birthNumbers, year)
 
@@ -710,7 +718,7 @@ describe('TaxImportHelperService', () => {
 
     it('should not process when birth numbers array is empty', async () => {
       const taxType = TaxType.DZN
-      const getAndProcessSpy = jest.spyOn(
+      const getAndProcessSpy = vi.spyOn(
         norisService,
         'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
       )
@@ -725,9 +733,10 @@ describe('TaxImportHelperService', () => {
       const birthNumbers = ['123456/7890', '987654/3210']
       const year = 2024
       const error = new Error('Noris service failed')
-      jest
-        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
-        .mockRejectedValue(error)
+      vi.spyOn(
+        norisService,
+        'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      ).mockRejectedValue(error)
 
       await expect(
         service.prepareTaxes(taxType, birthNumbers, year),
@@ -742,9 +751,10 @@ describe('TaxImportHelperService', () => {
         birthNumbers: [],
       }
 
-      jest
-        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
-        .mockResolvedValue(mockResult)
+      vi.spyOn(
+        norisService,
+        'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      ).mockResolvedValue(mockResult)
 
       await service.prepareTaxes(taxType, birthNumbers, year)
 
@@ -867,9 +877,10 @@ describe('TaxImportHelperService', () => {
         birthNumbers: ['123456/7890'],
       }
 
-      jest
-        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
-        .mockResolvedValue(mockResult)
+      vi.spyOn(
+        norisService,
+        'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      ).mockResolvedValue(mockResult)
 
       await expect(
         service.prepareTaxes(taxType, birthNumbers, year),

@@ -1,5 +1,7 @@
 import { randomBytes } from 'node:crypto'
 
+import type { Mock, MockedFunction } from 'vitest'
+
 import { RequestAdminCreateTestingTaxNorisData } from '../../../admin/dtos/requests.dto'
 import { TaxAdministrator, TaxType } from '../../../generated/prisma/client'
 import {
@@ -7,21 +9,19 @@ import {
   createTestingRealEstateTaxMock,
 } from '../testing-tax-mock'
 
-jest.mock('node:crypto', () => ({
-  randomBytes: jest.fn(),
+vi.mock('node:crypto', () => ({
+  randomBytes: vi.fn(),
 }))
 
-const mockRandomBytes = randomBytes as jest.MockedFunction<typeof randomBytes>
+const mockRandomBytes = randomBytes as MockedFunction<typeof randomBytes>
 
 describe('testing-tax-mock', () => {
   let mockTaxAdministrator: TaxAdministrator
   let mockNorisData: RequestAdminCreateTestingTaxNorisData
 
   beforeEach(() => {
-    jest.clearAllMocks()
-    ;(mockRandomBytes as jest.Mock).mockReturnValue(
-      Buffer.from('abcd1234', 'hex'),
-    )
+    vi.clearAllMocks()
+    ;(mockRandomBytes as Mock).mockReturnValue(Buffer.from('abcd1234', 'hex'))
 
     mockTaxAdministrator = {
       id: 123,

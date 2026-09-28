@@ -1,10 +1,10 @@
 import { LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Response } from 'express'
 
-import { expectStringContaining } from '../__tests__/jest-matchers'
+import { expectStringContaining } from '../__tests__/matchers'
 import { HttpsGuard } from '../utils/guards/https.guard'
 import { AuthorizationRequestDto, TokenRequestDto } from './dtos/requests.oauth2.dto'
 import { OAuth2ExceptionFilter } from './filters/oauth2-exception.filter'
@@ -37,7 +37,7 @@ describe('OAuth2Controller', () => {
   }
 
   function mockResponse(): Response {
-    return createMock<Response>({ redirect: jest.fn() })
+    return createMock<Response>({ redirect: vi.fn() })
   }
 
   function mockReqWithAuthData(
@@ -65,7 +65,7 @@ describe('OAuth2Controller', () => {
   }
 
   beforeEach(async () => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OAuth2Controller],
       providers: [
@@ -83,7 +83,7 @@ describe('OAuth2Controller', () => {
       .overrideGuard(TokenRequestGuard)
       .useValue({ canActivate: () => true })
       .overrideFilter(OAuth2ExceptionFilter)
-      .useValue({ catch: jest.fn() })
+      .useValue({ catch: vi.fn() })
       .overridePipe(TokenRequestValidationPipe)
       .useValue({ transform: (v: unknown) => v })
       .compile()
@@ -92,15 +92,13 @@ describe('OAuth2Controller', () => {
     oauth2Service = module.get<OAuth2Service>(OAuth2Service)
     oAuth2ErrorThrower = module.get<OAuth2ErrorThrower>(OAuth2ErrorThrower)
 
-    jest
-      .spyOn(oAuth2ErrorThrower, 'authorizationException')
-      .mockImplementation(
-        (errorCode, errorDescription) =>
-          new OAuth2Exception(
-            { error: errorCode, error_description: errorDescription },
-            HttpStatus.BAD_REQUEST
-          )
-      )
+    vi.mocked(oAuth2ErrorThrower.authorizationException).mockImplementation(
+      (errorCode, errorDescription) =>
+        new OAuth2Exception(
+          { error: errorCode, error_description: errorDescription },
+          HttpStatus.BAD_REQUEST
+        )
+    )
   })
 
   it('should be defined', () => {
@@ -117,19 +115,15 @@ describe('OAuth2Controller', () => {
    */
   describe('authorize', () => {
     it('should store authorization request via service', async () => {
-      jest.spyOn(oauth2Service, 'storeAuthorizationRequest').mockResolvedValue('auth-req-id-123')
-      jest
-        .spyOn(oauth2Service, 'buildLoginRedirectUrl')
-        .mockReturnValue('https://login.example.com')
+      vi.mocked(oauth2Service.storeAuthorizationRequest).mockResolvedValue('auth-req-id-123')
+      vi.mocked(oauth2Service.buildLoginRedirectUrl).mockReturnValue('https://login.example.com')
       await controller.authorize(validAuthRequestData, mockResponse())
       expect(oauth2Service.storeAuthorizationRequest).toHaveBeenCalledWith(validAuthRequestData)
     })
 
     it('should build login redirect URL with query and authRequestId', async () => {
-      jest.spyOn(oauth2Service, 'storeAuthorizationRequest').mockResolvedValue('auth-req-id-123')
-      jest
-        .spyOn(oauth2Service, 'buildLoginRedirectUrl')
-        .mockReturnValue('https://login.example.com')
+      vi.mocked(oauth2Service.storeAuthorizationRequest).mockResolvedValue('auth-req-id-123')
+      vi.mocked(oauth2Service.buildLoginRedirectUrl).mockReturnValue('https://login.example.com')
       await controller.authorize(validAuthRequestData, mockResponse())
       expect(oauth2Service.buildLoginRedirectUrl).toHaveBeenCalledWith(
         validAuthRequestData,
@@ -138,9 +132,9 @@ describe('OAuth2Controller', () => {
     })
 
     it('should redirect with 303 See Other per RFC 9700', async () => {
-      jest.spyOn(oauth2Service, 'storeAuthorizationRequest').mockResolvedValue('auth-req-id-123')
+      vi.mocked(oauth2Service.storeAuthorizationRequest).mockResolvedValue('auth-req-id-123')
       const url = 'https://login.example.com?authRequestId=auth-req-id-123'
-      jest.spyOn(oauth2Service, 'buildLoginRedirectUrl').mockReturnValue(url)
+      vi.mocked(oauth2Service.buildLoginRedirectUrl).mockReturnValue(url)
       const res = mockResponse()
       await controller.authorize(validAuthRequestData, res)
       expect(res.redirect).toHaveBeenCalledWith(HttpStatus.SEE_OTHER, url)
@@ -148,7 +142,7 @@ describe('OAuth2Controller', () => {
 
     it('should propagate service exceptions from storeAuthorizationRequest', async () => {
       // CUSTOM PROXY DETAIL: Service errors (e.g., DB failure) propagate to the exception filter
-      jest.spyOn(oauth2Service, 'storeAuthorizationRequest').mockRejectedValue(new Error('DB down'))
+      vi.mocked(oauth2Service.storeAuthorizationRequest).mockRejectedValue(new Error('DB down'))
       await expect(controller.authorize(validAuthRequestData, mockResponse())).rejects.toThrow(
         'DB down'
       )
@@ -185,20 +179,21 @@ describe('OAuth2Controller', () => {
    */
   describe('continueComplete', () => {
     it('should check if tokens are stored before generating authorization code', async () => {
-      jest.spyOn(oauth2Service, 'areTokensStoredForAuthRequest').mockResolvedValue(true)
-      jest
-        .spyOn(oauth2Service, 'continueAuthorization')
-        .mockResolvedValue({ code: 'code-xyz', state: 'csrf-123' })
-      jest
-        .spyOn(oauth2Service, 'buildAuthorizationResponseRedirectUrl')
-        .mockReturnValue('https://example.com/callback?code=code-xyz')
+      vi.mocked(oauth2Service.areTokensStoredForAuthRequest).mockResolvedValue(true)
+      vi.mocked(oauth2Service.continueAuthorization).mockResolvedValue({
+        code: 'code-xyz',
+        state: 'csrf-123',
+      })
+      vi.mocked(oauth2Service.buildAuthorizationResponseRedirectUrl).mockReturnValue(
+        'https://example.com/callback?code=code-xyz'
+      )
       const req = mockReqWithAuthData({ query: { authRequestId: 'auth-req-id-123' } })
       await controller.continueComplete({ authRequestId: 'auth-req-id-123' }, req, mockResponse())
       expect(oauth2Service.areTokensStoredForAuthRequest).toHaveBeenCalledWith('auth-req-id-123')
     })
 
     it('should throw SERVER_ERROR when tokens are not stored', async () => {
-      jest.spyOn(oauth2Service, 'areTokensStoredForAuthRequest').mockResolvedValue(false)
+      vi.mocked(oauth2Service.areTokensStoredForAuthRequest).mockResolvedValue(false)
       const req = mockReqWithAuthData({ query: { authRequestId: 'auth-req-id-123' } })
       await expect(
         controller.continueComplete({ authRequestId: 'auth-req-id-123' }, req, mockResponse())
@@ -210,14 +205,13 @@ describe('OAuth2Controller', () => {
     })
 
     it('should generate authorization code and redirect with 303 per RFC 9700', async () => {
-      jest.spyOn(oauth2Service, 'areTokensStoredForAuthRequest').mockResolvedValue(true)
-      jest
-        .spyOn(oauth2Service, 'continueAuthorization')
-        .mockResolvedValue({ code: 'code-xyz', state: 'csrf-123' })
+      vi.mocked(oauth2Service.areTokensStoredForAuthRequest).mockResolvedValue(true)
+      vi.mocked(oauth2Service.continueAuthorization).mockResolvedValue({
+        code: 'code-xyz',
+        state: 'csrf-123',
+      })
       const redirectUrl = 'https://example.com/callback?code=code-xyz&state=csrf-123'
-      jest
-        .spyOn(oauth2Service, 'buildAuthorizationResponseRedirectUrl')
-        .mockReturnValue(redirectUrl)
+      vi.mocked(oauth2Service.buildAuthorizationResponseRedirectUrl).mockReturnValue(redirectUrl)
       const res = mockResponse()
       const req = mockReqWithAuthData({ query: { authRequestId: 'auth-req-id-123' } })
       await controller.continueComplete({ authRequestId: 'auth-req-id-123' }, req, res)
@@ -243,9 +237,11 @@ describe('OAuth2Controller', () => {
   describe('token', () => {
     it('should normalize client credentials from guard into request body', async () => {
       // RFC 6749 Section 2.3.1: Client credentials extracted from HTTP Basic Auth by guard
-      jest
-        .spyOn(oauth2Service, 'token')
-        .mockResolvedValue({ access_token: 'at', token_type: 'Bearer', expires_in: 3600 })
+      vi.mocked(oauth2Service.token).mockResolvedValue({
+        access_token: 'at',
+        token_type: 'Bearer',
+        expires_in: 3600,
+      })
       const body: TokenRequestDto = {
         grant_type: 'authorization_code',
         code: 'xyz',
@@ -265,9 +261,11 @@ describe('OAuth2Controller', () => {
     it('should not overwrite body credentials when guard credentials are incomplete (clientId without secret)', async () => {
       // Guard credentials are only applied when BOTH tokenClientId and
       // oauth2ClientSecret are present; a partial pair must leave the body as is
-      jest
-        .spyOn(oauth2Service, 'token')
-        .mockResolvedValue({ access_token: 'at', token_type: 'Bearer', expires_in: 3600 })
+      vi.mocked(oauth2Service.token).mockResolvedValue({
+        access_token: 'at',
+        token_type: 'Bearer',
+        expires_in: 3600,
+      })
       const body: TokenRequestDto = {
         grant_type: 'authorization_code',
         code: 'xyz',
@@ -287,7 +285,7 @@ describe('OAuth2Controller', () => {
         expires_in: 3600,
         refresh_token: 'rt',
       }
-      jest.spyOn(oauth2Service, 'token').mockResolvedValue(tokenResponse)
+      vi.mocked(oauth2Service.token).mockResolvedValue(tokenResponse)
       const body: TokenRequestDto = {
         grant_type: 'authorization_code',
         code: 'xyz',
@@ -308,7 +306,7 @@ describe('OAuth2Controller', () => {
   describe('info', () => {
     it('should return client info using client_id from authorizationRequestData', () => {
       const clientInfo = { clientId: 'test-client-id', clientName: 'Test App' }
-      jest.spyOn(oauth2Service, 'getClientInfo').mockReturnValue(clientInfo)
+      vi.mocked(oauth2Service.getClientInfo).mockReturnValue(clientInfo)
       const req = mockReqWithAuthData({ query: { authRequestId: 'auth-req-id-123' } })
       const result = controller.info({ authRequestId: 'auth-req-id-123' }, req)
       expect(oauth2Service.getClientInfo).toHaveBeenCalledWith('test-client-id')

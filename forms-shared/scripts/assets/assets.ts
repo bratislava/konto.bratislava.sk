@@ -1,10 +1,12 @@
 import * as path from 'node:path'
+
+import { get as getAppRootDir } from 'app-root-dir'
 import { promises as fs } from 'fs'
+import * as prettier from 'prettier'
+import stringToTemplateLiteral from 'string-to-template-literal'
+
 import { getInterCss } from '../../src/summary-pdf/interCss'
 import { getTailwindCss } from '../../src/summary-pdf/tailwindCss'
-import * as prettier from 'prettier'
-import { get as getAppRootDir } from 'app-root-dir'
-import stringToTemplateLiteral from 'string-to-template-literal'
 
 /*
  * This script generates base64-encoded assets from files and strings and writes them to the src/generated-assets

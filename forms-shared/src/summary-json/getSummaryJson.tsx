@@ -2,6 +2,7 @@ import type { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 
+import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 import {
   SummaryJsonArray,
   SummaryJsonArrayItem,
@@ -12,7 +13,6 @@ import {
   SummaryJsonType,
 } from './summaryJsonTypes'
 import { SummaryXmlForm, SummaryXmlFormTag } from './SummaryXmlForm'
-import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 
 export type GetSummaryJsonParams = {
   schema: RJSFSchema

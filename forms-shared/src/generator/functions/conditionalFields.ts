@@ -1,4 +1,5 @@
 import type { RJSFSchema } from '@rjsf/utils'
+
 import { GeneratorConditionalFields, GeneratorFieldType } from '../generatorTypes'
 import { simpleObjectInternal } from '../object'
 

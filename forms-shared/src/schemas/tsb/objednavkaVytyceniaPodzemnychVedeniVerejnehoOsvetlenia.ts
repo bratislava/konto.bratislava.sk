@@ -1,14 +1,15 @@
-import { selectMultiple } from '../../generator/functions/selectMultiple'
-import { input } from '../../generator/functions/input'
-import { datePicker } from '../../generator/functions/datePicker'
-import { object } from '../../generator/object'
-import { step } from '../../generator/functions/step'
-import { schema } from '../../generator/functions/schema'
-import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
-import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
-import { esbsKatastralneUzemiaCiselnik } from '../../tax-form/mapping/shared/esbsCiselniky'
-import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 import type { GenericObjectType } from '@rjsf/utils'
+
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
+import { datePicker } from '../../generator/functions/datePicker'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { input } from '../../generator/functions/input'
+import { schema } from '../../generator/functions/schema'
+import { selectMultiple } from '../../generator/functions/selectMultiple'
+import { step } from '../../generator/functions/step'
+import { object } from '../../generator/object'
+import { esbsKatastralneUzemiaCiselnik } from '../../tax-form/mapping/shared/esbsCiselniky'
+import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
 
 export default schema(
   {

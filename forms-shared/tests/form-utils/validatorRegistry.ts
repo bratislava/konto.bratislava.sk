@@ -1,11 +1,12 @@
-import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest'
 import { ROOT_SCHEMA_PREFIX } from '@rjsf/utils'
+import { Ajv } from 'ajv'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+
 import { BAJSONSchema7 } from '../../src/form-utils/ajvKeywords'
 import {
   createSingleUseValidatorRegistry,
   createWeakMapRegistry,
 } from '../../src/form-utils/validatorRegistry'
-import { Ajv } from 'ajv'
 
 describe('Validator Registry', () => {
   let addSchemaSpy = vi.spyOn(Ajv.prototype, 'addSchema')

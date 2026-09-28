@@ -1,5 +1,5 @@
-import { Builder } from 'xml2js'
 import type { GenericObjectType } from '@rjsf/utils'
+import { Builder } from 'xml2js'
 
 export const buildSlovenskoSkXml = (
   xmlObject: GenericObjectType,

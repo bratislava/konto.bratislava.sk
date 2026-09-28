@@ -1,14 +1,14 @@
+import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { number } from '../../generator/functions/number'
+import { radioGroup } from '../../generator/functions/radioGroup'
 import {
   createCamelCaseItems,
   createCamelCaseItemsV2,
   createCondition,
 } from '../../generator/helpers'
-import { StepEnum } from './stepEnum'
-import { number } from '../../generator/functions/number'
-import { radioGroup } from '../../generator/functions/radioGroup'
-import { conditionalFields } from '../../generator/functions/conditionalFields'
-import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 import { priznanieKDaniZNehnutelnostiFiles } from '../priznanieKDaniZNehnutelnosti'
+import { StepEnum } from './stepEnum'
 
 export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
   radioGroup(

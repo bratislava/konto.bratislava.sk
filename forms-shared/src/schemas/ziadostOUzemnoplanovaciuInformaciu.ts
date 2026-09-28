@@ -1,21 +1,22 @@
-import { createCondition } from '../generator/helpers'
-import { select } from '../generator/functions/select'
+import { match, P } from 'ts-pattern'
+
+import { FormFiles } from '../definitions/formDefinitionTypes'
+import { SchemalessFormDataExtractor } from '../form-utils/evaluateFormDataExtractor'
+import { arrayField } from '../generator/functions/arrayField'
+import { conditionalFields } from '../generator/functions/conditionalFields'
+import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
 import { input } from '../generator/functions/input'
 import { radioGroup } from '../generator/functions/radioGroup'
-import { textArea } from '../generator/functions/textArea'
-import { step } from '../generator/functions/step'
-import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
-import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
-import { arrayField } from '../generator/functions/arrayField'
+import { select } from '../generator/functions/select'
+import { step } from '../generator/functions/step'
+import { textArea } from '../generator/functions/textArea'
+import { createCondition } from '../generator/helpers'
 import { object } from '../generator/object'
-import { SchemalessFormDataExtractor } from '../form-utils/evaluateFormDataExtractor'
-import { match, P } from 'ts-pattern'
 import {
   esbsKatastralneUzemiaCiselnik,
   katastralneUzemiaCodeAbbreviationMap,
 } from '../tax-form/mapping/shared/esbsCiselniky'
-import { FormFiles } from '../definitions/formDefinitionTypes'
 
 const addressFields = (title: string) => [
   input(

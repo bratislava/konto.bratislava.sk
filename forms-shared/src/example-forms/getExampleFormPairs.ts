@@ -1,9 +1,10 @@
+import flatten from 'lodash/flatten'
+
 import { FormDefinition } from '../definitions/formDefinitionTypes'
 import {
   getFormDefinitionBySlug,
   getFormDefinitionBySlugDev,
 } from '../definitions/getFormDefinitionBySlug'
-import flatten from 'lodash/flatten'
 import { exampleDevForms, exampleForms } from './exampleForms'
 import { ExampleForm } from './types'
 

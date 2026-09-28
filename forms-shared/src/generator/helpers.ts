@@ -1,14 +1,15 @@
 import type { RJSFSchema } from '@rjsf/utils'
 import camelCase from 'lodash/camelCase'
+
 import { BaAjvInputFormat } from '../form-utils/ajvFormats'
+import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
 import {
+  InputUiOptionsInputType,
   inputWidthCharactersMax,
   inputWidthCharactersMin,
   inputWidthFractions,
-  InputUiOptionsInputType,
   InputWidthType,
 } from './uiOptionsTypes'
-import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
 
 type ObjectJsonSchema = {
   type: 'object'

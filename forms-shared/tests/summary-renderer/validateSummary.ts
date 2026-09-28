@@ -1,13 +1,14 @@
-import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest'
-import { validateSummary } from '../../src/summary-renderer/validateSummary'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+
 import { FileStatusType } from '../../src/form-files/fileStatus'
+import { fileUpload } from '../../src/generator/functions/fileUpload'
+import { fileUploadMultiple } from '../../src/generator/functions/fileUploadMultiple'
+import { input } from '../../src/generator/functions/input'
+import { object } from '../../src/generator/object'
+import { checkPathForErrors } from '../../src/summary-renderer/checkPathForErrors'
+import { validateSummary } from '../../src/summary-renderer/validateSummary'
 import { filterConsole } from '../../test-utils/filterConsole'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
-import { input } from '../../src/generator/functions/input'
-import { fileUpload } from '../../src/generator/functions/fileUpload'
-import { object } from '../../src/generator/object'
-import { fileUploadMultiple } from '../../src/generator/functions/fileUploadMultiple'
-import { checkPathForErrors } from '../../src/summary-renderer/checkPathForErrors'
 
 describe('validateSummary', () => {
   beforeEach(() => {

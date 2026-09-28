@@ -1,11 +1,12 @@
-import { MailgunTemplateEnum } from './emailFormTypes'
-import { SharepointData } from './sharepointTypes'
 import type { RJSFSchema } from '@rjsf/utils'
-import { FormSendPolicy } from '../send-policy/sendPolicy'
+
 import {
   SchemaFormDataExtractor,
   SchemalessFormDataExtractor,
 } from '../form-utils/evaluateFormDataExtractor'
+import { FormSendPolicy } from '../send-policy/sendPolicy'
+import { MailgunTemplateEnum } from './emailFormTypes'
+import { SharepointData } from './sharepointTypes'
 
 export enum FormDefinitionType {
   SlovenskoSkGeneric = 'SlovenskoSkGeneric',

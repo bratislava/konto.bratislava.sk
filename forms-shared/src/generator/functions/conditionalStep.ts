@@ -1,8 +1,9 @@
 import type { RJSFSchema } from '@rjsf/utils'
+
 import { GeneratorFieldType } from '../generatorTypes'
-import { step } from './step'
 import { removeUndefinedValues } from '../helpers'
 import { StepUiOptions } from '../uiOptionsTypes'
+import { step } from './step'
 
 export const conditionalStep = (
   property: string,

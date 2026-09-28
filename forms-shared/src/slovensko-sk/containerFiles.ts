@@ -1,13 +1,13 @@
 import { FormDefinitionSlovenskoSk } from '../definitions/formDefinitionTypes'
 import { attachementsXml } from './file-templates/attachementsXml'
 import { attachementsPospXml } from './file-templates/attachmentsPospXml'
+import { getEmptyXml } from './file-templates/emptyXml'
 import { getFoXslt } from './file-templates/foXslt'
 import { getHtmlSbXslt } from './file-templates/htmlSbXslt'
 import { manifestXml } from './file-templates/manifestXml'
 import { getMetaXml } from './file-templates/metaXml'
-import { getSchemaXsd } from './file-templates/schemaXsd'
 import { mimetype } from './file-templates/mimetype'
-import { getEmptyXml } from './file-templates/emptyXml'
+import { getSchemaXsd } from './file-templates/schemaXsd'
 
 export function getSlovenskoSkContainerFiles(
   formDefinition: FormDefinitionSlovenskoSk,

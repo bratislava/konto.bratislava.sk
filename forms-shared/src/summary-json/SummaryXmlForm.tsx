@@ -1,10 +1,11 @@
-import type { FormProps, ThemeProps } from '@rjsf/core'
-import type {
-  ArrayFieldItemTemplateProps,
-  ArrayFieldTemplateProps,
-  FieldProps,
-  ObjectFieldTemplateProps,
-  WidgetProps,
+import { type FormProps, type ThemeProps, withTheme } from '@rjsf/core'
+import {
+  type ArrayFieldItemTemplateProps,
+  type ArrayFieldTemplateProps,
+  type FieldProps,
+  getUiOptions,
+  type ObjectFieldTemplateProps,
+  type WidgetProps,
 } from '@rjsf/utils'
 import React, {
   type ComponentType,
@@ -14,16 +15,13 @@ import React, {
   PropsWithChildren,
 } from 'react'
 
-import { getArrayItemTitle } from '../form-utils/getArrayItemTitle'
-import { ArrayFieldUiOptions, BaFieldType, BaWidgetType } from '../generator/uiOptionsTypes'
-import { getSummaryDisplayValues } from './getSummaryDisplayValue'
+import { defaultFormFields, DefaultFormFieldType } from '../form-utils/defaultFormFields'
 import { getBaFormDefaults } from '../form-utils/formDefaults'
+import { getArrayItemTitle } from '../form-utils/getArrayItemTitle'
 import { getObjectFieldInfo } from '../form-utils/getObjectFieldInfo'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
-import { defaultFormFields, DefaultFormFieldType } from '../form-utils/defaultFormFields'
-
-import { withTheme } from '@rjsf/core'
-import { getUiOptions } from '@rjsf/utils'
+import { ArrayFieldUiOptions, BaFieldType, BaWidgetType } from '../generator/uiOptionsTypes'
+import { getSummaryDisplayValues } from './getSummaryDisplayValue'
 
 export enum SummaryXmlFormTag {
   Form = 'summary-form',

@@ -1,6 +1,6 @@
+import { get as getAppRootDir } from 'app-root-dir'
 import { execSync } from 'child_process'
 import * as path from 'path'
-import { get as getAppRootDir } from 'app-root-dir'
 
 /**
  * Build args and image tags come from the bake files in the repository root, so

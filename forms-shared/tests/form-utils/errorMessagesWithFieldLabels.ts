@@ -1,8 +1,9 @@
-import { describe, expect, test } from 'vitest'
 import type { RJSFSchema } from '@rjsf/utils'
+import { describe, expect, test } from 'vitest'
+
 import { FormFiles } from '../../src/definitions/formDefinitionTypes'
-import { GeneratorField } from '../../src/generator/generatorTypes'
-import { object } from '../../src/generator/object'
+import { baGetDefaultFormState } from '../../src/form-utils/defaultFormState'
+import { defaultUiSchema } from '../../src/form-utils/formDefaults'
 import { arrayField } from '../../src/generator/functions/arrayField'
 import { checkbox } from '../../src/generator/functions/checkbox'
 import { checkboxGroup } from '../../src/generator/functions/checkboxGroup'
@@ -16,8 +17,8 @@ import { select } from '../../src/generator/functions/select'
 import { selectMultiple } from '../../src/generator/functions/selectMultiple'
 import { textArea } from '../../src/generator/functions/textArea'
 import { timePicker } from '../../src/generator/functions/timePicker'
-import { baGetDefaultFormState } from '../../src/form-utils/defaultFormState'
-import { defaultUiSchema } from '../../src/form-utils/formDefaults'
+import { GeneratorField } from '../../src/generator/generatorTypes'
+import { object } from '../../src/generator/object'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 /**

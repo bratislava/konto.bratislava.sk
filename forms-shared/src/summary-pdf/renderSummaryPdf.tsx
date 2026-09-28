@@ -1,13 +1,14 @@
-import React from 'react'
+import type { GenericObjectType, ValidationData } from '@rjsf/utils'
 import type { Browser } from 'playwright'
+import React from 'react'
 import { renderToString } from 'react-dom/server'
-import { SummaryPdf } from './SummaryPdf'
-import { FormsBackendFile } from '../form-files/serverFilesTypes'
+
 import { ClientFileInfo } from '../form-files/fileStatus'
 import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
+import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import summaryPdfCss from '../generated-assets/summaryPdfCss'
 import { FormSummary } from '../summary/summary'
-import type { GenericObjectType, ValidationData } from '@rjsf/utils'
+import { SummaryPdf } from './SummaryPdf'
 
 export type RenderSummaryPdfPayload = {
   formSummary: FormSummary

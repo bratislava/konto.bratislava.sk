@@ -1,6 +1,6 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
-import { BaWidgetType, TextAreaUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
+import { BaWidgetType, TextAreaUiOptions } from '../uiOptionsTypes'
 
 export const textArea = (
   property: string,

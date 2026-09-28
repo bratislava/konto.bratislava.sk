@@ -1,7 +1,8 @@
-import { GeneratorFieldType } from '../generatorTypes'
-import { object } from '../object'
 import kebabCase from 'lodash/kebabCase'
+
+import { GeneratorFieldType } from '../generatorTypes'
 import { removeUndefinedValues } from '../helpers'
+import { object } from '../object'
 import { StepUiOptions } from '../uiOptionsTypes'
 
 export const step = (

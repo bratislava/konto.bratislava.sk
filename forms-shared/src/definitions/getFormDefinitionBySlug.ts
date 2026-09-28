@@ -1,6 +1,6 @@
+import { devFormDefinitions } from './devFormDefinitions'
 import { formDefinitions } from './formDefinitions'
 import { FormDefinition } from './formDefinitionTypes'
-import { devFormDefinitions } from './devFormDefinitions'
 
 export const getFormDefinitionBySlug = (slug: string): FormDefinition | null => {
   const formDefinition = formDefinitions.find((formDefinition) => formDefinition.slug === slug)

@@ -1,5 +1,6 @@
-import { FormDefinitionSlovenskoSk } from '../definitions/formDefinitionTypes'
 import type { GenericObjectType } from '@rjsf/utils'
+
+import { FormDefinitionSlovenskoSk } from '../definitions/formDefinitionTypes'
 import { hashFormData } from './hashFormData'
 
 export type FormSignature = {

@@ -13,12 +13,12 @@ import {
   PDFTextField,
 } from 'pdf-lib'
 
-import { getPocty } from './mapping/shared/functions'
-import { zobrazitOslobodenie } from './mapping/shared/oslobodenieShared'
-import { getTaxFormPdfMapping } from './mapping/pdf/pdf'
-import { TaxFormData } from './types'
 import taxPdf from '../generated-assets/taxPdf'
 import taxPdfFont from '../generated-assets/taxPdfFont'
+import { getTaxFormPdfMapping } from './mapping/pdf/pdf'
+import { getPocty } from './mapping/shared/functions'
+import { zobrazitOslobodenie } from './mapping/shared/oslobodenieShared'
+import { TaxFormData } from './types'
 
 export type GenerateTaxPdfPayload = {
   formData: TaxFormData

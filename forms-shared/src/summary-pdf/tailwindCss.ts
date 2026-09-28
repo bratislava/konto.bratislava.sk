@@ -1,7 +1,8 @@
-import postcss from 'postcss'
+import fs from 'node:fs'
+
 import tailwindPostcss from '@tailwindcss/postcss'
 import path from 'path'
-import fs from 'node:fs'
+import postcss from 'postcss'
 
 const baseCssPath = path.join(import.meta.dirname, './base.css')
 const baseCss = fs.readFileSync(baseCssPath, 'utf8')

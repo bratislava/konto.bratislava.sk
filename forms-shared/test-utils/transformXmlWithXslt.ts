@@ -1,6 +1,6 @@
-import tmp from 'tmp-promise'
-import fs from 'fs/promises'
 import { exec } from 'child_process'
+import fs from 'fs/promises'
+import tmp from 'tmp-promise'
 import { promisify } from 'util'
 
 declare global {

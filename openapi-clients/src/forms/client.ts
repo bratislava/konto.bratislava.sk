@@ -1,10 +1,12 @@
+import type { AxiosInstance } from 'axios'
+
 import {
   ADMINApiFactory,
   ConvertApiFactory,
   FilesApiFactory,
   FormMigrationsApiFactory,
-  FormSenderApiFactory,
   FormsApiFactory,
+  FormSenderApiFactory,
   FormsV2ApiFactory,
   GinisApiFactory,
   HealthcheckApiFactory,
@@ -13,7 +15,6 @@ import {
   WebhookApiFactory,
 } from './api'
 import { Configuration, ConfigurationParameters } from './configuration'
-import type { AxiosInstance } from 'axios'
 
 type ClientConfig = {
   basePath: string

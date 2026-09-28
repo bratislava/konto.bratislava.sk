@@ -1,12 +1,12 @@
-import type {
-  Experimental_DefaultFormStateBehavior,
-  GenericObjectType,
-  RJSFSchema,
+import {
+  type Experimental_DefaultFormStateBehavior,
+  type GenericObjectType,
+  getDefaultFormState,
+  type RJSFSchema,
 } from '@rjsf/utils'
 import isEqual from 'lodash/isEqual'
-import { BaRjsfValidatorRegistry } from './validatorRegistry'
 
-import { getDefaultFormState } from '@rjsf/utils'
+import { BaRjsfValidatorRegistry } from './validatorRegistry'
 
 /**
  * Detects schema of fileUploadMultiple field.

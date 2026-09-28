@@ -1,8 +1,8 @@
+import { get as getAppRootDir } from 'app-root-dir'
 import * as fs from 'fs/promises'
 import * as glob from 'glob'
-import * as prettier from 'prettier'
-import { get as getAppRootDir } from 'app-root-dir'
 import path from 'path'
+import * as prettier from 'prettier'
 
 const globs = [
   'src/generator/uiOptionsTypes.ts',

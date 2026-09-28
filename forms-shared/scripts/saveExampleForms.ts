@@ -1,6 +1,7 @@
+import { get as getAppRootDir } from 'app-root-dir'
 import * as fs from 'fs/promises'
 import * as path from 'path'
-import { get as getAppRootDir } from 'app-root-dir'
+
 import { exampleForms } from '../src/example-forms/exampleForms'
 
 /**

@@ -1,4 +1,10 @@
+import type { GenericObjectType, ValidationData } from '@rjsf/utils'
+import cx from 'classnames'
 import React from 'react'
+import Markdown from 'react-markdown'
+
+import { FileInfoSummary } from '../form-files/fileStatus'
+import { FormSummary } from '../summary/summary'
 import {
   SummaryArrayComponentProps,
   SummaryArrayItemComponentProps,
@@ -9,11 +15,6 @@ import {
   SummaryStepComponentProps,
   SummaryStringValueComponentProps,
 } from '../summary-renderer/SummaryRenderer'
-import Markdown from 'react-markdown'
-import cx from 'classnames'
-import type { GenericObjectType, ValidationData } from '@rjsf/utils'
-import { FileInfoSummary } from '../form-files/fileStatus'
-import { FormSummary } from '../summary/summary'
 
 type SummaryPdfProps = {
   formSummary: FormSummary

@@ -1,5 +1,6 @@
 import type { RJSFSchema } from '@rjsf/utils'
 import traverse from 'neotraverse/legacy'
+
 import { FileUploadUiOptions } from '../generator/uiOptionsTypes'
 
 /**

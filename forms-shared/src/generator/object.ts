@@ -1,12 +1,12 @@
-import { ObjectFieldUiOptions } from './uiOptionsTypes'
+import { addBaOrderToFields } from './addBaOrderToFields'
 import {
   GeneratorConditionalFields,
   GeneratorField,
   GeneratorFieldType,
   GeneratorObjectField,
 } from './generatorTypes'
-import { addBaOrderToFields } from './addBaOrderToFields'
 import { removeUndefinedValues } from './helpers'
+import { ObjectFieldUiOptions } from './uiOptionsTypes'
 
 /**
  * Object is the most complex field type to handle. For example, step is an instance of object. In JSONSchema, ordinary

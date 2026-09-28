@@ -1,4 +1,5 @@
 import type { GenericObjectType } from '@rjsf/utils'
+
 import { hashFormData } from './hashFormData'
 
 /**

@@ -2,8 +2,8 @@ import type { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import { SchemaValidateFunction } from 'ajv'
 import traverse from 'neotraverse/legacy'
 
-import { getFileValidatorBaRjsf } from './validators'
 import { validateBaFileUuid } from './ajvFormats'
+import { getFileValidatorBaRjsf } from './validators'
 
 /**
  * Extracts used file UUIDs from form data.

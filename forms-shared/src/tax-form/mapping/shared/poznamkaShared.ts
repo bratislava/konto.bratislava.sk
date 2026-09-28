@@ -1,12 +1,12 @@
-import { getTitleFromStatCiselnik } from '../pdf/statCiselnik'
+import { safeBoolean, safeString } from '../../../form-utils/safeData'
 import { TaxFormData } from '../../types'
+import { getTitleFromStatCiselnik } from '../pdf/statCiselnik'
 import { formatDatePdf } from './dates'
 import { oddiel2Shared } from './oddiel2Shared'
 import { oddiel3JedenUcelShared } from './oddiel3JedenUcelShared'
 import { oddiel3ViacereUcelyShared } from './oddiel3ViacereUcelyShared'
 import { oddiel4Shared } from './oddiel4Shared'
 import { udajeODanovnikoviShared } from './udajeODanovnikoviShared'
-import { safeBoolean, safeString } from '../../../form-utils/safeData'
 
 type KeyValueArray = [string, string | undefined][]
 

@@ -1,3 +1,5 @@
+import type { AxiosInstance } from 'axios'
+
 import {
   AdminApiFactory,
   DefaultApiFactory,
@@ -10,7 +12,6 @@ import {
   RSDRegisterSocilnychDvokApiFactory,
 } from './api'
 import { Configuration, ConfigurationParameters } from './configuration'
-import type { AxiosInstance } from 'axios'
 
 type ClientConfig = {
   basePath: string

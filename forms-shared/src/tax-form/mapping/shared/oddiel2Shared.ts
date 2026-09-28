@@ -1,9 +1,9 @@
-import { DanZPozemkovPriznania, TaxFormData } from '../../types'
-import { parseDateFieldDate } from './functions'
-import { oddielBaseShared } from './oddielBaseShared'
 import { calculateFormCalculatorFormula } from '../../../form-calculators/calculators'
 import { safeArray, safeBoolean, safeNumber, safeString } from '../../../form-utils/safeData'
 import { oddiel2VymeraPozemkuFormula } from '../../formulas'
+import { DanZPozemkovPriznania, TaxFormData } from '../../types'
+import { parseDateFieldDate } from './functions'
+import { oddielBaseShared } from './oddielBaseShared'
 
 const mapPriznanie = (data: TaxFormData, priznanie: DanZPozemkovPriznania) => {
   const pozemky = safeArray(priznanie.pozemky).slice(0, 17)

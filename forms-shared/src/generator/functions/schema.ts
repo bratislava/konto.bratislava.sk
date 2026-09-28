@@ -1,7 +1,8 @@
-import { step } from './step'
-import { conditionalStep } from './conditionalStep'
-import { removeUndefinedValues } from '../helpers'
 import type { RJSFSchema } from '@rjsf/utils'
+
+import { removeUndefinedValues } from '../helpers'
+import { conditionalStep } from './conditionalStep'
+import { step } from './step'
 
 export const schema = (
   options: {

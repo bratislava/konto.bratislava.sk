@@ -1,10 +1,11 @@
-import { FormDefinitionSlovenskoSk } from '../definitions/formDefinitionTypes'
 import type { GenericObjectType } from '@rjsf/utils'
-import { renderSlovenskoXmlSummary } from './renderXmlSummary'
 import removeMarkdown from 'remove-markdown'
+
+import { FormDefinitionSlovenskoSk } from '../definitions/formDefinitionTypes'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'
-import { getSlovenskoSkXmlns } from './urls'
 import { FormSummary } from '../summary/summary'
+import { renderSlovenskoXmlSummary } from './renderXmlSummary'
+import { getSlovenskoSkXmlns } from './urls'
 
 function getSlovenskoSkXmlObjectBase(
   formDefinition: FormDefinitionSlovenskoSk,

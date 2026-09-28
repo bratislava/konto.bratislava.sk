@@ -1,6 +1,6 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
-import { BaWidgetType, CheckboxUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
+import { BaWidgetType, CheckboxUiOptions } from '../uiOptionsTypes'
 
 export const checkbox = (
   property: string,

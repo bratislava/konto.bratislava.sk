@@ -1,15 +1,16 @@
-import { createCondition, createStringItems } from '../../generator/helpers'
+import type { GenericObjectType } from '@rjsf/utils'
+
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { datePicker } from '../../generator/functions/datePicker'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 import { input } from '../../generator/functions/input'
 import { radioGroup } from '../../generator/functions/radioGroup'
-import { datePicker } from '../../generator/functions/datePicker'
-import { object } from '../../generator/object'
-import { step } from '../../generator/functions/step'
-import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
-import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { step } from '../../generator/functions/step'
+import { createCondition, createStringItems } from '../../generator/helpers'
+import { object } from '../../generator/object'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
-import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
-import type { GenericObjectType } from '@rjsf/utils'
 
 export default schema(
   { title: 'Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia' },

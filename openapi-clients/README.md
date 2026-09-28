@@ -45,7 +45,7 @@ pnpm run generate:forms -- --local-url localhost:8080
 1. Add the client type to `validTypes` in `scripts/generateClient.ts`
 2. Add the OpenAPI spec URL to `endpoints` in the same file
 3. Run `pnpm run generate:<new-client>` to generate the client
-4. Add the export path and generation scripts to `package.json`
+4. Add the generation scripts to `package.json`
 
 ### Checking for Changes
 

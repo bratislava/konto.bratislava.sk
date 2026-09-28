@@ -5,10 +5,7 @@ const { ROUTES } = require('./dist/utils/routes')
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl:
-    process.env.NODE_ENV === 'production'
-      ? 'https://konto.bratislava.sk'
-      : process.env.NEXT_PUBLIC_SELF_URL,
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
   generateRobotsTxt: false,
   changefreq: 'weekly',
   sitemapSize: 5000,

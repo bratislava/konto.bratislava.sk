@@ -14,7 +14,7 @@ const handler = (_req: NextApiRequest, res: NextApiResponse) => {
 
   return res.send(`
       # Sitemaps
-      Sitemap: https://konto.bratislava.sk/sitemap.xml
+      Sitemap: ${process.env.NEXT_PUBLIC_SITE_URL}/sitemap.xml
       `)
 }
 

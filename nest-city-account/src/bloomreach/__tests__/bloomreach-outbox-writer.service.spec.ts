@@ -1,10 +1,11 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { Mocked } from 'vitest'
 
 import prismaMock from '../../../test/singleton'
 import { bloomreachOutboxFactory } from '../../__tests__/factories/bloomreachOutbox.factory'
-import { expectObjectContaining, expectStringContaining } from '../../__tests__/jest-matchers'
+import { expectObjectContaining, expectStringContaining } from '../../__tests__/matchers'
 import { BloomreachCommandName } from '../../generated/prisma/enums'
 import { PrismaService } from '../../prisma/prisma.service'
 import {
@@ -18,8 +19,8 @@ import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
 
 describe('BloomreachOutboxWriterService', () => {
   let service: BloomreachOutboxWriterService
-  let payloadBuilder: jest.Mocked<BloomreachPayloadBuilder>
-  let errorFactoryService: jest.Mocked<ErrorFactoryService>
+  let payloadBuilder: Mocked<BloomreachPayloadBuilder>
+  let errorFactoryService: Mocked<ErrorFactoryService>
 
   const externalId = 'external-id'
   // Newer/older relative to each other - what actually matters to the merge
@@ -72,7 +73,7 @@ describe('BloomreachOutboxWriterService', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('queueCustomerCommand', () => {

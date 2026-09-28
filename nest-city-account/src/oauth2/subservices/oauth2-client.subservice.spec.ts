@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 
-import { expectDefined } from '../../__tests__/jest-matchers'
+import { expectDefined } from '../../__tests__/matchers'
 import BaConfigService from '../../config/ba-config.service'
 import { OAuth2ClientEnvConfig } from '../oauth2-client-env.parser'
 import { OAuth2Client, OAuth2ClientSubservice } from './oauth2-client.subservice'

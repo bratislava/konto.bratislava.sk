@@ -40,6 +40,9 @@ RUN pnpm turbo run build --filter=nest-clamav-scanner
 FROM builder-deps AS test
 RUN pnpm turbo run test --filter=nest-clamav-scanner
 
+FROM builder-deps AS typecheck
+RUN pnpm turbo run typecheck --filter=nest-clamav-scanner
+
 FROM builder AS lint
 RUN pnpm turbo run lint --filter=nest-clamav-scanner
 

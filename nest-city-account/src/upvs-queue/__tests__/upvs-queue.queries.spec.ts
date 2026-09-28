@@ -12,7 +12,7 @@ describe('upvs-queue.queries', () => {
   const prisma = prismaMock as unknown as PrismaService
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('selectUrgentEntities', () => {

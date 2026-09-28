@@ -1,5 +1,5 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test } from '@nestjs/testing'
 import {
   FormDefinition,
@@ -20,8 +20,8 @@ import PrismaService from '../../prisma/prisma.service'
 import ScannerClientService from '../../scanner-client/scanner-client.service'
 import FilesHelper from '../files.helper'
 
-jest.mock('forms-shared/definitions/formDefinitionTypes')
-jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
+vi.mock('forms-shared/definitions/formDefinitionTypes')
+vi.mock('forms-shared/definitions/getFormDefinitionBySlug')
 
 describe('FilesHelper', () => {
   let service: FilesHelper
@@ -82,11 +82,11 @@ describe('FilesHelper', () => {
         pospID: 'test-posp-id',
       })
 
-      jest.mocked(getFormDefinitionBySlug).mockReturnValue(mockFormDefinition)
+      vi.mocked(getFormDefinitionBySlug).mockReturnValue(mockFormDefinition)
     })
 
     it('should return FormInfo with pospID for SlovenskoSk form definition', () => {
-      jest.mocked(isSlovenskoSkFormDefinition).mockReturnValue(true)
+      vi.mocked(isSlovenskoSkFormDefinition).mockReturnValue(true)
 
       const result = service.forms2formInfo(mockForm)
 
@@ -97,7 +97,7 @@ describe('FilesHelper', () => {
     })
 
     it('should return FormInfo with slug for non-SlovenskoSk form definition', () => {
-      jest.mocked(isSlovenskoSkFormDefinition).mockReturnValue(false)
+      vi.mocked(isSlovenskoSkFormDefinition).mockReturnValue(false)
 
       const result = service.forms2formInfo(mockForm)
 
@@ -108,9 +108,9 @@ describe('FilesHelper', () => {
     })
 
     it('should throw NotFoundException when form definition is not found', () => {
-      jest.mocked(getFormDefinitionBySlug).mockReturnValue(null)
+      vi.mocked(getFormDefinitionBySlug).mockReturnValue(null)
 
-      const mockThrowException = jest.fn()
+      const mockThrowException = vi.fn()
       service['errorFactoryService'].NotFoundException = mockThrowException
 
       expect(() => service.forms2formInfo(mockForm)).toThrow()
@@ -123,11 +123,11 @@ describe('FilesHelper', () => {
 
   describe('areErrorFilesInForm', () => {
     beforeEach(() => {
-      jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
+      vi.spyOn(service['logger'], 'error').mockImplementation(vi.fn())
     })
 
     afterEach(() => {
-      jest.spyOn(service['logger'], 'error').mockRestore()
+      vi.spyOn(service['logger'], 'error').mockRestore()
     })
 
     it('should return true when there are error files', async () => {

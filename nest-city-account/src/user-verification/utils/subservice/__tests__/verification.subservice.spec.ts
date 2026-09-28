@@ -1,8 +1,8 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 
-import { expectObjectContaining } from '../../../../__tests__/jest-matchers'
+import { expectObjectContaining } from '../../../../__tests__/matchers'
 import { MagproxyService } from '../../../../magproxy/magproxy.service'
 import { PhysicalEntityService } from '../../../../physical-entity/physical-entity.service'
 import { RfoIdentityListElement } from '../../../../rfo-by-birthnumber/dtos/rfoSchema'

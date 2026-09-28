@@ -15,9 +15,6 @@
     "strictPropertyInitialization": false,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "types": [
-      "node",
-      "jest"
-    ]
+    "types": ["vitest/globals", "node"]
   }
 }

@@ -1,36 +1,38 @@
 import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 import { ConnectionPool } from 'mssql'
+import type { Mock } from 'vitest'
 
 import prismaMock from '../../../../test/singleton'
 import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { NorisConnectionService } from '../noris-connection.service'
 
-jest.mock('mssql', () => ({
-  ...jest.requireActual<typeof mssql>('mssql'),
-  connect: jest.fn(),
-}))
+// mssql is CommonJS, so its exports are only on `default` and are spread into the named exports.
+vi.mock('mssql', async (importOriginal) => {
+  const actual = await importOriginal<typeof mssql & { default: typeof mssql }>()
+  return { ...actual, ...actual.default, connect: vi.fn() }
+})
 
 describe('NorisConnectionService', () => {
   let module: TestingModule
   let service: NorisConnectionService
   let errorFactoryService: ErrorFactoryService
 
-  let mockMssqlConnect: jest.Mock
+  let mockMssqlConnect: Mock
 
   const mockConnectionPool = {
     connected: true,
-    close: jest.fn().mockResolvedValue(undefined),
+    close: vi.fn().mockResolvedValue(undefined),
   }
 
   beforeEach(async () => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
-    mockMssqlConnect = mssql.connect as jest.Mock
+    mockMssqlConnect = mssql.connect as Mock
 
     module = await Test.createTestingModule({
       providers: [
@@ -61,7 +63,7 @@ describe('NorisConnectionService', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('should be defined', () => {
@@ -79,7 +81,7 @@ describe('NorisConnectionService', () => {
 
     it('should not throw when connect() fails during shutdown', async () => {
       mockMssqlConnect.mockRejectedValue(new Error('MSSQL unreachable'))
-      const warnSpy = jest.spyOn(service['logger'], 'warn')
+      const warnSpy = vi.spyOn(service['logger'], 'warn')
 
       await expect(module.close()).resolves.not.toThrow()
       expect(warnSpy).toHaveBeenCalled()
@@ -102,7 +104,7 @@ describe('NorisConnectionService', () => {
     })
 
     it('should resolve when connection becomes connected before maxWaitTime', async () => {
-      const setTimeoutSpy = jest.spyOn(global, 'setTimeout')
+      const setTimeoutSpy = vi.spyOn(global, 'setTimeout')
       const mockConnection = createMock<ConnectionPool>({ connected: false })
       const maxWaitTime = 500
       setTimeout(() => {
@@ -125,7 +127,7 @@ describe('NorisConnectionService', () => {
 
     it('should return operation result on success', async () => {
       const result = { data: 'ok' }
-      const operation = jest.fn().mockResolvedValue(result)
+      const operation = vi.fn().mockResolvedValue(result)
 
       await expect(service.withConnection(operation, 'error message')).resolves.toEqual(result)
       expect(operation).toHaveBeenCalledWith(mockConnectionPool)
@@ -133,10 +135,10 @@ describe('NorisConnectionService', () => {
 
     it('should throw InternalServerError for non-MSSQL errors', async () => {
       const internalError = new HttpException('internal', 500)
-      jest.mocked(errorFactoryService.InternalServerErrorException).mockReturnValue(internalError)
+      vi.mocked(errorFactoryService.InternalServerErrorException).mockReturnValue(internalError)
 
       const opError = new Error('generic error')
-      const operation = jest.fn().mockRejectedValue(opError)
+      const operation = vi.fn().mockRejectedValue(opError)
 
       await expect(service.withConnection(operation, 'fail')).rejects.toThrow('internal')
       expect(errorFactoryService.InternalServerErrorException).toHaveBeenCalledWith({
@@ -148,13 +150,13 @@ describe('NorisConnectionService', () => {
 
     it('should throw BadRequestException and increment counter for MSSQL connection errors', async () => {
       const badRequestError = new HttpException('bad request', 400)
-      jest.mocked(errorFactoryService.BadRequestException).mockReturnValue(badRequestError)
-      ;(prismaMock.$executeRaw as jest.Mock).mockResolvedValue(1)
+      vi.mocked(errorFactoryService.BadRequestException).mockReturnValue(badRequestError)
+      ;(prismaMock.$executeRaw as Mock).mockResolvedValue(1)
 
       const mssqlError = Object.assign(new mssql.MSSQLError('timeout', 'ETIMEOUT'), {
         code: 'ETIMEOUT',
       })
-      const operation = jest.fn().mockRejectedValue(mssqlError)
+      const operation = vi.fn().mockRejectedValue(mssqlError)
 
       await expect(service.withConnection(operation, 'fail')).rejects.toThrow()
       expect(prismaMock.$executeRaw).toHaveBeenCalled()

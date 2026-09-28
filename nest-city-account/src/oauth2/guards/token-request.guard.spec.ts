@@ -1,8 +1,8 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { ExecutionContext, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
-import { expectObjectContaining } from '../../__tests__/jest-matchers'
+import { expectObjectContaining } from '../../__tests__/matchers'
 import { OAuth2TokenErrorCode } from '../oauth2.error.enum'
 import { OAuth2Exception } from '../oauth2.exception'
 import { OAuth2ValidationSubservice } from '../subservices/oauth2-validation.subservice'
@@ -25,7 +25,7 @@ describe('TokenRequestGuard', () => {
       headers: overrides.headers ?? {},
     }
     return createMock<ExecutionContext>({
-      switchToHttp: jest.fn().mockReturnValue({ getRequest: () => mockRequest }),
+      switchToHttp: vi.fn().mockReturnValue({ getRequest: () => mockRequest }),
     })
   }
 
@@ -34,7 +34,7 @@ describe('TokenRequestGuard', () => {
   }
 
   beforeEach(async () => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TokenRequestGuard,
@@ -45,7 +45,7 @@ describe('TokenRequestGuard', () => {
     guard = module.get<TokenRequestGuard>(TokenRequestGuard)
     validationSubservice = module.get<OAuth2ValidationSubservice>(OAuth2ValidationSubservice)
 
-    jest.spyOn(validationSubservice, 'extractClientCredentials').mockReturnValue({
+    vi.mocked(validationSubservice.extractClientCredentials).mockReturnValue({
       clientId: 'test-client-id',
       clientSecret: 'test-client-secret',
     })
@@ -149,7 +149,7 @@ describe('TokenRequestGuard', () => {
         { error: OAuth2TokenErrorCode.INVALID_CLIENT, error_description: 'unknown' },
         HttpStatus.BAD_REQUEST
       )
-      jest.spyOn(validationSubservice, 'validateTokenRequest').mockImplementation(() => {
+      vi.mocked(validationSubservice.validateTokenRequest).mockImplementation(() => {
         throw error
       })
       expect(() =>
@@ -162,7 +162,7 @@ describe('TokenRequestGuard', () => {
         { error: OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE, error_description: 'unsupported' },
         HttpStatus.BAD_REQUEST
       )
-      jest.spyOn(validationSubservice, 'validateTokenRequest').mockImplementation(() => {
+      vi.mocked(validationSubservice.validateTokenRequest).mockImplementation(() => {
         throw error
       })
       expect(() =>
@@ -178,7 +178,7 @@ describe('TokenRequestGuard', () => {
         },
         HttpStatus.BAD_REQUEST
       )
-      jest.spyOn(validationSubservice, 'validateTokenRequest').mockImplementation(() => {
+      vi.mocked(validationSubservice.validateTokenRequest).mockImplementation(() => {
         throw error
       })
       expect(() =>
@@ -208,9 +208,10 @@ describe('TokenRequestGuard', () => {
     })
 
     it('should handle undefined clientSecret (public client)', () => {
-      jest
-        .spyOn(validationSubservice, 'extractClientCredentials')
-        .mockReturnValue({ clientId: 'public-client', clientSecret: undefined })
+      vi.mocked(validationSubservice.extractClientCredentials).mockReturnValue({
+        clientId: 'public-client',
+        clientSecret: undefined,
+      })
       const context = createMockContext({ body: { grant_type: 'authorization_code' } })
       guard.canActivate(context)
       expect(getRequest(context).tokenClientId).toBe('public-client')

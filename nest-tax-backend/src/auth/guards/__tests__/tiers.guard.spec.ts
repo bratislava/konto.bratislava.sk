@@ -1,9 +1,10 @@
 import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { ExecutionContext, HttpStatus } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { Test, TestingModule } from '@nestjs/testing'
 import { CognitoUserAttributesTierEnum } from 'openapi-clients/city-account'
+import type { Mocked } from 'vitest'
 
 import { TIERS_KEY } from '../../../utils/decorators/tier.decorator'
 import { CognitoSubservice } from '../../../utils/subservices/cognito.subservice'
@@ -20,8 +21,8 @@ const makeMockContext = (sub = USER_SUB): ExecutionContext =>
 
 describe('TiersGuard', () => {
   let guard: TiersGuard
-  let reflector: jest.Mocked<Reflector>
-  let cognitoSubservice: jest.Mocked<CognitoSubservice>
+  let reflector: Mocked<Reflector>
+  let cognitoSubservice: Mocked<CognitoSubservice>
   let errorFactoryService: ErrorFactoryService
 
   beforeEach(async () => {
@@ -185,7 +186,7 @@ describe('TiersGuard', () => {
       cognitoSubservice.getUserTierFromCognito.mockResolvedValue(
         CognitoUserAttributesTierEnum.New,
       )
-      const spy = jest.spyOn(errorFactoryService, 'ForbiddenException')
+      const spy = vi.spyOn(errorFactoryService, 'ForbiddenException')
 
       await expect(guard.canActivate(makeMockContext())).rejects.toThrow()
 

@@ -7,14 +7,15 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { chromium } from 'playwright'
+import type { Mock } from 'vitest'
 
 import BaConfig from '../config/ba-config'
 import BaConfigService from '../config/ba-config.service'
 import EnvironmentVariables from '../config/environment-variables'
 import { PdfGeneratorService } from './pdf-generator.service'
 
-jest.mock('playwright', () => ({
-  chromium: { launch: jest.fn() },
+vi.mock('playwright', () => ({
+  chromium: { launch: vi.fn() },
 }))
 
 const templateArgs = [
@@ -25,32 +26,32 @@ const templateArgs = [
 ] as const
 
 interface MockBrowser {
-  newContext: jest.Mock
-  close: jest.Mock
+  newContext: Mock
+  close: Mock
 }
 
 const buildMockPage = () => ({
-  setContent: jest.fn().mockResolvedValue(undefined),
-  pdf: jest.fn().mockResolvedValue(Buffer.from('mock-pdf')),
-  close: jest.fn().mockResolvedValue(undefined),
+  setContent: vi.fn().mockResolvedValue(undefined),
+  pdf: vi.fn().mockResolvedValue(Buffer.from('mock-pdf')),
+  close: vi.fn().mockResolvedValue(undefined),
 })
 
 const buildMockBrowser = (): MockBrowser => ({
-  newContext: jest.fn().mockImplementation(() => ({
-    newPage: jest.fn().mockResolvedValue(buildMockPage()),
-    close: jest.fn().mockResolvedValue(undefined),
+  newContext: vi.fn().mockImplementation(() => ({
+    newPage: vi.fn().mockResolvedValue(buildMockPage()),
+    close: vi.fn().mockResolvedValue(undefined),
   })),
-  close: jest.fn().mockResolvedValue(undefined),
+  close: vi.fn().mockResolvedValue(undefined),
 })
 
 describe('PdfGeneratorService — shared browser lifecycle', () => {
   let service: PdfGeneratorService
-  let launchMock: jest.Mock
+  let launchMock: Mock
   let mockBrowsers: MockBrowser[]
 
   beforeEach(async () => {
     mockBrowsers = []
-    launchMock = jest.mocked(chromium.launch)
+    launchMock = vi.mocked(chromium.launch)
     launchMock.mockReset()
     launchMock.mockImplementation(() => {
       const browser = buildMockBrowser()
@@ -77,11 +78,11 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
 
     service = module.get<PdfGeneratorService>(PdfGeneratorService)
 
-    jest.spyOn(service, 'addPasswordToPdf').mockResolvedValue(Buffer.from('mock-encrypted-pdf'))
+    vi.spyOn(service, 'addPasswordToPdf').mockResolvedValue(Buffer.from('mock-encrypted-pdf'))
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('generateFromTemplate calls inside withSharedBrowser reuse one browser', async () => {
@@ -101,12 +102,12 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
   it('releases the inner pin in finally when generateFromTemplate throws', async () => {
     await service.withSharedBrowser(async () => {
       mockBrowsers[0].newContext.mockImplementationOnce(() => ({
-        newPage: jest.fn().mockResolvedValue({
-          setContent: jest.fn().mockResolvedValue(undefined),
-          pdf: jest.fn().mockRejectedValue(new Error('page.pdf boom')),
-          close: jest.fn().mockResolvedValue(undefined),
+        newPage: vi.fn().mockResolvedValue({
+          setContent: vi.fn().mockResolvedValue(undefined),
+          pdf: vi.fn().mockRejectedValue(new Error('page.pdf boom')),
+          close: vi.fn().mockResolvedValue(undefined),
         }),
-        close: jest.fn().mockResolvedValue(undefined),
+        close: vi.fn().mockResolvedValue(undefined),
       }))
 
       await expect(service.generateFromTemplate(...templateArgs)).rejects.toThrow()

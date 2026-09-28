@@ -78,6 +78,11 @@ overrides:
 # the TypeScript of the project that uses them, they get whichever version pnpm happens to hoist,
 # which can be another workspace package's (incompatible) TypeScript. Declaring the peer makes them
 # resolve the using project's TypeScript.
+#
+# @golevelup/ts-vitest imports `vitest` without declaring it, so pnpm gives it
+# whichever vitest is hoisted, which can differ from the version running the
+# tests. Two vitest versions in one run break assertions. Declaring the peer
+# makes it use the consumer's vitest.
 packageExtensions:
   '@darraghor/eslint-plugin-nestjs-typed':
     peerDependencies:
@@ -88,6 +93,10 @@ packageExtensions:
     peerDependenciesMeta:
       typescript:
         optional: true
+  '@golevelup/ts-vitest':
+    peerDependencies:
+      vitest: '*'
+
 
 # The root package.json pins Node and pnpm in devEngines with `onFail: error`,
 # so any tool that reads that contract and finds the wrong version stops instead

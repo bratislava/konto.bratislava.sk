@@ -1,6 +1,6 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { Nack } from '@golevelup/nestjs-rabbitmq'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
@@ -10,6 +10,7 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import * as formDataExtractors from 'forms-shared/form-utils/formDataExtractors'
+import type { Mock, MockInstance } from 'vitest'
 
 import { createTestForm } from '../../../__tests__/factories/form.factory'
 import ConvertPdfService from '../../../convert-pdf/convert-pdf.service'
@@ -24,8 +25,8 @@ import EmailFormsService from '../email-forms.service'
 import FormDeliveryConsumerService from '../form-delivery-consumer.service'
 import WebhookService from '../webhook.service'
 
-jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
-jest.mock('forms-shared/form-utils/formDataExtractors')
+vi.mock('forms-shared/definitions/getFormDefinitionBySlug')
+vi.mock('forms-shared/form-utils/formDataExtractors')
 
 describe('FormDeliveryConsumerService', () => {
   let service: FormDeliveryConsumerService
@@ -33,7 +34,7 @@ describe('FormDeliveryConsumerService', () => {
   let ginisService: GinisService
 
   beforeEach(async () => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
 
     // TODO refactor to use imports
     const app: TestingModule = await Test.createTestingModule({
@@ -72,15 +73,15 @@ describe('FormDeliveryConsumerService', () => {
     ginisService = app.get<GinisService>(GinisService)
     Object.defineProperty(service, 'logger', {
       value: {
-        error: jest.fn(),
-        warn: jest.fn(),
-        debug: jest.fn(),
-        log: jest.fn(),
+        error: vi.fn(),
+        warn: vi.fn(),
+        debug: vi.fn(),
+        log: vi.fn(),
       },
     })
 
     // mock resolving mick form & saving file to db in each convert-pdf call
-    formsService['getUniqueForm'] = jest.fn().mockResolvedValue({
+    formsService['getUniqueForm'] = vi.fn().mockResolvedValue({
       id: 'id',
     })
   })
@@ -93,11 +94,8 @@ describe('FormDeliveryConsumerService', () => {
 
   describe('queueDelayedForm', () => {
     it('should requeue', async () => {
-      const spyError = jest.spyOn(service['logger'], 'error')
-      const spyDelay = jest.spyOn(
-        service['rabbitmqClientService'],
-        'publishDelay',
-      )
+      const spyError = vi.spyOn(service['logger'], 'error')
+      const spyDelay = vi.mocked(service['rabbitmqClientService'].publishDelay)
 
       await service['queueDelayedForm']('formIdVal', 2, FormError.NONE, {
         email: 'test.inovacie_at_bratislava.sk',
@@ -135,11 +133,11 @@ describe('FormDeliveryConsumerService', () => {
     } as FormDefinitionSlovenskoSk
 
     beforeEach(() => {
-      jest.resetAllMocks()
+      vi.resetAllMocks()
     })
 
     it('should return Nack(false) when form is not found', async () => {
-      jest.spyOn(formsService, 'getUniqueForm').mockResolvedValue(null)
+      vi.spyOn(formsService, 'getUniqueForm').mockResolvedValue(null)
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
@@ -148,9 +146,9 @@ describe('FormDeliveryConsumerService', () => {
     })
 
     it('should return Nack(false) when form is archived', async () => {
-      jest
-        .spyOn(formsService, 'getUniqueForm')
-        .mockResolvedValue({ archived: true } as Forms)
+      vi.spyOn(formsService, 'getUniqueForm').mockResolvedValue({
+        archived: true,
+      } as Forms)
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
@@ -159,10 +157,10 @@ describe('FormDeliveryConsumerService', () => {
     })
 
     it('should return Nack(false) when form definition is not found', async () => {
-      jest
-        .spyOn(formsService, 'getUniqueForm')
-        .mockResolvedValue({ formDefinitionSlug: 'test-slug' } as Forms)
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
+      vi.spyOn(formsService, 'getUniqueForm').mockResolvedValue({
+        formDefinitionSlug: 'test-slug',
+      } as Forms)
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue(null)
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
@@ -175,12 +173,12 @@ describe('FormDeliveryConsumerService', () => {
         formDefinitionSlug: 'test-slug',
         id: 'test-form-id',
       })
-      jest.spyOn(formsService, 'getUniqueForm').mockResolvedValue(mockForm)
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      vi.spyOn(formsService, 'getUniqueForm').mockResolvedValue(mockForm)
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.Email,
       })
-      const createDocumentSpy = jest
-        .spyOn(ginisService, 'createDocument')
+      const createDocumentSpy = vi
+        .mocked(ginisService.createDocument)
         .mockResolvedValue()
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
@@ -199,12 +197,12 @@ describe('FormDeliveryConsumerService', () => {
         formDefinitionSlug: 'test-slug',
         id: 'test-form-id',
       })
-      jest.spyOn(formsService, 'getUniqueForm').mockResolvedValue(mockForm)
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      vi.spyOn(formsService, 'getUniqueForm').mockResolvedValue(mockForm)
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.Webhook,
       })
-      const createDocumentSpy = jest
-        .spyOn(ginisService, 'createDocument')
+      const createDocumentSpy = vi
+        .mocked(ginisService.createDocument)
         .mockResolvedValue()
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
@@ -221,14 +219,12 @@ describe('FormDeliveryConsumerService', () => {
         formDefinitionSlug: 'test-slug',
         id: 'test-id',
       })
-      jest.spyOn(formsService, 'getUniqueForm').mockResolvedValue(mockForm)
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
-        mockFormDefinition,
+      vi.spyOn(formsService, 'getUniqueForm').mockResolvedValue(mockForm)
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue(mockFormDefinition)
+      vi.mocked(ginisService.createDocument).mockResolvedValue()
+      ;(formDataExtractors.extractFormSubjectPlain as Mock).mockReturnValue(
+        'mock-subject',
       )
-      jest.spyOn(ginisService, 'createDocument').mockResolvedValue()
-      ;(
-        formDataExtractors.extractFormSubjectPlain as jest.Mock
-      ).mockReturnValue('mock-subject')
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
@@ -257,13 +253,11 @@ describe('FormDeliveryConsumerService', () => {
         formDefinitionSlug: 'test-slug',
         id: 'test-id',
       })
-      jest.spyOn(formsService, 'getUniqueForm').mockResolvedValue(mockForm)
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
-        mockFormDefinition,
+      vi.spyOn(formsService, 'getUniqueForm').mockResolvedValue(mockForm)
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue(mockFormDefinition)
+      vi.mocked(ginisService.createDocument).mockRejectedValue(
+        new Error('Ginis error'),
       )
-      jest
-        .spyOn(ginisService, 'createDocument')
-        .mockRejectedValue(new Error('Ginis error'))
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
@@ -292,14 +286,12 @@ describe('FormDeliveryConsumerService', () => {
         formDefinitionSlug: 'test-slug',
         id: 'test-id',
       })
-      jest.spyOn(formsService, 'getUniqueForm').mockResolvedValue(mockForm)
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
-        mockFormDefinition,
+      vi.spyOn(formsService, 'getUniqueForm').mockResolvedValue(mockForm)
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue(mockFormDefinition)
+      vi.mocked(ginisService.createDocument).mockRejectedValue(
+        new Error('Ginis error'),
       )
-      jest
-        .spyOn(ginisService, 'createDocument')
-        .mockRejectedValue(new Error('Ginis error'))
-      jest.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
+      vi.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
 
       const result = await service.onQueueConsumption(mockPayload)
 
@@ -311,9 +303,7 @@ describe('FormDeliveryConsumerService', () => {
   describe('handleEmailForm', () => {
     it('should send email and return Nack(false) when successful', async () => {
       const mockForm = createTestForm({ id: 'test-id' })
-      jest
-        .spyOn(service['emailFormsService'], 'sendEmailForm')
-        .mockResolvedValue()
+      vi.mocked(service['emailFormsService'].sendEmailForm).mockResolvedValue()
 
       const result = await service['handleEmailForm'](mockForm, null, null)
 
@@ -322,10 +312,10 @@ describe('FormDeliveryConsumerService', () => {
 
     it('should handle error when sending email fails', async () => {
       const mockForm = createTestForm({ id: 'test-id' })
-      jest
-        .spyOn(service['emailFormsService'], 'sendEmailForm')
-        .mockRejectedValue(new Error('Failed to send email'))
-      jest.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
+      vi.mocked(service['emailFormsService'].sendEmailForm).mockRejectedValue(
+        new Error('Failed to send email'),
+      )
+      vi.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
 
       const result = await service['handleEmailForm'](mockForm, null, null)
 
@@ -338,7 +328,7 @@ describe('FormDeliveryConsumerService', () => {
   describe('handleWebhookForm', () => {
     it('should send webhook and return Nack(false) when successful', async () => {
       const mockForm = createTestForm({ id: 'test-id' })
-      jest.spyOn(service['webhookService'], 'sendWebhook').mockResolvedValue()
+      vi.mocked(service['webhookService'].sendWebhook).mockResolvedValue()
 
       const result = await service['handleWebhookForm'](mockForm)
 
@@ -347,10 +337,10 @@ describe('FormDeliveryConsumerService', () => {
 
     it('should handle error when sending webhook fails', async () => {
       const mockForm = createTestForm({ id: 'test-id' })
-      jest
-        .spyOn(service['webhookService'], 'sendWebhook')
-        .mockRejectedValue(new Error('Failed to send webhook'))
-      jest.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
+      vi.mocked(service['webhookService'].sendWebhook).mockRejectedValue(
+        new Error('Failed to send webhook'),
+      )
+      vi.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
 
       const result = await service['handleWebhookForm'](mockForm)
 
@@ -360,12 +350,11 @@ describe('FormDeliveryConsumerService', () => {
   })
 
   describe('handleSlovenskoSkGenericForm', () => {
-    let pdfServiceSpy: jest.SpyInstance
+    let pdfServiceSpy: MockInstance
 
     beforeEach(() => {
-      pdfServiceSpy = jest.spyOn(
-        service['convertPdfService'],
-        'createPdfImageInFormFiles',
+      pdfServiceSpy = vi.mocked(
+        service['convertPdfService'].createPdfImageInFormFiles,
       )
     })
 
@@ -387,12 +376,12 @@ describe('FormDeliveryConsumerService', () => {
         schema: {},
       } as FormDefinitionSlovenskoSkGeneric
 
-      jest
-        .spyOn(ginisService, 'createDocument')
-        .mockRejectedValue(new Error('Ginis error'))
-      ;(
-        formDataExtractors.extractFormSubjectPlain as jest.Mock
-      ).mockReturnValue('mock-subject')
+      vi.mocked(ginisService.createDocument).mockRejectedValue(
+        new Error('Ginis error'),
+      )
+      ;(formDataExtractors.extractFormSubjectPlain as Mock).mockReturnValue(
+        'mock-subject',
+      )
 
       const result = await service['handleSlovenskoSkGenericForm'](
         mockForm,
@@ -447,10 +436,10 @@ describe('FormDeliveryConsumerService', () => {
         schema: {},
       } as FormDefinitionSlovenskoSkGeneric
 
-      jest
-        .spyOn(ginisService, 'createDocument')
-        .mockRejectedValue(new Error('Ginis error'))
-      jest.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
+      vi.mocked(ginisService.createDocument).mockRejectedValue(
+        new Error('Ginis error'),
+      )
+      vi.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
 
       const result = await service['handleSlovenskoSkGenericForm'](
         mockForm,
@@ -484,9 +473,8 @@ describe('FormDeliveryConsumerService', () => {
         schema: {},
       } as FormDefinitionSlovenskoSkGeneric
 
-      const publishToGinisSpy = jest.spyOn(
-        service['rabbitmqClientService'],
-        'publishToGinis',
+      const publishToGinisSpy = vi.mocked(
+        service['rabbitmqClientService'].publishToGinis,
       )
 
       const result = await service['handleSlovenskoSkGenericForm'](
@@ -521,9 +509,9 @@ describe('FormDeliveryConsumerService', () => {
         type: FormDefinitionType.SlovenskoSkGeneric,
         schema: {},
       } as FormDefinitionSlovenskoSkGeneric
-      ;(
-        formDataExtractors.extractFormSubjectPlain as jest.Mock
-      ).mockReturnValue('mock-subject')
+      ;(formDataExtractors.extractFormSubjectPlain as Mock).mockReturnValue(
+        'mock-subject',
+      )
 
       await service['handleSlovenskoSkGenericForm'](
         mockForm,

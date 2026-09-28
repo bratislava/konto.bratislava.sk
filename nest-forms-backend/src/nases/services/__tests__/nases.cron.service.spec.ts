@@ -1,18 +1,19 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosError } from 'axios'
 import {
   FormDefinition,
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
+import type { Mocked } from 'vitest'
 
 import {
   createTestFormDefinitionSlovenskoSkGeneric,
   createTestFormDefinitionSlovenskoSkTax,
   createTestFormDefinitionWebhook,
 } from '../../../__tests__/factories/formDefinition.factory'
-import { expectStringContaining } from '../../../__tests__/jest-matchers'
+import { expectStringContaining } from '../../../__tests__/matchers'
 import ApiJwtTokensService from '../../../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../../../clients/clients.service'
 import BaConfigService from '../../../config/ba-config.service'
@@ -24,17 +25,14 @@ import {
 import FormRegistrationStatusRepository from '../../repositories/form-registration-status.repository'
 import NasesCronService from '../nases.cron.service'
 
-jest.mock('@bratislava/log-nest', () => ({
-  ...jest.requireActual<typeof import('@bratislava/log-nest')>(
-    '@bratislava/log-nest',
-  ),
-  LineLoggerService: jest.fn().mockImplementation(() => ({
-    log: jest.fn(),
-    error: jest.fn(),
-  })),
+vi.mock('@bratislava/log-nest', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@bratislava/log-nest')>()),
+  LineLoggerService: vi.fn().mockImplementation(function () {
+    return { log: vi.fn(), error: vi.fn() }
+  }),
 }))
 
-jest.mock('forms-shared/definitions/formDefinitions', () => ({
+vi.mock('forms-shared/definitions/formDefinitions', () => ({
   formDefinitions: [
     createTestFormDefinitionSlovenskoSkGeneric({
       pospID: 'test.form.definition.1',
@@ -54,15 +52,15 @@ jest.mock('forms-shared/definitions/formDefinitions', () => ({
 
 describe('NasesCronService', () => {
   let service: NasesCronService
-  let apiJwtTokensService: jest.Mocked<ApiJwtTokensService>
-  let errorFactoryService: jest.Mocked<ErrorFactoryService>
+  let apiJwtTokensService: Mocked<ApiJwtTokensService>
+  let errorFactoryService: Mocked<ErrorFactoryService>
 
   const mockSlovenskoSkApi = {
-    apiEformStatusGet: jest.fn(),
+    apiEformStatusGet: vi.fn(),
   }
 
   beforeEach(async () => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -77,13 +75,13 @@ describe('NasesCronService', () => {
         {
           provide: ApiJwtTokensService,
           useValue: createMock<ApiJwtTokensService>({
-            createTechnicalAccountJwtToken: jest.fn(),
+            createTechnicalAccountJwtToken: vi.fn(),
           }),
         },
         {
           provide: ErrorFactoryService,
           useValue: createMock<ErrorFactoryService>({
-            InternalServerErrorException: jest.fn(),
+            InternalServerErrorException: vi.fn(),
           }),
         },
         {
@@ -123,23 +121,25 @@ describe('NasesCronService', () => {
   describe('validateFormRegistrations', () => {
     let originalFormDefinitions: FormDefinition[]
 
-    beforeEach(() => {
+    beforeEach(async () => {
       apiJwtTokensService.createTechnicalAccountJwtToken.mockReturnValue(
         'mock-jwt-token',
       )
 
       // Store original mock for restoration
-      const formDefinitionsModule = jest.requireMock<{
-        formDefinitions: FormDefinition[]
-      }>('forms-shared/definitions/formDefinitions')
+      const formDefinitionsModule =
+        (await import('forms-shared/definitions/formDefinitions')) as {
+          formDefinitions: FormDefinition[]
+        }
       originalFormDefinitions = [...formDefinitionsModule.formDefinitions]
     })
 
-    afterEach(() => {
+    afterEach(async () => {
       // Restore original mock after each test
-      const formDefinitionsModule = jest.requireMock<{
-        formDefinitions: FormDefinition[]
-      }>('forms-shared/definitions/formDefinitions')
+      const formDefinitionsModule =
+        (await import('forms-shared/definitions/formDefinitions')) as {
+          formDefinitions: FormDefinition[]
+        }
       formDefinitionsModule.formDefinitions = originalFormDefinitions
     })
 
@@ -147,9 +147,8 @@ describe('NasesCronService', () => {
       mockSlovenskoSkApi.apiEformStatusGet.mockResolvedValue({
         data: { status: 'Publikovaný' },
       })
-      const setStatusSpy = jest.spyOn(
-        service['formRegistrationStatusRepository'],
-        'setStatus',
+      const setStatusSpy = vi.mocked(
+        service['formRegistrationStatusRepository'].setStatus,
       )
 
       await service.validateFormRegistrations()
@@ -187,9 +186,8 @@ describe('NasesCronService', () => {
         .mockResolvedValueOnce({
           data: { status: 'Nepublikovaný' },
         })
-      const setStatusSpy = jest.spyOn(
-        service['formRegistrationStatusRepository'],
-        'setStatus',
+      const setStatusSpy = vi.mocked(
+        service['formRegistrationStatusRepository'].setStatus,
       )
 
       await service.validateFormRegistrations()
@@ -214,8 +212,8 @@ describe('NasesCronService', () => {
         })
         .mockRejectedValueOnce(axiosError)
 
-      jest.doMock('axios', () => ({
-        isAxiosError: jest.fn(() => true),
+      vi.doMock('axios', () => ({
+        isAxiosError: vi.fn(() => true),
       }))
 
       await service.validateFormRegistrations()
@@ -270,7 +268,7 @@ describe('NasesCronService', () => {
         data: { status: 'Publikovaný' },
       })
 
-      const logSpy = jest.spyOn(service['logger'], 'log')
+      const logSpy = vi.spyOn(service['logger'], 'log')
 
       await service.validateFormRegistrations()
 
@@ -290,9 +288,10 @@ describe('NasesCronService', () => {
         skipProductionRegistrationCheck: true,
       } as FormDefinition
 
-      const formDefinitionsModule = jest.requireMock<{
-        formDefinitions: FormDefinition[]
-      }>('forms-shared/definitions/formDefinitions')
+      const formDefinitionsModule =
+        (await import('forms-shared/definitions/formDefinitions')) as {
+          formDefinitions: FormDefinition[]
+        }
       const extendedMockFormDefinitions = [
         ...formDefinitionsModule.formDefinitions,
         testingForm,
@@ -312,7 +311,7 @@ describe('NasesCronService', () => {
         },
       )
 
-      const logSpy = jest.spyOn(service['logger'], 'log')
+      const logSpy = vi.spyOn(service['logger'], 'log')
 
       await service.validateFormRegistrations()
 
@@ -333,9 +332,10 @@ describe('NasesCronService', () => {
         skipProductionRegistrationCheck: true,
       } as FormDefinition
 
-      const formDefinitionsModule = jest.requireMock<{
-        formDefinitions: FormDefinition[]
-      }>('forms-shared/definitions/formDefinitions')
+      const formDefinitionsModule =
+        (await import('forms-shared/definitions/formDefinitions')) as {
+          formDefinitions: FormDefinition[]
+        }
       const extendedMockFormDefinitions = [
         ...formDefinitionsModule.formDefinitions,
         testingForm,
@@ -356,14 +356,14 @@ describe('NasesCronService', () => {
       )
 
       Object.defineProperty(service['baConfigService'], 'environment', {
-        get: jest.fn(() => ({
+        get: vi.fn(() => ({
           clusterEnv: ClusterEnv.Staging,
         })),
         configurable: true,
       })
 
-      const logSpy = jest.spyOn(service['logger'], 'log')
-      const errorSpy = jest.spyOn(service['logger'], 'error')
+      const logSpy = vi.spyOn(service['logger'], 'log')
+      const errorSpy = vi.spyOn(service['logger'], 'error')
 
       const result = await service.validateFormRegistrations()
 
@@ -379,9 +379,8 @@ describe('NasesCronService', () => {
       mockSlovenskoSkApi.apiEformStatusGet.mockRejectedValue(
         new Error('API Error'),
       )
-      const setStatusSpy = jest.spyOn(
-        service['formRegistrationStatusRepository'],
-        'setStatus',
+      const setStatusSpy = vi.mocked(
+        service['formRegistrationStatusRepository'].setStatus,
       )
 
       const result = await service.validateFormRegistrations()
@@ -399,9 +398,10 @@ describe('NasesCronService', () => {
         isDisabled: true,
       } as FormDefinition
 
-      const formDefinitionsModule = jest.requireMock<{
-        formDefinitions: FormDefinition[]
-      }>('forms-shared/definitions/formDefinitions')
+      const formDefinitionsModule =
+        (await import('forms-shared/definitions/formDefinitions')) as {
+          formDefinitions: FormDefinition[]
+        }
       formDefinitionsModule.formDefinitions = [
         ...originalFormDefinitions,
         disabledForm,
@@ -434,18 +434,18 @@ describe('NasesCronService', () => {
         isDisabled: true,
       } as FormDefinition
 
-      const formDefinitionsModule = jest.requireMock<{
-        formDefinitions: FormDefinition[]
-      }>('forms-shared/definitions/formDefinitions')
+      const formDefinitionsModule =
+        (await import('forms-shared/definitions/formDefinitions')) as {
+          formDefinitions: FormDefinition[]
+        }
       formDefinitionsModule.formDefinitions = [disabledForm]
 
       mockSlovenskoSkApi.apiEformStatusGet.mockResolvedValue({
         data: { status: 'Publikovaný' },
       })
 
-      const setStatusSpy = jest.spyOn(
-        service['formRegistrationStatusRepository'],
-        'setStatus',
+      const setStatusSpy = vi.mocked(
+        service['formRegistrationStatusRepository'].setStatus,
       )
 
       await service.validateFormRegistrations()
@@ -462,17 +462,18 @@ describe('NasesCronService', () => {
         isDisabled: true,
       } as FormDefinition
 
-      const formDefinitionsModule = jest.requireMock<{
-        formDefinitions: FormDefinition[]
-      }>('forms-shared/definitions/formDefinitions')
+      const formDefinitionsModule =
+        (await import('forms-shared/definitions/formDefinitions')) as {
+          formDefinitions: FormDefinition[]
+        }
       formDefinitionsModule.formDefinitions = [disabledForm]
 
       mockSlovenskoSkApi.apiEformStatusGet.mockResolvedValue({
         data: { status: 'Publikovaný' },
       })
 
-      const errorSpy = jest.spyOn(service['logger'], 'error')
-      const logSpy = jest.spyOn(service['logger'], 'log')
+      const errorSpy = vi.spyOn(service['logger'], 'error')
+      const logSpy = vi.spyOn(service['logger'], 'log')
 
       await service.validateFormRegistrations()
 
@@ -497,9 +498,10 @@ describe('NasesCronService', () => {
         isDisabled: true,
       } as FormDefinition
 
-      const formDefinitionsModule = jest.requireMock<{
-        formDefinitions: FormDefinition[]
-      }>('forms-shared/definitions/formDefinitions')
+      const formDefinitionsModule =
+        (await import('forms-shared/definitions/formDefinitions')) as {
+          formDefinitions: FormDefinition[]
+        }
       formDefinitionsModule.formDefinitions = [disabledForm]
 
       mockSlovenskoSkApi.apiEformStatusGet.mockResolvedValue({

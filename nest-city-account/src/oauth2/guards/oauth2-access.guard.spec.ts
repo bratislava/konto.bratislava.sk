@@ -1,5 +1,5 @@
 import { ErrorFactoryService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { ExecutionContext } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 
@@ -10,7 +10,7 @@ import { OAuth2Client, OAuth2ClientSubservice } from '../subservices/oauth2-clie
 import { OAuth2AccessGuard } from './oauth2-access.guard'
 
 // Mock the AuthGuard base class so we don't need Passport infrastructure
-jest.mock('@nestjs/passport', () => ({
+vi.mock('@nestjs/passport', () => ({
   AuthGuard: () => {
     class MockAuthGuard {
       canActivate() {
@@ -40,18 +40,18 @@ describe('OAuth2AccessGuard', () => {
   ): ExecutionContext {
     const request = { headers: overrides.headers ?? {} }
     const context = createMock<ExecutionContext>({
-      switchToHttp: jest.fn().mockReturnValue({
+      switchToHttp: vi.fn().mockReturnValue({
         getRequest: () => request,
         getResponse: () => ({}),
       }),
-      getHandler: jest.fn(),
-      getClass: jest.fn(),
+      getHandler: vi.fn(),
+      getClass: vi.fn(),
     })
     return context
   }
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     reflector = createMock<Reflector>()
     errorFactoryService = createMock<ErrorFactoryService>()
     clientSubservice = createMock<OAuth2ClientSubservice>()
@@ -59,15 +59,15 @@ describe('OAuth2AccessGuard', () => {
     guard = new OAuth2AccessGuard(reflector, errorFactoryService, clientSubservice)
 
     // Default: reflector returns client name, client lookup succeeds
-    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue('TEST')
-    jest.spyOn(clientSubservice, 'findClientByName').mockReturnValue(mockClient)
+    vi.mocked(reflector.getAllAndOverride).mockReturnValue('TEST')
+    vi.mocked(clientSubservice.findClientByName).mockReturnValue(mockClient)
 
     // Make errorFactoryService throw real errors
-    jest
-      .spyOn(errorFactoryService, 'UnauthorizedException')
-      .mockImplementation(({ message, console }) => {
+    vi.mocked(errorFactoryService.UnauthorizedException).mockImplementation(
+      ({ message, console }) => {
         throw new Error((console as string | undefined) ?? message)
-      })
+      }
+    )
   })
 
   it('should be defined', () => {
@@ -85,20 +85,20 @@ describe('OAuth2AccessGuard', () => {
    */
   describe('canActivate - client name resolution', () => {
     it('should throw Unauthorized when @ClientName() decorator is missing', async () => {
-      jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(undefined)
+      vi.mocked(reflector.getAllAndOverride).mockReturnValue(undefined)
       const context = createMockContext({ headers: { authorization: 'Bearer enc-token' } })
       await expect(guard.canActivate(context)).rejects.toThrow('Client name not specified')
     })
 
     it('should throw Unauthorized when @ClientName() decorator returns empty string (falsy)', async () => {
       // CUSTOM PROXY DETAIL: Empty string clientName is treated as missing
-      jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue('')
+      vi.mocked(reflector.getAllAndOverride).mockReturnValue('')
       const context = createMockContext({ headers: { authorization: 'Bearer enc-token' } })
       await expect(guard.canActivate(context)).rejects.toThrow('Client name not specified')
     })
 
     it('should throw Unauthorized when client configuration not found for name', async () => {
-      jest.spyOn(clientSubservice, 'findClientByName').mockReturnValue(undefined)
+      vi.mocked(clientSubservice.findClientByName).mockReturnValue(undefined)
       const context = createMockContext({ headers: { authorization: 'Bearer enc-token' } })
       await expect(guard.canActivate(context)).rejects.toThrow('Client configuration not found')
     })
@@ -135,7 +135,7 @@ describe('OAuth2AccessGuard', () => {
 
     it('should throw Unauthorized when token after "Bearer " prefix is empty', async () => {
       // RFC 6750 Section 2.1: Token value after "Bearer " must be non-empty
-      jest.spyOn(crypto, 'decryptData').mockImplementation(() => {
+      vi.spyOn(crypto, 'decryptData').mockImplementation(() => {
         throw new Error('empty input')
       })
       const context = createMockContext({ headers: { authorization: 'Bearer ' } })
@@ -146,12 +146,13 @@ describe('OAuth2AccessGuard', () => {
 
     it('should extract encrypted token from after "Bearer " prefix', async () => {
       // RFC 6750 Section 2.1: Extract b64token value following "Bearer " scheme
-      const decryptSpy = jest
+      const decryptSpy = vi
         .spyOn(crypto, 'decryptData')
         .mockReturnValue('{"token":"jwt","clientId":"test-client-id"}')
-      jest
-        .spyOn(tokenSerialization, 'deserializeTokenData')
-        .mockReturnValue({ token: 'jwt', clientId: 'test-client-id' })
+      vi.spyOn(tokenSerialization, 'deserializeTokenData').mockReturnValue({
+        token: 'jwt',
+        clientId: 'test-client-id',
+      })
 
       const context = createMockContext({
         headers: { authorization: 'Bearer encrypted-token-value' },
@@ -172,7 +173,7 @@ describe('OAuth2AccessGuard', () => {
    */
   describe('canActivate - token decryption', () => {
     it('should throw Unauthorized when token decryption fails', async () => {
-      jest.spyOn(crypto, 'decryptData').mockImplementation(() => {
+      vi.spyOn(crypto, 'decryptData').mockImplementation(() => {
         throw new Error('Decryption failed')
       })
       const context = createMockContext({ headers: { authorization: 'Bearer bad-token' } })
@@ -182,8 +183,8 @@ describe('OAuth2AccessGuard', () => {
     })
 
     it('should throw Unauthorized when token deserialization fails', async () => {
-      jest.spyOn(crypto, 'decryptData').mockReturnValue('not-valid-json')
-      jest.spyOn(tokenSerialization, 'deserializeTokenData').mockImplementation(() => {
+      vi.spyOn(crypto, 'decryptData').mockReturnValue('not-valid-json')
+      vi.spyOn(tokenSerialization, 'deserializeTokenData').mockImplementation(() => {
         throw new Error('Invalid JSON')
       })
       const context = createMockContext({ headers: { authorization: 'Bearer bad-token' } })
@@ -193,10 +194,11 @@ describe('OAuth2AccessGuard', () => {
     })
 
     it('should replace Authorization header with decrypted plain JWT for Passport', async () => {
-      jest.spyOn(crypto, 'decryptData').mockReturnValue('serialized')
-      jest
-        .spyOn(tokenSerialization, 'deserializeTokenData')
-        .mockReturnValue({ token: 'plain-jwt-token', clientId: 'test-client-id' })
+      vi.spyOn(crypto, 'decryptData').mockReturnValue('serialized')
+      vi.spyOn(tokenSerialization, 'deserializeTokenData').mockReturnValue({
+        token: 'plain-jwt-token',
+        clientId: 'test-client-id',
+      })
 
       const context = createMockContext({ headers: { authorization: 'Bearer encrypted-token' } })
       const request = context.switchToHttp().getRequest<{ headers: Record<string, string> }>()
@@ -220,10 +222,11 @@ describe('OAuth2AccessGuard', () => {
    */
   describe('canActivate - client ID isolation', () => {
     it('should throw Unauthorized when token clientId does not match expected client', async () => {
-      jest.spyOn(crypto, 'decryptData').mockReturnValue('serialized')
-      jest
-        .spyOn(tokenSerialization, 'deserializeTokenData')
-        .mockReturnValue({ token: 'jwt', clientId: 'different-client-id' })
+      vi.spyOn(crypto, 'decryptData').mockReturnValue('serialized')
+      vi.spyOn(tokenSerialization, 'deserializeTokenData').mockReturnValue({
+        token: 'jwt',
+        clientId: 'different-client-id',
+      })
 
       const context = createMockContext({ headers: { authorization: 'Bearer token' } })
       await expect(guard.canActivate(context)).rejects.toThrow(
@@ -232,10 +235,11 @@ describe('OAuth2AccessGuard', () => {
     })
 
     it('should pass when token clientId matches expected client', async () => {
-      jest.spyOn(crypto, 'decryptData').mockReturnValue('serialized')
-      jest
-        .spyOn(tokenSerialization, 'deserializeTokenData')
-        .mockReturnValue({ token: 'jwt', clientId: 'test-client-id' })
+      vi.spyOn(crypto, 'decryptData').mockReturnValue('serialized')
+      vi.spyOn(tokenSerialization, 'deserializeTokenData').mockReturnValue({
+        token: 'jwt',
+        clientId: 'test-client-id',
+      })
 
       const context = createMockContext({ headers: { authorization: 'Bearer token' } })
       const result = await guard.canActivate(context)

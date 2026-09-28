@@ -1,6 +1,7 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { Mocked, MockedFunction } from 'vitest'
 
 import prismaMock from '../../test/singleton'
 import { cognitoUserDataFactory } from '../__tests__/factories/cognitoUserData.factory'
@@ -22,12 +23,12 @@ import { UserService } from './user.service'
 import { UserTierService } from './user-tier.service'
 import { UserDataSubservice } from './utils/subservice/user-data.subservice'
 
-jest.mock('../utils/constants/tax-deadline')
+vi.mock('../utils/constants/tax-deadline')
 
 describe('UserService', () => {
   let service: UserService
-  let userDataSubservice: jest.Mocked<UserDataSubservice>
-  let errorFactoryService: jest.Mocked<ErrorFactoryService>
+  let userDataSubservice: Mocked<UserDataSubservice>
+  let errorFactoryService: Mocked<ErrorFactoryService>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -68,27 +69,25 @@ describe('UserService', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('hasChangedDeliveryMethodAfterDeadline', () => {
-    const mockGetTaxDeadlineDate = getTaxDeadlineDate as jest.MockedFunction<
-      typeof getTaxDeadlineDate
-    >
+    const mockGetTaxDeadlineDate = getTaxDeadlineDate as MockedFunction<typeof getTaxDeadlineDate>
     const userId = 'test-user-id'
 
     beforeEach(() => {
       mockGetTaxDeadlineDate.mockReturnValue(new Date('2026-03-01'))
-      jest.useFakeTimers().setSystemTime(new Date('2026-10-01')) // After the tax deadline
+      vi.useFakeTimers().setSystemTime(new Date('2026-10-01')) // After the tax deadline
     })
 
     afterEach(() => {
-      jest.useRealTimers()
-      jest.clearAllMocks()
+      vi.useRealTimers()
+      vi.clearAllMocks()
     })
 
     it('should return false when now is before the tax deadline', async () => {
-      jest.useFakeTimers().setSystemTime(new Date('2026-01-01'))
+      vi.useFakeTimers().setSystemTime(new Date('2026-01-01'))
       const result = await service['hasChangedDeliveryMethodAfterDeadline'](userId)
       expect(result).toBe(false)
       expect(userDataSubservice.getActiveAndLockedDeliveryMethodsWithDates).not.toHaveBeenCalled()

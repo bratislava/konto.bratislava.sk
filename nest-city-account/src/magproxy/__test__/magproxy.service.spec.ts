@@ -1,5 +1,5 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
 
@@ -43,7 +43,7 @@ describe('MagproxyService', () => {
 
   describe('validateRfoDataFormat', () => {
     it('should return result for valid RFO data', () => {
-      const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
+      const errorLogSpy = vi.spyOn(service['logger'], 'error').mockImplementation(vi.fn())
       const response = service['validateRfoDataFormat'](
         mockRfoResponseListOneItems as unknown as ResponseRfoPersonDto[]
       )
@@ -53,7 +53,7 @@ describe('MagproxyService', () => {
     })
 
     it('should log error for invalid RFO data, however still return', () => {
-      const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
+      const errorLogSpy = vi.spyOn(service['logger'], 'error').mockImplementation(vi.fn())
 
       const mockRfoResponseListOneItemsInvalid = mockRfoResponseListOneItems
       mockRfoResponseListOneItemsInvalid[0].rodnePriezviskaOsoby[0].meno = 1222 as unknown as string // Invalid data - name as number
@@ -66,7 +66,7 @@ describe('MagproxyService', () => {
     })
 
     it('should throw error if the data is not an array', () => {
-      const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
+      const errorLogSpy = vi.spyOn(service['logger'], 'error').mockImplementation(vi.fn())
       expect(() => {
         service['validateRfoDataFormat']({} as unknown as ResponseRfoPersonDto[])
       }).toThrow()

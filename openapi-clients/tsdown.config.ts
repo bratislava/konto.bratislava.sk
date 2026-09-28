@@ -3,7 +3,7 @@ import { defineConfig } from 'tsdown'
 export default defineConfig({
   // The generated client folders; the output mirrors them (`dist/<client>/index.js`), as the
   // `exports` map expects.
-  entry: ['*/*.ts', '!scripts/**'],
+  entry: ['src/*/*.ts'],
   unbundle: true,
   // `.js` and `.d.ts` (the package is `"type": "module"`), as the `exports` map expects.
   fixedExtension: false,

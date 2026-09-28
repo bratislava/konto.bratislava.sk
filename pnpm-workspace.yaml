@@ -68,8 +68,8 @@ minimumReleaseAgeExclude:
 # internals they import (`@nestjs/common/constants`,
 # `@nestjs/core/helpers/external-context-creator`) resolve through Nest 12's
 # `./*` export. Support is pending upstream in
-# https://github.com/golevelup/nestjs/pull/1262; drop these rules once a release
-# widens the peer range.
+# https://github.com/golevelup/nestjs/pull/1262.
+# TODO: Drop these rules once a release widens the peer range.
 peerDependencyRules:
   allowedVersions:
     '@golevelup/nestjs-rabbitmq>@nestjs/common': '12'

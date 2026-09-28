@@ -8,12 +8,6 @@ const sharedConfig: Config = {
     '^.+\\.(t|j)s$': ['ts-jest', { tsconfig: 'tsconfig.spec.json' }],
   },
   testEnvironment: 'node',
-  moduleNameMapper: {
-    '^react-markdown$': '<rootDir>/../test/react-markdown-mock.js',
-    '^@x0k/json-schema-merge(.*)$':
-      '<rootDir>/../test/json-schema-merge-mock.js',
-    '^jsdom$': '<rootDir>/../test/jsdom-mock.js',
-  },
 }
 
 export default sharedConfig

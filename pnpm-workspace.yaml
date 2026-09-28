@@ -63,6 +63,15 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - '@bratislava/*'
 
+# @golevelup/ts-vitest imports `vitest` without declaring it, so pnpm gives it
+# whichever vitest is hoisted, which can differ from the version running the
+# tests. Two vitest versions in one run break assertions. Declaring the peer
+# makes it use the consumer's vitest.
+packageExtensions:
+  '@golevelup/ts-vitest':
+    peerDependencies:
+      vitest: '*'
+
 # @golevelup/nestjs-rabbitmq 9.0.2 and its @golevelup/nestjs-discovery still cap
 # their NestJS peers at v11. They run on NestJS 12 unchanged: the only Nest
 # internals they import (`@nestjs/common/constants`,

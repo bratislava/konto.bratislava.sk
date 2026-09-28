@@ -1,5 +1,6 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { Mocked } from 'vitest'
 
 import { cognitoUserDataFactory } from '../../__tests__/factories/cognitoUserData.factory'
 import { CognitoUserAttributesTierEnum, ConsentEnum } from '../../generated/prisma/client'
@@ -20,9 +21,9 @@ import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
 
 describe('BloomreachPayloadBuilder', () => {
   let builder: BloomreachPayloadBuilder
-  let cognitoSubservice: jest.Mocked<CognitoSubservice>
-  let contactDbService: jest.Mocked<BloomreachContactDatabaseService>
-  let userIdentitySubservice: jest.Mocked<UserIdentitySubservice>
+  let cognitoSubservice: Mocked<CognitoSubservice>
+  let contactDbService: Mocked<BloomreachContactDatabaseService>
+  let userIdentitySubservice: Mocked<UserIdentitySubservice>
 
   const externalId = 'test-cognito-id'
 
@@ -59,7 +60,7 @@ describe('BloomreachPayloadBuilder', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('buildCustomerCommand', () => {

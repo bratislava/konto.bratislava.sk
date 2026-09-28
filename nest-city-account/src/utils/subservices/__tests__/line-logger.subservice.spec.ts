@@ -1,13 +1,15 @@
+import type { MockInstance } from 'vitest'
+
 import { LineLoggerSubservice } from '../line-logger.subservice'
 
 describe('LineLoggerSubservice', () => {
   let service: LineLoggerSubservice
-  let consoleSpy: jest.SpyInstance
+  let consoleSpy: MockInstance
 
   beforeEach(() => {
     service = new LineLoggerSubservice('LineLogger TEST')
-    consoleSpy = jest.spyOn(console, 'log')
-    consoleSpy.mockImplementation(jest.fn())
+    consoleSpy = vi.spyOn(console, 'log')
+    consoleSpy.mockImplementation(vi.fn())
   })
 
   afterEach(() => {

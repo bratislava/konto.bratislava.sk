@@ -1,4 +1,4 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
@@ -12,7 +12,7 @@ import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import FilesHelper from '../files.helper'
 import FilesService from '../files.service'
 
-jest.mock('../../forms/forms.service')
+vi.mock('../../forms/forms.service')
 
 describe('FilesService', () => {
   let service: FilesService
@@ -42,7 +42,7 @@ describe('FilesService', () => {
 
     service = app.get<FilesService>(FilesService)
     Object.defineProperty(service, 'logger', {
-      value: { error: jest.fn(), warn: jest.fn(), debug: jest.fn() },
+      value: { error: vi.fn(), warn: vi.fn(), debug: vi.fn() },
     })
   })
 
@@ -65,7 +65,7 @@ describe('FilesService', () => {
 
     it('should be false if there are virus files', async () => {
       prismaMock.files.findMany.mockResolvedValue([])
-      service['filesHelper'].checkInfectedFiles = jest
+      service['filesHelper'].checkInfectedFiles = vi
         .fn()
         .mockResolvedValue(true)
 
@@ -75,10 +75,10 @@ describe('FilesService', () => {
 
     it('should be false if there are error files', async () => {
       prismaMock.files.findMany.mockResolvedValue([])
-      service['filesHelper'].checkInfectedFiles = jest
+      service['filesHelper'].checkInfectedFiles = vi
         .fn()
         .mockResolvedValue(false)
-      service['filesHelper'].areErrorFilesInForm = jest
+      service['filesHelper'].areErrorFilesInForm = vi
         .fn()
         .mockResolvedValue(true)
 
@@ -88,10 +88,10 @@ describe('FilesService', () => {
 
     it('should return true otherwise', async () => {
       prismaMock.files.findMany.mockResolvedValue([])
-      service['filesHelper'].checkInfectedFiles = jest
+      service['filesHelper'].checkInfectedFiles = vi
         .fn()
         .mockResolvedValue(false)
-      service['filesHelper'].areErrorFilesInForm = jest
+      service['filesHelper'].areErrorFilesInForm = vi
         .fn()
         .mockResolvedValue(false)
 

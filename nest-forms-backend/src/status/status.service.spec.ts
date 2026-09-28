@@ -6,15 +6,15 @@ import ScannerClientService from '../scanner-client/scanner-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import StatusService from './status.service'
 
-jest.mock('../prisma/prisma.service')
-jest.mock('../minio-storage/minio-storage.service')
-jest.mock('../scanner-client/scanner-client.service')
+vi.mock('../prisma/prisma.service')
+vi.mock('../minio-storage/minio-storage.service')
+vi.mock('../scanner-client/scanner-client.service')
 
 describe('StatusService', () => {
   let service: StatusService
 
   beforeEach(async () => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -30,7 +30,7 @@ describe('StatusService', () => {
     service = module.get<StatusService>(StatusService)
 
     Object.defineProperty(service, 'logger', {
-      value: { error: jest.fn(), log: jest.fn() },
+      value: { error: vi.fn(), log: vi.fn() },
     })
   })
 
@@ -40,9 +40,7 @@ describe('StatusService', () => {
 
   describe('isPrismaRunning', () => {
     it('should return true', async () => {
-      service['prismaService'].isRunning = jest
-        .fn()
-        .mockImplementation(jest.fn())
+      service['prismaService'].isRunning = vi.fn().mockImplementation(vi.fn())
       const result = await service.isPrismaRunning()
       expect(result).toEqual({
         running: true,
@@ -50,7 +48,7 @@ describe('StatusService', () => {
     })
 
     it('should return false', async () => {
-      service['prismaService'].isRunning = jest
+      service['prismaService'].isRunning = vi
         .fn()
         .mockRejectedValueOnce(new Error('Query error.'))
       const result = await service.isPrismaRunning()
@@ -60,7 +58,7 @@ describe('StatusService', () => {
     })
 
     it('should return false when error', async () => {
-      service['prismaService'].isRunning = jest
+      service['prismaService'].isRunning = vi
         .fn()
         .mockRejectedValue(new Error('Error'))
       const result = await service.isPrismaRunning()
@@ -72,7 +70,7 @@ describe('StatusService', () => {
 
   describe('isScannerRunning', () => {
     it('should return true', async () => {
-      service['scannerClientService'].isRunning = jest.fn()
+      service['scannerClientService'].isRunning = vi.fn()
       const result = await service.isScannerRunning()
       expect(result).toEqual({
         running: true,
@@ -80,10 +78,10 @@ describe('StatusService', () => {
     })
 
     it('should return false', async () => {
-      service['scannerClientService'].isRunning = jest
+      service['scannerClientService'].isRunning = vi
         .fn()
         .mockRejectedValue(new Error('Error'))
-      const spy = jest.spyOn(service['logger'], 'error')
+      const spy = vi.spyOn(service['logger'], 'error')
 
       const result = await service.isScannerRunning()
       expect(result).toEqual({
@@ -95,7 +93,7 @@ describe('StatusService', () => {
 
   describe('isMinioRunning', () => {
     it('should return true', () => {
-      service['minioStorageService'].client = jest.fn()
+      service['minioStorageService'].client = vi.fn()
       const result = service.isMinioRunning()
       expect(result).toEqual({
         running: true,
@@ -103,12 +101,10 @@ describe('StatusService', () => {
     })
 
     it('should return false', () => {
-      service['minioStorageService'].client = jest
-        .fn()
-        .mockImplementation(() => {
-          throw new Error('Error')
-        })
-      const spy = jest.spyOn(service['logger'], 'error')
+      service['minioStorageService'].client = vi.fn().mockImplementation(() => {
+        throw new Error('Error')
+      })
+      const spy = vi.spyOn(service['logger'], 'error')
 
       const result = service.isMinioRunning()
       expect(result).toEqual({

@@ -1,6 +1,7 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import mssql, { MSSQLError } from 'mssql'
+import type { Mock, Mocked } from 'vitest'
 
 import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
@@ -9,28 +10,40 @@ import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 
-const mockConnect = jest.fn()
-jest.spyOn(mssql, 'connect').mockImplementation(mockConnect)
+const { mockConnect } = vi.hoisted(() => ({ mockConnect: vi.fn() }))
+// The service imports `connect` by name, so the module is mocked rather than spied on. mssql is
+// CommonJS, so its exports are only on `default` and are spread into the named exports too.
+vi.mock('mssql', async (importOriginal) => {
+  const actual = await importOriginal<
+    typeof import('mssql') & { default: typeof import('mssql') }
+  >()
+  return {
+    ...actual,
+    ...actual.default,
+    connect: mockConnect,
+    default: { ...actual.default, connect: mockConnect },
+  }
+})
 
 describe('NorisConnectionSubservice', () => {
   let module: TestingModule
   let service: NorisConnectionSubservice
   let baConfigService: BaConfigService
   let throwerErrorGuard: ThrowerErrorGuard
-  let prismaService: jest.Mocked<PrismaService>
+  let prismaService: Mocked<PrismaService>
 
-  let mockMssqlConnect: jest.Mock
+  let mockMssqlConnect: Mock
 
   const mockConnectionPool = {
     connected: true,
-    close: jest.fn().mockResolvedValue(undefined),
+    close: vi.fn().mockResolvedValue(undefined),
   }
 
   beforeEach(async () => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     // Assign after clearAllMocks so we hold references to the (now-cleared) mock.
-    mockMssqlConnect = mssql.connect as jest.Mock
+    mockMssqlConnect = mssql.connect as Mock
 
     baConfigService = createMock<BaConfigService>({
       noris: {
@@ -71,7 +84,7 @@ describe('NorisConnectionSubservice', () => {
 
     it('should not throw when connect() fails during shutdown', async () => {
       mockMssqlConnect.mockRejectedValue(new Error('MSSQL unreachable'))
-      const warnSpy = jest.spyOn(service['logger'], 'warn')
+      const warnSpy = vi.spyOn(service['logger'], 'warn')
 
       await expect(module.close()).resolves.not.toThrow()
       expect(warnSpy).toHaveBeenCalled()
@@ -101,7 +114,7 @@ describe('NorisConnectionSubservice', () => {
 
     it('should throw getNorisUrgentError when error is not an MSSQLError', async () => {
       const genericError = new Error('Generic failure')
-      const throwerErrorGuardSpy = jest.spyOn(
+      const throwerErrorGuardSpy = vi.spyOn(
         throwerErrorGuard,
         'InternalServerErrorException',
       )
@@ -127,7 +140,7 @@ describe('NorisConnectionSubservice', () => {
         'Query failed',
         'ESOMEOTHER' as mssql.MSSQL_ERROR_CODE,
       )
-      const throwerErrorGuardSpy = jest.spyOn(
+      const throwerErrorGuardSpy = vi.spyOn(
         throwerErrorGuard,
         'InternalServerErrorException',
       )
@@ -157,11 +170,8 @@ describe('NorisConnectionSubservice', () => {
       'should log, increment config value, then throw when MSSQLError has code %s',
       async (code) => {
         const mssqlError = new MSSQLError('Connection problem', code)
-        const badRequestSpy = jest.spyOn(
-          throwerErrorGuard,
-          'BadRequestException',
-        )
-        const internalErrorSpy = jest.spyOn(
+        const badRequestSpy = vi.spyOn(throwerErrorGuard, 'BadRequestException')
+        const internalErrorSpy = vi.spyOn(
           throwerErrorGuard,
           'InternalServerErrorException',
         )
@@ -188,8 +198,8 @@ describe('NorisConnectionSubservice', () => {
 
     it('should run increment SQL when config row may not exist', async () => {
       const mssqlError = new MSSQLError('Timeout', 'ETIMEOUT')
-      const badRequestSpy = jest.spyOn(throwerErrorGuard, 'BadRequestException')
-      const internalErrorSpy = jest.spyOn(
+      const badRequestSpy = vi.spyOn(throwerErrorGuard, 'BadRequestException')
+      const internalErrorSpy = vi.spyOn(
         throwerErrorGuard,
         'InternalServerErrorException',
       )

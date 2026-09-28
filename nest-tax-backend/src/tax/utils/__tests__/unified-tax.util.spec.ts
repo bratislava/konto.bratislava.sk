@@ -1,3 +1,5 @@
+import type { Mock } from 'vitest'
+
 import {
   DeliveryMethodNamed,
   PaymentStatus,
@@ -32,7 +34,7 @@ import {
 } from '../unified-tax.util'
 
 // Add this mock at the top after imports
-jest.mock('../../../tax-definitions/getTaxDefinitionByType')
+vi.mock('../../../tax-definitions/getTaxDefinitionByType')
 
 /**
  * NORIS `dueDate` per order. Order 1 is not merged into installment row dates (row 1 uses
@@ -380,20 +382,20 @@ function expectEqualAsJsonStringsWithDates(received: object, expected: object) {
 }
 
 describe('UnifiedTaxUtil', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     // Get the actual implementation
-    const actualModule = jest.requireActual<{
+    const actualModule = await vi.importActual<{
       getTaxDefinitionByType: typeof getTaxDefinitionByType
     }>('../../../tax-definitions/getTaxDefinitionByType')
 
     // Reset and setup default mock to use actual implementation
-    ;(getTaxDefinitionByType as jest.Mock).mockImplementation(
+    ;(getTaxDefinitionByType as Mock).mockImplementation(
       actualModule.getTaxDefinitionByType,
     )
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('calculateInstallmentAmounts', () => {
@@ -417,7 +419,7 @@ describe('UnifiedTaxUtil', () => {
       ]
 
       expect(() => calculateInstallmentAmounts(installments, 0, 3)).toThrow(
-        missingInstallmentError,
+        missingInstallmentError.message,
       )
     })
 
@@ -428,7 +430,7 @@ describe('UnifiedTaxUtil', () => {
       ]
 
       expect(() => calculateInstallmentAmounts(installments, 0)).toThrow(
-        missingInstallmentError,
+        missingInstallmentError.message,
       )
     })
 
@@ -449,7 +451,7 @@ describe('UnifiedTaxUtil', () => {
       ]
 
       expect(() => calculateInstallmentAmounts(installments, 0, 3)).toThrow(
-        incorrectCountError,
+        incorrectCountError.message,
       )
     })
 
@@ -767,7 +769,7 @@ describe('UnifiedTaxUtil', () => {
             today: new Date('2025-01-21 21:00'),
           })
 
-          const expected = createExpectedOutput(jest.fn())
+          const expected = createExpectedOutput(vi.fn())
 
           expectEqualAsJsonStringsWithDates(output, expected)
         })
@@ -1713,7 +1715,7 @@ describe('UnifiedTaxUtil', () => {
         new ThrowerErrorGuard().InternalServerErrorException(
           CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
           CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
-        ),
+        ).message,
       )
     })
 
@@ -1748,7 +1750,7 @@ describe('UnifiedTaxUtil', () => {
         new ThrowerErrorGuard().InternalServerErrorException(
           CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
           CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
-        ),
+        ).message,
       )
     })
 
@@ -1762,7 +1764,7 @@ describe('UnifiedTaxUtil', () => {
         new ThrowerErrorGuard().InternalServerErrorException(
           CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
           'No installments found for the tax.',
-        ),
+        ).message,
       )
     })
 
@@ -1821,20 +1823,20 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     isCancelled: false,
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // Get the actual implementation
-    const actualModule = jest.requireActual<{
+    const actualModule = await vi.importActual<{
       getTaxDefinitionByType: typeof getTaxDefinitionByType
     }>('../../../tax-definitions/getTaxDefinitionByType')
 
     // Reset and setup default mock to use actual implementation
-    ;(getTaxDefinitionByType as jest.Mock).mockImplementation(
+    ;(getTaxDefinitionByType as Mock).mockImplementation(
       actualModule.getTaxDefinitionByType,
     )
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('should generate payment for the first installment', () => {
@@ -1875,7 +1877,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       new ThrowerErrorGuard().UnprocessableEntityException(
         CustomErrorTaxTypesEnum.ALREADY_PAID,
         CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
-      ),
+      ).message,
     )
   })
 
@@ -1890,7 +1892,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       new ThrowerErrorGuard().UnprocessableEntityException(
         CustomErrorTaxTypesEnum.AFTER_DUE_DATE,
         CustomErrorTaxTypesResponseEnum.AFTER_DUE_DATE,
-      ),
+      ).message,
     )
   })
 
@@ -1905,7 +1907,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       new ThrowerErrorGuard().UnprocessableEntityException(
         CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
         CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
-      ),
+      ).message,
     )
   })
 
@@ -1934,7 +1936,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       new ThrowerErrorGuard().UnprocessableEntityException(
         CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
         CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
-      ),
+      ).message,
     )
   })
 
@@ -1963,7 +1965,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       new ThrowerErrorGuard().UnprocessableEntityException(
         CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
         CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
-      ),
+      ).message,
     )
   })
 
@@ -1983,18 +1985,18 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       new ThrowerErrorGuard().UnprocessableEntityException(
         CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
         CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
-      ),
+      ).message,
     )
   })
 
-  it('should work when threshold is 0', () => {
+  it('should work when threshold is 0', async () => {
     // Get the actual implementation and override just paymentCalendarThreshold
-    const actualModule = jest.requireActual<{
+    const actualModule = await vi.importActual<{
       getTaxDefinitionByType: typeof getTaxDefinitionByType
     }>('../../../tax-definitions/getTaxDefinitionByType')
     const actualDefinition = actualModule.getTaxDefinitionByType(TaxType.DZN)
 
-    ;(getTaxDefinitionByType as jest.Mock).mockReturnValue({
+    ;(getTaxDefinitionByType as Mock).mockReturnValue({
       ...actualDefinition,
       paymentCalendarThreshold: 0,
     })
@@ -2029,7 +2031,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       new ThrowerErrorGuard().InternalServerErrorException(
         CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         'No installments found for the tax.',
-      ),
+      ).message,
     )
   })
 
@@ -2054,7 +2056,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       new ThrowerErrorGuard().InternalServerErrorException(
         CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
-      ),
+      ).message,
     )
   })
 
@@ -2089,7 +2091,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       new ThrowerErrorGuard().InternalServerErrorException(
         CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
-      ),
+      ).message,
     )
   })
 
@@ -2235,7 +2237,7 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
       new ThrowerErrorGuard().UnprocessableEntityException(
         CustomErrorTaxTypesEnum.ALREADY_PAID,
         CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
-      ),
+      ).message,
     )
   })
 
@@ -2254,7 +2256,7 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
       new ThrowerErrorGuard().UnprocessableEntityException(
         CustomErrorTaxTypesEnum.ALREADY_PAID,
         CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
-      ),
+      ).message,
     )
   })
 })

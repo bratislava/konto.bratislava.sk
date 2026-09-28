@@ -1,5 +1,6 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { Mocked } from 'vitest'
 
 import prismaMock from '../../../test/singleton'
 import { bloomreachOutboxFactory } from '../../__tests__/factories/bloomreachOutbox.factory'
@@ -17,7 +18,7 @@ import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
 
 describe('BloomreachOutboxService', () => {
   let service: BloomreachOutboxService
-  let payloadBuilder: jest.Mocked<BloomreachPayloadBuilder>
+  let payloadBuilder: Mocked<BloomreachPayloadBuilder>
 
   const externalId = 'test-cognito-id'
 
@@ -75,7 +76,7 @@ describe('BloomreachOutboxService', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('trackCustomer', () => {

@@ -1,5 +1,6 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { Mock } from 'vitest'
 
 import { oauth2DataFactory } from '../__tests__/factories/oauth2Data.factory'
 import { expectAny, expectDefined, expectObjectContaining } from '../__tests__/jest-matchers'
@@ -19,17 +20,17 @@ import { OAuth2Client, OAuth2ClientSubservice } from './subservices/oauth2-clien
 import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subservice'
 
 // Mock crypto and tokenSerialization modules
-jest.mock('../utils/crypto', () => ({
-  encryptData: jest.fn((data: string) => `enc:${data}`),
-  decryptData: jest.fn((data: string) => data.replace('enc:', '')),
-  timingSafeStringEqual: jest.fn(),
+vi.mock('../utils/crypto', () => ({
+  encryptData: vi.fn((data: string) => `enc:${data}`),
+  decryptData: vi.fn((data: string) => data.replace('enc:', '')),
+  timingSafeStringEqual: vi.fn(),
 }))
 
-jest.mock('../utils/tokenSerialization', () => ({
-  serializeTokenData: jest.fn((token: string, clientId: string) =>
+vi.mock('../utils/tokenSerialization', () => ({
+  serializeTokenData: vi.fn((token: string, clientId: string) =>
     JSON.stringify({ token, clientId })
   ),
-  deserializeTokenData: jest.fn((data: string) => JSON.parse(data) as TokenData),
+  deserializeTokenData: vi.fn((data: string) => JSON.parse(data) as TokenData),
 }))
 
 describe('OAuth2Service', () => {
@@ -41,21 +42,20 @@ describe('OAuth2Service', () => {
   let clientSubservice: OAuth2ClientSubservice
 
   beforeEach(async () => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     // clearAllMocks only clears call data, not implementations — restore the module mocks'
     // default behaviour so a `mockImplementation` override in one test cannot leak into the next.
-    ;(crypto.encryptData as jest.Mock).mockImplementation((data: string) => `enc:${data}`)
-    ;(crypto.decryptData as jest.Mock).mockImplementation((data: string) =>
-      data.replace('enc:', '')
+    ;(crypto.encryptData as Mock).mockImplementation((data: string) => `enc:${data}`)
+    ;(crypto.decryptData as Mock).mockImplementation((data: string) => data.replace('enc:', ''))
+    ;(crypto.timingSafeStringEqual as Mock).mockImplementation(
+      (await vi.importActual<typeof import('../utils/crypto')>('../utils/crypto'))
+        .timingSafeStringEqual
     )
-    ;(crypto.timingSafeStringEqual as jest.Mock).mockImplementation(
-      jest.requireActual<typeof import('../utils/crypto')>('../utils/crypto').timingSafeStringEqual
-    )
-    ;(tokenSerialization.serializeTokenData as jest.Mock).mockImplementation(
+    ;(tokenSerialization.serializeTokenData as Mock).mockImplementation(
       (token: string, clientId: string) => JSON.stringify({ token, clientId })
     )
-    ;(tokenSerialization.deserializeTokenData as jest.Mock).mockImplementation(
+    ;(tokenSerialization.deserializeTokenData as Mock).mockImplementation(
       (data: string) => JSON.parse(data) as TokenData
     )
 
@@ -84,8 +84,8 @@ describe('OAuth2Service', () => {
     baConfigService = module.get<BaConfigService>(BaConfigService)
     clientSubservice = module.get<OAuth2ClientSubservice>(OAuth2ClientSubservice)
 
-    jest.spyOn(oAuth2ErrorThrower, 'authorizationException')
-    jest.spyOn(oAuth2ErrorThrower, 'tokenException')
+    vi.spyOn(oAuth2ErrorThrower, 'authorizationException')
+    vi.spyOn(oAuth2ErrorThrower, 'tokenException')
   })
 
   it('should be defined', () => {
@@ -102,9 +102,7 @@ describe('OAuth2Service', () => {
    */
   describe('storeAuthorizationRequest', () => {
     it('should store all parameters in database and return the ID', async () => {
-      jest
-        .spyOn(prisma.oAuth2Data, 'create')
-        .mockResolvedValue(oauth2DataFactory({ id: 'stored-id' }))
+      vi.mocked(prisma.oAuth2Data.create).mockResolvedValue(oauth2DataFactory({ id: 'stored-id' }))
       const result = await service.storeAuthorizationRequest({
         response_type: 'code',
         client_id: 'cid',
@@ -130,9 +128,7 @@ describe('OAuth2Service', () => {
 
     it('should convert optional scope/state to null when absent', async () => {
       // CUSTOM PROXY DETAIL: Prisma stores null for absent optional fields
-      jest
-        .spyOn(prisma.oAuth2Data, 'create')
-        .mockResolvedValue(oauth2DataFactory({ id: 'stored-id' }))
+      vi.mocked(prisma.oAuth2Data.create).mockResolvedValue(oauth2DataFactory({ id: 'stored-id' }))
       await service.storeAuthorizationRequest({
         response_type: 'code',
         client_id: 'cid',
@@ -149,7 +145,7 @@ describe('OAuth2Service', () => {
     })
 
     it('should propagate database errors from prisma.create', async () => {
-      jest.spyOn(prisma.oAuth2Data, 'create').mockRejectedValue(new Error('DB connection failed'))
+      vi.mocked(prisma.oAuth2Data.create).mockRejectedValue(new Error('DB connection failed'))
       await expect(
         service.storeAuthorizationRequest({
           response_type: 'code',
@@ -166,12 +162,12 @@ describe('OAuth2Service', () => {
 
   describe('loadAuthorizationRequest', () => {
     it('should return undefined when the authorization request does not exist', async () => {
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(null)
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(null)
       await expect(service.loadAuthorizationRequest('missing-id')).resolves.toBeUndefined()
     })
 
     it('should map a stored authorization request back to the request DTO', async () => {
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(
         oauth2DataFactory({
           responseType: 'code',
           clientId: 'cid',
@@ -206,16 +202,17 @@ describe('OAuth2Service', () => {
   describe('storeTokensForAuthRequest', () => {
     beforeEach(() => {
       baConfigService.cognito.clientId = 'cognito-client-id'
-      jest
-        .spyOn(prisma.oAuth2Data, 'findUnique')
-        .mockResolvedValue(oauth2DataFactory({ id: 'auth-req-id' }))
-      jest.spyOn(prisma.oAuth2Data, 'update').mockResolvedValue(oauth2DataFactory())
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(
+        oauth2DataFactory({ id: 'auth-req-id' })
+      )
+      vi.mocked(prisma.oAuth2Data.update).mockResolvedValue(oauth2DataFactory())
     })
 
     it('should refresh via Cognito, then serialize+encrypt all tokens bound to the client id and persist them', async () => {
-      jest
-        .spyOn(cognitoSubservice, 'refreshTokens')
-        .mockResolvedValue({ accessToken: 'fresh-at', idToken: 'fresh-id' })
+      vi.mocked(cognitoSubservice.refreshTokens).mockResolvedValue({
+        accessToken: 'fresh-at',
+        idToken: 'fresh-id',
+      })
 
       await service.storeTokensForAuthRequest('auth-req-id', 'cid', 'refresh-tok')
 
@@ -242,9 +239,10 @@ describe('OAuth2Service', () => {
     })
 
     it('should store idTokenEnc as null when Cognito returns no id token', async () => {
-      jest
-        .spyOn(cognitoSubservice, 'refreshTokens')
-        .mockResolvedValue({ accessToken: 'fresh-at', idToken: undefined })
+      vi.mocked(cognitoSubservice.refreshTokens).mockResolvedValue({
+        accessToken: 'fresh-at',
+        idToken: undefined,
+      })
 
       await service.storeTokensForAuthRequest('auth-req-id', 'cid', 'refresh-tok')
 
@@ -257,12 +255,11 @@ describe('OAuth2Service', () => {
 
     it('should default access token expiry to one hour when the JWT has no exp claim', async () => {
       // 'fresh-at' is not a decodable JWT, so extractJwtExpiration returns undefined and we fall back
-      jest
-        .spyOn(cognitoSubservice, 'refreshTokens')
-        .mockResolvedValue({ accessToken: 'fresh-at', idToken: undefined })
-      const updateSpy = jest
-        .spyOn(prisma.oAuth2Data, 'update')
-        .mockResolvedValue(oauth2DataFactory())
+      vi.mocked(cognitoSubservice.refreshTokens).mockResolvedValue({
+        accessToken: 'fresh-at',
+        idToken: undefined,
+      })
+      const updateSpy = vi.mocked(prisma.oAuth2Data.update).mockResolvedValue(oauth2DataFactory())
 
       const before = Date.now()
       await service.storeTokensForAuthRequest('auth-req-id', 'cid', 'refresh-tok')
@@ -274,7 +271,7 @@ describe('OAuth2Service', () => {
     })
 
     it('should throw SERVER_ERROR when the authorization request does not exist', async () => {
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(null)
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(null)
 
       await expect(
         service.storeTokensForAuthRequest('missing-id', 'cid', 'refresh-tok')
@@ -291,7 +288,7 @@ describe('OAuth2Service', () => {
     })
 
     it('should throw SERVER_ERROR when the Cognito refresh call fails', async () => {
-      jest.spyOn(cognitoSubservice, 'refreshTokens').mockRejectedValue(new Error('Cognito down'))
+      vi.mocked(cognitoSubservice.refreshTokens).mockRejectedValue(new Error('Cognito down'))
 
       await expect(
         service.storeTokensForAuthRequest('auth-req-id', 'cid', 'refresh-tok')
@@ -307,9 +304,10 @@ describe('OAuth2Service', () => {
     })
 
     it('should throw SERVER_ERROR when Cognito returns no access token', async () => {
-      jest
-        .spyOn(cognitoSubservice, 'refreshTokens')
-        .mockResolvedValue({ accessToken: undefined, idToken: undefined })
+      vi.mocked(cognitoSubservice.refreshTokens).mockResolvedValue({
+        accessToken: undefined,
+        idToken: undefined,
+      })
 
       await expect(
         service.storeTokensForAuthRequest('auth-req-id', 'cid', 'refresh-tok')
@@ -325,10 +323,11 @@ describe('OAuth2Service', () => {
     })
 
     it('should throw SERVER_ERROR when token encryption fails', async () => {
-      jest
-        .spyOn(cognitoSubservice, 'refreshTokens')
-        .mockResolvedValue({ accessToken: 'fresh-at', idToken: undefined })
-      ;(crypto.encryptData as jest.Mock).mockImplementation(() => {
+      vi.mocked(cognitoSubservice.refreshTokens).mockResolvedValue({
+        accessToken: 'fresh-at',
+        idToken: undefined,
+      })
+      ;(crypto.encryptData as Mock).mockImplementation(() => {
         throw new Error('CRYPTO_SECRET_KEY missing')
       })
 
@@ -410,7 +409,7 @@ describe('OAuth2Service', () => {
    */
   describe('continueAuthorization', () => {
     it('should generate a random authorization code and store it', async () => {
-      jest.spyOn(prisma.oAuth2Data, 'update').mockResolvedValue(oauth2DataFactory())
+      vi.mocked(prisma.oAuth2Data.update).mockResolvedValue(oauth2DataFactory())
       const result = await service.continueAuthorization('auth-req-id', {
         response_type: 'code',
         client_id: 'cid',
@@ -434,7 +433,7 @@ describe('OAuth2Service', () => {
     })
 
     it('should omit state from response when not present in request', async () => {
-      jest.spyOn(prisma.oAuth2Data, 'update').mockResolvedValue(oauth2DataFactory())
+      vi.mocked(prisma.oAuth2Data.update).mockResolvedValue(oauth2DataFactory())
       const result = await service.continueAuthorization('auth-req-id', {
         response_type: 'code',
         client_id: 'cid',
@@ -447,7 +446,7 @@ describe('OAuth2Service', () => {
 
     it('should omit state from response when state is empty string', async () => {
       // RFC 6749 Section 4.1.2: state REQUIRED if present in authorization request — empty string is falsy
-      jest.spyOn(prisma.oAuth2Data, 'update').mockResolvedValue(oauth2DataFactory())
+      vi.mocked(prisma.oAuth2Data.update).mockResolvedValue(oauth2DataFactory())
       const result = await service.continueAuthorization('auth-req-id', {
         response_type: 'code',
         client_id: 'cid',
@@ -522,8 +521,8 @@ describe('OAuth2Service', () => {
     })
 
     beforeEach(() => {
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(validOAuth2Data)
-      jest.spyOn(prisma.oAuth2Data, 'delete').mockResolvedValue(oauth2DataFactory())
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(validOAuth2Data)
+      vi.mocked(prisma.oAuth2Data.delete).mockResolvedValue(oauth2DataFactory())
     })
 
     it('should return token response for a valid authorization code', async () => {
@@ -540,7 +539,7 @@ describe('OAuth2Service', () => {
     })
 
     it('should throw INVALID_GRANT when authorization code is not found (RFC 6749 Section 4.1.2)', async () => {
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(null)
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(null)
       await expect(
         service.token({
           grant_type: 'authorization_code',
@@ -569,7 +568,7 @@ describe('OAuth2Service', () => {
     })
 
     it('should throw INVALID_GRANT when code was already used (delete fails — race condition)', async () => {
-      jest.spyOn(prisma.oAuth2Data, 'delete').mockRejectedValue(new Error('Record not found'))
+      vi.mocked(prisma.oAuth2Data.delete).mockRejectedValue(new Error('Record not found'))
       await expect(
         service.token({
           grant_type: 'authorization_code',
@@ -592,7 +591,7 @@ describe('OAuth2Service', () => {
         ...validOAuth2Data,
         authorizationCodeCreatedAt: new Date(Date.now() - 6 * 60 * 1000), // 6 min ago
       }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(expiredData)
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(expiredData)
       await expect(
         service.token({
           grant_type: 'authorization_code',
@@ -620,7 +619,7 @@ describe('OAuth2Service', () => {
         ...validOAuth2Data,
         authorizationCodeCreatedAt: new Date(Date.now() - 4 * 60 * 1000), // 4 min ago
       }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(recentData)
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(recentData)
       const result = await service.token({
         grant_type: 'authorization_code',
         code: 'valid-code',
@@ -660,7 +659,7 @@ describe('OAuth2Service', () => {
         refreshTokenEnc: null,
         accessTokenExpiresAt: null,
       }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(noTokensData)
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(noTokensData)
       await expect(
         service.token({
           grant_type: 'authorization_code',
@@ -698,7 +697,7 @@ describe('OAuth2Service', () => {
     it('should omit scope from token response when no scope was stored', async () => {
       // RFC 6749 Section 5.1: scope omitted when identical to originally granted scope
       const noScopeData = { ...validOAuth2Data, scope: null }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(noScopeData)
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(noScopeData)
       const result = await service.token({
         grant_type: 'authorization_code',
         code: 'valid-code',
@@ -711,7 +710,7 @@ describe('OAuth2Service', () => {
     it('should throw INVALID_GRANT when authorizationCodeCreatedAt is null (missing timestamp)', async () => {
       // CUSTOM PROXY DETAIL: Defensive guard against corrupted DB rows where code exists but timestamp is null
       const nullTimestamp = { ...validOAuth2Data, authorizationCodeCreatedAt: null }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(nullTimestamp)
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(nullTimestamp)
       await expect(
         service.token({
           grant_type: 'authorization_code',
@@ -735,7 +734,7 @@ describe('OAuth2Service', () => {
         ...validOAuth2Data,
         accessTokenExpiresAt: new Date(Date.now() - 60000),
       }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(expiredTokenData)
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(expiredTokenData)
       const result = await service.token({
         grant_type: 'authorization_code',
         code: 'valid-code',
@@ -775,8 +774,8 @@ describe('OAuth2Service', () => {
     })
 
     beforeEach(() => {
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(pkceOAuth2Data)
-      jest.spyOn(prisma.oAuth2Data, 'delete').mockResolvedValue(oauth2DataFactory())
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(pkceOAuth2Data)
+      vi.mocked(prisma.oAuth2Data.delete).mockResolvedValue(oauth2DataFactory())
     })
 
     it('should validate S256 code_verifier by hashing with SHA-256 and base64url encoding', async () => {
@@ -784,7 +783,7 @@ describe('OAuth2Service', () => {
       //   SHA256("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk") base64url = E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
       const verifier = 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk'
       const expectedChallenge = 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM' // = SHA256(verifier)
-      ;(crypto.timingSafeStringEqual as jest.Mock).mockReturnValue(true)
+      ;(crypto.timingSafeStringEqual as Mock).mockReturnValue(true)
 
       await service.token({
         grant_type: 'authorization_code',
@@ -801,7 +800,7 @@ describe('OAuth2Service', () => {
     })
 
     it('should throw INVALID_REQUEST when S256 code_verifier does not match challenge', async () => {
-      ;(crypto.timingSafeStringEqual as jest.Mock).mockReturnValue(false)
+      ;(crypto.timingSafeStringEqual as Mock).mockReturnValue(false)
 
       await expect(
         service.token({
@@ -826,8 +825,8 @@ describe('OAuth2Service', () => {
         codeChallenge: 'plain-challenge-value',
         codeChallengeMethod: 'plain',
       }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(plainData)
-      ;(crypto.timingSafeStringEqual as jest.Mock).mockReturnValue(true)
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(plainData)
+      ;(crypto.timingSafeStringEqual as Mock).mockReturnValue(true)
 
       await service.token({
         grant_type: 'authorization_code',
@@ -844,7 +843,7 @@ describe('OAuth2Service', () => {
 
     it('should throw INVALID_REQUEST for unsupported code_challenge_method', async () => {
       const badMethodData = { ...pkceOAuth2Data, codeChallengeMethod: 'SHA1' }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(badMethodData)
+      vi.mocked(prisma.oAuth2Data.findUnique).mockResolvedValue(badMethodData)
 
       await expect(
         service.token({
@@ -894,7 +893,7 @@ describe('OAuth2Service', () => {
     })
 
     it('should throw INVALID_GRANT when refresh token decryption fails', async () => {
-      ;(crypto.decryptData as jest.Mock).mockImplementation(() => {
+      ;(crypto.decryptData as Mock).mockImplementation(() => {
         throw new Error('Bad token')
       })
       await expect(
@@ -915,8 +914,8 @@ describe('OAuth2Service', () => {
 
     it('should throw INVALID_GRANT when refresh token clientId does not match request client_id', async () => {
       // Sender-constraining: token was issued to a different client
-      ;(crypto.decryptData as jest.Mock).mockReturnValue('{"token":"rt","clientId":"other-client"}')
-      ;(tokenSerialization.deserializeTokenData as jest.Mock).mockReturnValue({
+      ;(crypto.decryptData as Mock).mockReturnValue('{"token":"rt","clientId":"other-client"}')
+      ;(tokenSerialization.deserializeTokenData as Mock).mockReturnValue({
         token: 'rt',
         clientId: 'other-client',
       })
@@ -938,14 +937,15 @@ describe('OAuth2Service', () => {
     })
 
     it('should call Cognito to refresh tokens with the decrypted refresh token', async () => {
-      ;(crypto.decryptData as jest.Mock).mockReturnValue('{"token":"real-rt","clientId":"cid"}')
-      ;(tokenSerialization.deserializeTokenData as jest.Mock).mockReturnValue({
+      ;(crypto.decryptData as Mock).mockReturnValue('{"token":"real-rt","clientId":"cid"}')
+      ;(tokenSerialization.deserializeTokenData as Mock).mockReturnValue({
         token: 'real-rt',
         clientId: 'cid',
       })
-      jest
-        .spyOn(cognitoSubservice, 'refreshTokens')
-        .mockResolvedValue({ accessToken: 'new-at', idToken: undefined })
+      vi.mocked(cognitoSubservice.refreshTokens).mockResolvedValue({
+        accessToken: 'new-at',
+        idToken: undefined,
+      })
 
       await service.token({
         grant_type: 'refresh_token',
@@ -956,12 +956,12 @@ describe('OAuth2Service', () => {
     })
 
     it('should throw INVALID_GRANT when Cognito refresh fails', async () => {
-      ;(crypto.decryptData as jest.Mock).mockReturnValue('{"token":"rt","clientId":"cid"}')
-      ;(tokenSerialization.deserializeTokenData as jest.Mock).mockReturnValue({
+      ;(crypto.decryptData as Mock).mockReturnValue('{"token":"rt","clientId":"cid"}')
+      ;(tokenSerialization.deserializeTokenData as Mock).mockReturnValue({
         token: 'rt',
         clientId: 'cid',
       })
-      jest.spyOn(cognitoSubservice, 'refreshTokens').mockRejectedValue(new Error('Cognito error'))
+      vi.mocked(cognitoSubservice.refreshTokens).mockRejectedValue(new Error('Cognito error'))
 
       await expect(
         service.token({
@@ -980,14 +980,15 @@ describe('OAuth2Service', () => {
     })
 
     it('should return encrypted access token with Bearer type and expires_in', async () => {
-      ;(crypto.decryptData as jest.Mock).mockReturnValue('{"token":"rt","clientId":"cid"}')
-      ;(tokenSerialization.deserializeTokenData as jest.Mock).mockReturnValue({
+      ;(crypto.decryptData as Mock).mockReturnValue('{"token":"rt","clientId":"cid"}')
+      ;(tokenSerialization.deserializeTokenData as Mock).mockReturnValue({
         token: 'rt',
         clientId: 'cid',
       })
-      jest
-        .spyOn(cognitoSubservice, 'refreshTokens')
-        .mockResolvedValue({ accessToken: 'new-at', idToken: undefined })
+      vi.mocked(cognitoSubservice.refreshTokens).mockResolvedValue({
+        accessToken: 'new-at',
+        idToken: undefined,
+      })
 
       const result = await service.token({
         grant_type: 'refresh_token',
@@ -1002,14 +1003,15 @@ describe('OAuth2Service', () => {
 
     it('should throw INVALID_GRANT when Cognito returns empty string accessToken (falsy)', async () => {
       // Edge case: Cognito returns accessToken='' which is falsy
-      ;(crypto.decryptData as jest.Mock).mockReturnValue('{"token":"rt","clientId":"cid"}')
-      ;(tokenSerialization.deserializeTokenData as jest.Mock).mockReturnValue({
+      ;(crypto.decryptData as Mock).mockReturnValue('{"token":"rt","clientId":"cid"}')
+      ;(tokenSerialization.deserializeTokenData as Mock).mockReturnValue({
         token: 'rt',
         clientId: 'cid',
       })
-      jest
-        .spyOn(cognitoSubservice, 'refreshTokens')
-        .mockResolvedValue({ accessToken: '', idToken: undefined })
+      vi.mocked(cognitoSubservice.refreshTokens).mockResolvedValue({
+        accessToken: '',
+        idToken: undefined,
+      })
 
       await expect(
         service.token({
@@ -1029,15 +1031,16 @@ describe('OAuth2Service', () => {
 
     it('should throw INVALID_GRANT when encryption fails after successful refresh', async () => {
       // CUSTOM PROXY DETAIL: AES-256-GCM token encryption failure after a successful refresh from Cognito
-      ;(crypto.decryptData as jest.Mock).mockReturnValue('{"token":"rt","clientId":"cid"}')
-      ;(tokenSerialization.deserializeTokenData as jest.Mock).mockReturnValue({
+      ;(crypto.decryptData as Mock).mockReturnValue('{"token":"rt","clientId":"cid"}')
+      ;(tokenSerialization.deserializeTokenData as Mock).mockReturnValue({
         token: 'rt',
         clientId: 'cid',
       })
-      jest
-        .spyOn(cognitoSubservice, 'refreshTokens')
-        .mockResolvedValue({ accessToken: 'new-at', idToken: undefined })
-      ;(crypto.encryptData as jest.Mock).mockImplementation(() => {
+      vi.mocked(cognitoSubservice.refreshTokens).mockResolvedValue({
+        accessToken: 'new-at',
+        idToken: undefined,
+      })
+      ;(crypto.encryptData as Mock).mockImplementation(() => {
         throw new Error('Encryption key missing')
       })
 
@@ -1063,13 +1066,13 @@ describe('OAuth2Service', () => {
   describe('getClientInfo', () => {
     it('should return clientId and clientName when client exists', () => {
       const mockClient = createMock<OAuth2Client>({ id: 'cid', name: 'Test App' })
-      jest.spyOn(clientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(clientSubservice.findClientById).mockReturnValue(mockClient)
       const result = service.getClientInfo('cid')
       expect(result).toEqual({ clientId: 'cid', clientName: 'Test App' })
     })
 
     it('should throw SERVER_ERROR when client is not found', () => {
-      jest.spyOn(clientSubservice, 'findClientById').mockReturnValue(undefined)
+      vi.mocked(clientSubservice.findClientById).mockReturnValue(undefined)
       expect(() => service.getClientInfo('nonexistent')).toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,

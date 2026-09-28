@@ -1,6 +1,7 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import axios from 'axios'
+import type { Mocked } from 'vitest'
 
 import prismaMock from '../../../test/singleton'
 import {
@@ -8,7 +9,7 @@ import {
   expectDefined,
   expectObjectContaining,
   expectStringContaining,
-} from '../../__tests__/jest-matchers'
+} from '../../__tests__/matchers'
 import BaConfigService from '../../config/ba-config.service'
 import { BloomreachOutbox, BloomreachOutboxStatus } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
@@ -21,8 +22,8 @@ import {
 } from '../bloomreach.types'
 import { BloomreachOutboxProcessor } from '../bloomreach-outbox.processor'
 
-jest.mock('axios')
-const mockedAxios = axios as jest.Mocked<typeof axios>
+vi.mock('axios')
+const mockedAxios = axios as Mocked<typeof axios>
 
 describe('BloomreachOutboxProcessor', () => {
   let processor: BloomreachOutboxProcessor
@@ -83,7 +84,7 @@ describe('BloomreachOutboxProcessor', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('processOutbox', () => {

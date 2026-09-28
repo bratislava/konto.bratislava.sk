@@ -1,6 +1,6 @@
 import crypto, { Sign, Verify } from 'node:crypto'
 
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import BaConfigService from '../../../config/ba-config.service'
@@ -101,9 +101,9 @@ describe('GpWebpaySubservice', () => {
 
   describe('getSignedData', () => {
     it('should return signed data with digest', () => {
-      jest.spyOn(crypto, 'createSign').mockReturnValue(
+      vi.spyOn(crypto, 'createSign').mockReturnValue(
         createMock<Sign>({
-          sign: jest.fn().mockReturnValue('mock-signature'),
+          sign: vi.fn().mockReturnValue('mock-signature'),
         }),
       )
 
@@ -127,11 +127,9 @@ describe('GpWebpaySubservice', () => {
 
   describe('verifyData', () => {
     it('should verify data with digest', () => {
-      jest
-        .spyOn(crypto, 'createVerify')
-        .mockReturnValue(
-          createMock<Verify>({ verify: jest.fn().mockReturnValue(true) }),
-        )
+      vi.spyOn(crypto, 'createVerify').mockReturnValue(
+        createMock<Verify>({ verify: vi.fn().mockReturnValue(true) }),
+      )
 
       const result = service.verifyData(TaxType.DZN, 'test-data', 'test-digest')
       expect(result).toBe(true)

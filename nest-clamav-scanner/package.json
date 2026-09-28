@@ -18,12 +18,10 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:report": "eslint -f json -o eslint-report.json \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\" --fix",
-    "run-esm-jest": "node --experimental-vm-modules --disable-warning=ExperimentalWarning node_modules/jest/bin/jest.js",
-    "test": "pnpm run-esm-jest",
-    "test:watch": "pnpm run-esm-jest --watch",
-    "test:cov": "pnpm run-esm-jest --coverage",
-    "test:debug": "node --inspect-brk --experimental-vm-modules --disable-warning=ExperimentalWarning -r tsconfig-paths/register -r ts-node/register node_modules/jest/bin/jest.js --runInBand",
-    "test:e2e": "pnpm run-esm-jest --config ./test/jest-e2e.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:cov": "vitest run --coverage",
+    "test:debug": "vitest --inspect-brk --no-file-parallelism",
     "db:generate": "cross-env PRISMA_SKIP_DATASOURCE_URL=1 prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
@@ -60,46 +58,20 @@
     "@nestjs/schematics": "12.0.5",
     "@nestjs/testing": "12.1.0",
     "@types/express": "5.0.6",
-    "@types/jest": "30.0.0",
     "@types/mime-types": "3.0.1",
     "@types/node": "catalog:",
     "@types/passport-http": "0.3.11",
+    "@vitest/coverage-v8": "5.0.3",
     "cross-env": "10.1.0",
     "dotenv": "17.4.2",
     "eslint": "9.39.4",
-    "jest": "30.5.2",
     "path": "0.12.7",
     "prettier": "3.6.2",
     "rimraf": "6.0.1",
     "source-map-support": "0.5.21",
-    "ts-jest": "29.4.12",
-    "ts-node": "10.9.2",
-    "tsconfig-paths": "4.2.0",
-    "typescript": "6.0.3"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "moduleNameMapper": {
-      "^src/(.*)$": "<rootDir>/$1"
-    },
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "transformIgnorePatterns": [
-      "/node_modules/",
-      "/openapi-clients/dist/"
-    ],
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "typescript": "6.0.3",
+    "vite": "8.3.1",
+    "vitest": "5.0.3"
   },
   "volta": {
     "extends": "../package.json"

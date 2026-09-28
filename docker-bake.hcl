@@ -139,6 +139,11 @@ target "nest-city-account-test" {
   target   = "test"
 }
 
+target "nest-city-account-typecheck" {
+  inherits = ["_nest-city-account"]
+  target   = "typecheck"
+}
+
 target "nest-city-account-lint" {
   inherits = ["_nest-city-account"]
   target   = "lint"
@@ -164,6 +169,11 @@ target "nest-clamav-scanner-test" {
   target   = "test"
 }
 
+target "nest-clamav-scanner-typecheck" {
+  inherits = ["_nest-clamav-scanner"]
+  target   = "typecheck"
+}
+
 target "nest-clamav-scanner-lint" {
   inherits = ["_nest-clamav-scanner"]
   target   = "lint"
@@ -187,6 +197,11 @@ target "nest-forms-backend-builder-deps" {
 target "nest-forms-backend-test" {
   inherits = ["_nest-forms-backend"]
   target   = "test"
+}
+
+target "nest-forms-backend-typecheck" {
+  inherits = ["_nest-forms-backend"]
+  target   = "typecheck"
 }
 
 target "nest-forms-backend-lint" {
@@ -219,6 +234,11 @@ target "nest-tax-backend-builder-deps" {
 target "nest-tax-backend-test" {
   inherits = ["_nest-tax-backend"]
   target   = "test"
+}
+
+target "nest-tax-backend-typecheck" {
+  inherits = ["_nest-tax-backend"]
+  target   = "typecheck"
 }
 
 target "nest-tax-backend-lint" {

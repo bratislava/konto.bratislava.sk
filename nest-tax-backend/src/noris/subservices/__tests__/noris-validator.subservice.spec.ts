@@ -271,9 +271,9 @@ describe('NorisValidatorSubservice', () => {
 
   describe('validateNorisData with array', () => {
     it('should validate all payments, return only valid and error log the rest', () => {
-      const errorLogSpy = jest
+      const errorLogSpy = vi
         .spyOn(service['logger'], 'error')
-        .mockImplementation(jest.fn())
+        .mockImplementation(vi.fn())
       const result = service.validateNorisData(NorisTaxPaymentSchema, [
         testPaymentValid,
         testPaymentStringUhrazeno,
@@ -298,9 +298,9 @@ describe('NorisValidatorSubservice', () => {
     })
 
     it('should validate all real estate taxes, return only valid and error log the rest', () => {
-      const errorLogSpy = jest
+      const errorLogSpy = vi
         .spyOn(service['logger'], 'error')
-        .mockImplementation(jest.fn())
+        .mockImplementation(vi.fn())
       const result = service.validateNorisData(
         NorisRealEstateTaxSchema,
         allNorisRealEstateTaxes,
@@ -326,9 +326,9 @@ describe('NorisValidatorSubservice', () => {
     })
 
     it('should validate all communal waste taxes, return only valid and error log the rest', () => {
-      const errorLogSpy = jest
+      const errorLogSpy = vi
         .spyOn(service['logger'], 'error')
-        .mockImplementation(jest.fn())
+        .mockImplementation(vi.fn())
       const result = service.validateNorisData(
         NorisCommunalWasteTaxSchema,
         allNorisCommunalWasteTaxes,

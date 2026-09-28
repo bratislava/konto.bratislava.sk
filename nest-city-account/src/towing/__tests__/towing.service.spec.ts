@@ -1,16 +1,17 @@
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import axios from 'axios'
+import type { Mocked } from 'vitest'
 
-import { expectAny, expectObjectContaining } from '../../__tests__/jest-matchers'
+import { expectAny, expectObjectContaining } from '../../__tests__/matchers'
 import BaConfigService from '../../config/ba-config.service'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { TowingErrorsEnum } from '../towing.errors.enum'
 import { TowingService } from '../towing.service'
 
-jest.mock('axios')
-const mockedAxios = axios as jest.Mocked<typeof axios>
+vi.mock('axios')
+const mockedAxios = axios as Mocked<typeof axios>
 
 const ENFORCEMENT_BACKEND_URL = 'https://nest-enforcement-backend.test'
 const ENFORCEMENT_BACKEND_TOW_API_KEY = 'tow-api-key-test'
@@ -64,7 +65,7 @@ describe('TowingService', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('should be defined', () => {
@@ -112,7 +113,7 @@ describe('TowingService', () => {
 
       try {
         await service.getPublicTowingByEcv('BA000XX')
-        fail('expected to throw')
+        expect.unreachable('expected to throw')
       } catch (error) {
         expect(error).toBeInstanceOf(HttpException)
         const httpError = error as HttpException
@@ -128,7 +129,7 @@ describe('TowingService', () => {
 
       try {
         await service.getPublicTowingByEcv('!!')
-        fail('expected to throw')
+        expect.unreachable('expected to throw')
       } catch (error) {
         expect(error).toBeInstanceOf(HttpException)
         const httpError = error as HttpException
@@ -144,7 +145,7 @@ describe('TowingService', () => {
 
       try {
         await service.getPublicTowingByEcv('BA123AB')
-        fail('expected to throw')
+        expect.unreachable('expected to throw')
       } catch (error) {
         expect(error).toBeInstanceOf(HttpException)
         const httpError = error as HttpException
@@ -160,7 +161,7 @@ describe('TowingService', () => {
 
       try {
         await service.getPublicTowingByEcv('BA123AB')
-        fail('expected to throw')
+        expect.unreachable('expected to throw')
       } catch (error) {
         expect(error).toBeInstanceOf(HttpException)
         const httpError = error as HttpException
@@ -181,7 +182,7 @@ describe('TowingService', () => {
 
         try {
           await service.getPublicTowingByEcv('BA123AB')
-          fail('expected to throw')
+          expect.unreachable('expected to throw')
         } catch (error) {
           expect(error).toBeInstanceOf(HttpException)
           const httpError = error as HttpException
@@ -202,7 +203,7 @@ describe('TowingService', () => {
 
       try {
         await service.getPublicTowingByEcv('BA123AB')
-        fail('expected to throw')
+        expect.unreachable('expected to throw')
       } catch (error) {
         expect(error).toBeInstanceOf(HttpException)
         const httpError = error as HttpException

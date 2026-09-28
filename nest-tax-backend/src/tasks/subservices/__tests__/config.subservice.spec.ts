@@ -1,4 +1,4 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton'
@@ -24,13 +24,13 @@ describe('TasksConfigSubservice', () => {
 
     service = module.get<TasksConfigSubservice>(TasksConfigSubservice)
 
-    jest.spyOn(LineLoggerSubservice.prototype, 'log').mockImplementation()
+    vi.spyOn(LineLoggerSubservice.prototype, 'log').mockImplementation(vi.fn())
   })
 
   describe('resetOverpaymentsLookbackDays', () => {
     it('should reset lookback days to default value', async () => {
-      const updateManyMock = jest
-        .spyOn(service['prismaService'].config, 'updateMany')
+      const updateManyMock = vi
+        .mocked(service['prismaService'].config.updateMany)
         .mockResolvedValue({ count: 1 })
 
       await service.resetOverpaymentsLookbackDays()
@@ -47,8 +47,8 @@ describe('TasksConfigSubservice', () => {
 
     it('should handle database errors gracefully', async () => {
       const error = new Error('Database connection failed')
-      const updateManyMock = jest
-        .spyOn(service['prismaService'].config, 'updateMany')
+      const updateManyMock = vi
+        .mocked(service['prismaService'].config.updateMany)
         .mockRejectedValue(error)
 
       await expect(service.resetOverpaymentsLookbackDays()).rejects.toThrow(
@@ -69,12 +69,11 @@ describe('TasksConfigSubservice', () => {
   describe('incrementOverpaymentsLookbackDays', () => {
     it('should increment lookback days by 1 when config exists', async () => {
       const mockConfig = { key: OVERPAYMENTS_LOOKBACK_DAYS, value: '5' }
-      const mockFindFirst = jest.fn().mockResolvedValue(mockConfig)
-      const mockUpdateMany = jest.fn().mockResolvedValue({ count: 1 })
+      const mockFindFirst = vi.fn().mockResolvedValue(mockConfig)
+      const mockUpdateMany = vi.fn().mockResolvedValue({ count: 1 })
 
-      jest
-        .spyOn(service['prismaService'], '$transaction')
-        .mockImplementation(async (callback) => {
+      vi.mocked(service['prismaService'].$transaction).mockImplementation(
+        async (callback) => {
           const tx = createMock<Prisma.TransactionClient>({
             config: {
               findFirst: mockFindFirst,
@@ -82,7 +81,8 @@ describe('TasksConfigSubservice', () => {
             },
           })
           return callback(tx)
-        })
+        },
+      )
 
       await service.incrementOverpaymentsLookbackDays()
 
@@ -97,12 +97,11 @@ describe('TasksConfigSubservice', () => {
 
     it('should increment lookback days by custom value', async () => {
       const mockConfig = { key: OVERPAYMENTS_LOOKBACK_DAYS, value: '10' }
-      const mockFindFirst = jest.fn().mockResolvedValue(mockConfig)
-      const mockUpdateMany = jest.fn().mockResolvedValue({ count: 1 })
+      const mockFindFirst = vi.fn().mockResolvedValue(mockConfig)
+      const mockUpdateMany = vi.fn().mockResolvedValue({ count: 1 })
 
-      jest
-        .spyOn(service['prismaService'], '$transaction')
-        .mockImplementation(async (callback) => {
+      vi.mocked(service['prismaService'].$transaction).mockImplementation(
+        async (callback) => {
           const tx = createMock<Prisma.TransactionClient>({
             config: {
               findFirst: mockFindFirst,
@@ -110,7 +109,8 @@ describe('TasksConfigSubservice', () => {
             },
           })
           return callback(tx)
-        })
+        },
+      )
 
       await service.incrementOverpaymentsLookbackDays(3)
 
@@ -121,12 +121,11 @@ describe('TasksConfigSubservice', () => {
     })
 
     it('should handle case when config does not exist', async () => {
-      const mockFindFirst = jest.fn().mockResolvedValue(null)
-      const mockUpdateMany = jest.fn().mockResolvedValue({ count: 1 })
+      const mockFindFirst = vi.fn().mockResolvedValue(null)
+      const mockUpdateMany = vi.fn().mockResolvedValue({ count: 1 })
 
-      jest
-        .spyOn(service['prismaService'], '$transaction')
-        .mockImplementation(async (callback) => {
+      vi.mocked(service['prismaService'].$transaction).mockImplementation(
+        async (callback) => {
           const tx = createMock<Prisma.TransactionClient>({
             config: {
               findFirst: mockFindFirst,
@@ -134,7 +133,8 @@ describe('TasksConfigSubservice', () => {
             },
           })
           return callback(tx)
-        })
+        },
+      )
 
       await service.incrementOverpaymentsLookbackDays(2)
 
@@ -146,9 +146,7 @@ describe('TasksConfigSubservice', () => {
 
     it('should handle database errors', async () => {
       const error = new Error('Database error')
-      jest
-        .spyOn(service['prismaService'], '$transaction')
-        .mockRejectedValue(error)
+      vi.mocked(service['prismaService'].$transaction).mockRejectedValue(error)
 
       await expect(service.incrementOverpaymentsLookbackDays()).rejects.toThrow(
         'Database error',
@@ -157,12 +155,11 @@ describe('TasksConfigSubservice', () => {
 
     it('should handle invalid configuration', async () => {
       const mockConfig = { key: OVERPAYMENTS_LOOKBACK_DAYS, value: 'invalid' }
-      const mockFindFirst = jest.fn().mockResolvedValue(mockConfig)
-      const mockUpdateMany = jest.fn().mockResolvedValue({ count: 1 })
+      const mockFindFirst = vi.fn().mockResolvedValue(mockConfig)
+      const mockUpdateMany = vi.fn().mockResolvedValue({ count: 1 })
 
-      jest
-        .spyOn(service['prismaService'], '$transaction')
-        .mockImplementation(async (callback) => {
+      vi.mocked(service['prismaService'].$transaction).mockImplementation(
+        async (callback) => {
           const tx = createMock<Prisma.TransactionClient>({
             config: {
               findFirst: mockFindFirst,
@@ -170,7 +167,8 @@ describe('TasksConfigSubservice', () => {
             },
           })
           return callback(tx)
-        })
+        },
+      )
 
       await expect(service.incrementOverpaymentsLookbackDays()).rejects.toThrow(
         'Invalid OVERPAYMENTS_LOOKBACK_DAYS configuration: invalid, type number expected, got string.',

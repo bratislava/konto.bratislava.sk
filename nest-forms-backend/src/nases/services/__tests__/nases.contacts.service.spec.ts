@@ -1,4 +1,4 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import {
   UpvsCorporateBody,
@@ -17,7 +17,7 @@ describe('NasesContactsService', () => {
   let service: NasesContactsService
 
   beforeEach(async () => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
     const app: TestingModule = await Test.createTestingModule({
       providers: [
         NasesContactsService,
@@ -351,7 +351,7 @@ describe('NasesContactsService', () => {
         ],
       }
 
-      const loggerSpy = jest.spyOn(service['logger'], 'error')
+      const loggerSpy = vi.spyOn(service['logger'], 'error')
 
       const result = service.extractCorporateBodyData(contact)
 
@@ -375,7 +375,7 @@ describe('NasesContactsService', () => {
         ],
       }
 
-      const loggerSpy = jest.spyOn(service['logger'], 'error')
+      const loggerSpy = vi.spyOn(service['logger'], 'error')
 
       const result = service.extractCorporateBodyData(contact)
 
@@ -388,7 +388,7 @@ describe('NasesContactsService', () => {
   describe('getUpvsIdentity', () => {
     it('should return identity if request succeeds', async () => {
       const mockIdentity = { uri: 'test-uri', type: 'natural_person' }
-      service['clientsService'].slovenskoSkApi.apiUpvsIdentityGet = jest
+      service['clientsService'].slovenskoSkApi.apiUpvsIdentityGet = vi
         .fn()
         .mockResolvedValue({ data: mockIdentity })
 
@@ -398,7 +398,7 @@ describe('NasesContactsService', () => {
     })
 
     it('should return null if request fails', async () => {
-      service['clientsService'].slovenskoSkApi.apiUpvsIdentityGet = jest
+      service['clientsService'].slovenskoSkApi.apiUpvsIdentityGet = vi
         .fn()
         .mockRejectedValue(new Error('Request failed'))
 

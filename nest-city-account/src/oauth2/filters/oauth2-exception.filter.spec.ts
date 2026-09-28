@@ -1,13 +1,10 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Response } from 'express'
+import type { Mock } from 'vitest'
 
-import {
-  expectAny,
-  expectObjectContaining,
-  expectStringContaining,
-} from '../../__tests__/jest-matchers'
+import { expectAny, expectObjectContaining, expectStringContaining } from '../../__tests__/matchers'
 import { AuthorizationRequestDto } from '../dtos/requests.oauth2.dto'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'
 import { OAuth2Exception } from '../oauth2.exception'
@@ -22,7 +19,7 @@ interface MockOAuth2Request {
   query: Record<string, unknown>
   headers: Record<string, unknown>
   ip: string | undefined
-  get: jest.Mock<string | undefined, [string]>
+  get: Mock<(...args: [string]) => string | undefined>
   authorizationRequestData?: Partial<AuthorizationRequestDto>
 }
 
@@ -49,7 +46,7 @@ describe('OAuth2ExceptionFilter', () => {
 
   const authorizePath = '/oauth2/authorize'
   beforeEach(async () => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -61,27 +58,27 @@ describe('OAuth2ExceptionFilter', () => {
     filter = module.get<OAuth2ExceptionFilter>(OAuth2ExceptionFilter)
     oauth2ClientSubservice = module.get<OAuth2ClientSubservice>(OAuth2ClientSubservice)
 
-    // Recording response mock — still jest.fn()s (so toHaveBeenCalledWith
+    // Recording response mock — still vi.fn()s (so toHaveBeenCalledWith
     // assertions work), but each call also captures its output into
     // sentResponse for direct value assertions
     sentResponse = { headers: {} }
     mockResponse = createMock<Response>()
-    jest.mocked(mockResponse.status).mockImplementation((code: number) => {
+    vi.mocked(mockResponse.status).mockImplementation((code: number) => {
       sentResponse.status = code
       return mockResponse
     })
-    jest.mocked(mockResponse.json).mockImplementation((body: unknown) => {
+    vi.mocked(mockResponse.json).mockImplementation((body: unknown) => {
       sentResponse.json = body
       return mockResponse
     })
-    jest.mocked(mockResponse.redirect).mockImplementation((status: number, url: string) => {
+    vi.mocked(mockResponse.redirect).mockImplementation((status: number, url: string) => {
       sentResponse.redirect = { status, url }
     })
-    jest.mocked(mockResponse.header).mockImplementation(((name: string, value: string) => {
+    vi.mocked(mockResponse.header).mockImplementation(((name: string, value: string) => {
       sentResponse.headers[name] = value
       return mockResponse
     }) as Response['header'])
-    jest.mocked(mockResponse.setHeader).mockImplementation(((name: string, value: string) => {
+    vi.mocked(mockResponse.setHeader).mockImplementation(((name: string, value: string) => {
       sentResponse.headers[name] = value
       return mockResponse
     }) as Response['setHeader'])
@@ -95,12 +92,12 @@ describe('OAuth2ExceptionFilter', () => {
       query: {},
       headers: {},
       ip: '127.0.0.1',
-      get: jest.fn<string | undefined, [string]>().mockReturnValue('test-user-agent'),
+      get: vi.fn<(...args: [string]) => string | undefined>().mockReturnValue('test-user-agent'),
     }
 
     // Mock ArgumentsHost
     mockArgumentsHost = createMock<ArgumentsHost>({
-      switchToHttp: jest.fn().mockReturnValue({
+      switchToHttp: vi.fn().mockReturnValue({
         getResponse: () => mockResponse,
         getRequest: () => mockRequest,
       }),
@@ -131,9 +128,9 @@ describe('OAuth2ExceptionFilter', () => {
       // RFC 6749 Section 4.1.2.1: Errors with valid redirect_uri MUST redirect
       // https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(true),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(true),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
 
       mockRequest.query = {
         client_id: 'test-client',
@@ -197,9 +194,9 @@ describe('OAuth2ExceptionFilter', () => {
       // "The authorization server SHOULD require all clients to register their
       // 'redirect_uri', and the 'redirect_uri' should be the full URI"
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(false),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(false),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
 
       mockRequest.query = {
         client_id: 'test-client',
@@ -226,9 +223,9 @@ describe('OAuth2ExceptionFilter', () => {
       // "If a state parameter was present in the client authorization request,
       // the authorization server MUST return the unmodified state value..."
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(true),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(true),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
 
       mockRequest.query = {
         client_id: 'test-client',
@@ -268,9 +265,9 @@ describe('OAuth2ExceptionFilter', () => {
       //          Values for the "error_description" parameter MUST NOT include
       //          characters outside the set %x20-21 / %x23-5B / %x5D-7E.
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(true),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(true),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
 
       mockRequest.query = {
         client_id: 'test-client',
@@ -298,9 +295,9 @@ describe('OAuth2ExceptionFilter', () => {
       // that is logged but never sent to the client (see oauth2.exception.ts)
       // This allows separation of public error messages from internal diagnostics
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(true),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(true),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
 
       mockRequest.query = {
         client_id: 'test-client',
@@ -340,9 +337,9 @@ describe('OAuth2ExceptionFilter', () => {
 
     it('should use redirect_uri from authorizationRequestData when available', () => {
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(true),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(true),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
 
       mockRequest.path = '/oauth2/continue'
       mockRequest.authorizationRequestData = {
@@ -558,9 +555,9 @@ describe('OAuth2ExceptionFilter', () => {
     beforeEach(() => {
       mockRequest.path = authorizePath
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(true),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(true),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
       mockRequest.query = {
         client_id: 'test-client',
         redirect_uri: 'https://example.com/callback',
@@ -759,9 +756,9 @@ describe('OAuth2ExceptionFilter', () => {
       // Parameters must be properly URL-encoded per RFC 3986
       // https://datatracker.ietf.org/doc/html/rfc3986#section-2.1
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(true),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(true),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
 
       mockRequest.path = authorizePath
       mockRequest.query = {
@@ -793,9 +790,9 @@ describe('OAuth2ExceptionFilter', () => {
       // RFC 6749 Section 4.1.2.1 - Appending to redirect_uri
       // https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(true),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(true),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
 
       mockRequest.path = authorizePath
       mockRequest.query = {
@@ -845,7 +842,7 @@ describe('OAuth2ExceptionFilter', () => {
         redirect_uri: 'https://attacker.com/steal-codes',
       }
 
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(undefined)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(undefined)
 
       const exception = new HttpException(
         {
@@ -915,7 +912,7 @@ describe('OAuth2ExceptionFilter', () => {
         }
 
         const exception = new HttpException('Store failed', HttpStatus.BAD_REQUEST)
-        const loggerSpy = jest.spyOn(filter['logger'], 'error')
+        const loggerSpy = vi.spyOn(filter['logger'], 'error')
 
         filter.catch(exception, mockArgumentsHost)
 
@@ -959,7 +956,7 @@ describe('OAuth2ExceptionFilter', () => {
         delete mockRequest.authorizationRequestData
 
         const exception = new HttpException('Info not found', HttpStatus.NOT_FOUND)
-        const loggerSpy = jest.spyOn(filter['logger'], 'error')
+        const loggerSpy = vi.spyOn(filter['logger'], 'error')
 
         filter.catch(exception, mockArgumentsHost)
 
@@ -990,9 +987,9 @@ describe('OAuth2ExceptionFilter', () => {
   describe('Custom Proxy Detail - extractRedirectUriAndStateFromQuery', () => {
     it('should extract redirect_uri and state from query when valid client', () => {
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(true),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(true),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
 
       mockRequest.path = authorizePath
       mockRequest.query = {
@@ -1053,7 +1050,7 @@ describe('OAuth2ExceptionFilter', () => {
     })
 
     it('should return undefined redirect_uri when client is not found', () => {
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(undefined)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(undefined)
 
       mockRequest.path = authorizePath
       mockRequest.query = {
@@ -1070,9 +1067,9 @@ describe('OAuth2ExceptionFilter', () => {
 
     it('should extract state from query when present', () => {
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(true),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(true),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
 
       mockRequest.path = authorizePath
       mockRequest.query = {
@@ -1121,9 +1118,9 @@ describe('OAuth2ExceptionFilter', () => {
   describe('Custom Proxy Detail - State Mismatch Warning', () => {
     it('should warn when error response state differs from request state', () => {
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(true),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(true),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
 
       mockRequest.path = authorizePath
       mockRequest.query = {
@@ -1137,7 +1134,7 @@ describe('OAuth2ExceptionFilter', () => {
         state: 'correct-state',
       }
 
-      const loggerWarnSpy = jest.spyOn(filter['logger'], 'warn')
+      const loggerWarnSpy = vi.spyOn(filter['logger'], 'warn')
 
       const exception = new HttpException(
         {
@@ -1162,9 +1159,9 @@ describe('OAuth2ExceptionFilter', () => {
 
     it('should not warn when error response state matches request state', () => {
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(true),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(true),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
 
       mockRequest.path = authorizePath
       mockRequest.query = {
@@ -1176,7 +1173,7 @@ describe('OAuth2ExceptionFilter', () => {
         state: 'matching-state',
       }
 
-      const loggerWarnSpy = jest.spyOn(filter['logger'], 'warn')
+      const loggerWarnSpy = vi.spyOn(filter['logger'], 'warn')
 
       const exception = new HttpException(
         {
@@ -1203,9 +1200,9 @@ describe('OAuth2ExceptionFilter', () => {
       // *conflicting* state, which signals a bug in our error construction.
       // An absent state is the normal case, not a mismatch — so no warning.
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(true),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(true),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
 
       mockRequest.path = authorizePath
       mockRequest.query = {
@@ -1217,7 +1214,7 @@ describe('OAuth2ExceptionFilter', () => {
         state: 'original-state',
       }
 
-      const loggerWarnSpy = jest.spyOn(filter['logger'], 'warn')
+      const loggerWarnSpy = vi.spyOn(filter['logger'], 'warn')
 
       const exception = new HttpException(
         {
@@ -1262,7 +1259,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       // Capture the logged object instead of reading it back from mock.calls
       let loggedObject: object | undefined
-      const loggerSpy = jest.spyOn(filter['logger'], 'error').mockImplementation((logObject) => {
+      const loggerSpy = vi.spyOn(filter['logger'], 'error').mockImplementation((logObject) => {
         loggedObject = logObject as object
       })
 
@@ -1328,9 +1325,9 @@ describe('OAuth2ExceptionFilter', () => {
   describe('Custom Proxy Detail - Logging and Metadata', () => {
     it('should log OAuth2Exception metadata separately from error response', () => {
       const mockClient = createMock<OAuth2Client>({
-        isRedirectUriAllowed: jest.fn().mockReturnValue(true),
+        isRedirectUriAllowed: vi.fn().mockReturnValue(true),
       })
-      jest.spyOn(oauth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+      vi.mocked(oauth2ClientSubservice.findClientById).mockReturnValue(mockClient)
 
       mockRequest.path = authorizePath
       mockRequest.query = {
@@ -1338,7 +1335,7 @@ describe('OAuth2ExceptionFilter', () => {
         redirect_uri: 'https://example.com/callback',
       }
 
-      const loggerSpy = jest.spyOn(filter['logger'], 'error')
+      const loggerSpy = vi.spyOn(filter['logger'], 'error')
 
       const exception = new OAuth2Exception(
         {
@@ -1388,7 +1385,7 @@ describe('OAuth2ExceptionFilter', () => {
       mockRequest.body = { grant_type: 'authorization_code', code: 'secret-code' }
       mockRequest.get.mockReturnValue('Mozilla/5.0')
 
-      const loggerSpy = jest.spyOn(filter['logger'], 'error')
+      const loggerSpy = vi.spyOn(filter['logger'], 'error')
 
       const exception = new HttpException('Token error', HttpStatus.BAD_REQUEST)
 
@@ -1409,7 +1406,7 @@ describe('OAuth2ExceptionFilter', () => {
       mockRequest.path = '/oauth2/token'
       mockRequest.ip = undefined
 
-      const loggerSpy = jest.spyOn(filter['logger'], 'error')
+      const loggerSpy = vi.spyOn(filter['logger'], 'error')
 
       const exception = new HttpException('Error', HttpStatus.BAD_REQUEST)
 
@@ -1425,7 +1422,7 @@ describe('OAuth2ExceptionFilter', () => {
     it('should merge OAuth2Exception metadata with log object', () => {
       mockRequest.path = '/oauth2/token'
 
-      const loggerSpy = jest.spyOn(filter['logger'], 'error')
+      const loggerSpy = vi.spyOn(filter['logger'], 'error')
 
       const exception = new OAuth2Exception(
         {
@@ -1458,7 +1455,7 @@ describe('OAuth2ExceptionFilter', () => {
     it('should handle regular HttpException without metadata', () => {
       mockRequest.path = '/oauth2/token'
 
-      const loggerSpy = jest.spyOn(filter['logger'], 'error')
+      const loggerSpy = vi.spyOn(filter['logger'], 'error')
 
       const exception = new HttpException('Regular error', HttpStatus.BAD_REQUEST)
 

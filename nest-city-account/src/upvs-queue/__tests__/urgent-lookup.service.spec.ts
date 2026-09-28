@@ -1,10 +1,10 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
 import { cognitoUserDataFactory } from '../../__tests__/factories/cognitoUserData.factory'
-import { expectObjectContaining, expectStringContaining } from '../../__tests__/jest-matchers'
+import { expectObjectContaining, expectStringContaining } from '../../__tests__/matchers'
 import { LookupIdentityFOResult, NasesService } from '../../nases/nases.service'
 import { PhysicalEntityService } from '../../physical-entity/physical-entity.service'
 import { PrismaService } from '../../prisma/prisma.service'
@@ -42,7 +42,7 @@ describe('UrgentLookupService', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('returns an empty result and persists nothing when there are no urgent entities', async () => {
@@ -57,12 +57,12 @@ describe('UrgentLookupService', () => {
 
   it('resolves a URI and persists the success', async () => {
     prismaMock.$queryRaw.mockResolvedValue([urgentEntity()])
-    jest
-      .spyOn(cognitoSubservice, 'getDataFromCognito')
-      .mockResolvedValue(cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' }))
-    jest
-      .spyOn(nasesService, 'lookupIdentityFO')
-      .mockResolvedValue({ uri: 'rc://sk/resolved' } satisfies LookupIdentityFOResult)
+    vi.mocked(cognitoSubservice.getDataFromCognito).mockResolvedValue(
+      cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' })
+    )
+    vi.mocked(nasesService.lookupIdentityFO).mockResolvedValue({
+      uri: 'rc://sk/resolved',
+    } satisfies LookupIdentityFOResult)
 
     const result = await service.processUrgentItems()
 
@@ -80,7 +80,7 @@ describe('UrgentLookupService', () => {
 
   it('records a failure when Cognito is missing the name', async () => {
     prismaMock.$queryRaw.mockResolvedValue([urgentEntity()])
-    jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue(cognitoUserDataFactory())
+    vi.mocked(cognitoSubservice.getDataFromCognito).mockResolvedValue(cognitoUserDataFactory())
 
     const result = await service.processUrgentItems()
 
@@ -96,12 +96,12 @@ describe('UrgentLookupService', () => {
 
   it('records a failure when the lookup returns no URI', async () => {
     prismaMock.$queryRaw.mockResolvedValue([urgentEntity()])
-    jest
-      .spyOn(cognitoSubservice, 'getDataFromCognito')
-      .mockResolvedValue(cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' }))
-    jest
-      .spyOn(nasesService, 'lookupIdentityFO')
-      .mockResolvedValue({ uri: undefined } satisfies LookupIdentityFOResult)
+    vi.mocked(cognitoSubservice.getDataFromCognito).mockResolvedValue(
+      cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' })
+    )
+    vi.mocked(nasesService.lookupIdentityFO).mockResolvedValue({
+      uri: undefined,
+    } satisfies LookupIdentityFOResult)
 
     const result = await service.processUrgentItems()
 
@@ -115,10 +115,10 @@ describe('UrgentLookupService', () => {
 
   it('records a generic lookup error as a failure', async () => {
     prismaMock.$queryRaw.mockResolvedValue([urgentEntity()])
-    jest
-      .spyOn(cognitoSubservice, 'getDataFromCognito')
-      .mockResolvedValue(cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' }))
-    jest.spyOn(nasesService, 'lookupIdentityFO').mockRejectedValue(new Error('upstream down'))
+    vi.mocked(cognitoSubservice.getDataFromCognito).mockResolvedValue(
+      cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' })
+    )
+    vi.mocked(nasesService.lookupIdentityFO).mockRejectedValue(new Error('upstream down'))
 
     const result = await service.processUrgentItems()
 
@@ -131,13 +131,13 @@ describe('UrgentLookupService', () => {
       urgentEntity({ entityId: 'urgent-1' }),
       urgentEntity({ entityId: 'urgent-2' }),
     ])
-    jest
-      .spyOn(cognitoSubservice, 'getDataFromCognito')
-      .mockResolvedValue(cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' }))
-    jest
-      .spyOn(nasesService, 'lookupIdentityFO')
-      .mockRejectedValue(new HttpException('Too many requests', HttpStatus.TOO_MANY_REQUESTS))
-    const errorSpy = jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
+    vi.mocked(cognitoSubservice.getDataFromCognito).mockResolvedValue(
+      cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' })
+    )
+    vi.mocked(nasesService.lookupIdentityFO).mockRejectedValue(
+      new HttpException('Too many requests', HttpStatus.TOO_MANY_REQUESTS)
+    )
+    const errorSpy = vi.spyOn(service['logger'], 'error').mockImplementation(vi.fn())
 
     const result = await service.processUrgentItems()
 

@@ -1,5 +1,6 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { Mock, Mocked } from 'vitest'
 
 import prismaMock from '../../../../../test/singleton'
 import { BloomreachOutboxService } from '../../../../bloomreach/bloomreach-outbox.service'
@@ -11,7 +12,7 @@ import { UserDataSubservice } from '../user-data.subservice'
 
 describe('UserDataSubservice', () => {
   let service: UserDataSubservice
-  let bloomreach: jest.Mocked<BloomreachOutboxService>
+  let bloomreach: Mocked<BloomreachOutboxService>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -35,7 +36,7 @@ describe('UserDataSubservice', () => {
 
     // Make $transaction execute its callback with the prisma mock so the upsert
     // calls below are routed through the same mocked client we assert against.
-    ;(prismaMock.$transaction as jest.Mock).mockImplementation(async (fn: unknown) => {
+    ;(prismaMock.$transaction as Mock).mockImplementation(async (fn: unknown) => {
       if (typeof fn === 'function') {
         return (fn as (tx: typeof prismaMock) => unknown)(prismaMock)
       }
@@ -44,7 +45,7 @@ describe('UserDataSubservice', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('setUserConsents', () => {
@@ -90,7 +91,7 @@ describe('UserDataSubservice', () => {
     })
 
     it('should not call Bloomreach if the transaction throws', async () => {
-      ;(prismaMock.$transaction as jest.Mock).mockRejectedValueOnce(new Error('db down'))
+      ;(prismaMock.$transaction as Mock).mockRejectedValueOnce(new Error('db down'))
 
       await expect(
         service.setUserConsents('user-id', 'external-id', [
@@ -159,7 +160,7 @@ describe('UserDataSubservice', () => {
     })
 
     it('should not call Bloomreach if the transaction throws', async () => {
-      ;(prismaMock.$transaction as jest.Mock).mockRejectedValueOnce(new Error('db down'))
+      ;(prismaMock.$transaction as Mock).mockRejectedValueOnce(new Error('db down'))
 
       await expect(
         service.setLegalPersonConsents('legal-person-id', 'external-id', [
@@ -186,7 +187,7 @@ describe('UserDataSubservice', () => {
     })
 
     it('should not call Bloomreach if the prisma update throws', async () => {
-      ;(prismaMock.user.update as jest.Mock).mockRejectedValueOnce(new Error('db down'))
+      ;(prismaMock.user.update as Mock).mockRejectedValueOnce(new Error('db down'))
 
       await expect(
         service.setDeliveryMethodPreference(

@@ -1,7 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import type { RJSFSchema } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { RJSFSchema } from '@rjsf/utils'
 import { FormFiles } from '../../src/definitions/formDefinitionTypes'
 import { GeneratorField } from '../../src/generator/generatorTypes'
 import { object } from '../../src/generator/object'

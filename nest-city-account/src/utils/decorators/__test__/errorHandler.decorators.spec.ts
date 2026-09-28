@@ -1,12 +1,14 @@
+import type { MockInstance } from 'vitest'
+
 import { ErrorsEnum } from '../../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../guards/errors.guard'
 import HandleErrors from '../errorHandler.decorators'
 
 describe('HandleErrors', () => {
-  let consoleErrorMock: jest.SpyInstance
+  let consoleErrorMock: MockInstance
 
   beforeEach(() => {
-    consoleErrorMock = jest.spyOn(console, 'log').mockImplementation(jest.fn())
+    consoleErrorMock = vi.spyOn(console, 'log').mockImplementation(vi.fn())
   })
 
   afterEach(() => {

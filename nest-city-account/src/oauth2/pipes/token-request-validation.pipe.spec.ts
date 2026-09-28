@@ -1,4 +1,4 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { ArgumentMetadata, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -16,7 +16,7 @@ describe('TokenRequestValidationPipe', () => {
   const metadata: ArgumentMetadata = { type: 'body', metatype: Object, data: '' }
 
   beforeEach(async () => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TokenRequestValidationPipe,
@@ -27,15 +27,13 @@ describe('TokenRequestValidationPipe', () => {
     pipe = module.get<TokenRequestValidationPipe>(TokenRequestValidationPipe)
     oAuth2ErrorThrower = module.get<OAuth2ErrorThrower>(OAuth2ErrorThrower)
 
-    jest
-      .spyOn(oAuth2ErrorThrower, 'tokenException')
-      .mockImplementation(
-        (errorCode, errorDescription) =>
-          new OAuth2Exception(
-            { error: errorCode, error_description: errorDescription },
-            HttpStatus.BAD_REQUEST
-          )
-      )
+    vi.mocked(oAuth2ErrorThrower.tokenException).mockImplementation(
+      (errorCode, errorDescription) =>
+        new OAuth2Exception(
+          { error: errorCode, error_description: errorDescription },
+          HttpStatus.BAD_REQUEST
+        )
+    )
   })
 
   it('should be defined', () => {

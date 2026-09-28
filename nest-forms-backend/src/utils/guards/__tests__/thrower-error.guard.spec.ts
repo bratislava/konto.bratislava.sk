@@ -10,7 +10,7 @@ describe('ThrowerErrorGuard', () => {
   let guard: ThrowerErrorGuard
 
   beforeEach(async () => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
 
     const app: TestingModule = await Test.createTestingModule({
       providers: [ThrowerErrorGuard],

@@ -1,7 +1,8 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test } from '@nestjs/testing'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import type { Mock } from 'vitest'
 
 import {
   AuthFixtureUser,
@@ -21,23 +22,23 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { GetFormsRequestDto } from './dtos/requests.dto'
 import FormsService from './forms.service'
 
-jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
-  getFormDefinitionBySlug: jest.fn(),
+vi.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
+  getFormDefinitionBySlug: vi.fn(),
 }))
 let mockFormDefinitions: { slug: string; isDisabled?: boolean }[] = []
-jest.mock('forms-shared/definitions/formDefinitions', () => ({
+vi.mock('forms-shared/definitions/formDefinitions', () => ({
   get formDefinitions() {
     return mockFormDefinitions
   },
 }))
-jest.mock('../files/files.helper')
-jest.mock('../files/files.service')
-jest.mock('../minio-storage/minio-storage.service')
-jest.mock('../scanner-client/scanner-client.service')
-jest.mock('forms-shared/form-utils/omitExtraData', () => ({
-  baOmitExtraData: jest.fn(),
+vi.mock('../files/files.helper')
+vi.mock('../files/files.service')
+vi.mock('../minio-storage/minio-storage.service')
+vi.mock('../scanner-client/scanner-client.service')
+vi.mock('forms-shared/form-utils/omitExtraData', () => ({
+  baOmitExtraData: vi.fn(),
 }))
-jest.mock('../form-validator-registry/form-validator-registry.service')
+vi.mock('../form-validator-registry/form-validator-registry.service')
 
 describe('FormsService', () => {
   let service: FormsService
@@ -79,7 +80,7 @@ describe('FormsService', () => {
 
   describe('getForms', () => {
     it('should count correctly', async () => {
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         schema: {
           baUiSchema: {},
         },
@@ -88,11 +89,11 @@ describe('FormsService', () => {
         { slug: 'enabled-slug' },
         { slug: 'disabled-slug', isDisabled: true },
       ]
-      const spy = jest
-        .spyOn(prismaMock.forms, 'findMany')
+      const spy = vi
+        .mocked(prismaMock.forms.findMany)
         .mockResolvedValue([{ id: '1' }, { id: '2' }] as Forms[])
       prismaMock.forms.count.mockResolvedValue(63)
-      ;(prismaMock.forms.groupBy as jest.Mock).mockResolvedValue([])
+      ;(prismaMock.forms.groupBy as Mock).mockResolvedValue([])
       Object.defineProperty(prismaMock.forms, 'fields', {
         value: { createdAt: 'createdAtMock' },
       })
@@ -196,7 +197,7 @@ describe('FormsService', () => {
     it('should return the form if everyting is ok', async () => {
       const insertForm = { state: FormState.DRAFT, id: '123' } as Forms
       prismaMock.forms.findUnique.mockResolvedValue(insertForm)
-      service.isEditable = jest.fn().mockReturnValue(true)
+      service.isEditable = vi.fn().mockReturnValue(true)
 
       const result = await service.checkFormBeforeSending('123')
       expect(result).toEqual(insertForm)
@@ -251,9 +252,7 @@ describe('FormsService', () => {
 
     it('should merge user fields with request data and call updateForm', async () => {
       prismaMock.forms.findUnique.mockResolvedValue({} as Forms)
-      const spy = jest
-        .spyOn(service, 'updateForm')
-        .mockResolvedValue({} as Forms)
+      const spy = vi.spyOn(service, 'updateForm').mockResolvedValue({} as Forms)
 
       await service.updateFormWithUser(
         '1',
@@ -274,7 +273,7 @@ describe('FormsService', () => {
 
   describe('getFormsCount', () => {
     it('should return all 0 if there is no record in database', async () => {
-      ;(prismaMock.forms.groupBy as jest.Mock).mockResolvedValue([])
+      ;(prismaMock.forms.groupBy as Mock).mockResolvedValue([])
       const result = await service.getFormsCount({})
       Object.values(FormState).forEach((state) => {
         expect(result[state]).toBe(0)
@@ -282,7 +281,7 @@ describe('FormsService', () => {
     })
 
     it('should return correct count otherwise', async () => {
-      ;(prismaMock.forms.groupBy as jest.Mock).mockResolvedValue([
+      ;(prismaMock.forms.groupBy as Mock).mockResolvedValue([
         { _count: { _all: 10 }, state: FormState.DRAFT },
       ])
       const result = await service.getFormsCount({})
@@ -299,7 +298,7 @@ describe('FormsService', () => {
   describe('bumpJsonVersion', () => {
     it('should throw error if form not found', async () => {
       const formId = '123e4567-e89b-12d3-a456-426614174000'
-      jest.spyOn(service, 'getUniqueForm').mockResolvedValue(null)
+      vi.spyOn(service, 'getUniqueForm').mockResolvedValue(null)
 
       await expect(service.bumpJsonVersion(formId)).rejects.toThrow()
     })
@@ -310,8 +309,8 @@ describe('FormsService', () => {
         id: formId,
         state: FormState.PROCESSING,
       } as Forms
-      jest.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
-      service.isEditable = jest.fn().mockReturnValue(false)
+      vi.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
+      service.isEditable = vi.fn().mockReturnValue(false)
 
       await expect(service.bumpJsonVersion(formId)).rejects.toThrow()
     })
@@ -323,9 +322,9 @@ describe('FormsService', () => {
         state: FormState.DRAFT,
         formDefinitionSlug: 'non-existent',
       } as Forms
-      jest.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
-      service.isEditable = jest.fn().mockReturnValue(true)
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
+      vi.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
+      service.isEditable = vi.fn().mockReturnValue(true)
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue(null)
 
       await expect(service.bumpJsonVersion(formId)).rejects.toThrow()
     })
@@ -338,8 +337,8 @@ describe('FormsService', () => {
         formDefinitionSlug: 'test-form',
         jsonVersion: '1.0.0',
       } as Forms
-      jest.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      vi.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         jsonVersion: '2.0.0',
         schema: { type: 'object' },
       })
@@ -358,21 +357,21 @@ describe('FormsService', () => {
         formDataJson,
       } as Partial<Forms> as Forms
 
-      jest.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
+      vi.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
 
       const mockRegistry = {}
       ;(
-        FormValidatorRegistryService.prototype.getRegistry as jest.Mock
+        FormValidatorRegistryService.prototype.getRegistry as Mock
       ).mockReturnValue(mockRegistry)
 
       const omittedData = { existingData: true }
-      ;(baOmitExtraData as jest.Mock).mockReturnValue(omittedData)
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(baOmitExtraData as Mock).mockReturnValue(omittedData)
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         jsonVersion: '1.1.0',
         schema: { type: 'object' },
       })
 
-      const updateSpy = jest.spyOn(prismaMock.forms, 'update')
+      const updateSpy = vi.mocked(prismaMock.forms.update)
       await service.bumpJsonVersion(formId)
 
       expect(baOmitExtraData).toHaveBeenCalledWith(

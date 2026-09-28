@@ -1,4 +1,4 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import axios, { AxiosError } from 'axios'
@@ -23,14 +23,17 @@ import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import SharepointService from './sharepoint.service'
 
-jest.mock('forms-shared/form-utils/formDataExtractors', () => ({
-  extractFormSubjectPlain: jest.fn(),
+vi.mock('forms-shared/definitions/getFormDefinitionBySlug')
+vi.mock('forms-shared/form-utils/omitExtraData')
+vi.mock('forms-shared/sharepoint/getValuesForSharepoint')
+vi.mock('forms-shared/form-utils/formDataExtractors', () => ({
+  extractFormSubjectPlain: vi.fn(),
 }))
 describe('SharepointService', () => {
   let service: SharepointService
 
   beforeEach(async () => {
-    jest.spyOn(console, 'log').mockImplementation(jest.fn())
+    vi.spyOn(console, 'log').mockImplementation(vi.fn())
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -62,7 +65,7 @@ describe('SharepointService', () => {
   })
 
   afterEach(() => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
   })
 
   it('should be defined', () => {
@@ -71,7 +74,7 @@ describe('SharepointService', () => {
 
   describe('transcode', () => {
     it('should just post new record', async () => {
-      const spy = jest
+      const spy = vi
         .spyOn(service, 'postNewRecord')
         .mockImplementation(async () => Promise.resolve())
       await service.transcode({ data: { formId: 'formIdValue' } } as Bull.Job<{
@@ -83,7 +86,7 @@ describe('SharepointService', () => {
 
   describe('getAccessToken', () => {
     it('should throw BadGateway exception if the request fails', async () => {
-      jest.spyOn(axios, 'post').mockRejectedValue(new AxiosError('some error'))
+      vi.spyOn(axios, 'post').mockRejectedValue(new AxiosError('some error'))
       try {
         await service['getAccessToken']()
         expect(true).toBeFalsy()
@@ -96,9 +99,9 @@ describe('SharepointService', () => {
     })
 
     it('should return the access token', async () => {
-      jest
-        .spyOn(axios, 'post')
-        .mockResolvedValue({ data: { access_token: 'access_token_value' } })
+      vi.spyOn(axios, 'post').mockResolvedValue({
+        data: { access_token: 'access_token_value' },
+      })
       const result = await service['getAccessToken']()
       expect(result).toBe('access_token_value')
     })
@@ -106,7 +109,7 @@ describe('SharepointService', () => {
 
   describe('postDataToSharepoint', () => {
     it('should return the id of the created record', async () => {
-      const postSpy = jest
+      const postSpy = vi
         .spyOn(axios, 'post')
         .mockResolvedValue({ data: { id: 120 } })
       const result = await service['postDataToSharepoint'](
@@ -124,7 +127,7 @@ describe('SharepointService', () => {
     })
 
     it('should throw BadGateway exception if the request fails', async () => {
-      jest.spyOn(axios, 'post').mockRejectedValue(new AxiosError('some error'))
+      vi.spyOn(axios, 'post').mockRejectedValue(new AxiosError('some error'))
       try {
         await service['postDataToSharepoint'](
           'dbNameValue',
@@ -143,7 +146,7 @@ describe('SharepointService', () => {
 
   describe('mapColumnsToFields', () => {
     beforeEach(() => {
-      jest.spyOn(axios, 'get').mockResolvedValue({
+      vi.spyOn(axios, 'get').mockResolvedValue({
         data: {
           value: [
             { displayName: 'Title1', name: 'StaticName1' },
@@ -182,7 +185,7 @@ describe('SharepointService', () => {
 
   describe('getAllFieldsMappings', () => {
     it('should make oneToMany and oneToOne empty', async () => {
-      service['mapColumnsToFields'] = jest
+      service['mapColumnsToFields'] = vi
         .fn()
         .mockResolvedValue({ Col1: 'Field1' })
       const result = await service['getAllFieldsMappings'](
@@ -204,7 +207,7 @@ describe('SharepointService', () => {
     })
 
     it('should fill in all mappings', async () => {
-      service['mapColumnsToFields'] = jest.fn(
+      service['mapColumnsToFields'] = vi.fn(
         async (columns: string[]): Promise<Record<string, string>> => {
           const result: Record<string, string> = {}
           columns.forEach((column) => {
@@ -273,7 +276,7 @@ describe('SharepointService', () => {
   describe('postNewRecord', () => {
     it('should throw error if no form is found', async () => {
       prismaMock.forms.findUnique.mockResolvedValue(null)
-      const getFormDefinitionSpy = jest
+      const getFormDefinitionSpy = vi
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockReturnValue(null)
 
@@ -289,7 +292,7 @@ describe('SharepointService', () => {
 
     it('should throw error if no form definition is found', async () => {
       prismaMock.forms.findUnique.mockResolvedValue({} as Forms)
-      const getFormDefinitionSpy = jest
+      const getFormDefinitionSpy = vi
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockReturnValue(null)
 
@@ -305,7 +308,7 @@ describe('SharepointService', () => {
 
     it('should throw error if the form definition has no sharepoint data', async () => {
       prismaMock.forms.findUnique.mockResolvedValue({} as Forms)
-      const getFormDefinitionSpy = jest
+      const getFormDefinitionSpy = vi
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockReturnValue({} as FormDefinition)
 
@@ -325,46 +328,45 @@ describe('SharepointService', () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         formDataJson: {},
       } as Forms)
-      jest
-        .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
-        .mockReturnValue(
-          createTestFormDefinitionSlovenskoSkGeneric({
-            sharepointData: {
-              databaseName: 'dbName',
-              columnMap: {},
-              oneToMany: {
-                otm1: {
-                  databaseName: 'otmDb1',
-                  originalTableId: 'otmOriginal1',
-                  columnMap: { col1otm1: { type: 'title' } },
-                },
-              },
-              oneToOne: {
-                oto1: {
-                  databaseName: 'otoDb1',
-                  originalTableId: 'otoOriginal1',
-                  columnMap: { col1oto1: { type: 'title' } },
-                },
-                oto2: {
-                  databaseName: 'otoDb2',
-                  originalTableId: 'otoOriginal2',
-                  columnMap: { col1oto2: { type: 'title' } },
-                },
+      vi.spyOn(
+        getFormDefinitionBySlug,
+        'getFormDefinitionBySlug',
+      ).mockReturnValue(
+        createTestFormDefinitionSlovenskoSkGeneric({
+          sharepointData: {
+            databaseName: 'dbName',
+            columnMap: {},
+            oneToMany: {
+              otm1: {
+                databaseName: 'otmDb1',
+                originalTableId: 'otmOriginal1',
+                columnMap: { col1otm1: { type: 'title' } },
               },
             },
-          }),
-        )
-      service['postDataToSharepoint'] = jest.fn().mockResolvedValue({ id: 123 })
-      service['handleOneToMany'] = jest
+            oneToOne: {
+              oto1: {
+                databaseName: 'otoDb1',
+                originalTableId: 'otoOriginal1',
+                columnMap: { col1oto1: { type: 'title' } },
+              },
+              oto2: {
+                databaseName: 'otoDb2',
+                originalTableId: 'otoOriginal2',
+                columnMap: { col1oto2: { type: 'title' } },
+              },
+            },
+          },
+        }),
+      )
+      service['postDataToSharepoint'] = vi.fn().mockResolvedValue({ id: 123 })
+      service['handleOneToMany'] = vi
         .fn()
         .mockResolvedValue({ otm1: 1, otm2: 2 })
-      service['handleOneToOne'] = jest
+      service['handleOneToOne'] = vi
         .fn()
         .mockResolvedValue({ oto1: 1, oto2: 2 })
-      service['getAccessToken'] = jest
-        .fn()
-        .mockResolvedValue('accessTokenValue')
-      service['mapColumnsToFields'] = jest.fn(
+      service['getAccessToken'] = vi.fn().mockResolvedValue('accessTokenValue')
+      service['mapColumnsToFields'] = vi.fn(
         async (columns: string[]): Promise<Record<string, string>> => {
           const result: Record<string, string> = {}
           columns.forEach((column) => {
@@ -373,13 +375,13 @@ describe('SharepointService', () => {
           return Promise.resolve(result)
         },
       )
-      const getValuesSpy = jest
+      const getValuesSpy = vi
         .spyOn(getValuesForSharepoint, 'getValuesForFields')
         .mockReturnValue({})
-      const updateFormSpy = jest.spyOn(service['prismaService'].forms, 'update')
-      jest
-        .spyOn(baOmitExtraData, 'baOmitExtraData')
-        .mockReturnValue({ omitted: true })
+      const updateFormSpy = vi.mocked(service['prismaService'].forms.update)
+      vi.spyOn(baOmitExtraData, 'baOmitExtraData').mockReturnValue({
+        omitted: true,
+      })
 
       await service.postNewRecord('formId')
 
@@ -422,9 +424,10 @@ describe('SharepointService', () => {
       } as FormDefinitionSlovenskoSkGeneric
 
       prismaMock.forms.findUnique.mockResolvedValue(mockForm)
-      jest
-        .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
-        .mockReturnValue(mockFormDefinition)
+      vi.spyOn(
+        getFormDefinitionBySlug,
+        'getFormDefinitionBySlug',
+      ).mockReturnValue(mockFormDefinition)
 
       await expect(service.postNewRecord('formId')).rejects.toMatchObject({
         message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,

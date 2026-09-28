@@ -12,6 +12,7 @@
     "./slovensko-sk": "./dist/slovensko-sk/index.js",
     "./magproxy": "./dist/magproxy/index.js",
     "./magproxy/base": "./dist/magproxy/base.js",
+    "./is-required-error": "./dist/is-required-error/index.js",
     "./package.json": "./package.json"
   },
   "typesVersions": {
@@ -36,6 +37,9 @@
       ],
       "magproxy/base": [
         "dist/magproxy/base.d.ts"
+      ],
+      "is-required-error": [
+        "dist/is-required-error/index.d.ts"
       ]
     }
   },

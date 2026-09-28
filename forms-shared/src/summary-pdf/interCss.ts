@@ -1,5 +1,8 @@
 import * as path from 'node:path'
 import fs from 'node:fs/promises'
+import { createRequire } from 'node:module'
+
+const require = createRequire(import.meta.url)
 
 const fontMimeTypes: Record<string, string> = {
   '.woff': 'font/woff',

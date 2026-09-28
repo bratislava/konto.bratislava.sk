@@ -1,13 +1,11 @@
-import type { FieldProps } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { FieldProps } from '@rjsf/utils'
 import React, { ComponentType, useMemo } from 'react'
 import { BAJSONSchema7 } from './ajvKeywords'
 import { defaultUiSchema } from './formDefaults'
 import { getObjectFieldInfo } from './getObjectFieldInfo'
 import isEqual from 'lodash/isEqual'
 
-const { getDefaultRegistry } = require('@rjsf/core')
+import { getDefaultRegistry } from '@rjsf/core'
 
 const assertBaOrderInProperties = (
   entries: [string, BAJSONSchema7][],

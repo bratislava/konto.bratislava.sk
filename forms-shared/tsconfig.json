@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "lib": ["es2023", "dom"],
-    "module": "node16",
+    "module": "esnext",
     "target": "es2022",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node16",
+    "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "declaration": true,
     "outDir": "./dist",

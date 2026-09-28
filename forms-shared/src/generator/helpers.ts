@@ -1,6 +1,4 @@
-import type { RJSFSchema } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { RJSFSchema } from '@rjsf/utils'
 import camelCase from 'lodash/camelCase'
 import { BaAjvInputFormat } from '../form-utils/ajvFormats'
 import {

@@ -1,7 +1,5 @@
 import { FormDefinitionSlovenskoSk } from '../definitions/formDefinitionTypes'
-import type { GenericObjectType } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { GenericObjectType } from '@rjsf/utils'
 import { renderSlovenskoXmlSummary } from './renderXmlSummary'
 import removeMarkdown from 'remove-markdown'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'

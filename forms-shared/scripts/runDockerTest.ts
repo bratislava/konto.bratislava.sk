@@ -43,7 +43,7 @@ async function main() {
 
   if (!isBakeTargetName(targetName)) {
     console.error(
-      `Error: Missing or invalid target. Usage: ts-node scripts/runDockerTest.ts <${Object.keys(bakeTargets).join('|')}>`,
+      `Error: Missing or invalid target. Usage: tsx scripts/runDockerTest.ts <${Object.keys(bakeTargets).join('|')}>`,
     )
     process.exit(1)
   }

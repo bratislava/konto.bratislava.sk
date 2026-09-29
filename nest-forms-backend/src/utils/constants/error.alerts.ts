@@ -36,6 +36,7 @@ export default [
   FormsErrorsEnum.FORM_ARCHIVED,
   FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
   FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+  FormsErrorsEnum.FORM_SENT_AT_MISSING_ERROR,
   FormDeliveryConsumerErrorsEnum.MAX_TRIES_REACHED,
   FormDeliveryConsumerErrorsEnum.SENDING_EMAIL_FAILED,
   FormDeliveryConsumerErrorsEnum.WEBHOOK_ERROR,

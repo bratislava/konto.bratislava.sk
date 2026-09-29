@@ -369,7 +369,7 @@ export interface GetFormResponseSimpleDraftDto {
    */
   state: GetFormResponseSimpleDraftDtoStateEnum
   /**
-   * Date when the form was sent. For forms sent before this field existed, the value was backfilled manually from logs PDF export timestamps, and NASES mailbox, so it may be approximate for historical forms.
+   * Date when the form was sent. For forms sent before this field existed (introduced on 2026-02-19), the value was backfilled manually from logs PDF export timestamps, and NASES mailbox, so it may be approximate for historical forms.
    */
   formSentAt: string | null
 }
@@ -430,7 +430,7 @@ export interface GetFormResponseSimpleSentDto {
    */
   state: GetFormResponseSimpleSentDtoStateEnum
   /**
-   * Date when the form was sent. For forms sent before this field existed, the value was backfilled manually from logs PDF export timestamps, and NASES mailbox, so it may be approximate for historical forms.
+   * Date when the form was sent. For forms sent before this field existed (introduced on 2026-02-19), the value was backfilled manually from logs PDF export timestamps, and NASES mailbox, so it may be approximate for historical forms.
    */
   formSentAt: string
 }

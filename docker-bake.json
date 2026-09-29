@@ -7,7 +7,7 @@
       "default": "12.6.0"
     },
     "TURBO_VERSION": {
-      "default": "2.11.2"
+      "default": "2.11.3"
     },
     "PLAYWRIGHT_VERSION": {
       "default": "1.59.1"

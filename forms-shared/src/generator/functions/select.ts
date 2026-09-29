@@ -1,4 +1,5 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
+import { removeUndefinedValues } from '../helpers'
 import {
   createEnumMetadata,
   createEnumSchemaDefault,
@@ -6,7 +7,6 @@ import {
   OptionItem,
 } from '../optionItems'
 import { BaWidgetType, SelectUiOptions } from '../uiOptionsTypes'
-import { removeUndefinedValues } from '../helpers'
 
 export const select = (
   property: string,

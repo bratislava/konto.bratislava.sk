@@ -1,10 +1,11 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
+
+import { FormDefinition } from '../../src/definitions/formDefinitionTypes'
+import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import {
   renderFormAdditionalInfo,
   renderFormTemplate,
 } from '../../src/string-templates/renderTemplate'
-import { FormDefinition } from '../../src/definitions/formDefinitionTypes'
-import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 
 describe('renderFormTemplate', () => {
   test('should render a simple template', () => {

@@ -1,18 +1,19 @@
-import inquirer from 'inquirer'
+import { get as getAppRootDir } from 'app-root-dir'
+import { ZipArchive } from 'archiver'
 import { createReadStream, createWriteStream } from 'fs'
 import fs from 'fs/promises'
+import inquirer from 'inquirer'
 import path from 'path'
-import archiver from 'archiver'
+import { rimraf } from 'rimraf'
+import unzipper from 'unzipper'
+
+import { devFormDefinitions } from '../src/definitions/devFormDefinitions'
 import { formDefinitions } from '../src/definitions/formDefinitions'
 import {
   FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
 } from '../src/definitions/formDefinitionTypes'
 import { getSlovenskoSkContainerFiles } from '../src/slovensko-sk/containerFiles'
-import { get as getAppRootDir } from 'app-root-dir'
-import { devFormDefinitions } from '../src/definitions/devFormDefinitions'
-import unzipper from 'unzipper'
-import { rimraf } from 'rimraf'
 
 const rootDir = getAppRootDir()
 
@@ -30,7 +31,7 @@ async function generateFiles(formDefinition: FormDefinitionSlovenskoSk, validFro
 
   const outputFile = path.join(outputDir, 'container.zip')
   const output = createWriteStream(outputFile)
-  const archive = archiver('zip', { zlib: { level: 9 } })
+  const archive = new ZipArchive({ zlib: { level: 9 } })
 
   archive.pipe(output)
 

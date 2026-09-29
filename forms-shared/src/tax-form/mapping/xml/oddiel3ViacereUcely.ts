@@ -1,9 +1,9 @@
+import { TaxFormData } from '../../types'
 import { esbsPredmetDaneCiselnik } from '../shared/esbsCiselniky'
 import {
   Oddiel3ViacereUcelyPriznanieShared,
   oddiel3ViacereUcelyShared,
 } from '../shared/oddiel3ViacereUcelyShared'
-import { TaxFormData } from '../../types'
 import { adresaStavbyBytu, katastralneUzemie, pravnyVztah, spoluvlastnictvo } from './ciselniky'
 import { formatDecimalXml, formatIntegerXml, formatXsDateXml } from './functions'
 import { formatRodneCisloXml, sharedPriznanieXml } from './shared'

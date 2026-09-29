@@ -1,19 +1,20 @@
+import type { AxiosInstance } from 'axios'
+
 import {
   ADMINApiFactory,
   AuthApiFactory,
   BackendIntegrationAPIApiFactory,
-  DPBApiFactory,
   DefaultApiFactory,
+  DPBApiFactory,
   OAuth2ApiFactory,
   PAASMPAApiFactory,
   TicketsApiFactory,
   TowingApiFactory,
   UserIntegrationApiFactory,
-  UserVerificationsApiFactory,
   UsersManipulationApiFactory,
+  UserVerificationsApiFactory,
 } from './api'
 import { Configuration, ConfigurationParameters } from './configuration'
-import type { AxiosInstance } from 'axios'
 
 type ClientConfig = {
   basePath: string
@@ -30,6 +31,7 @@ export interface CityAccountClient
     ReturnType<typeof DefaultApiFactory>,
     ReturnType<typeof OAuth2ApiFactory>,
     ReturnType<typeof PAASMPAApiFactory>,
+    ReturnType<typeof TicketsApiFactory>,
     ReturnType<typeof TowingApiFactory>,
     ReturnType<typeof UserIntegrationApiFactory>,
     ReturnType<typeof UserVerificationsApiFactory>,

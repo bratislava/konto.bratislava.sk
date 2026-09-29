@@ -1,9 +1,6 @@
-import type { GenericObjectType, RJSFSchema } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
-import { BaRjsfValidatorRegistry } from './validatorRegistry'
+import { type GenericObjectType, omitExtraData, type RJSFSchema } from '@rjsf/utils'
 
-const { omitExtraData } = require('@rjsf/utils')
+import { BaRjsfValidatorRegistry } from './validatorRegistry'
 
 export function baOmitExtraData(
   schema: RJSFSchema,

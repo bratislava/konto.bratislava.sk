@@ -1,12 +1,13 @@
+import { describe, expect, test } from 'vitest'
+
 import { formDefinitions } from '../../src/definitions/formDefinitions'
 import { FormDefinition } from '../../src/definitions/formDefinitionTypes'
-import { filterConsole } from '../../test-utils/filterConsole'
-import { baGetDefaultFormState } from '../../src/form-utils/defaultFormState'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
-import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
-import { describe, test, expect } from 'vitest'
-import { isValidVersion } from '../../src/versioning/version-compare'
 import { collectSchemaFileSlots } from '../../src/form-files/collectSchemaFileSlots'
+import { baGetDefaultFormState } from '../../src/form-utils/defaultFormState'
+import { isValidVersion } from '../../src/versioning/version-compare'
+import { filterConsole } from '../../test-utils/filterConsole'
+import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 describe('Form definitions', () => {
   formDefinitions.forEach((formDefinition) => {

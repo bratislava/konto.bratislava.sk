@@ -1,4 +1,11 @@
+import type { GenericObjectType, ValidationData } from '@rjsf/utils'
 import React, { Fragment, PropsWithChildren, ReactNode } from 'react'
+
+import { FileInfoSummary } from '../form-files/fileStatus'
+import {
+  SummaryDisplayValue,
+  SummaryDisplayValueType,
+} from '../summary-json/getSummaryDisplayValue'
 import {
   SummaryJsonArray,
   SummaryJsonArrayItem,
@@ -8,14 +15,6 @@ import {
   SummaryJsonStep,
   SummaryJsonType,
 } from '../summary-json/summaryJsonTypes'
-import { FileInfoSummary } from '../form-files/fileStatus'
-import {
-  SummaryDisplayValue,
-  SummaryDisplayValueType,
-} from '../summary-json/getSummaryDisplayValue'
-import type { GenericObjectType, ValidationData } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
 import { checkPathForErrors } from './checkPathForErrors'
 
 type ComponentPropsBase = {

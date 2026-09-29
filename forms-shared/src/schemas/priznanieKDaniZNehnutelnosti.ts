@@ -1,3 +1,7 @@
+import type { GenericObjectType } from '@rjsf/utils'
+
+import { SchemalessFormDataExtractor } from '../form-utils/evaluateFormDataExtractor'
+import { schema } from '../generator/functions/schema'
 import step1 from './priznanie-k-dani-z-nehnutelnosti/step1'
 import step2 from './priznanie-k-dani-z-nehnutelnosti/step2'
 import step3 from './priznanie-k-dani-z-nehnutelnosti/step3'
@@ -6,12 +10,6 @@ import step5 from './priznanie-k-dani-z-nehnutelnosti/step5'
 import step6 from './priznanie-k-dani-z-nehnutelnosti/step6'
 import step7 from './priznanie-k-dani-z-nehnutelnosti/step7'
 import step8 from './priznanie-k-dani-z-nehnutelnosti/step8'
-import { schema } from '../generator/functions/schema'
-
-import { SchemalessFormDataExtractor } from '../form-utils/evaluateFormDataExtractor'
-import type { GenericObjectType } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
 
 export default schema(
   {

@@ -1,14 +1,15 @@
 import { describe, test } from 'vitest'
+
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
-import { filterConsole } from '../../test-utils/filterConsole'
-import { renderSummaryPdf } from '../../src/summary-pdf/renderSummaryPdf'
-import { launchPlaywrightTest } from '../../test-utils/launchPlaywright'
-import { expectPdfToMatchSnapshot } from '../../test-utils/expectPdfToMatchSnapshot'
-import { screenshotTestTimeout } from '../../test-utils/consts'
-import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
-import { getFormSummary } from '../../src/summary/summary'
-import { validateSummary } from '../../src/summary-renderer/validateSummary'
 import { mergeClientAndServerFilesSummary } from '../../src/form-files/mergeClientAndServerFiles'
+import { getFormSummary } from '../../src/summary/summary'
+import { renderSummaryPdf } from '../../src/summary-pdf/renderSummaryPdf'
+import { validateSummary } from '../../src/summary-renderer/validateSummary'
+import { screenshotTestTimeout } from '../../test-utils/consts'
+import { expectPdfToMatchSnapshot } from '../../test-utils/expectPdfToMatchSnapshot'
+import { filterConsole } from '../../test-utils/filterConsole'
+import { launchPlaywrightTest } from '../../test-utils/launchPlaywright'
+import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 describe('getSummaryJson', () => {
   getExampleFormPairs().forEach(({ formDefinition, exampleForm }) => {

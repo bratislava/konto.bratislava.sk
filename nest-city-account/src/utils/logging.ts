@@ -1,5 +1,8 @@
 import { HttpException } from '@nestjs/common'
-import { RequiredError } from 'openapi-clients/magproxy/base'
+import {
+  isOpenApiClientRequiredErrorInstance,
+  OpenApiClientRequiredError,
+} from 'openapi-clients/is-required-error'
 
 import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto'
 
@@ -105,7 +108,10 @@ function httpExceptionToObj(error: HttpException, methodName?: string | symbol):
   }
 }
 
-function requiredErrorToObj(error: RequiredError, methodName?: string | symbol): object {
+function requiredErrorToObj(
+  error: OpenApiClientRequiredError,
+  methodName?: string | symbol
+): object {
   return {
     errorType: 'RequiredError',
     message: error.message,
@@ -128,7 +134,7 @@ export function errorToLogfmt(error: unknown, methodName?: string | symbol): str
   if (error instanceof HttpException) {
     return objToLogfmt(httpExceptionToObj(error, methodName))
   }
-  if (error instanceof RequiredError) {
+  if (isOpenApiClientRequiredErrorInstance(error)) {
     return objToLogfmt(requiredErrorToObj(error, methodName))
   }
   if (error instanceof Error) {

@@ -1,16 +1,15 @@
-import { selectMultiple } from '../../generator/functions/selectMultiple'
-import { input } from '../../generator/functions/input'
-import { select } from '../../generator/functions/select'
-import { datePicker } from '../../generator/functions/datePicker'
-import { step } from '../../generator/functions/step'
-import { schema } from '../../generator/functions/schema'
-import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
-import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
-import { esbsBratislavaMestskaCastNoPrefixCiselnik } from '../../tax-form/mapping/shared/esbsCiselniky'
+import type { GenericObjectType } from '@rjsf/utils'
+
 import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
-import type { GenericObjectType } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import { datePicker } from '../../generator/functions/datePicker'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { input } from '../../generator/functions/input'
+import { schema } from '../../generator/functions/schema'
+import { select } from '../../generator/functions/select'
+import { selectMultiple } from '../../generator/functions/selectMultiple'
+import { step } from '../../generator/functions/step'
+import { esbsBratislavaMestskaCastNoPrefixCiselnik } from '../../tax-form/mapping/shared/esbsCiselniky'
+import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
 
 export default schema(
   {

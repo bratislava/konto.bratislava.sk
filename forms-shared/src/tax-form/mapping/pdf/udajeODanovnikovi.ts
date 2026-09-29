@@ -1,5 +1,5 @@
-import { udajeODanovnikoviShared } from '../shared/udajeODanovnikoviShared'
 import { TaxFormData } from '../../types'
+import { udajeODanovnikoviShared } from '../shared/udajeODanovnikoviShared'
 import { formatRodneCisloFirstPartPdf, formatRodneCisloSecondPartPdf } from './functions'
 import { getTitleFromStatCiselnik } from './statCiselnik'
 

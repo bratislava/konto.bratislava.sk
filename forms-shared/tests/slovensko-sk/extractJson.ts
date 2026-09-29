@@ -1,9 +1,10 @@
 import { describe, expect, test } from 'vitest'
+
+import { FormDefinitionSlovenskoSk } from '../../src/definitions/formDefinitionTypes'
 import {
   extractJsonFromSlovenskoSkXml,
   ExtractJsonFromSlovenskoSkXmlErrorType,
 } from '../../src/slovensko-sk/extractJson'
-import { FormDefinitionSlovenskoSk } from '../../src/definitions/formDefinitionTypes'
 
 describe('extractJsonFromSlovenskoSkXml', () => {
   const validXmlString = `

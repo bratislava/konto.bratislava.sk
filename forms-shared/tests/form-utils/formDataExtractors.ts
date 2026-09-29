@@ -1,12 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
-import {
-  extractEmailFormAddress,
-  extractEmailFormEmail,
-  extractEmailFormName,
-  extractFormSubjectPlain,
-  extractFormSubjectTechnical,
-} from '../../src/form-utils/formDataExtractors'
+
 import {
   FormDefinition,
   FormDefinitionEmail,
@@ -15,11 +8,19 @@ import {
   isEmailFormDefinition,
   isSlovenskoSkGenericFormDefinition,
 } from '../../src/definitions/formDefinitionTypes'
+import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
+import { BAJSONSchema7 } from '../../src/form-utils/ajvKeywords'
 import {
   SchemaFormDataExtractor,
   SchemalessFormDataExtractor,
 } from '../../src/form-utils/evaluateFormDataExtractor'
-import { BAJSONSchema7 } from '../../src/form-utils/ajvKeywords'
+import {
+  extractEmailFormAddress,
+  extractEmailFormEmail,
+  extractEmailFormName,
+  extractFormSubjectPlain,
+  extractFormSubjectTechnical,
+} from '../../src/form-utils/formDataExtractors'
 
 describe('formDataExtractors', () => {
   describe('extractFormSubjectPlain', () => {

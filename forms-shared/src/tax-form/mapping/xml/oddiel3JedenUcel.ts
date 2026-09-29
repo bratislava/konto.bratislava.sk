@@ -1,9 +1,9 @@
+import { TaxFormData } from '../../types'
 import { esbsPredmetDaneCiselnik } from '../shared/esbsCiselniky'
 import {
   Oddiel3JedenUcelPriznanieShared,
   oddiel3JedenUcelShared,
 } from '../shared/oddiel3JedenUcelShared'
-import { TaxFormData } from '../../types'
 import {
   adresaStavbyBytu,
   getCiselnikEntryByCondition,

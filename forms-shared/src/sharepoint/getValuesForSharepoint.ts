@@ -1,5 +1,8 @@
+import lodashGet from 'lodash/get'
+import isArray from 'lodash/isArray'
+import isObject from 'lodash/isObject'
+
 import { SharepointData } from '../definitions/sharepointTypes'
-import { get as lodashGet, isObject, isArray } from 'lodash'
 import { JsonValue } from './types'
 
 /**

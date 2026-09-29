@@ -1,10 +1,11 @@
-import { createCondition } from '../../../generator/helpers'
+import { match } from 'ts-pattern'
+
+import { conditionalFields } from '../../../generator/functions/conditionalFields'
 import { input } from '../../../generator/functions/input'
 import { radioGroup } from '../../../generator/functions/radioGroup'
-import { object } from '../../../generator/object'
-import { conditionalFields } from '../../../generator/functions/conditionalFields'
-import { match } from 'ts-pattern'
 import { step } from '../../../generator/functions/step'
+import { createCondition } from '../../../generator/helpers'
+import { object } from '../../../generator/object'
 
 export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') => {
   const fieldProperty = match(type)

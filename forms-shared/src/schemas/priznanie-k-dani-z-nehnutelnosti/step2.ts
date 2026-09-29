@@ -1,11 +1,11 @@
-import { createCamelCaseItemsV2, createCondition } from '../../generator/helpers'
-import { danovnik, splnomocnenec } from './osoby'
-import { radioGroup } from '../../generator/functions/radioGroup'
-import { object } from '../../generator/object'
-import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { step } from '../../generator/functions/step'
+import { createCamelCaseItemsV2, createCondition } from '../../generator/helpers'
+import { object } from '../../generator/object'
 import { priznanieKDaniZNehnutelnostiFiles } from '../priznanieKDaniZNehnutelnosti'
+import { danovnik, splnomocnenec } from './osoby'
 
 export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
   radioGroup(

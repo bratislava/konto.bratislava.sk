@@ -1,6 +1,4 @@
-import type { GenericObjectType } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { GenericObjectType } from '@rjsf/utils'
 import objectHash from 'object-hash'
 
 export const hashFormData = (formData: GenericObjectType) => objectHash(formData)

@@ -1,5 +1,6 @@
-import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest'
 import jsdom from 'jsdom'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { getSummaryJsonBrowser } from '../../src/summary-json/getSummaryJsonBrowser'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'

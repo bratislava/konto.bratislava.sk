@@ -1,6 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
 import { Response } from 'express'
-import { RequiredError } from 'openapi-clients/magproxy/base'
+import { isOpenApiClientRequiredErrorInstance } from 'openapi-clients/is-required-error'
 
 import { errorTypeKeys } from '../guards/dtos/error.dto'
 import { symbolKeysToStrings } from '../logging'
@@ -22,7 +22,7 @@ export class ErrorFilter implements ExceptionFilter {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const { name, stack, message } = exception
-    const field = exception instanceof RequiredError ? exception.field : undefined
+    const field = isOpenApiClientRequiredErrorInstance(exception) ? exception.field : undefined
 
     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
 

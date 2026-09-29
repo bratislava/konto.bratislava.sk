@@ -1,6 +1,6 @@
+import { TaxFormData } from '../../types'
 import { ParsedRodneCislo } from '../shared/functions'
 import { udajeODanovnikoviShared } from '../shared/udajeODanovnikoviShared'
-import { TaxFormData } from '../../types'
 
 export const formatRodneCisloXml = (parsedRodneCislo: ParsedRodneCislo | undefined) => {
   if (!parsedRodneCislo?.isValid) {

@@ -1,9 +1,9 @@
-import { DanZBytovANebytovychPriestorovPriznanie, TaxFormData } from '../../types'
-import { parseDateFieldDate } from './functions'
-import { oddielBaseShared } from './oddielBaseShared'
 import { calculateFormCalculatorFormula } from '../../../form-calculators/calculators'
 import { safeArray, safeBoolean, safeNumber, safeString } from '../../../form-utils/safeData'
 import { oddiel4ZakladDaneFormula } from '../../formulas'
+import { DanZBytovANebytovychPriestorovPriznanie, TaxFormData } from '../../types'
+import { parseDateFieldDate } from './functions'
+import { oddielBaseShared } from './oddielBaseShared'
 
 const pouzitKalkulacku = (data: TaxFormData) =>
   safeBoolean(data.danZBytovANebytovychPriestorov?.kalkulackaWrapper?.pouzitKalkulacku) === true

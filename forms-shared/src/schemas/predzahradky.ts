@@ -1,19 +1,20 @@
-import { createCondition } from '../generator/helpers'
-import { select } from '../generator/functions/select'
-import { input } from '../generator/functions/input'
-import { radioGroup } from '../generator/functions/radioGroup'
-import { textArea } from '../generator/functions/textArea'
-import { fileUpload } from '../generator/functions/fileUpload'
-import { step } from '../generator/functions/step'
-import { conditionalFields } from '../generator/functions/conditionalFields'
-import { schema } from '../generator/functions/schema'
-import { esbsBratislavaMestskaCastNoPrefixCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
 import { match } from 'ts-pattern'
+
+import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
 import {
   SchemaFormDataExtractor,
   SchemalessFormDataExtractor,
 } from '../form-utils/evaluateFormDataExtractor'
-import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
+import { conditionalFields } from '../generator/functions/conditionalFields'
+import { fileUpload } from '../generator/functions/fileUpload'
+import { input } from '../generator/functions/input'
+import { radioGroup } from '../generator/functions/radioGroup'
+import { schema } from '../generator/functions/schema'
+import { select } from '../generator/functions/select'
+import { step } from '../generator/functions/step'
+import { textArea } from '../generator/functions/textArea'
+import { createCondition } from '../generator/helpers'
+import { esbsBratislavaMestskaCastNoPrefixCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
 
 export default schema(
   {

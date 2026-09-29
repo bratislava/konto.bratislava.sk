@@ -1,7 +1,7 @@
-import { createCamelCaseItemsV2 } from '../../generator/helpers'
 import { number } from '../../generator/functions/number'
 import { radioGroup } from '../../generator/functions/radioGroup'
 import { step } from '../../generator/functions/step'
+import { createCamelCaseItemsV2 } from '../../generator/helpers'
 
 export default step('druhPriznania', { title: 'Druh priznania' }, [
   radioGroup(

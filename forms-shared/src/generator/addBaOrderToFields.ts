@@ -1,5 +1,6 @@
-import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
 import { create } from 'mutative'
+
+import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
 import { GeneratorFieldType } from './generatorTypes'
 
 /**

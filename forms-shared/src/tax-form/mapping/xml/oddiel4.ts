@@ -1,5 +1,5 @@
-import { Oddiel4PriznanieShared, oddiel4Shared } from '../shared/oddiel4Shared'
 import { TaxFormData } from '../../types'
+import { Oddiel4PriznanieShared, oddiel4Shared } from '../shared/oddiel4Shared'
 import { adresaStavbyBytu, katastralneUzemie, pravnyVztah, spoluvlastnictvo } from './ciselniky'
 import { formatIntegerXml, formatXsDateXml } from './functions'
 import { formatRodneCisloXml, sharedPriznanieXml } from './shared'

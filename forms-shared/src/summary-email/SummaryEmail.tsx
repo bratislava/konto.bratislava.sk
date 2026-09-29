@@ -1,5 +1,8 @@
-import React, { createContext } from 'react'
 import { Body, Container, Html, Link, Section, Text } from '@react-email/components'
+import React, { createContext } from 'react'
+
+import { FileInfoSummary } from '../form-files/fileStatus'
+import { FormSummary } from '../summary/summary'
 import {
   SummaryArrayComponentProps,
   SummaryArrayItemComponentProps,
@@ -13,8 +16,6 @@ import {
   SummaryStringValueComponentProps,
 } from '../summary-renderer/SummaryRenderer'
 import { FileIdInfoMap } from './renderSummaryEmail'
-import { FileInfoSummary } from '../form-files/fileStatus'
-import { FormSummary } from '../summary/summary'
 
 type SummaryEmailProps = {
   formSummary: FormSummary

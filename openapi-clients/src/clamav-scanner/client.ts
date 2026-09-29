@@ -1,6 +1,7 @@
+import type { AxiosInstance } from 'axios'
+
 import { HealthApiFactory, ScannerApiFactory, StatusesApiFactory } from './api'
 import { Configuration, ConfigurationParameters } from './configuration'
-import type { AxiosInstance } from 'axios'
 
 type ClientConfig = {
   basePath: string

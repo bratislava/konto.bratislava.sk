@@ -1,4 +1,5 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
+import { removeUndefinedValues } from '../helpers'
 import {
   createEnumMetadata,
   createEnumSchemaDefault,
@@ -6,7 +7,6 @@ import {
   OptionItem,
 } from '../optionItems'
 import { BaWidgetType, RadioGroupUiOptions } from '../uiOptionsTypes'
-import { removeUndefinedValues } from '../helpers'
 
 type StringToType<T> = T extends 'string' ? string : T extends 'boolean' ? boolean : never
 

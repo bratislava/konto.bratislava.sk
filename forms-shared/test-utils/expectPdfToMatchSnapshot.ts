@@ -1,9 +1,8 @@
-import { expect, vi } from 'vitest'
 import { toMatchImageSnapshot } from 'jest-image-snapshot'
-
 // "pdf-to-img" is not the most popular package, but it is one of the few that use PDF.js internally and doesn't
 // need any native binaries, so it works out of the box without complex local / CI setup.
 import { pdf } from 'pdf-to-img'
+import { expect, vi } from 'vitest'
 
 expect.extend({ toMatchImageSnapshot })
 

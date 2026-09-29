@@ -1,6 +1,6 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
-import { BaWidgetType, NumberUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues, validateInputWidth } from '../helpers'
+import { BaWidgetType, NumberUiOptions } from '../uiOptionsTypes'
 
 /**
  * Creates a number field generator

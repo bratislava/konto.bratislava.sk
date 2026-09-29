@@ -1,15 +1,16 @@
-import { createCondition } from '../../generator/helpers'
+import { match } from 'ts-pattern'
+
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
+import { checkboxGroup } from '../../generator/functions/checkboxGroup'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { datePicker } from '../../generator/functions/datePicker'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 import { input } from '../../generator/functions/input'
 import { radioGroup } from '../../generator/functions/radioGroup'
-import { textArea } from '../../generator/functions/textArea'
-import { checkboxGroup } from '../../generator/functions/checkboxGroup'
-import { datePicker } from '../../generator/functions/datePicker'
-import { step } from '../../generator/functions/step'
-import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
-import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
-import { match } from 'ts-pattern'
-import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
+import { step } from '../../generator/functions/step'
+import { textArea } from '../../generator/functions/textArea'
+import { createCondition } from '../../generator/helpers'
 
 export default schema({ title: 'Podnety a pochvaly občanov' }, [
   step('podnet', { title: 'Podať podnet' }, [

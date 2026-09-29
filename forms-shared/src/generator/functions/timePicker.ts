@@ -1,6 +1,6 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
-import { BaWidgetType, TimePickerUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
+import { BaWidgetType, TimePickerUiOptions } from '../uiOptionsTypes'
 
 export const timePicker = (
   property: string,

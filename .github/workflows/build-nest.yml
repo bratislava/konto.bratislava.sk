@@ -65,7 +65,7 @@ env:
 jobs:
   test:
     name: Build Nest
-    runs-on: bratislava
+    runs-on: ubuntu-latest
     env:
       # Per-cluster deploy tag prefix (empty in CI).
       CLUSTER_PREFIX: ${{ inputs.cluster != '' && format('{0}-', inputs.cluster) || '' }}

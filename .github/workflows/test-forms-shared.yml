@@ -28,7 +28,7 @@ env:
 jobs:
   test:
     name: Forms Shared Tests
-    runs-on: bratislava
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v6

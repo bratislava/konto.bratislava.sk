@@ -18,7 +18,7 @@ permissions:
 jobs:
   resolve:
     name: Resolve Environment and Services
-    runs-on: bratislava
+    runs-on: ubuntu-latest
     outputs:
       cluster: ${{ steps.resolve.outputs.cluster }}
       next-build-env: ${{ steps.resolve.outputs.next-build-env }}

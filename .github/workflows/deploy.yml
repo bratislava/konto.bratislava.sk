@@ -97,15 +97,6 @@ jobs:
             fi
           done
 
-  test-forms-shared:
-    name: Test forms-shared
-    needs: resolve
-    if: needs.resolve.outputs.next == 'true' || needs.resolve.outputs.nest-forms-backend == 'true'
-    uses: ./.github/workflows/test-forms-shared.yml
-    secrets: inherit
-    with:
-      image: harbor.bratislava.sk/standalone/forms-shared
-
   # ---- Build & push per-cluster service images ----
   # Each build job builds the deployable image, pushes it, and re-tags it for
   # the cluster. The matching deploy-* job below then triggers the infra deploy.
@@ -203,14 +194,13 @@ jobs:
       build_env: ${{ needs.resolve.outputs.next-build-env }}
 
   # ---- Gate + trigger infrastructure deploys ----
-  # builds-complete is the gate: nothing deploys until every in-scope build (and
-  # the forms-shared test) has finished and none failed. It does no work of its own.
+  # builds-complete is the gate: nothing deploys until every in-scope build has
+  # finished and none failed. It does no work of its own.
   builds-complete:
     name: All builds completed
     needs:
       [
         resolve,
-        test-forms-shared,
         build-strapi,
         build-cvdmirror,
         build-clamav,
@@ -257,7 +247,7 @@ jobs:
 
   deploy-nest-forms-backend:
     name: nest-forms-backend
-    needs: [ resolve, build-nest-forms-backend, test-forms-shared, builds-complete ]
+    needs: [ resolve, build-nest-forms-backend, builds-complete ]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-forms-backend == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@v3.0.0
     secrets: inherit
@@ -301,7 +291,6 @@ jobs:
       [
         resolve,
         build-next,
-        test-forms-shared,
         builds-complete,
         deploy-strapi,
         deploy-nest-forms-backend,

@@ -61,7 +61,7 @@
     "pdf-lib": "1.17.1",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-email": "6.0.8",
+    "react-email": "6.11.0",
     "react-markdown": "10.1.0",
     "remove-markdown": "0.6.4",
     "rodnecislo": "1.6.0",

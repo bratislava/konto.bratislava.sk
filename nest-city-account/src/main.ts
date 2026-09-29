@@ -13,9 +13,19 @@ import BaConfigService from './config/ba-config.service'
 
 async function bootstrap() {
   const logger = new LineLoggerSubservice('Nest')
+  const preview = process.env.NEST_PREVIEW === 'true'
   const app = await NestFactory.create(AppModule, {
     logger,
+    preview,
+    abortOnError: !preview,
   })
+
+  if (preview) {
+    await app.close()
+    logger.log('Preview OK: dependency graph resolved')
+    return
+  }
+
   const baConfigService = app.get(BaConfigService)
   const corsOptions = {
     origin: true,

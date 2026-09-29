@@ -7,9 +7,18 @@ import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice
 
 async function main(): Promise<void> {
   const logger = new LineLoggerSubservice('Nest')
+  const preview = process.env.NEST_PREVIEW === 'true'
   const app = await NestFactory.create(AppModule, {
     logger,
+    preview,
+    abortOnError: !preview,
   })
+
+  if (preview) {
+    await app.close()
+    logger.log('Preview OK: dependency graph resolved')
+    return
+  }
 
   bootstrap({ app })
 

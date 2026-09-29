@@ -73,3 +73,7 @@ EXPOSE 3000
 # tini tears the container down before `node` can drain in-flight requests.
 ENTRYPOINT [ "/sbin/tini", "--" ]
 CMD [ "sh", "-c", "./node_modules/.bin/prisma migrate deploy && exec node dist/main" ]
+
+FROM runner AS verify-bootstrap
+COPY --chown=node:node nest-clamav-scanner/.env.example ./.env.example
+RUN node --run verify-bootstrap

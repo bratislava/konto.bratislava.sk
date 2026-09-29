@@ -144,6 +144,11 @@ target "nest-city-account-lint" {
   target   = "lint"
 }
 
+target "nest-city-account-verify-bootstrap" {
+  inherits = ["_nest-city-account"]
+  target   = "verify-bootstrap"
+}
+
 target "_nest-clamav-scanner" {
   inherits   = ["_toolchain", "_turbo-cache"]
   dockerfile = "nest-clamav-scanner/Dockerfile"
@@ -169,6 +174,11 @@ target "nest-clamav-scanner-lint" {
   target   = "lint"
 }
 
+target "nest-clamav-scanner-verify-bootstrap" {
+  inherits = ["_nest-clamav-scanner"]
+  target   = "verify-bootstrap"
+}
+
 target "_nest-forms-backend" {
   inherits   = ["_toolchain", "_turbo-cache"]
   dockerfile = "nest-forms-backend/Dockerfile"
@@ -192,6 +202,11 @@ target "nest-forms-backend-test" {
 target "nest-forms-backend-lint" {
   inherits = ["_nest-forms-backend"]
   target   = "lint"
+}
+
+target "nest-forms-backend-verify-bootstrap" {
+  inherits = ["_nest-forms-backend"]
+  target   = "verify-bootstrap"
 }
 
 # The only service with E2E tests. CI_E2E_DATABASE_URL points at a database that
@@ -224,6 +239,11 @@ target "nest-tax-backend-test" {
 target "nest-tax-backend-lint" {
   inherits = ["_nest-tax-backend"]
   target   = "lint"
+}
+
+target "nest-tax-backend-verify-bootstrap" {
+  inherits = ["_nest-tax-backend"]
+  target   = "verify-bootstrap"
 }
 
 # Bare `docker buildx bake` builds every deployable image.

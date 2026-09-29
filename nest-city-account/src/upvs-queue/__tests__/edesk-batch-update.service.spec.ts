@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -19,6 +20,7 @@ describe('EdeskBatchUpdateService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         EdeskBatchUpdateService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: PhysicalEntityService, useValue: createMock<PhysicalEntityService>() },
@@ -69,7 +71,9 @@ describe('EdeskBatchUpdateService', () => {
       ],
       failed: [],
     } satisfies GetIdentitiesByUrisResult)
-    prismaMock.externalEdeskCheck.update.mockResolvedValue(externalEdeskCheckFactory({ norisId: 1 }))
+    prismaMock.externalEdeskCheck.update.mockResolvedValue(
+      externalEdeskCheckFactory({ norisId: 1 })
+    )
 
     const result = await service.updateEdeskStatusBatch()
 
@@ -103,12 +107,16 @@ describe('EdeskBatchUpdateService', () => {
       ],
       failed: [],
     } satisfies GetIdentitiesByUrisResult)
-    prismaMock.externalEdeskCheck.update.mockResolvedValue(externalEdeskCheckFactory({ norisId: 42 }))
+    prismaMock.externalEdeskCheck.update.mockResolvedValue(
+      externalEdeskCheckFactory({ norisId: 42 })
+    )
     const logSpy = jest.spyOn(service['logger'], 'log').mockImplementation(jest.fn())
 
     await service.updateEdeskStatusBatch()
 
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('external_edesk_death_date'))
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ event: 'external_edesk_death_date' })
+    )
   })
 
   it('requeues possible URI changes and flags the entities outdated', async () => {

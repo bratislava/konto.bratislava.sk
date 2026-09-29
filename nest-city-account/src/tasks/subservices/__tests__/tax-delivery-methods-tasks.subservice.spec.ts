@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -24,7 +25,6 @@ import { NorisDeliveryMethodService } from '../../../noris/services/noris-delive
 import { DeliveryMethod } from '../../../noris/types/noris.enums'
 import { PdfGeneratorService } from '../../../pdf-generator/pdf-generator.service'
 import { PrismaService } from '../../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { TaxDeliveryMethodsTasksSubservice } from '../tax-delivery-methods-tasks.subservice'
 
 jest.mock('../../../config/ba-config.instance')
@@ -33,7 +33,7 @@ const mockEmail = 'test@example.com'
 
 describe('TaxDeliveryMethodsTasksSubservice', () => {
   let service: TaxDeliveryMethodsTasksSubservice
-  let throwerErrorGuard: ThrowerErrorGuard
+  let errorFactoryService: ErrorFactoryService
 
   const mockGetBaConfigInstance = getBaConfigInstance as jest.MockedFunction<
     typeof getBaConfigInstance
@@ -60,10 +60,11 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         TaxDeliveryMethodsTasksSubservice,
         { provide: PrismaService, useValue: prismaMock },
         { provide: NorisDeliveryMethodService, useValue: createMock<NorisDeliveryMethodService>() },
-        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
         { provide: MailgunService, useValue: createMock<MailgunService>() },
         {
           provide: PdfGeneratorService,
@@ -75,7 +76,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     }).compile()
 
     service = module.get<TaxDeliveryMethodsTasksSubservice>(TaxDeliveryMethodsTasksSubservice)
-    throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
 
     // Make $transaction execute its callback so the advisory-lock path is exercised in tests.
     prismaMock.$transaction.mockImplementation(async (fn) => {
@@ -95,7 +96,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         .mockResolvedValue({
           birthNumbers: ['123456/2020', '123456/4848', '123456/4649', '123456/4521'],
         })
-      const internalErrorSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')
+      const internalErrorSpy = jest.spyOn(errorFactoryService, 'InternalServerErrorException')
 
       prismaMock.user.updateMany.mockResolvedValue({ count: 1 })
       const prismaUserUpdateSpy = jest.spyOn(prismaMock.user, 'updateMany')
@@ -223,7 +224,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         service['norisDeliveryMethodService'],
         'updateDeliveryMethods'
       )
-      const internalErrorSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')
+      const internalErrorSpy = jest.spyOn(errorFactoryService, 'InternalServerErrorException')
       const prismaUserUpdateSpy = jest
         .spyOn(prismaMock.user, 'updateMany')
         .mockResolvedValue({ count: 1 })

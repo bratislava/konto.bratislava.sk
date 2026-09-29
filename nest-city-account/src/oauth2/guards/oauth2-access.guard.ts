@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService, ErrorResponseEnum } from '@bratislava/log-nest'
 import { ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { AuthGuard } from '@nestjs/passport'
@@ -5,9 +6,6 @@ import { Request } from 'express'
 
 import { decryptData } from '../../utils/crypto'
 import { CognitoGetUserData } from '../../utils/global-dtos/cognito.dto'
-import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { deserializeTokenData } from '../../utils/tokenSerialization'
 import { CLIENT_NAME_KEY } from '../decorators/client-name.decorator'
 import { OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
@@ -19,15 +17,12 @@ import { OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
  */
 @Injectable()
 export class OAuth2AccessGuard extends AuthGuard('cognito-strategy') {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly reflector: Reflector,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly oAuth2ClientSubservice: OAuth2ClientSubservice
   ) {
     super()
-    this.logger = new LineLoggerSubservice(OAuth2AccessGuard.name)
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -40,31 +35,31 @@ export class OAuth2AccessGuard extends AuthGuard('cognito-strategy') {
     ])
 
     if (!clientName) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Client name not specified. Use @ClientName() decorator on the endpoint.'
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Client name not specified. Use @ClientName() decorator on the endpoint.',
+      })
     }
 
     // Look up client configuration by name to get the client ID
     const client = this.oAuth2ClientSubservice.findClientByName(clientName)
     if (!client) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        `Client configuration not found for client name: ${clientName}`
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: `Client configuration not found for client name: ${clientName}`,
+      })
     }
 
     // Decrypt the token and replace Authorization header before Passport processes it
     const authHeader = request.headers.authorization
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Missing or invalid Authorization header'
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Missing or invalid Authorization header',
+      })
     }
 
     const encryptedToken = authHeader.substring(7)
@@ -75,21 +70,21 @@ export class OAuth2AccessGuard extends AuthGuard('cognito-strategy') {
       // Replace Authorization header with the decrypted plain JWT
       request.headers.authorization = `Bearer ${token}`
     } catch (error) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Failed to decrypt or deserialize token',
-        error instanceof Error ? error : undefined
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Failed to decrypt or deserialize token',
+        error: error instanceof Error ? error : undefined,
+      })
     }
 
     // Validate tokenClientId matches expected client ID
     if (tokenClientId !== client.id) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        `Token client ID does not match expected client ID. Expected for ${client.name}: ${client.id}, Got: ${tokenClientId}`
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: `Token client ID does not match expected client ID. Expected for ${client.name}: ${client.id}, Got: ${tokenClientId}`,
+      })
     }
 
     // Call parent AuthGuard to validate JWT using cognito-strategy
@@ -106,20 +101,20 @@ export class OAuth2AccessGuard extends AuthGuard('cognito-strategy') {
   ): TUser {
     // Handle errors from Passport
     if (error) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        `Failed to verify token. Info: ${info?.message}`,
-        error
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: `Failed to verify token. Info: ${info?.message}`,
+        error,
+      })
     }
 
     if (!user) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        `User not found. Info: ${info?.message}`
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: `User not found. Info: ${info?.message}`,
+      })
     }
 
     // User data already fetched by cognito-strategy

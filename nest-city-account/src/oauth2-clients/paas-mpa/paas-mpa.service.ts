@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { BloomreachContactDatabaseService } from '../../bloomreach/bloomreach-contact-database.service'
@@ -5,26 +6,19 @@ import { BloomreachOutboxService } from '../../bloomreach/bloomreach-outbox.serv
 import { CognitoUserAttributesTierEnum } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import { CognitoGetUserData, CognitoUserAttributesEnum } from '../../utils/global-dtos/cognito.dto'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { toLogfmt } from '../../utils/logging'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { UserIdentitySubservice } from '../../utils/subservices/user-identity.subservice'
 import { PaasMpaRegisterResponseDto, PaasMpaRegisterStatusEnum } from './dtos/paas-mpa.dto'
 
 @Injectable()
 export class PaasMpaService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly bloomreachOutboxService: BloomreachOutboxService,
     private readonly bloomreachContactDatabaseService: BloomreachContactDatabaseService,
     private readonly prisma: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly userIdentitySubservice: UserIdentitySubservice
-  ) {
-    this.logger = new LineLoggerSubservice(PaasMpaService.name)
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly userIdentitySubservice: UserIdentitySubservice,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   private isVerifiedTier(tier?: CognitoUserAttributesTierEnum): boolean {
     return (
@@ -42,17 +36,17 @@ export class PaasMpaService {
       return await this.bloomreachContactDatabaseService.upsert(user.email, birthNumber, ico)
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Failed to upsert bloomreach contact`,
-          toLogfmt({
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Failed to upsert bloomreach contact`,
+          console: {
             userId: user.idUser,
             email: user.email,
             hasBirthNumber: !!birthNumber,
             hasIco: !!ico,
-          }),
-          error
-        )
+          },
+          error,
+        })
       )
       return undefined
     }
@@ -117,16 +111,16 @@ export class PaasMpaService {
       return await this.handleRegisterPhoneAndGetContactId(user, phoneNumber)
     } catch (error) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Unexpected error during PAAS-MPA contact registration for user: ${user.idUser}`,
-          toLogfmt({
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Unexpected error during PAAS-MPA contact registration for user: ${user.idUser}`,
+          console: {
             userId: user.idUser,
             email: user.email,
             hasPhoneNumber: !!phoneNumber,
-          }),
-          error
-        )
+          },
+          error,
+        })
       )
 
       return {

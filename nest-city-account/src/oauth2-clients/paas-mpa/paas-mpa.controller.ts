@@ -1,3 +1,4 @@
+import { LogAllowList } from '@bratislava/log-nest'
 import { Body, Controller, Post, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
@@ -17,6 +18,7 @@ export class PaasMpaController {
 
   @Post('register')
   @ClientName(OAuth2ClientName.PAAS_MPA)
+  @LogAllowList({ idUser: true, sub: true })
   @UseGuards(OAuth2AccessGuard)
   @ApiOperation({
     summary: 'Register phone number for a verified user in Bloomreach',

@@ -1,10 +1,9 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import * as mssql from 'mssql'
 
 import { Prisma } from '../../generated/prisma/client'
 import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { DeliveryMethod, IsInCityAccount, UpdateNorisDeliveryMethods } from '../types/noris.enums'
 import {
   NorisDeliveryMethodsUpdateResultSchema,
@@ -32,7 +31,7 @@ interface NorisDeliveryMethodsUpdateResult {
 @Injectable()
 export class NorisDeliveryMethodService {
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly connectionService: NorisConnectionService,
     private readonly validatorService: NorisValidatorService
   ) {}
@@ -144,10 +143,10 @@ export class NorisDeliveryMethodService {
 
       if (methodInfo.deliveryMethod === DeliveryMethod.CITY_ACCOUNT && !methodInfo.date) {
         // We must enforce that the date is present for CITY_ACCOUNT delivery method.
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Date must be provided for birth number ${birthNumber} when delivery method is CITY_ACCOUNT`
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Date must be provided when delivery method is CITY_ACCOUNT',
+        })
       }
 
       deliveryGroups[methodInfo.deliveryMethod].push({

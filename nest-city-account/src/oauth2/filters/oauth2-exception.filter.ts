@@ -1,12 +1,10 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
 import { validateSync } from 'class-validator'
 import { Request, Response } from 'express'
 
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { toLogfmt } from '../../utils/logging'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import alertReporting from '../../utils/constants/error.alerts'
 import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from '../dtos/errors.oauth2.dto'
 import { RequestWithAuthorizationData } from '../guards/auth-request-id.guard'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'
@@ -29,11 +27,12 @@ const USER_AGENT = 'user-agent'
  */
 @Catch(HttpException)
 export class OAuth2ExceptionFilter implements ExceptionFilter {
-  private readonly logger = new LineLoggerSubservice(OAuth2ExceptionFilter.name)
+  private readonly errorFactoryService = new ErrorFactoryService({ alertReporting })
 
-  private readonly throwerErrorGuard = new ThrowerErrorGuard()
-
-  constructor(private readonly oauth2ClientSubservice: OAuth2ClientSubservice) {}
+  constructor(
+    private readonly oauth2ClientSubservice: OAuth2ClientSubservice,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp()
@@ -189,11 +188,11 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     if (state) {
       if (errorResponse.state && errorResponse.state !== state) {
         this.logger.warn(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'State mismatch detected, using original request state',
-            toLogfmt({ originalState: state, errorState: errorResponse.state })
-          )
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: 'State mismatch detected, using original request state',
+            console: { originalState: state, errorState: errorResponse.state },
+          })
         )
       }
       errorResponse.state = state
@@ -311,11 +310,11 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     const validationErrors = validateSync(validationInstance, { skipMissingProperties: true })
     if (validationErrors.length > 0) {
       this.logger.warn(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to create valid OAuth2AuthorizationErrorDto',
-          toLogfmt({ validationErrors: validationErrors.map((e) => e.toString()) })
-        )
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to create valid OAuth2AuthorizationErrorDto',
+          console: { validationErrors: validationErrors.map((e) => e.toString()) },
+        })
       )
       // Fallback to a valid error
       return {
@@ -371,11 +370,11 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     const validationErrors = validateSync(validationInstance, { skipMissingProperties: true })
     if (validationErrors.length > 0) {
       this.logger.warn(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to create valid OAuth2TokenErrorDto',
-          toLogfmt({ validationErrors: validationErrors.map((e) => e.toString()) })
-        )
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to create valid OAuth2TokenErrorDto',
+          console: { validationErrors: validationErrors.map((e) => e.toString()) },
+        })
       )
       // Fallback to a valid error
       return {

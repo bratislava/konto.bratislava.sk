@@ -12,6 +12,7 @@ import {
   ListUsersCommandInput,
   UserType,
 } from '@aws-sdk/client-cognito-identity-provider'
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
 import { Simplify } from 'type-fest'
@@ -28,8 +29,6 @@ import {
   CognitoUserAttributesEnum,
   CognitoUserStatusEnum,
 } from '../global-dtos/cognito.dto'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
 
 /**
  * Service responsible for Cognito API interactions only.
@@ -41,7 +40,7 @@ export class CognitoSubservice {
   private readonly cognitoClient: CognitoIdentityProviderClient
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService
   ) {
     this.cognitoClient = new CognitoIdentityProviderClient({
@@ -74,19 +73,17 @@ export class CognitoSubservice {
       return await this.cognitoClient.send(new AdminGetUserCommand(inputParams))
     } catch (error) {
       if (error instanceof CognitoIdentityProviderServiceException) {
-        throw this.throwerErrorGuard.BadRequestException(
-          ErrorsEnum.BAD_REQUEST_ERROR,
-          error.name,
-          undefined,
-          error
-        )
+        throw this.errorFactoryService.BadRequestException({
+          errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+          message: error.name,
+          error,
+        })
       }
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        'Unknown error occurred when fetching user from Cognito',
-        undefined,
-        error
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+        message: 'Unknown error occurred when fetching user from Cognito',
+        error,
+      })
     }
   }
 
@@ -94,10 +91,10 @@ export class CognitoSubservice {
     const result = await this.getUser(externalId)
 
     if (result.Username === undefined) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
-        'Username undefined in user data from Cognito'
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: ErrorEnum.UNPROCESSABLE_ENTITY_ERROR,
+        message: 'Username undefined in user data from Cognito',
+      })
     }
 
     return {
@@ -120,19 +117,17 @@ export class CognitoSubservice {
       await this.cognitoClient.send(new AdminDisableUserCommand(inputParams))
     } catch (error) {
       if (error instanceof CognitoIdentityProviderServiceException) {
-        throw this.throwerErrorGuard.BadRequestException(
-          ErrorsEnum.BAD_REQUEST_ERROR,
-          error.name,
-          undefined,
-          error
-        )
+        throw this.errorFactoryService.BadRequestException({
+          errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+          message: error.name,
+          error,
+        })
       }
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        'Unknown error occurred when disabling user in Cognito',
-        undefined,
-        error
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+        message: 'Unknown error occurred when disabling user in Cognito',
+        error,
+      })
     }
   }
 
@@ -155,12 +150,11 @@ export class CognitoSubservice {
     try {
       await this.cognitoClient.send(new AdminUpdateUserAttributesCommand(inputParams))
     } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
-        SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
-        undefined,
-        error
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
+        message: SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+        error,
+      })
     }
   }
 
@@ -190,19 +184,17 @@ export class CognitoSubservice {
       await this.cognitoClient.send(new AdminUpdateUserAttributesCommand(inputParams))
     } catch (error) {
       if (error instanceof CognitoIdentityProviderServiceException) {
-        throw this.throwerErrorGuard.BadRequestException(
-          ErrorsEnum.BAD_REQUEST_ERROR,
-          error.name,
-          undefined,
-          error
-        )
+        throw this.errorFactoryService.BadRequestException({
+          errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+          message: error.name,
+          error,
+        })
       }
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        'Unknown error occurred when updating user attributes in Cognito',
-        undefined,
-        error
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+        message: 'Unknown error occurred when updating user attributes in Cognito',
+        error,
+      })
     }
   }
 
@@ -244,22 +236,21 @@ export class CognitoSubservice {
     try {
       const response = await this.cognitoClient.send(new InitiateAuthCommand(inputParams))
       if (response.AuthenticationResult === undefined) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
-          'AuthenticationResult undefined in response to refresh tokens request from Cognito'
-        )
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: ErrorEnum.UNPROCESSABLE_ENTITY_ERROR,
+          message: 'AuthenticationResult undefined in response to refresh tokens request from Cognito',
+        })
       }
       return {
         accessToken: response.AuthenticationResult.AccessToken,
         idToken: response.AuthenticationResult.IdToken,
       }
     } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
-        'Unexpected error occurred when refreshing tokens via Cognito',
-        undefined,
-        error
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: ErrorEnum.UNPROCESSABLE_ENTITY_ERROR,
+        message: 'Unexpected error occurred when refreshing tokens via Cognito',
+        error,
+      })
     }
   }
 }

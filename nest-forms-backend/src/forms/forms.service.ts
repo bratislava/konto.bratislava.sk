@@ -359,11 +359,11 @@ export default class FormsService {
     }
 
     if (form.formSentAt === null) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        FormsErrorsEnum.FORM_SENT_AT_MISSING_ERROR,
-        FormsErrorsResponseEnum.FORM_SENT_AT_MISSING_ERROR,
-        { formId: form.id, state: form.state },
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: FormsErrorsEnum.FORM_SENT_AT_MISSING_ERROR,
+        message: FormsErrorsResponseEnum.FORM_SENT_AT_MISSING_ERROR,
+        console: { formId: form.id, state: form.state },
+      })
     }
 
     return { ...form, state: form.state, formSentAt: form.formSentAt }

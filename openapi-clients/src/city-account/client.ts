@@ -31,6 +31,7 @@ export interface CityAccountClient
     ReturnType<typeof DefaultApiFactory>,
     ReturnType<typeof OAuth2ApiFactory>,
     ReturnType<typeof PAASMPAApiFactory>,
+    ReturnType<typeof TicketsApiFactory>,
     ReturnType<typeof TowingApiFactory>,
     ReturnType<typeof UserIntegrationApiFactory>,
     ReturnType<typeof UserVerificationsApiFactory>,

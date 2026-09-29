@@ -1204,6 +1204,7 @@ export const VerificationErrorsEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InvalidCaptcha: 'INVALID_CAPTCHA',
   VerifyEidError: 'VERIFY_EID_ERROR',
+  IdentityLookupRejected: 'IDENTITY_LOOKUP_REJECTED',
   UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
   RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
   IcoNotProvided: 'ICO_NOT_PROVIDED',

@@ -102,7 +102,7 @@ export class TaxDeliveryMethodsTasksSubservice {
         throw this.errorFactoryService.InternalServerErrorException({
           errorEnum: DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
           message: DeliveryMethodErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-          error: user,
+          console: { userId: user.id },
         })
       }
 

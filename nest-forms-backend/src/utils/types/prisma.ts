@@ -15,6 +15,7 @@ export type FormWithSelectedProperties = Prisma.FormsGetPayload<{
     error: true
     formDataJson: true
     formDefinitionSlug: true
+    formSentAt: true
   }
 }>
 

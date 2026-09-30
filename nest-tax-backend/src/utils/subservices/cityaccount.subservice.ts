@@ -94,13 +94,12 @@ export class CityAccountSubservice {
           },
         )
 
-      const result: Record<string, ResponseUserByBirthNumberDto> = {}
-      Object.keys(userDataResult.data.users).forEach((birthNumber) => {
-        const modifiedKey = addSlashToBirthNumber(birthNumber)
-        result[modifiedKey] = userDataResult.data.users[birthNumber]
-      })
-
-      return result
+      return Object.fromEntries(
+        Object.entries(userDataResult.data.users).map(([birthNumber, user]) => [
+          addSlashToBirthNumber(birthNumber, { externalId: user.externalId }),
+          user,
+        ]),
+      )
     } catch (error) {
       if (!isAxiosError(error)) {
         throw this.errorFactoryService.InternalServerErrorException({
@@ -150,8 +149,8 @@ export class CityAccountSubservice {
             },
           },
         )
-      const birthNumbers = requestResult.data.birthNumbers.map((bn) =>
-        addSlashToBirthNumber(bn),
+      const birthNumbers = requestResult.data.birthNumbers.map((bn, index) =>
+        addSlashToBirthNumber(bn, { since: since.toISOString(), index }),
       )
       return { birthNumbers, nextSince: new Date(requestResult.data.nextSince) }
     } catch (error) {

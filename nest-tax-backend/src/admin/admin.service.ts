@@ -141,7 +141,11 @@ export class AdminService {
     taxType,
     order,
   }: RequestAdminDeleteTaxDto): Promise<void> {
-    const birthNumberWithSlash = addSlashToBirthNumber(birthNumber)
+    const birthNumberWithSlash = addSlashToBirthNumber(birthNumber, {
+      year,
+      taxType,
+      order,
+    })
     const taxPayer = await this.prismaService.taxPayer.findUnique({
       where: {
         birthNumber: birthNumberWithSlash,

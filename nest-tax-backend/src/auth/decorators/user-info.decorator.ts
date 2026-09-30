@@ -34,6 +34,7 @@ export class UserInfoPipe implements PipeTransform {
       if (user.birthNumber) {
         const birthNumberWithSlash: string = addSlashToBirthNumber(
           user.birthNumber,
+          { userId: user.id },
         )
         return { ...user, birthNumber: birthNumberWithSlash }
       }

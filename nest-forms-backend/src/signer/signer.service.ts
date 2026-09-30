@@ -3,7 +3,10 @@ import { Injectable, Logger } from '@nestjs/common'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { getSignerData } from 'forms-shared/signer/signerData'
-import { validateXml } from 'forms-shared/slovensko-sk/validateXml'
+import {
+  validateXml,
+  ValidateXmlResultError,
+} from 'forms-shared/slovensko-sk/validateXml'
 
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
@@ -18,6 +21,13 @@ import {
   SignerErrorsResponseEnum,
 } from './signer.errors.enum'
 
+const describeXmlError = ({ message, line, col }: ValidateXmlResultError) => ({
+  line,
+  col,
+  element: /^Element '([^']*)'/.exec(message)?.[1],
+  facet: /\[facet '(\w+)'\]/.exec(message)?.[1],
+})
+
 @Injectable()
 export default class SignerService {
   private readonly logger: Logger
@@ -31,7 +41,11 @@ export default class SignerService {
     this.logger = new Logger('SignerService')
   }
 
-  private async validateXml(xmlData: string, xsd: string): Promise<void> {
+  private async validateXml(
+    xmlData: string,
+    xsd: string,
+    context: { formId: string; slug: string; jsonVersion: string },
+  ): Promise<void> {
     const result = await validateXml(xmlData, xsd)
     if (result.success) {
       return
@@ -40,9 +54,10 @@ export default class SignerService {
     throw this.errorFactoryService.BadRequestException({
       errorEnum: SignerErrorsEnum.XML_VALIDATION_ERROR,
       message: SignerErrorsResponseEnum.XML_VALIDATION_ERROR,
-      // Only positions: libxml error messages can quote the offending (user-entered) value
       console: {
-        errorPositions: result.errors?.map(({ line, col }) => ({ line, col })),
+        ...context,
+        errorCount: result.errors?.length ?? 0,
+        errors: result.errors?.map(describeXmlError),
       },
     })
   }
@@ -92,7 +107,11 @@ export default class SignerService {
       serverFiles: files,
     })
 
-    await this.validateXml(signerData.xdcXMLData, signerData.xdcUsedXSD)
+    await this.validateXml(signerData.xdcXMLData, signerData.xdcUsedXSD, {
+      formId,
+      slug: form.formDefinitionSlug,
+      jsonVersion: form.jsonVersion,
+    })
 
     return signerData
   }

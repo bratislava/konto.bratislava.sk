@@ -206,7 +206,8 @@ export default class FilesHelper {
     } catch (error) {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.DATABASE_ERROR,
-        message: `Unable to obtain files for formId: ${formInfo.formId} with the given minioFileName`,
+        message: `Unable to obtain files for form`,
+        console: { formId: formInfo.formId, minioFileName },
         error,
       })
     }

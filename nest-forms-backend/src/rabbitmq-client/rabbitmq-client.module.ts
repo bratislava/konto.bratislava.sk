@@ -42,8 +42,9 @@ export default class RabbitmqClientModule {
       amqpConnection,
       new LineLoggerSubservice(RabbitmqClientService.name),
     )
-    this.logger.log(
-      `Setting up rabbit mq connection to: ${new URL(this.baConfigService.rabbitMq.uri).host}`,
-    )
+    // only the host is logged, the uri contains credentials
+    const host =
+      URL.parse(this.baConfigService.rabbitMq.uri)?.host ?? '<unparsable uri>'
+    this.logger.log(`Setting up rabbit mq connection to: ${host}`)
   }
 }

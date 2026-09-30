@@ -118,7 +118,7 @@ jobs:
         with:
           image: ${{ inputs.image }}
           prefix: ${{ env.CLUSTER_PREFIX }}
-          caches: builder-deps,test,lint,test-e2e
+          caches: builder-deps,test,lint,test-e2e,verify-bootstrap
           push: ${{ inputs.cluster != '' }}
 
       - name: Set up Turborepo cache
@@ -195,6 +195,19 @@ jobs:
         env:
           CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).main.from }}
           CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).main.to }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
+
+      - name: Verify bootstrap
+        if: ${{ !inputs.skip_tests }}
+        uses: docker/bake-action@v7
+        with:
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: ${{ inputs.service }}-verify-bootstrap
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache)['verify-bootstrap'].from }}
+          CACHE_TO: ${{ fromJSON(steps.config.outputs.cache)['verify-bootstrap'].to }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       # Deploy mode only: reuse the commit image across clusters. If it already

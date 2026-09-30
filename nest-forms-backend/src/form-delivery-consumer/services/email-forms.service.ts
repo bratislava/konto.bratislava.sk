@@ -252,7 +252,7 @@ export default class EmailFormsService {
         this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Error while sending confirmation email.',
-          console: { formId: form.id },
+          console: { formId: form.id, hasEmail: !!userEmail },
           error,
         }),
       )
@@ -379,6 +379,7 @@ export default class EmailFormsService {
           console: {
             formId,
             emailSource: userEmail == null ? 'extracted' : 'provided',
+            hasEmail: !!userEmail,
             formDefinitionSlug: formDefinition.slug,
           },
         }),

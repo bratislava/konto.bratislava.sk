@@ -59,8 +59,10 @@ export default class SignerController {
         user.type === UserType.Auth
           ? user.cognitoJwtPayload.sub
           : user.cognitoIdentityId
+      const hasEmail =
+        user.type === UserType.Auth && !!user.cityAccountUser.email
       this.logger.log(
-        `Error during getSignerData, userId: ${userId}, formId: ${formId}`,
+        `Error during getSignerData, userId: ${userId}, hasEmail: ${hasEmail}, formId: ${formId}`,
       )
       throw error
     }

@@ -85,6 +85,8 @@ export default class MailgunService implements Mailer {
           message: `Mailgun message was not sent to email.`,
           console: {
             formId: data.data.formId,
+            hasEmailFrom: !!emailFrom,
+            hasEmailTo: !!data.to,
             template: data.template,
             mailgunResponse,
             attachmentCount: attachments?.length ?? 0,
@@ -98,6 +100,8 @@ export default class MailgunService implements Mailer {
           message: 'ERROR to send mailgun message',
           console: {
             formId: data.data.formId,
+            hasEmailFrom: !!emailFrom,
+            hasEmailTo: !!data.to,
             template: data.template,
             attachmentCount: attachments?.length ?? 0,
           },

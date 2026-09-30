@@ -66,8 +66,10 @@ export default class ConvertController {
         user.type === UserType.Auth
           ? user.cognitoJwtPayload.sub
           : user.cognitoIdentityId
+      const hasEmail =
+        user.type === UserType.Auth && !!user.cityAccountUser.email
       this.logger.log(
-        `Error during convertJsonToXmlV2, userId: ${userId}, formId: ${formId}`,
+        `Error during convertJsonToXmlV2, userId: ${userId}, hasEmail: ${hasEmail}, formId: ${formId}`,
       )
       throw error
     }

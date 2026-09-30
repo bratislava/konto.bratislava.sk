@@ -4,7 +4,13 @@ import {
   LineLoggerSubservice,
 } from '@bratislava/log-nest'
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
-import { connect, ConnectionError, ConnectionPool, MSSQLError } from 'mssql'
+import {
+  connect,
+  ConnectionError,
+  ConnectionPool,
+  MSSQLError,
+  RequestError,
+} from 'mssql'
 
 import BaConfigService from '../../config/ba-config.service'
 import { PrismaService } from '../../prisma/prisma.service'
@@ -90,12 +96,35 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
     return errorMessage
   }
 
+  /**
+   * Request error messages can quote bound parameter values (e.g. "Conversion failed when
+   * converting the varchar value '…'"), and birth numbers / variable symbols are bound as
+   * parameters, so only the structured fields of request errors are logged.
+   */
+  private toLoggableError(error: unknown): unknown {
+    if (!(error instanceof RequestError)) {
+      return error
+    }
+    const sanitizedError = new Error(
+      `MSSQL request failed: ${JSON.stringify({
+        code: error.code,
+        number: error.number,
+        state: error.state,
+        class: error.class,
+        lineNumber: error.lineNumber,
+        procName: error.procName,
+      })}`,
+    )
+    sanitizedError.name = error.name
+    return sanitizedError
+  }
+
   private getNorisUrgentError(errorMessage: string, error: unknown) {
     return this.errorFactoryService.InternalServerErrorException({
       errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
       message: this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
       console: error instanceof Error ? undefined : (error as string),
-      error: error instanceof Error ? error : undefined,
+      error: error instanceof Error ? this.toLoggableError(error) : undefined,
     })
   }
 
@@ -122,7 +151,7 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
       throw this.errorFactoryService.BadRequestException({
         errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
         message: this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
-        error,
+        error: this.toLoggableError(error),
       })
     }
 

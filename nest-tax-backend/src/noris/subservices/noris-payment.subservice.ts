@@ -87,7 +87,14 @@ export class NorisPaymentSubservice {
           this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
             message: 'Variable symbol has a wrong format.',
-            console: { index, count: data.variableSymbols.length },
+            console: {
+              index,
+              count: data.variableSymbols.length,
+              // only the shape is kept: digits -> X, letters -> A
+              anonymizedVariableSymbol: variableSymbol
+                .replaceAll(/\d/g, 'X')
+                .replaceAll(/\p{L}/gu, 'A'),
+            },
           }),
         )
         return false

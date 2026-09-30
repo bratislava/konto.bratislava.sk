@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -6,7 +7,6 @@ import utc from 'dayjs/plugin/utc'
 import BaConfigService from '../../config/ba-config.service'
 import { Prisma, TaxType } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import EmailSubservice from '../../utils/subservices/email.subservice'
 import SftpFileSubservice from '../../utils/subservices/sftp-file.subservice'
@@ -111,7 +111,7 @@ describe('CardPaymentReportingService', () => {
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: BaConfigService, useValue: mockBaConfigService },
         {
-          provide: ThrowerErrorGuard,
+          provide: ErrorFactoryService,
           useValue: { InternalServerErrorException: jest.fn() },
         },
         { provide: EmailSubservice, useValue: mockEmailSubservice },

@@ -1,11 +1,10 @@
+import { escapeForLogfmt, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable, OnModuleInit } from '@nestjs/common'
 import { PrismaPg } from '@prisma/adapter-pg'
 
 import BaConfigService from '../config/ba-config.service'
 import { PrismaClient } from '../generated/prisma/client'
 import type * as Prisma from '../generated/prisma/internal/prismaNamespace'
-import { escapeForLogfmt } from '../utils/logging'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 const getPrismaClientOptions = (connectionString: string) => {
   return {
@@ -26,12 +25,11 @@ export class PrismaService
   extends PrismaClient<ReturnType<typeof getPrismaClientOptions>>
   implements OnModuleInit
 {
-  private readonly logger: LineLoggerSubservice
-
-  constructor(baConfigService: BaConfigService) {
+  constructor(
+    baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice,
+  ) {
     super(getPrismaClientOptions(baConfigService.database.url))
-
-    this.logger = new LineLoggerSubservice(PrismaService.name)
     this.$on('info', (e) => {
       this.logger.log(
         `target="${escapeForLogfmt(e.target)}" message="${escapeForLogfmt(e.message)}"`,

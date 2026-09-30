@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
@@ -21,7 +22,6 @@ import {
 } from '../../../generated/prisma/client'
 import { PaymentService } from '../../../payment/payment.service'
 import { PrismaService } from '../../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../../utils/types'
 import NotificationsEventsService from '../notifications-events.service'
@@ -115,6 +115,7 @@ describe('NotificationsEventsSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         NotificationsEventsService,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -134,7 +135,7 @@ describe('NotificationsEventsSubservice', () => {
           useValue: { database: { concurrency: 10 } },
         },
 
-        ThrowerErrorGuard,
+        ErrorFactoryService,
       ],
     }).compile()
 

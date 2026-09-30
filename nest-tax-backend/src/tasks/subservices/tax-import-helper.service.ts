@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -7,15 +8,12 @@ import { TaxImportStatus, TaxType } from '../../generated/prisma/client'
 import { NorisService } from '../../noris/noris.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
 @Injectable()
 export default class TaxImportHelperService {
-  private readonly logger: LineLoggerSubservice
-
   private readonly BRATISLAVA_TIMEZONE = 'Europe/Bratislava'
 
   private readonly UPLOAD_BIRTHNUMBERS_BATCH = 100
@@ -24,9 +22,8 @@ export default class TaxImportHelperService {
     private readonly prismaService: PrismaService,
     private readonly databaseSubservice: DatabaseSubservice,
     private readonly norisService: NorisService,
-  ) {
-    this.logger = new LineLoggerSubservice(TaxImportHelperService.name)
-  }
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   private async getImportWindowConfig(): Promise<{
     startHour: number

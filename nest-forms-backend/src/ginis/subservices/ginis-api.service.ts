@@ -102,8 +102,7 @@ export default class GinisAPIService {
       await this.ginis.gin.detailFunkcnihoMista({
         'Id-funkce': functionId,
       })
-    // TODO: not fully accurate comment below
-    // if the latter call fails because of missing IdReferenta, we'll get a log of previous result to debug
+    // if the latter call fails because of missing IdReferenta, we'll get a log of previous result (without PII fields) to debug
     this.logger.log('Getting GINIS owner', {
       functionId,
       functionDetail: omit(

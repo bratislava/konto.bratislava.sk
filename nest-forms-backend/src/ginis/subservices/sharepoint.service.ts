@@ -77,7 +77,7 @@ export default class SharepointService {
         this.logger.error(
           this.errorFactoryService.InternalServerErrorException({
             errorEnum: SharepointErrorsEnum.GENERAL_ERROR,
-            message: `Setting form error with id ${job.data.formId} to POWERAPPS_SEND_ERROR failed.`,
+            message: `Setting form error with id ${job.data.formId} to SHAREPOINT_SEND_ERROR failed.`,
             error: updateError,
           }),
         )

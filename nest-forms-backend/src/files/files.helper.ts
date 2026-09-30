@@ -343,9 +343,6 @@ export default class FilesHelper {
     // slash between path and minioFileName is provided by getPath function
     const filepath = `${this.getPath(formInfo)}${minioFileName}`
     try {
-      this.logger.debug(
-        `Checking if file of form ${formInfo.formId} exists in minio`,
-      )
       return await this.minioStorageService.fileExists(
         this.getBucketUid(),
         filepath,

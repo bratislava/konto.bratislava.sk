@@ -13,6 +13,7 @@ import {
 } from '@bratislava/ginis-sdk'
 import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
+import omit from 'lodash/omit'
 
 import BaConfigService from '../../config/ba-config.service'
 
@@ -53,6 +54,18 @@ export interface GinContactParams {
   type?: GinContactType
 }
 
+// Fields of Detail-funkcniho-mista that may contain PII
+const FUNCTION_DETAIL_PII_FIELDS = [
+  'Nazev',
+  'Oficialni-nazev',
+  'Nazev-spisoveho-uzlu',
+  'Nazev-referenta',
+  'Nazev-orj',
+  'Mail',
+  'Telefon',
+  'Fax',
+] as const
+
 /**
  * Handles all communication through @bratislava/ginis-sdk
  */ @Injectable()
@@ -89,11 +102,13 @@ export default class GinisAPIService {
       await this.ginis.gin.detailFunkcnihoMista({
         'Id-funkce': functionId,
       })
+    // TODO: not fully accurate comment below
     // if the latter call fails because of missing IdReferenta, we'll get a log of previous result to debug
     this.logger.log('Getting GINIS owner', {
       functionId,
-      hasReferentId: Boolean(
-        functionDetail['Detail-funkcniho-mista']['Id-referenta'],
+      functionDetail: omit(
+        functionDetail['Detail-funkcniho-mista'],
+        FUNCTION_DETAIL_PII_FIELDS,
       ),
     })
     return this.ginis.gin.detailReferenta({

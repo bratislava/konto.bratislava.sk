@@ -122,10 +122,7 @@ export default class ScannerClientService {
           error,
         })
       }
-      throw this.errorHandling(
-        error,
-        `minioFileName: ${minioFileName}, userUid: ${userUid as string}`,
-      )
+      throw this.errorHandling(error, `userUid: ${userUid as string}`)
     }
   }
 

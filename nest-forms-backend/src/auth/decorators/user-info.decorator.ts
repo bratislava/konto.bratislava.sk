@@ -1,4 +1,8 @@
-import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+} from '@bratislava/log-nest'
 import {
   createParamDecorator,
   ExecutionContext,
@@ -65,7 +69,7 @@ export class UserInfoPipe implements PipeTransform {
       if (!isAxiosError(error)) {
         throw errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-          message: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
           console:
             'Internal error occurred while trying to fetch user from City Account',
           error,

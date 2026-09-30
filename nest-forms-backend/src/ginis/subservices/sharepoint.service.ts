@@ -54,13 +54,13 @@ export default class SharepointService {
   }
 
   @OnQueueFailed()
-  handler(job: Job<{ formId: string }>, err: Error): void {
+  handler(job: Job<{ formId: string }>, error: Error): void {
     this.logger.error(
       this.errorFactoryService.InternalServerErrorException({
         errorEnum: SharepointErrorsEnum.GENERAL_ERROR,
         message: SharepointErrorsResponseEnum.GENERAL_ERROR,
         console: `Sending form ${job.data.formId} to Sharepoint has failed.`,
-        error: err,
+        error: error,
       }),
     )
 
@@ -73,12 +73,12 @@ export default class SharepointService {
           error: FormError.SHAREPOINT_SEND_ERROR,
         },
       })
-      .catch((error: unknown) => {
+      .catch((updateError: unknown) => {
         this.logger.error(
           this.errorFactoryService.InternalServerErrorException({
             errorEnum: SharepointErrorsEnum.GENERAL_ERROR,
             message: `Setting form error with id ${job.data.formId} to POWERAPPS_SEND_ERROR failed.`,
-            error,
+            error: updateError,
           }),
         )
       })

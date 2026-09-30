@@ -65,10 +65,7 @@ describe('CleanupTasksSubservice', () => {
 
   describe('cleanupExpiredAuthorizationCodes', () => {
     it('should cleanup expired authorization codes older than 5 minutes', async () => {
-      const mockExpiredRecords: Pick<OAuth2Data, 'id' | 'authorizationCode'>[] = [
-        { id: '1', authorizationCode: 'code1' },
-        { id: '2', authorizationCode: 'code2' },
-      ]
+      const mockExpiredRecords: Pick<OAuth2Data, 'id'>[] = [{ id: '1' }, { id: '2' }]
 
       prismaMock.oAuth2Data.findMany.mockResolvedValue(mockExpiredRecords as OAuth2Data[])
       const updateManySpy = jest.spyOn(prismaMock.oAuth2Data, 'updateMany')
@@ -93,7 +90,6 @@ describe('CleanupTasksSubservice', () => {
         },
         select: {
           id: true,
-          authorizationCode: true,
         },
       })
 
@@ -123,10 +119,7 @@ describe('CleanupTasksSubservice', () => {
 
   describe('deleteOldOAuth2Data', () => {
     it('should delete OAuth2 records older than 1 month', async () => {
-      const mockOldRecords: Pick<OAuth2Data, 'id' | 'authorizationCode'>[] = [
-        { id: '1', authorizationCode: 'code1' },
-        { id: '2', authorizationCode: 'code2' },
-      ]
+      const mockOldRecords: Pick<OAuth2Data, 'id'>[] = [{ id: '1' }, { id: '2' }]
 
       prismaMock.oAuth2Data.findMany.mockResolvedValue(mockOldRecords as OAuth2Data[])
       const deleteManySpy = jest.spyOn(prismaMock.oAuth2Data, 'deleteMany')
@@ -158,7 +151,6 @@ describe('CleanupTasksSubservice', () => {
         },
         select: {
           id: true,
-          authorizationCode: true,
         },
       })
 

@@ -47,7 +47,6 @@ export class CleanupTasksSubservice {
       },
       select: {
         id: true,
-        authorizationCode: true,
       },
     })
 
@@ -56,9 +55,7 @@ export class CleanupTasksSubservice {
     }
 
     for (const record of expiredRecords) {
-      this.logger.warn(
-        `Cleaning up expired oAuth2 tokens with id: ${record.id} and authorization code: ${record.authorizationCode}`
-      )
+      this.logger.warn(`Cleaning up expired oAuth2 tokens with id: ${record.id}`)
     }
 
     await this.prismaService.oAuth2Data.updateMany({
@@ -101,7 +98,6 @@ export class CleanupTasksSubservice {
       },
       select: {
         id: true,
-        authorizationCode: true,
       },
     })
 
@@ -109,7 +105,7 @@ export class CleanupTasksSubservice {
       return
     }
 
-    const recordsInfo = oldRecords.map((r) => `${r.id}/${r.authorizationCode}`).join(', ')
+    const recordsInfo = oldRecords.map((r) => r.id).join(', ')
     this.logger.log(`Deleting ${oldRecords.length} old oAuth2 records: ${recordsInfo}`)
 
     await this.prismaService.oAuth2Data.deleteMany({

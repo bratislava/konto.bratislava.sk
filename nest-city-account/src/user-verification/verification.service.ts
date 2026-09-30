@@ -323,6 +323,7 @@ export class VerificationService {
       type: 'Not Verified without error - 200',
       userSub: data.msg.user.sub,
       reason: verification.reason,
+      cognitoData: newUserData[CognitoUserAttributesEnum.TIER],
     })
     return new Nack()
   }
@@ -341,6 +342,8 @@ export class VerificationService {
         reason: options.reason,
         type: options.data.msg.type,
         userSub: options.data.msg.user.sub,
+        // tier when the message was queued, i.e. before QUEUE_IDENTITY_CARD was set
+        tierBeforeQueue: options.data.msg.user[CognitoUserAttributesEnum.TIER],
       },
       options.error
     )

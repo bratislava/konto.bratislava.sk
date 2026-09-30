@@ -244,7 +244,11 @@ export class UserService {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
           message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
-          console: { userSub: cognitoUserData.sub, accountType },
+          console: {
+            userSub: cognitoUserData.sub,
+            accountType,
+            tier: cognitoUserData[CognitoUserAttributesEnum.TIER],
+          },
         })
     }
   }

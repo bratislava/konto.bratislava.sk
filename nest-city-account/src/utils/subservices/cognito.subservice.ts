@@ -76,12 +76,14 @@ export class CognitoSubservice {
         throw this.errorFactoryService.BadRequestException({
           errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
           message: error.name,
+          console: { externalId },
           error,
         })
       }
       throw this.errorFactoryService.BadRequestException({
         errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
         message: 'Unknown error occurred when fetching user from Cognito',
+        console: { externalId },
         error,
       })
     }
@@ -120,12 +122,14 @@ export class CognitoSubservice {
         throw this.errorFactoryService.BadRequestException({
           errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
           message: error.name,
+          console: { externalId },
           error,
         })
       }
       throw this.errorFactoryService.BadRequestException({
         errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
         message: 'Unknown error occurred when disabling user in Cognito',
+        console: { externalId },
         error,
       })
     }
@@ -153,6 +157,7 @@ export class CognitoSubservice {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
         message: SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+        console: { externalId },
         error,
       })
     }
@@ -187,12 +192,14 @@ export class CognitoSubservice {
         throw this.errorFactoryService.BadRequestException({
           errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
           message: error.name,
+          console: { externalId },
           error,
         })
       }
       throw this.errorFactoryService.BadRequestException({
         errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
         message: 'Unknown error occurred when updating user attributes in Cognito',
+        console: { externalId },
         error,
       })
     }
@@ -238,7 +245,8 @@ export class CognitoSubservice {
       if (response.AuthenticationResult === undefined) {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: ErrorEnum.UNPROCESSABLE_ENTITY_ERROR,
-          message: 'AuthenticationResult undefined in response to refresh tokens request from Cognito',
+          message:
+            'AuthenticationResult undefined in response to refresh tokens request from Cognito',
         })
       }
       return {

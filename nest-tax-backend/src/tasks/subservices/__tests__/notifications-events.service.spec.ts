@@ -1029,7 +1029,10 @@ describe('NotificationsEventsSubservice', () => {
       await service.resendBloomreachEvents()
 
       expect(trackPaymentInBloomreachSpy).toHaveBeenCalledTimes(2)
-      expect(service['logger'].error).toHaveBeenCalledWith(error)
+      expect(service['logger'].error).toHaveBeenCalledWith(
+        { taxPaymentId: 2, taxId: 1 },
+        error,
+      )
       expect(service['logger'].log).toHaveBeenCalledWith(
         expect.stringContaining('1'),
       )
@@ -1087,8 +1090,14 @@ describe('NotificationsEventsSubservice', () => {
       await service.resendBloomreachEvents()
 
       expect(trackPaymentInBloomreachSpy).toHaveBeenCalledTimes(2)
-      expect(service['logger'].error).toHaveBeenCalledWith(error1)
-      expect(service['logger'].error).toHaveBeenCalledWith(error2)
+      expect(service['logger'].error).toHaveBeenCalledWith(
+        { taxPaymentId: 1, taxId: 1 },
+        error1,
+      )
+      expect(service['logger'].error).toHaveBeenCalledWith(
+        { taxPaymentId: 2, taxId: 1 },
+        error2,
+      )
       expect(service['logger'].log).toHaveBeenCalledWith(
         expect.stringContaining('0'),
       )

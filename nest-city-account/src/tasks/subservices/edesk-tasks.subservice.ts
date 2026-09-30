@@ -33,7 +33,6 @@ export class EdeskTasksSubservice {
       where: { activeEdeskUpdateFailCount: { gte: 7 } },
       select: {
         id: true,
-        birthNumber: true,
         activeEdeskUpdateFailCount: true,
       },
     })
@@ -193,6 +192,7 @@ export class EdeskTasksSubservice {
           this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
             message: 'Error mapping eDesk data to Noris type',
+            console: { externalEdeskCheckId: item.id, norisId: item.norisId },
             error,
           })
         )

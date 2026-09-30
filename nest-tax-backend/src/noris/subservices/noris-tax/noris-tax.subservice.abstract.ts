@@ -606,6 +606,12 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Failed to insert tax to database.',
+          console: {
+            norisSubjectId: norisItem.cislo_subjektu,
+            norisTaxId: norisItem.cislo_konania,
+            year,
+            taxType: taxDefinition.type,
+          },
           error,
         }),
       )

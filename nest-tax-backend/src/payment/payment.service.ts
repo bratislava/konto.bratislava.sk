@@ -84,6 +84,7 @@ export class PaymentService {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         message: 'Can not create order',
+        console: { taxId: options.taxId },
         error,
       })
     }
@@ -117,6 +118,7 @@ export class PaymentService {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: CustomErrorPaymentTypesEnum.CREATE_PAYMENT_URL,
         message: 'Can not create url',
+        console: { taxId: options.taxId, taxPaymentId: payment.id, orderId },
         error,
       })
     }
@@ -212,6 +214,7 @@ export class PaymentService {
         throw this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Failed to track payment in Bloomreach.',
+          console: { taxPaymentId: taxPayment.id, taxId: taxPayment.taxId },
         })
       }
     })
@@ -334,6 +337,10 @@ export class PaymentService {
           async () =>
             this.cityAccountSubservice.getUserDataAdmin(
               taxPaymentWithTax.tax.taxPayer.birthNumber,
+              {
+                taxPaymentId: taxPaymentWithTax.id,
+                taxId: taxPaymentWithTax.taxId,
+              },
             ),
           'getUserDataAdmin',
           3,
@@ -350,6 +357,7 @@ export class PaymentService {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,
         message: 'Error to redirect to response',
+        console: { orderId: ORDERNUMBER },
         error,
       })
     }

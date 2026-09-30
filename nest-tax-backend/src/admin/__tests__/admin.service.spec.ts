@@ -408,7 +408,9 @@ describe('AdminService', () => {
         },
       })
 
-      expect(getUserDataAdminSpy).toHaveBeenCalledWith(mockBirthNumber)
+      expect(getUserDataAdminSpy).toHaveBeenCalledWith(mockBirthNumber, {
+        taxPayerId: 1,
+      })
 
       expect(trackEventTaxSpy).toHaveBeenCalledWith(
         {
@@ -449,6 +451,7 @@ describe('AdminService', () => {
       expect(internalServerErrorSpy).toHaveBeenCalledWith({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: expect.any(String) as string,
+        console: { year: 2024, taxType: 'DZN', order: 1 },
       })
 
       expect(prismaMock.tax.findUnique).not.toHaveBeenCalled()
@@ -493,6 +496,7 @@ describe('AdminService', () => {
       expect(internalServerErrorSpy).toHaveBeenCalledWith({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: expect.any(String) as string,
+        console: { taxPayerId: 1, year: 2024, taxType: 'DZN', order: 1 },
       })
 
       expect(prismaMock.tax.delete).not.toHaveBeenCalled()
@@ -520,7 +524,9 @@ describe('AdminService', () => {
       })
 
       expect(prismaMock.tax.delete).toHaveBeenCalled()
-      expect(getUserDataAdminSpy).toHaveBeenCalledWith(mockBirthNumber)
+      expect(getUserDataAdminSpy).toHaveBeenCalledWith(mockBirthNumber, {
+        taxPayerId: 1,
+      })
       expect(trackEventTaxSpy).not.toHaveBeenCalled()
     })
 

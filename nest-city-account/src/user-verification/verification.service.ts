@@ -215,7 +215,9 @@ export class VerificationService {
       newUserData[CognitoUserAttributesEnum.TIER] ===
       CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD
     ) {
-      this.logger.error('COGNITO_ERROR - WRITE TIER IDENTITY_CARD', data.msg.user)
+      this.logger.error('COGNITO_ERROR - WRITE TIER IDENTITY_CARD', {
+        userSub: data.msg.user.sub,
+      })
       const userFromDb = await this.verificationDataSubservice.requeuedInVerificationIncrement(
         data.msg.user
       )
@@ -231,24 +233,31 @@ export class VerificationService {
       const firstName = data.msg.user.given_name
       const email = data.msg.user.email
       if (!email) {
-        this.logger.error(
-          "Error - no email sent, couldn't find email in user object: ",
-          JSON.stringify(data.msg.user)
-        )
-      } else {
-        await this.mailgunService.sendEmail('2023-identity-check-successful', {
-          to: email,
-          variables: {
-            firstName: firstName ?? null,
-          },
+        this.logger.error("Error - no email sent, couldn't find email in user object", {
+          userSub: data.msg.user.sub,
         })
+      } else {
+        await this.mailgunService.sendEmail(
+          '2023-identity-check-successful',
+          {
+            to: email,
+            variables: {
+              firstName: firstName ?? null,
+            },
+          },
+          { userSub: data.msg.user.sub }
+        )
       }
     } catch (error) {
-      this.logger.error('Error while sending verification success email: ', error)
+      this.logger.error(
+        'Error while sending verification success email: ',
+        { userSub: data.msg.user.sub },
+        error
+      )
     }
     this.logger.log({
       type: 'ALL GOOD - 200',
-      user: data.msg.user,
+      userSub: data.msg.user.sub,
       cognitoData: newUserData[CognitoUserAttributesEnum.TIER],
     })
     return new Nack()
@@ -269,7 +278,9 @@ export class VerificationService {
       newUserData[CognitoUserAttributesEnum.TIER] ===
       CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD
     ) {
-      this.logger.error('COGNITO_ERROR - WRITE TIER NOT_VERIFIED', data.msg.user)
+      this.logger.error('COGNITO_ERROR - WRITE TIER NOT_VERIFIED', {
+        userSub: data.msg.user.sub,
+      })
       const userFromDb = await this.verificationDataSubservice.requeuedInVerificationIncrement(
         data.msg.user
       )
@@ -285,26 +296,33 @@ export class VerificationService {
       const firstName = data.msg.user.given_name
       const email = data.msg.user.email
       if (!email) {
-        this.logger.error(
-          "Error - no email sent, couldn't find given_name or email in user object: ",
-          JSON.stringify(data.msg.user)
-        )
-      } else {
-        await this.mailgunService.sendEmail('2023-identity-check-rejected', {
-          to: email,
-          variables: {
-            firstName: firstName ?? null,
-          },
+        this.logger.error("Error - no email sent, couldn't find email in user object", {
+          userSub: data.msg.user.sub,
         })
+      } else {
+        await this.mailgunService.sendEmail(
+          '2023-identity-check-rejected',
+          {
+            to: email,
+            variables: {
+              firstName: firstName ?? null,
+            },
+          },
+          { userSub: data.msg.user.sub }
+        )
       }
       return new Nack()
     } catch (error) {
-      this.logger.error('Error while sending verification failed email: ', error)
+      this.logger.error(
+        'Error while sending verification failed email: ',
+        { userSub: data.msg.user.sub },
+        error
+      )
     }
     this.logger.error({
       type: 'Not Verified without error - 200',
-      user: data.msg.user,
-      error: verification,
+      userSub: data.msg.user.sub,
+      reason: verification.reason,
     })
     return new Nack()
   }
@@ -315,7 +333,17 @@ export class VerificationService {
     error?: unknown
     reason?: CustomErrorEnums
   }) {
-    this.logger.error({ options })
+    // `options.data` is the whole queue message (birth number, identity card,
+    // Cognito profile), so log only ids and the reason.
+    this.logger.error(
+      {
+        message: options.message,
+        reason: options.reason,
+        type: options.data.msg.type,
+        userSub: options.data.msg.user.sub,
+      },
+      options.error
+    )
     const userFromDb = await this.verificationDataSubservice.requeuedInVerificationIncrement(
       options.data.msg.user
     )

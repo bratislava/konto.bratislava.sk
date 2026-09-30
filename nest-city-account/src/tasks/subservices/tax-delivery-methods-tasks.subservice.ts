@@ -450,12 +450,16 @@ export class TaxDeliveryMethodsTasksSubservice {
     }
   ): Promise<void> {
     try {
-      await this.mailgunService.sendEmail('2025-delivery-method-changed-from-user-data', {
-        userEmail,
-        externalId,
-        deliveryMethod,
-        ...(options?.birthNumber && { birthNumber: options.birthNumber }),
-      })
+      await this.mailgunService.sendEmail(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail,
+          externalId,
+          deliveryMethod,
+          ...(options?.birthNumber && { birthNumber: options.birthNumber }),
+        },
+        { userId, externalId }
+      )
 
       const deliveryMethodLabel = {
         edesk: 'eDesk',

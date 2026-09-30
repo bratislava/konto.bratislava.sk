@@ -151,6 +151,7 @@ export class AdminService {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Tax payer not found',
+        console: { year, taxType, order },
       })
     }
 
@@ -168,6 +169,7 @@ export class AdminService {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Tax not found',
+        console: { taxPayerId: taxPayer.id, year, taxType, order },
       })
     }
 
@@ -183,7 +185,9 @@ export class AdminService {
     })
 
     const userDataFromCityAccount =
-      await this.cityAccountSubservice.getUserDataAdmin(birthNumber)
+      await this.cityAccountSubservice.getUserDataAdmin(birthNumber, {
+        taxPayerId: taxPayer.id,
+      })
     if (!userDataFromCityAccount) {
       return
     }

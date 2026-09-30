@@ -1117,6 +1117,7 @@ describe('NorisPaymentSubservice', () => {
       expect(errorFactoryServiceMock).toHaveBeenCalledWith({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+        console: { taxId: 1 },
         error: transactionError,
       })
     })

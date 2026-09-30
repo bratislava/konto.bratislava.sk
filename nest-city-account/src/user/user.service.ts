@@ -1,5 +1,5 @@
 // TODO - communication state to LEGAL_ENTITY
-import { ErrorFactoryService, LineLoggerSubservice, toLogfmt } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
@@ -244,7 +244,7 @@ export class UserService {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
           message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
-          console: toLogfmt(cognitoUserData),
+          console: { userSub: cognitoUserData.sub, accountType },
         })
     }
   }
@@ -467,6 +467,7 @@ export class UserService {
           this.errorFactoryService.InternalServerErrorException({
             errorEnum: CustomErrorNorisTypesEnum.FAILED_TO_REMOVE_DELIVERY_METHOD_FROM_NORIS,
             message: CustomErrorNorisTypesResponseEnum.FAILED_TO_REMOVE_DELIVERY_METHOD_FROM_NORIS,
+            console: { externalId, userId: removedUser.id },
             error,
           })
         )

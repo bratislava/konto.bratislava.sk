@@ -45,6 +45,14 @@ export class NorisValidatorSubservice {
       throw this.errorFactoryService.BadRequestException({
         errorEnum: CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
         message: result.error.message,
+        console: {
+          norisSubjectId:
+            typeof data === 'object' &&
+            data !== null &&
+            'cislo_subjektu' in data
+              ? data.cislo_subjektu
+              : undefined,
+        },
         error: result.error,
       })
     }

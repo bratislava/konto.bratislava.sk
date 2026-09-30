@@ -99,7 +99,6 @@ describe('EdeskTasksSubservice', () => {
         where: { activeEdeskUpdateFailCount: { gte: 7 } },
         select: {
           id: true,
-          birthNumber: true,
           activeEdeskUpdateFailCount: true,
         },
       })

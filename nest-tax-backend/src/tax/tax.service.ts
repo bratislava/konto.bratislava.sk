@@ -285,6 +285,7 @@ export class TaxService {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: `Tax details type is not ${type}: ${tax.taxDetails.type}`,
+        console: { taxId: tax.id },
       })
     }
 

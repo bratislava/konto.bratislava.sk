@@ -79,7 +79,7 @@ describe('MailgunService', () => {
         },
       }
 
-      await service.sendEmail('2023-registration-successful', options)
+      await service.sendEmail('2023-registration-successful', options, { userSub: 'test-user-sub' })
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
         from: expectAny<string>(String),
@@ -98,7 +98,9 @@ describe('MailgunService', () => {
         },
       }
 
-      await service.sendEmail('2023-identity-check-successful', options)
+      await service.sendEmail('2023-identity-check-successful', options, {
+        userSub: 'test-user-sub',
+      })
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
         from: expectAny<string>(String),
@@ -117,7 +119,7 @@ describe('MailgunService', () => {
         },
       }
 
-      await service.sendEmail('2023-identity-check-rejected', options)
+      await service.sendEmail('2023-identity-check-rejected', options, { userSub: 'test-user-sub' })
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
         from: expectAny<string>(String),
@@ -136,7 +138,7 @@ describe('MailgunService', () => {
         },
       }
 
-      await service.sendEmail('2023-registration-successful', options)
+      await service.sendEmail('2023-registration-successful', options, { userSub: 'test-user-sub' })
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
         from: expectAny<string>(String),
@@ -158,7 +160,7 @@ describe('MailgunService', () => {
       }
 
       await expect(
-        service.sendEmail('2023-registration-successful', options)
+        service.sendEmail('2023-registration-successful', options, { userSub: 'test-user-sub' })
       ).resolves.not.toThrow()
     })
   })
@@ -172,11 +174,15 @@ describe('MailgunService', () => {
         })
       )
 
-      await service.sendEmail('2025-delivery-method-changed-from-user-data', {
-        userEmail: 'test@example.com',
-        externalId: 'ext-123',
-        deliveryMethod: 'edesk',
-      })
+      await service.sendEmail(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail: 'test@example.com',
+          externalId: 'ext-123',
+          deliveryMethod: 'edesk',
+        },
+        { userSub: 'test-user-sub' }
+      )
 
       expect(cognitoSubservice.getDataFromCognito).toHaveBeenCalledWith('ext-123')
       expect(pdfGeneratorService.generateFromTemplate).not.toHaveBeenCalled()
@@ -202,11 +208,15 @@ describe('MailgunService', () => {
         })
       )
 
-      await service.sendEmail('2025-delivery-method-changed-from-user-data', {
-        userEmail: 'jane@example.com',
-        externalId: 'ext-456',
-        deliveryMethod: 'postal',
-      })
+      await service.sendEmail(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail: 'jane@example.com',
+          externalId: 'ext-456',
+          deliveryMethod: 'postal',
+        },
+        { userSub: 'test-user-sub' }
+      )
 
       expect(pdfGeneratorService.generateFromTemplate).not.toHaveBeenCalled()
 
@@ -239,12 +249,16 @@ describe('MailgunService', () => {
 
       jest.spyOn(pdfGeneratorService, 'generateFromTemplate').mockResolvedValue(mockPdf)
 
-      await service.sendEmail('2025-delivery-method-changed-from-user-data', {
-        userEmail: 'alice@example.com',
-        externalId: 'ext-789',
-        birthNumber: '1234567890',
-        deliveryMethod: 'email',
-      })
+      await service.sendEmail(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail: 'alice@example.com',
+          externalId: 'ext-789',
+          birthNumber: '1234567890',
+          deliveryMethod: 'email',
+        },
+        { userSub: 'test-user-sub' }
+      )
 
       expect(pdfGeneratorService.generateFromTemplate).toHaveBeenCalledWith(
         'delivery-method-set-to-notification',
@@ -280,11 +294,15 @@ describe('MailgunService', () => {
         })
       )
 
-      await service.sendEmail('2025-delivery-method-changed-from-user-data', {
-        userEmail: 'bob@example.com',
-        externalId: 'ext-999',
-        deliveryMethod: 'email',
-      })
+      await service.sendEmail(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail: 'bob@example.com',
+          externalId: 'ext-999',
+          deliveryMethod: 'email',
+        },
+        { userSub: 'test-user-sub' }
+      )
 
       expect(pdfGeneratorService.generateFromTemplate).not.toHaveBeenCalled()
 
@@ -309,11 +327,15 @@ describe('MailgunService', () => {
         })
       )
 
-      await service.sendEmail('2025-delivery-method-changed-from-user-data', {
-        userEmail: 'test@example.com',
-        externalId: 'ext-000',
-        deliveryMethod: 'edesk',
-      })
+      await service.sendEmail(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail: 'test@example.com',
+          externalId: 'ext-000',
+          deliveryMethod: 'edesk',
+        },
+        { userSub: 'test-user-sub' }
+      )
 
       expect(mockCreate).toHaveBeenCalledWith(
         'test.example.com',

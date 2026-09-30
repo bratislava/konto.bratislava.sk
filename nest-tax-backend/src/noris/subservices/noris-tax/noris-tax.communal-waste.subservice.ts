@@ -191,6 +191,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
         message: 'Failed to get taxes from Noris',
+        console: { year, batchSize: birthNumbers.length },
         error,
       })
     }
@@ -250,6 +251,11 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
             this.errorFactoryService.InternalServerErrorException({
               errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
               message: 'Failed to update tax in database.',
+              console: {
+                taxId: existingTax.id,
+                norisSubjectId: norisItem.cislo_subjektu,
+                year,
+              },
               error,
             }),
           )

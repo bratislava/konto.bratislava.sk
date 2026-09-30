@@ -30,9 +30,15 @@ export class BloomreachContactDatabaseService {
    * @param email - The email of the contact.
    * @param birthNumber - The birth number of the contact.
    * @param ico - The ico of the contact.
+   * @param externalId - Cognito id of the user, logged on failure.
    * @returns The uuid of the contact. Undefined if all attempts fail.
    */
-  async upsert(email: string, birthNumber: string, ico?: string): Promise<string | undefined> {
+  async upsert(
+    email: string,
+    birthNumber: string,
+    ico: string | undefined,
+    externalId: string
+  ): Promise<string | undefined> {
     let loggedError: Error | undefined
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
@@ -42,7 +48,7 @@ export class BloomreachContactDatabaseService {
         loggedError = this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: `Failed to upsert bloomreach contact on attempt: ${attempt}`,
-          console: { email, hasBirthNumber: !!birthNumber, hasIco: !!ico, attempt },
+          console: { externalId, hasBirthNumber: !!birthNumber, hasIco: !!ico, attempt },
           error,
         })
         this.logger.error(loggedError.message) // this won't alert

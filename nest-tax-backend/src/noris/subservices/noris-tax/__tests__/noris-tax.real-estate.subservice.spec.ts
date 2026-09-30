@@ -565,6 +565,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       ).toHaveBeenCalledWith({
         errorEnum: CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
         message: 'Failed to get taxes from Noris',
+        console: { year: 2023, batchSize: 1 },
         error: mockError,
       })
     })

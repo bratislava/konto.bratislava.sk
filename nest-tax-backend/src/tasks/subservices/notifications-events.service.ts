@@ -421,7 +421,10 @@ export default class NotificationsEventsService {
         return true
       } catch (error) {
         // Throwing would cause the whole task to fail, so we just log the error
-        this.logger.error(error)
+        this.logger.error(
+          { taxPaymentId: payment.id, taxId: payment.taxId },
+          error,
+        )
         return false
       }
     }

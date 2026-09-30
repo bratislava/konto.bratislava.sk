@@ -261,7 +261,8 @@ export class NasesService {
     }
   }
 
-  private async searchUpvsIdentitiesByUri(uris: string[]) {
+  private async searchUpvsIdentitiesByUri(inputs: GetUpvsIdentitiesByUrisParam) {
+    const uris = inputs.map((input) => input.uri)
     const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken(
       this.baConfigService.nases.subNasesTechnicalAccount,
       this.baConfigService.nases.apiTokenPrivate
@@ -289,7 +290,14 @@ export class NasesService {
         }
         throw this.errorFactoryService.fromAxiosError(error, {
           message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          console: `Internal reason: ${VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE}. Uris: ${JSON.stringify(uris)}`,
+          console: {
+            reason: VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE,
+            physicalEntityIds: inputs.flatMap((input) =>
+              input.physicalEntityId ? [input.physicalEntityId] : []
+            ),
+            // external eDesk checks have no physical entity, only their URI
+            externalUriCount: inputs.filter((input) => !input.physicalEntityId).length,
+          },
         })
       })
     return result
@@ -310,7 +318,7 @@ export class NasesService {
       })
     }
 
-    const results = await this.searchUpvsIdentitiesByUri(uniqueInputs.map((input) => input.uri))
+    const results = await this.searchUpvsIdentitiesByUri(uniqueInputs)
 
     const resultsWithUri = results.filter(
       (result): result is ApiIamIdentitiesIdGet200ResponseWithUri => !!result.uri
@@ -341,7 +349,8 @@ export class NasesService {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know there is at least one value in the array, because we checked the length above
       const unmatchedInput = unmatchedInputs.pop()!
       this.logger.log({
-        message: `Matching unmatched result URI to input URI: ${unmatchedResult.uri} -> ${unmatchedInput.uri}`,
+        message: 'Matching the only unmatched result URI to the only unmatched input URI',
+        physicalEntityId: inputsByUri[unmatchedInput.uri]?.physicalEntityId ?? null,
       })
       resultDataSuccess.push({
         inputUri: unmatchedInput.uri,
@@ -384,8 +393,11 @@ export class NasesService {
     let possibleUriChanges: GetUpvsIdentityByUriFailureType[] = []
     if (unmatchedResults.length > 0 && unmatchedInputs.length > 0) {
       this.logger.warn({
-        message: `Failed to find input for URIs: ${unmatchedResults.map((r) => r.uri).join(', ')}`,
-        unmatchedInputUris: unmatchedInputs.map((input) => input.uri),
+        message: 'Failed to match UPVS results to input URIs',
+        unmatchedResultCount: unmatchedResults.length,
+        unmatchedInputPhysicalEntityIds: unmatchedInputs.map(
+          (input) => inputsByUri[input.uri]?.physicalEntityId ?? null
+        ),
       })
       possibleUriChanges = unmatchedInputs.map((input) => ({
         physicalEntityId: inputsByUri[input.uri]?.physicalEntityId,

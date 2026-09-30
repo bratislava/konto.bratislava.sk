@@ -129,9 +129,7 @@ export class UserDataSubservice {
 
     // user found, update data
     if (!foundByEmail) {
-      this.logger.log(
-        `Email changed for user ${userData.externalId}. Old email: ${user.email}, new email: ${userData.email}.`
-      )
+      this.logger.log(`Email changed for user ${userData.externalId} (userId: ${user.id}).`)
     }
 
     user = await this.prisma.user.update({
@@ -232,7 +230,7 @@ export class UserDataSubservice {
     // LegalPerson found, update data
     if (!foundByEmail) {
       this.logger.log(
-        `Email changed for legal person ${legalPersonData.externalId}. Old email: ${legalPerson.email}, new email: ${legalPersonData.email}.`
+        `Email changed for legal person ${legalPersonData.externalId} (legalPersonId: ${legalPerson.id}).`
       )
     }
 

@@ -96,7 +96,7 @@ export default class NorisSyncTasksService {
     }
 
     this.logger.log(
-      `TasksService: Updating payments from Noris with data: ${JSON.stringify(data)}`,
+      `TasksService: Updating payments from Noris for tax ids: ${variableSymbolsDb.map((variableSymbolDb) => variableSymbolDb.id).join(', ')}, years: ${data.years.join(', ')}`,
     )
 
     let result: {
@@ -175,7 +175,7 @@ export default class NorisSyncTasksService {
     }
 
     this.logger.log(
-      `TasksService: Updating taxes from Noris for tax payers with birth numbers: ${taxPayers.map((t) => t.birthNumber).join(', ')}, tax type: ${taxType}, current year: ${currentYear}`,
+      `TasksService: Updating taxes from Noris for tax payers with ids: ${taxPayers.map((t) => t.id).join(', ')}, tax type: ${taxType}, current year: ${currentYear}`,
     )
 
     const { updated } =

@@ -36,7 +36,7 @@ export class BloomreachService {
   ): Promise<boolean> {
     if (!this.baConfigService.featureToggles.sendBloomreachEvents) {
       this.logger.debug(
-        `Bloomreach events are disabled, skipping event ${eventName} for user ${cognitoId}. Object content: ${JSON.stringify(data)}`,
+        `Bloomreach events are disabled, skipping event ${eventName} for user ${cognitoId}.`,
       )
       return true
     }

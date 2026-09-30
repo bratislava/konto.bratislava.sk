@@ -17,11 +17,14 @@ export class PhysicalEntityService {
       where: { birthNumber },
     })
     if (entities.length > 1) {
-      this.logger.error(`Multiple physical entities in database with birthnumber: ${birthNumber}.`)
+      this.logger.error('Multiple physical entities in database with the same birth number.', {
+        userId,
+        physicalEntityIds: entities.map((entity) => entity.id),
+      })
       return
     }
     if (entities.length === 0) {
-      this.logger.error(`Entity with birth number ${birthNumber} does not exist.`)
+      this.logger.error('Physical entity with the given birth number does not exist.', { userId })
       return
     }
 
@@ -43,9 +46,9 @@ export class PhysicalEntityService {
       where: { birthNumber },
     })
     if (entities.length > 1) {
-      this.logger.error(
-        `PhysicalEntity with birthnumber ${birthNumber} multiple times in database.`
-      )
+      this.logger.error('PhysicalEntity with the same birth number multiple times in database.', {
+        physicalEntityIds: entities.map((entity) => entity.id),
+      })
       return null
     }
 
@@ -60,9 +63,9 @@ export class PhysicalEntityService {
 
     // Could not create entity
     if (!entity.birthNumber) {
-      this.logger.error(
-        `PhysicalEntity was not created in database for birth number: ${birthNumber}.`
-      )
+      this.logger.error('PhysicalEntity was not created in database for the given birth number.', {
+        physicalEntityId: entity.id,
+      })
       return null
     }
     return entity

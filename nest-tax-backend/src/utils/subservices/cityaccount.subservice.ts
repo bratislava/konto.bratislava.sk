@@ -19,8 +19,12 @@ export class CityAccountSubservice {
     this.logger = new Logger('CityAccountSubservice')
   }
 
+  /**
+   * @param logContext non-PII ids (e.g. taxPayerId) attached to error logs.
+   */
   async getUserDataAdmin(
     birthNumber: string,
+    logContext?: Record<string, unknown>,
   ): Promise<ResponseUserByBirthNumberDto | null> {
     const birthNumberWithoutSlash = birthNumber.replace('/', '')
     try {
@@ -43,6 +47,7 @@ export class CityAccountSubservice {
           this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
             message: 'Failed to get user data from city account.',
+            console: logContext,
             error,
           }),
         )
@@ -65,6 +70,7 @@ export class CityAccountSubservice {
       this.logger.error(
         this.errorFactoryService.fromAxiosError(error, {
           message: 'Failed to get user data from city account.',
+          console: logContext,
         }),
       )
       return null
@@ -100,11 +106,13 @@ export class CityAccountSubservice {
         throw this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Failed to get user data batch from city account.',
+          console: { batchSize: birthNumbers.length },
           error,
         })
       }
       throw this.errorFactoryService.fromAxiosError(error, {
         message: 'Failed to get user data batch from city account.',
+        console: { batchSize: birthNumbers.length },
       })
     }
   }

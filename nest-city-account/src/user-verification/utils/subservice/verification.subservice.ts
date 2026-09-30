@@ -71,7 +71,8 @@ export class VerificationSubservice {
 
   private verifyRpoStatutory(
     legalEntity: ResponseRpoLegalPersonDto,
-    birthNumber: string
+    birthNumber: string,
+    userSub: string
   ): VerificationReturnType {
     const statutoryBodies = legalEntity.statutarneOrgany
 
@@ -89,7 +90,7 @@ export class VerificationSubservice {
     this.logger.warn({
       message: 'Could not match birthnumber with statutory organ from RPO',
       ico: legalEntity.ico,
-      birthNumber,
+      userSub,
     })
     return {
       success: false,
@@ -238,7 +239,8 @@ export class VerificationSubservice {
       if (!ico && !this.validatePersonName(rfoDataSingle, user.given_name, user.family_name)) {
         this.logger.warn('We refused validation based on names not matching.', {
           cognitoID: user.sub,
-          providedName: { name: user.given_name, surname: user.family_name },
+          hasGivenName: !!user.given_name,
+          hasFamilyName: !!user.family_name,
         })
         continue
       }
@@ -312,7 +314,8 @@ export class VerificationSubservice {
     if (!ico && !this.validatePersonName(rfoDataDcom.data, user.given_name, user.family_name)) {
       this.logger.warn('We refused validation based on names not matching.', {
         cognitoID: user.sub,
-        providedName: { name: user.given_name, surname: user.family_name },
+        hasGivenName: !!user.given_name,
+        hasFamilyName: !!user.family_name,
       })
       return { success: false, reason: VerificationErrorsEnum.NAMES_NOT_MATCHING }
     }
@@ -349,7 +352,7 @@ export class VerificationSubservice {
       return rpoData
     }
 
-    const verifyStatutory = this.verifyRpoStatutory(rpoData.data, data.birthNumber)
+    const verifyStatutory = this.verifyRpoStatutory(rpoData.data, data.birthNumber, user.sub)
     if (!verifyStatutory.success) {
       return verifyStatutory
     }

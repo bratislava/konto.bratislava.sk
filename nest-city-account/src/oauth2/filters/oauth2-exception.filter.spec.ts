@@ -1401,7 +1401,8 @@ describe('OAuth2ExceptionFilter', () => {
           ip: '127.0.0.2',
           userAgent: 'Mozilla/5.0',
           requestBody: expectObjectContaining({
-            grant_type: 'authorization_code',
+            grantType: 'authorization_code',
+            hasCode: true,
           }),
         })
       )

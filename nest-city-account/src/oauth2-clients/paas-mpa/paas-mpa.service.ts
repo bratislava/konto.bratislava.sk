@@ -33,7 +33,12 @@ export class PaasMpaService {
     ico?: string
   ): Promise<string | undefined> {
     try {
-      return await this.bloomreachContactDatabaseService.upsert(user.email, birthNumber, ico)
+      return await this.bloomreachContactDatabaseService.upsert(
+        user.email,
+        birthNumber,
+        ico,
+        user.idUser
+      )
     } catch (error) {
       this.logger.error(
         this.errorFactoryService.InternalServerErrorException({
@@ -41,7 +46,6 @@ export class PaasMpaService {
           message: `Failed to upsert bloomreach contact`,
           console: {
             userId: user.idUser,
-            email: user.email,
             hasBirthNumber: !!birthNumber,
             hasIco: !!ico,
           },
@@ -116,7 +120,6 @@ export class PaasMpaService {
           message: `Unexpected error during PAAS-MPA contact registration for user: ${user.idUser}`,
           console: {
             userId: user.idUser,
-            email: user.email,
             hasPhoneNumber: !!phoneNumber,
           },
           error,

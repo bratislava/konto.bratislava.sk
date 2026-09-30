@@ -79,14 +79,15 @@ export class NorisPaymentSubservice {
     data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   ): Promise<NorisTaxPayment[]> {
     const filteredVariableSymbols = data.variableSymbols.filter(
-      (variableSymbol) => {
+      (variableSymbol, index) => {
         if (/^\d+$/.test(variableSymbol)) {
           return true
         }
         this.logger.error(
           this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-            message: `Variable symbol has a wrong format: "${variableSymbol}"`,
+            message: 'Variable symbol has a wrong format.',
+            console: { index, count: data.variableSymbols.length },
           }),
         )
         return false
@@ -215,9 +216,11 @@ export class NorisPaymentSubservice {
 
     if (errors.length > 0) {
       this.logger.error(
-        'Encountered errors while batch processing Noris payments:',
-        errors,
+        `Encountered ${errors.length} errors while batch processing Noris payments.`,
       )
+      errors.forEach((error) => {
+        this.logger.error(error)
+      })
     }
 
     return {
@@ -262,9 +265,8 @@ export class NorisPaymentSubservice {
       suppressEmail?: boolean
     },
   ) {
+    const taxData = taxesDataByVsMap.get(norisPayment.variabilny_symbol)
     try {
-      const taxData = taxesDataByVsMap.get(norisPayment.variabilny_symbol)
-
       if (!taxData) {
         return 'NOT_EXIST'
       }
@@ -319,6 +321,7 @@ export class NorisPaymentSubservice {
       return this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+        console: { taxId: taxData?.id },
         error,
       })
     }
@@ -370,6 +373,7 @@ export class NorisPaymentSubservice {
         throw this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Failed to track payment in Bloomreach.',
+          console: { taxId: taxData.id, taxPaymentId: createdTaxPayment.id },
         })
       }
     }

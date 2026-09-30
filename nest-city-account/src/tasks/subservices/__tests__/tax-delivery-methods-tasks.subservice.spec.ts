@@ -663,11 +663,15 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       await service.sendDailyDeliveryMethodSummaries()
 
-      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
-        userEmail: mockEmail,
-        externalId: 'ext-123',
-        deliveryMethod: 'edesk',
-      })
+      expect(sendEmailSpy).toHaveBeenCalledWith(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail: mockEmail,
+          externalId: 'ext-123',
+          deliveryMethod: 'edesk',
+        },
+        { userId: expectAny<string>(String), externalId: 'ext-123' }
+      )
     })
 
     it('should send postal email when eDesk was deactivated yesterday (no CITY_ACCOUNT preference)', async () => {
@@ -708,11 +712,15 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       await service.sendDailyDeliveryMethodSummaries()
 
-      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
-        userEmail: mockEmail,
-        externalId: 'ext-123',
-        deliveryMethod: 'postal',
-      })
+      expect(sendEmailSpy).toHaveBeenCalledWith(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail: mockEmail,
+          externalId: 'ext-123',
+          deliveryMethod: 'postal',
+        },
+        { userId: expectAny<string>(String), externalId: 'ext-123' }
+      )
     })
 
     it('should send City Account email when eDesk was deactivated yesterday and user has CITY_ACCOUNT preference', async () => {
@@ -760,12 +768,16 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       await service.sendDailyDeliveryMethodSummaries()
 
-      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
-        userEmail: mockEmail,
-        externalId: 'ext-123',
-        deliveryMethod: 'email',
-        birthNumber: '1234567890',
-      })
+      expect(sendEmailSpy).toHaveBeenCalledWith(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail: mockEmail,
+          externalId: 'ext-123',
+          deliveryMethod: 'email',
+          birthNumber: '1234567890',
+        },
+        { userId: expectAny<string>(String), externalId: 'ext-123' }
+      )
     })
 
     it('should send City Account email when delivery method changed to CITY_ACCOUNT yesterday', async () => {
@@ -814,12 +826,16 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       await service.sendDailyDeliveryMethodSummaries()
 
-      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
-        userEmail: mockEmail,
-        externalId: 'ext-123',
-        birthNumber: '1234567890',
-        deliveryMethod: 'email',
-      })
+      expect(sendEmailSpy).toHaveBeenCalledWith(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail: mockEmail,
+          externalId: 'ext-123',
+          birthNumber: '1234567890',
+          deliveryMethod: 'email',
+        },
+        { userId: expectAny<string>(String), externalId: 'ext-123' }
+      )
     })
 
     it('should send postal email when delivery method changed to POSTAL yesterday', async () => {
@@ -877,11 +893,15 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       await service.sendDailyDeliveryMethodSummaries()
 
-      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
-        userEmail: mockEmail,
-        externalId: 'ext-123',
-        deliveryMethod: 'postal',
-      })
+      expect(sendEmailSpy).toHaveBeenCalledWith(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail: mockEmail,
+          externalId: 'ext-123',
+          deliveryMethod: 'postal',
+        },
+        { userId: expectAny<string>(String), externalId: 'ext-123' }
+      )
     })
 
     it('should skip users with active eDesk who had delivery method changes but no eDesk status change', async () => {
@@ -1149,11 +1169,15 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       await service.sendDailyDeliveryMethodSummaries()
 
       // Should send eDesk email (prioritizes eDesk over GDPR changes)
-      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
-        userEmail: mockEmail,
-        externalId: 'ext-123',
-        deliveryMethod: 'edesk',
-      })
+      expect(sendEmailSpy).toHaveBeenCalledWith(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail: mockEmail,
+          externalId: 'ext-123',
+          deliveryMethod: 'edesk',
+        },
+        { userId: expectAny<string>(String), externalId: 'ext-123' }
+      )
     })
 
     it('should process multiple users in batch with different delivery method changes', async () => {
@@ -1253,26 +1277,38 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       expect(sendEmailSpy).toHaveBeenCalledTimes(3)
 
       // User1: switched to CITY_ACCOUNT (new)
-      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
-        userEmail: 'user1@example.com',
-        externalId: 'ext-1',
-        birthNumber: '1111111111',
-        deliveryMethod: 'email',
-      })
+      expect(sendEmailSpy).toHaveBeenCalledWith(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail: 'user1@example.com',
+          externalId: 'ext-1',
+          birthNumber: '1111111111',
+          deliveryMethod: 'email',
+        },
+        { userId: expectAny<string>(String), externalId: 'ext-1' }
+      )
 
       // User2: switched to POSTAL (changed from CITY_ACCOUNT)
-      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
-        userEmail: 'user2@example.com',
-        externalId: 'ext-2',
-        deliveryMethod: 'postal',
-      })
+      expect(sendEmailSpy).toHaveBeenCalledWith(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail: 'user2@example.com',
+          externalId: 'ext-2',
+          deliveryMethod: 'postal',
+        },
+        { userId: expectAny<string>(String), externalId: 'ext-2' }
+      )
 
       // User3: eDesk activated
-      expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
-        userEmail: 'user3@example.com',
-        externalId: 'ext-3',
-        deliveryMethod: 'edesk',
-      })
+      expect(sendEmailSpy).toHaveBeenCalledWith(
+        '2025-delivery-method-changed-from-user-data',
+        {
+          userEmail: 'user3@example.com',
+          externalId: 'ext-3',
+          deliveryMethod: 'edesk',
+        },
+        { userId: expectAny<string>(String), externalId: 'ext-3' }
+      )
     })
   })
 })

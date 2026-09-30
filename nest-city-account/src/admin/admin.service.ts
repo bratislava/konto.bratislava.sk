@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice, toLogfmt } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../prisma/prisma.service'
@@ -73,7 +73,7 @@ export class AdminService {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
           message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
-          console: toLogfmt(user),
+          console: { userSub: user.sub },
         })
       }
     }
@@ -83,7 +83,7 @@ export class AdminService {
         try {
           await this.userService.upsertUserOrLegalPersonRaw(user)
         } catch (error) {
-          this.logger.error(error)
+          this.logger.error({ userSub: user.sub }, error)
         }
       })
     )

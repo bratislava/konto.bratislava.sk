@@ -60,8 +60,8 @@ export default class NasesSenderService {
         resolve(Buffer.concat(_buf))
       })
 
-      stream.on('error', (err) => {
-        reject(new Error(`error converting stream - ${err}`))
+      stream.on('error', (error) => {
+        reject(new Error(`error converting stream - ${error}`))
       })
     })
   }

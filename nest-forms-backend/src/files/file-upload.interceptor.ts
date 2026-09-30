@@ -61,11 +61,11 @@ export class FileUploadInterceptor implements NestInterceptor {
     const upload = multer({ limits: { fileSize: effectiveMax } })
 
     await new Promise<void>((resolve, reject) => {
-      upload.single('file')(req, res, (err: unknown) => {
-        if (err) {
+      upload.single('file')(req, res, (error: unknown) => {
+        if (error) {
           if (
-            err instanceof multer.MulterError &&
-            err.code === 'LIMIT_FILE_SIZE'
+            error instanceof multer.MulterError &&
+            error.code === 'LIMIT_FILE_SIZE'
           ) {
             reject(
               new PayloadTooLargeException(
@@ -74,11 +74,11 @@ export class FileUploadInterceptor implements NestInterceptor {
             )
             return
           }
-          if (err instanceof Error) {
-            reject(err)
+          if (error instanceof Error) {
+            reject(error)
           } else {
             try {
-              reject(new Error(JSON.stringify(err)))
+              reject(new Error(JSON.stringify(error)))
             } catch {
               reject(new Error('Unknown multer error'))
             }

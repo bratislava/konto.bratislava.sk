@@ -529,6 +529,7 @@ export default class GinisService {
 
   private async fetchContactByUri(
     uri: string,
+    formId: string,
   ): Promise<UpvsNaturalPerson | UpvsCorporateBody> {
     const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken(
       this.baConfigService.slovenskoSk.subNasesTechnicalAccount,
@@ -551,12 +552,18 @@ export default class GinisService {
           throw this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
             message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-            console: 'Failed to search nases identity by uri',
+            console: {
+              message: 'Failed to search nases identity by uri',
+              formId,
+            },
             error,
           })
         }
         throw this.errorFactoryService.fromAxiosError(error, {
-          console: 'Failed to search nases identity by uri',
+          console: {
+            message: 'Failed to search nases identity by uri',
+            formId,
+          },
         })
       })
 
@@ -564,12 +571,14 @@ export default class GinisService {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
         message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in nases.`,
+        console: { formId },
       })
     }
     if (result.length > 1) {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
         message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Multiple results found for form uri.`,
+        console: { formId },
       })
     }
     return result[0]
@@ -583,7 +592,7 @@ export default class GinisService {
       })
     }
 
-    const contact = await this.fetchContactByUri(form.mainUri)
+    const contact = await this.fetchContactByUri(form.mainUri, form.id)
     const params: GinContactParams = {
       uri: form.mainUri,
       email:

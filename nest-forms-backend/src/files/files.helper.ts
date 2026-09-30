@@ -351,6 +351,7 @@ export default class FilesHelper {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: FilesErrorsEnum.FILE_MINIO_CHECK_ERROR,
         message: FilesErrorsResponseEnum.FILE_MINIO_CHECK_ERROR,
+        console: { formId: formInfo.formId, filepath },
         error,
       })
     }

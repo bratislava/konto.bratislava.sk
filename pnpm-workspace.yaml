@@ -4,7 +4,6 @@ catalog:
   '@internationalized/date': 3.12.4
   '@playwright/test': 1.63.0
   '@react-aria/utils': 3.34.1
-  '@react-stately/utils': 3.12.1
   '@react-types/shared': 3.36.1
   '@rjsf/core': 6.5.2
   '@rjsf/utils': 6.5.2

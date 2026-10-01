@@ -37,7 +37,6 @@
     "@radix-ui/react-dropdown-menu": "2.1.24",
     "@radix-ui/react-navigation-menu": "1.2.22",
     "@react-aria/utils": "catalog:",
-    "@react-stately/utils": "catalog:",
     "@rjsf/core": "catalog:",
     "@rjsf/utils": "catalog:",
     "@rjsf/validator-ajv8": "catalog:",

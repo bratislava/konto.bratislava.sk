@@ -90,19 +90,8 @@ packageExtensions:
       typescript:
         optional: true
 
-# @golevelup/nestjs-rabbitmq 9.0.2 and its @golevelup/nestjs-discovery still cap
-# their NestJS peers at v11. They run on NestJS 12 unchanged: the only Nest
-# internals they import (`@nestjs/common/constants`,
-# `@nestjs/core/helpers/external-context-creator`) resolve through Nest 12's
-# `./*` export. Support is pending upstream in
-# https://github.com/golevelup/nestjs/pull/1262.
-# TODO: Drop these rules once a release widens the peer range.
 peerDependencyRules:
   allowedVersions:
-    '@golevelup/nestjs-rabbitmq>@nestjs/common': '12'
-    '@golevelup/nestjs-rabbitmq>@nestjs/core': '12'
-    '@golevelup/nestjs-discovery>@nestjs/common': '12'
-    '@golevelup/nestjs-discovery>@nestjs/core': '12'
     # @bratislava/log-nest 1.1.0 caps its NestJS peers at v11. Without this rule
     # it gets its own Nest 11 copy, so its HttpExceptions fail `instanceof` checks
     # against Nest 12's.

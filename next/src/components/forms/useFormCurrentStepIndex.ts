@@ -1,5 +1,5 @@
-import { createParser, useQueryState } from 'nuqs'
-import { useEffect, useMemo, useRef } from 'react'
+import { type Options, parseAsString, useQueryState } from 'nuqs'
+import { useCallback, useEffect } from 'react'
 
 import { FormStepIndex, FormStepperStep } from '@/src/components/forms/steps/types/Steps'
 import { isDefined } from '@/src/frontend/utils/general'
@@ -33,28 +33,21 @@ export const STEP_QUERY_PARAM_KEY = 'krok'
  * A hook that holds the state of the current step index and synchronizes its value with `krok` query param in the URL.
  */
 export const useFormCurrentStepIndex = (stepperData: FormStepperStep[]) => {
-  // `nuqs` takes only the initial value of the parser, so we need to use a ref to access `stepSchemas` inside the parser
-  const stepSchemasRef = useRef(stepperData)
-  stepSchemasRef.current = stepperData
-  const getCurrentStepSchemas = () => stepSchemasRef.current
-
-  const parser = useMemo(
-    () =>
-      createParser({
-        parse(queryValue) {
-          return getStepIndexByQueryParam(getCurrentStepSchemas(), queryValue)
-        },
-        serialize(value) {
-          // `value` is guaranteed to be a correct step index, so we can safely cast it to string
-          return getQueryParamByStepIndex(getCurrentStepSchemas(), value) as string
-        },
-      })
-        .withOptions({ history: 'push', clearOnDefault: false })
-        .withDefault(getCurrentStepSchemas()[0].index),
-    [],
+  // The query param holds the step's `queryParam`, and the index is derived from it on every render,
+  // so it always matches the current steps (they change with the form data).
+  const [stepQueryParam, setStepQueryParam] = useQueryState(
+    STEP_QUERY_PARAM_KEY,
+    parseAsString.withOptions({ history: 'push', clearOnDefault: false }),
   )
 
-  const [currentStepIndex, setCurrentStepIndex] = useQueryState(STEP_QUERY_PARAM_KEY, parser)
+  const currentStepIndex =
+    getStepIndexByQueryParam(stepperData, stepQueryParam) ?? stepperData[0].index
+
+  const setCurrentStepIndex = useCallback(
+    (stepIndex: FormStepIndex, options?: Options) =>
+      setStepQueryParam(getQueryParamByStepIndex(stepperData, stepIndex), options),
+    [stepperData, setStepQueryParam],
+  )
 
   useEffect(() => {
     // Initially if the query param is not present this sets it (`currentStepIndex` already contains default value)

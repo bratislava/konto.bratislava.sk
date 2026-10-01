@@ -4,11 +4,11 @@ import slugify from '@sindresorhus/slugify'
 import Image from 'next/image'
 import { ComponentType, ReactElement } from 'react'
 import _ReactMarkdown, { defaultUrlTransform, ExtraProps, Options } from 'react-markdown'
+import rehypeUnwrapImages from 'rehype-unwrap-images'
 import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkGfm from 'remark-gfm'
 import supersub from 'remark-supersub'
-import remarkUnwrapImages from 'remark-unwrap-images'
 
 import { TABLE_OF_CONTENTS_HEADING_ATTRIBUTE } from '@/src/components/common/TableOfContents/useHeadings'
 import MLink from '@/src/components/simple-components/MLink'
@@ -70,7 +70,6 @@ const Markdown = ({ content, variant = 'default', className }: MarkdownProps) =>
           (url) => (url.startsWith('tel:') ? url : defaultUrlTransform(url))
         }
         remarkPlugins={[
-          remarkUnwrapImages,
           [
             remarkGfm,
             // singleTilde is disabled to enable subscript: https://stackoverflow.com/a/78076200
@@ -80,6 +79,7 @@ const Markdown = ({ content, variant = 'default', className }: MarkdownProps) =>
           remarkDirective,
           remarkDirectiveRehype,
         ]}
+        rehypePlugins={[rehypeUnwrapImages]}
         components={{
           /**
            * STANDARD COMPONENTS
@@ -162,7 +162,7 @@ const Markdown = ({ content, variant = 'default', className }: MarkdownProps) =>
 
             return (
               // Based on OLO: https://github.com/bratislava/olo.sk/blob/master/next/src/components/formatting/Markdown.tsx#L179
-              // TODO Note from OLO: This can still produce a hydration error, because the remark-unwrap-images only works when image is the only child of the paragraph
+              // TODO Note from OLO: This can still produce a hydration error, because the rehype-unwrap-images only works when image is the only child of the paragraph
               <figure className="flex flex-col items-center gap-4">
                 <Image
                   {...props}

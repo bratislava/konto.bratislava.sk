@@ -75,6 +75,21 @@ overrides:
   'i18next-resources-for-ts>@swc/core': 1.15.43
   '@vitejs/plugin-react-swc>@swc/core': 1.15.43
 
+# These packages import `typescript` without declaring it as a dependency or peer, so instead of
+# the TypeScript of the project that uses them, they get whichever version pnpm happens to hoist,
+# which can be another workspace package's (incompatible) TypeScript. Declaring the peer makes them
+# resolve the using project's TypeScript.
+packageExtensions:
+  '@darraghor/eslint-plugin-nestjs-typed':
+    peerDependencies:
+      typescript: '*'
+  eslint-plugin-import:
+    peerDependencies:
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
 # @golevelup/nestjs-rabbitmq 9.0.2 and its @golevelup/nestjs-discovery still cap
 # their NestJS peers at v11. They run on NestJS 12 unchanged: the only Nest
 # internals they import (`@nestjs/common/constants`,

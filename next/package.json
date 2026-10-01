@@ -101,7 +101,7 @@
     "yet-another-react-lightbox": "3.32.2"
   },
   "devDependencies": {
-    "@bratislava/eslint-config-next": "0.19.1",
+    "@bratislava/eslint-config-next": "0.20.0",
     "@graphql-codegen/cli": "7.4.3",
     "@graphql-codegen/typescript-graphql-request": "7.1.0",
     "@graphql-codegen/typescript-operations": "6.1.9",
@@ -120,7 +120,7 @@
     "@types/react-dom": "catalog:",
     "app-root-dir": "1.0.2",
     "cross-env": "10.1.0",
-    "eslint": "9.39.4",
+    "eslint": "10.11.0",
     "eslint-plugin-better-tailwindcss": "4.7.0",
     "i18next-cli": "1.74.2",
     "postcss": "8.5.28",

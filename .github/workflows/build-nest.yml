@@ -87,7 +87,7 @@ jobs:
           --health-retries 15
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           ref: ${{ github.sha }}
           fetch-depth: 1
@@ -131,7 +131,7 @@ jobs:
       # hence `allow: network.host` on each step.
       - name: Build validation image
         if: ${{ !inputs.skip_tests }}
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}
@@ -144,7 +144,7 @@ jobs:
 
       - name: Run unit tests
         if: ${{ !inputs.skip_tests }}
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}
@@ -157,7 +157,7 @@ jobs:
 
       - name: Run ESLint
         if: ${{ !inputs.skip_tests }}
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}
@@ -170,7 +170,7 @@ jobs:
 
       - name: Run E2E tests
         if: ${{ !inputs.skip_tests && inputs.e2e_tests }}
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}
@@ -186,7 +186,7 @@ jobs:
       # CI mode: build the final `runner` image, do not push.
       - name: Build final image
         if: ${{ inputs.cluster == '' }}
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}
@@ -199,7 +199,7 @@ jobs:
 
       - name: Verify bootstrap
         if: ${{ !inputs.skip_tests }}
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}
@@ -223,7 +223,7 @@ jobs:
       # Deploy mode: build+push the deployable image when not reused.
       - name: Build deploy image
         if: ${{ inputs.cluster != '' && steps.existing.outputs.found != 'true' }}
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}

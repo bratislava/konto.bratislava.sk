@@ -15,7 +15,6 @@ import { DeliveryMethodErrorsEnum } from '../guards/dtos/delivery-method.error'
  * invoked when a client tries to retrieve a form with nonexistent uuid.
  */
 export default [
-  VerificationErrorsEnum.INVALID_CAPTCHA,
   ErrorEnum.DATABASE_ERROR,
   ErrorEnum.INTERNAL_SERVER_ERROR,
   ErrorEnum.BAD_GATEWAY_AUTH_ERROR,

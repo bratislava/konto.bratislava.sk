@@ -106,6 +106,12 @@ target "next" {
   }
 }
 
+target "next-lint" {
+  inherits   = ["_toolchain", "_turbo-cache"]
+  dockerfile = "next/Dockerfile"
+  target     = "lint"
+}
+
 # --- strapi -------------------------------------------------------------------
 
 target "strapi" {

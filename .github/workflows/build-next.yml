@@ -86,6 +86,7 @@ jobs:
           image: ${{ inputs.image }}
           prefix: ${{ env.CLUSTER_PREFIX }}
           suffix: ${{ env.ENV_SUFFIX }}
+          caches: lint
           push: ${{ inputs.cluster != '' }}
 
       # Deploy mode only: reuse the per-env commit image across clusters. If it
@@ -103,6 +104,18 @@ jobs:
         uses: ./.github/actions/setup-turborepo-cache
         with:
           minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
+
+      - name: Run ESLint
+        uses: docker/bake-action@v7
+        with:
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: next-lint
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).lint.from }}
+          CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).lint.to }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Build image
         if: ${{ inputs.cluster == '' || steps.existing.outputs.found != 'true' }}

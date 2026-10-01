@@ -485,7 +485,7 @@ export class TaxDeliveryMethodsTasksSubservice {
       } as const satisfies Record<'edesk-deactivated' | 'delivery-method-preference-change', string>
       const logSuffix = options?.reason ? logSuffixMap[options.reason] : ''
       this.logger.log(`Sent ${deliveryMethodLabel} activation email to user ${userId}${logSuffix}`)
-    } catch (err) {
+    } catch (error) {
       this.logger.error(
         `Failed to send ${deliveryMethod} email for user ${userId}`,
         {
@@ -493,7 +493,7 @@ export class TaxDeliveryMethodsTasksSubservice {
           reason: options?.reason,
           hasPdfAttachment: !!options?.birthNumber,
         },
-        err
+        error
       )
     }
   }
@@ -599,6 +599,7 @@ export class TaxDeliveryMethodsTasksSubservice {
     }
 
     const { yesterdayStart, yesterdayEnd } = this.getYesterdayRange()
+
     this.logger.log(`Processing delivery method summaries for: ${yesterdayStart.toDateString()}`)
 
     // Fetch all userIds with detected delivery method change during the previous day.

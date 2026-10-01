@@ -1,4 +1,4 @@
-import { LineLoggerSubservice, toLogfmt } from '@bratislava/log-nest'
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
 import { LookupIdentityFOResult, NasesService } from '../nases/nases.service'
@@ -157,11 +157,16 @@ export class UrgentLookupService {
       if (status === HttpStatus.TOO_MANY_REQUESTS) {
         return { outcome: 'rateLimited' }
       }
+      this.logger.warn(
+        'Urgent UPVS identity lookup failed',
+        { physicalEntityId: entity.entityId, externalId: entity.externalId, httpStatus: status },
+        error
+      )
       return {
         outcome: 'failure',
         entityId: entity.entityId,
         reason: 'Lookup failed',
-        fields: { externalId: entity.externalId, httpStatus: status, error: toLogfmt(error) },
+        fields: { externalId: entity.externalId, httpStatus: status },
       }
     }
   }

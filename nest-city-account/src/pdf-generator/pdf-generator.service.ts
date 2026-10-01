@@ -147,8 +147,6 @@ export class PdfGeneratorService {
           templateName,
           filename,
           elapsedMs: Date.now() - startedAt,
-          hasContext: !!context,
-          hasPage: !!page,
           sharedBrowserRefCount: this.sharedBrowserRefCount,
         },
         error,

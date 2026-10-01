@@ -1,4 +1,4 @@
-import { LineLoggerSubservice, toLogfmt } from '@bratislava/log-nest'
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { QueueItemStatusEnum } from '../generated/prisma/enums'
@@ -55,7 +55,9 @@ export class UpvsQueueService {
       highPriorityProcessed: 0,
       externalProcessed: 0,
       totalProcessed: 0,
-      errors: [] as string[],
+      urgentFailures: [] as Record<string, unknown>[],
+      // the errors themselves are logged where they are caught
+      failedSteps: [] as ('urgent' | 'batch')[],
     }
 
     // Urgent items run first, every tick, on their own budget (see README).
@@ -67,12 +69,10 @@ export class UpvsQueueService {
         // rather than hammer UPVS; retry next tick.
         return
       }
-      if (urgentResult.failures.length > 0) {
-        result.errors.push(toLogfmt({ urgentFailures: urgentResult.failures }))
-      }
+      result.urgentFailures = urgentResult.failures
     } catch (error) {
       this.logger.error('Error processing urgent items', error)
-      result.errors.push('\n\n'.concat(toLogfmt(error)))
+      result.failedSteps.push('urgent')
     }
 
     // If there is at least one URI in database flagged as outdated, we need to update it.
@@ -111,7 +111,7 @@ export class UpvsQueueService {
         { urgentProcessed: result.urgentProcessed },
         error
       )
-      result.errors.push('\n\n'.concat(toLogfmt(error)))
+      result.failedSteps.push('batch')
     }
 
     this.logger.log(result)

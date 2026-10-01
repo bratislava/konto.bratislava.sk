@@ -561,8 +561,6 @@ const calculateInstallmentPaymentDetails = (options: {
       console: {
         ...logContext,
         reason: 'No active installment',
-        overallAmount,
-        overallPaid,
         installmentStatuses: installmentDetails.map((item) => item.status),
       },
     })
@@ -745,7 +743,7 @@ export const getTaxDetailPureForOneTimeGenerator = (options: {
     }).UnprocessableEntityException({
       errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
       message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
-      console: { taxId, taxType, overallAmount, overallPaid },
+      console: { taxId, taxType },
     })
   }
 
@@ -825,8 +823,6 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   const logContext = {
     taxId,
     taxType,
-    overallAmount,
-    overallPaid,
     reasonNotPossible: installmentPayment.reasonNotPossible,
   }
 

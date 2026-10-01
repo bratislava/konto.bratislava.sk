@@ -13,5 +13,5 @@
       "@/src/*": ["src/*"]
     }
   },
-  "include": ["src/clients/graphql-strapi/index.ts", "src/utils/routes.tsx"]
+  "include": ["src/clients/graphql-strapi/api.ts", "src/utils/routes.tsx"]
 }

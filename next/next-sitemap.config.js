@@ -1,7 +1,19 @@
-const { strapiClient } = require('./dist/clients/graphql-strapi/index')
+const { GraphQLClient } = require('graphql-request')
+
+const { getSdk } = require('./dist/clients/graphql-strapi/api')
 const { ROUTES } = require('./dist/utils/routes')
 
 //  Documentation: https://www.npmjs.com/package/next-sitemap
+
+// next-sitemap runs as a separate process after `next build`, so `@/src/environment` can't be used here:
+// it asserts variables like NODE_ENV or IFRAME_RESIZER_PUBLIC_PATH that only `next build` provides.
+// next-sitemap loads the .env files itself, so read the variables directly and needs to load strapiClient here.
+const cityAccountStrapiUrl = process.env.NEXT_PUBLIC_CITY_ACCOUNT_STRAPI_URL
+if (!cityAccountStrapiUrl) {
+  throw new Error('Missing environment variable: NEXT_PUBLIC_CITY_ACCOUNT_STRAPI_URL')
+}
+
+const strapiClient = getSdk(new GraphQLClient(`${cityAccountStrapiUrl}/graphql`))
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {

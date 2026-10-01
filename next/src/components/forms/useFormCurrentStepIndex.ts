@@ -33,8 +33,6 @@ export const STEP_QUERY_PARAM_KEY = 'krok'
  * A hook that holds the state of the current step index and synchronizes its value with `krok` query param in the URL.
  */
 export const useFormCurrentStepIndex = (stepperData: FormStepperStep[]) => {
-  // The query param holds the step's `queryParam`, and the index is derived from it on every render,
-  // so it always matches the current steps (they change with the form data).
   const [stepQueryParam, setStepQueryParam] = useQueryState(
     STEP_QUERY_PARAM_KEY,
     parseAsString.withOptions({ history: 'push', clearOnDefault: false }),

@@ -511,8 +511,18 @@ export class VerificationService {
     const birthNumberEncrypted = encryptData(data.birthNumber)
     const idCardEncrypted = encryptData(data.identityCard)
 
+    // TODO this should not be undefined at this point
+    const givenNameEncrypted = encryptData(user.given_name ?? 'not-set')
+    const familyNameEncrypted = encryptData(user.family_name ?? 'not-set')
+
     await this.prisma.userIdCardVerify.create({
-      data: { userId: userFromDb.id, birthNumber: birthNumberEncrypted, idCard: idCardEncrypted },
+      data: {
+        userId: userFromDb.id,
+        birthNumber: birthNumberEncrypted,
+        idCard: idCardEncrypted,
+        givenName: givenNameEncrypted,
+        familyName: familyNameEncrypted,
+      },
     })
   }
 
@@ -534,12 +544,18 @@ export class VerificationService {
     const idCardEncrypted = encryptData(data.identityCard)
     const icoEncrypted = encryptData(data.ico)
 
+    // TODO this should not be undefined at this point
+    const givenNameEncrypted = encryptData(user.given_name ?? 'not-set')
+    const familyNameEncrypted = encryptData(user.family_name ?? 'not-set')
+
     await this.prisma.legalPersonIcoIdCardVerify.create({
       data: {
         legalPersonId: legalPerson.id,
         birthNumber: birthNumberEncrypted,
         idCard: idCardEncrypted,
         ico: icoEncrypted,
+        givenName: givenNameEncrypted,
+        familyName: familyNameEncrypted,
       },
     })
   }

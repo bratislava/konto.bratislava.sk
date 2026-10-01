@@ -66,6 +66,7 @@ export const FormMessageModals = () => {
     eidSendConfirmationModalIsPending,
     deleteConceptModal,
     setDeleteConceptModal,
+    deleteConceptPending,
     signerIsDeploying,
     setSignerIsDeploying,
     xmlImportVersionConfirmationModal,
@@ -390,6 +391,8 @@ export const FormMessageModals = () => {
           variant="negative-solid"
           size="small"
           onPress={() => deleteConceptModal.isOpen && deleteConceptModal.confirmCallback()}
+          isLoading={deleteConceptPending}
+          loadingText={t('FormModals.conceptDeleteModal.buttonTitleLoading')}
         >
           {t('FormModals.conceptDeleteModal.buttonTitle')}
         </Button>
@@ -399,6 +402,7 @@ export const FormMessageModals = () => {
           variant="outline-soft"
           size="small"
           onPress={() => setDeleteConceptModal({ isOpen: false })}
+          isDisabled={deleteConceptPending}
         >
           {t('FormModals.closeButton')}
         </Button>

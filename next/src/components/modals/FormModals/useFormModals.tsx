@@ -83,6 +83,10 @@ const useGetContext = () => {
   const [deleteConceptModal, setDeleteConceptModal] = useState<ModalWithConfirmCallback>({
     isOpen: false,
   })
+  /*
+   * Stays true also while redirecting after successful delete, so the user cannot trigger the delete again.
+   */
+  const [deleteConceptPending, setDeleteConceptPending] = useState(false)
   const [eidSendingModal, setEidSendingModal] = useState(false)
   const [eidSendErrorModal, setEidSendErrorModal] = useState<ModalWithConfirmCallback>({
     isOpen: false,
@@ -142,6 +146,8 @@ const useGetContext = () => {
     eidSendConfirmationModalIsPending,
     deleteConceptModal,
     setDeleteConceptModal,
+    deleteConceptPending,
+    setDeleteConceptPending,
     taxFormPdfExportModal,
     setTaxFormPdfExportModal,
     signerIsDeploying,

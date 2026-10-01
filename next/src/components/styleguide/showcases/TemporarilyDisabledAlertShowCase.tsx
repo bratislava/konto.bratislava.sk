@@ -14,7 +14,6 @@ const MOCK_REASON = 'plánovaná údržba systému.'
 const disabledForm = (
   overrides?: Partial<FormTemporarilyDisabledFragment>,
 ): FormTemporarilyDisabledFragment => ({
-  __typename: 'Form',
   isTemporarilyDisabled: true,
   temporarilyDisabledUntil: MOCK_DATE,
   temporarilyDisabledReason: MOCK_REASON,

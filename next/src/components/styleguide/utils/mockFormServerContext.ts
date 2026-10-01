@@ -29,7 +29,14 @@ export const mockFormServerContext = (): FormServerContext => {
     formMigrationRequired: false,
     isEmbedded: false,
     isDevRoute: true,
-    strapiForm: { slug: SHOWCASE_SLUG, isTemporarilyDisabled: false },
+    strapiForm: {
+      slug: SHOWCASE_SLUG,
+      moreInformationUrl: null,
+      isTemporarilyDisabled: false,
+      temporarilyDisabledUntil: null,
+      temporarilyDisabledReason: null,
+      formSentPage: null,
+    },
     versionCompareContinueAction: VersionCompareContinueAction.None,
   }
 }

@@ -119,6 +119,7 @@ describe('NorisConnectionSubservice', () => {
       expect(errorFactoryServiceSpy).toHaveBeenCalledWith({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: errorMessage,
+        console: { elapsedMs: expect.any(Number) as number },
         error: genericError,
       })
       expect(prismaService.$transaction).not.toHaveBeenCalled()
@@ -142,6 +143,7 @@ describe('NorisConnectionSubservice', () => {
       expect(errorFactoryServiceSpy).toHaveBeenCalledWith({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: expect.stringContaining(errorMessage) as string,
+        console: { elapsedMs: expect.any(Number) as number },
         error: mssqlError,
       })
       expect(prismaService.$transaction).not.toHaveBeenCalled()
@@ -199,6 +201,7 @@ describe('NorisConnectionSubservice', () => {
         expect(badRequestSpy).toHaveBeenCalledWith({
           errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
           message: expect.stringContaining(errorMessage) as string,
+          console: { elapsedMs: expect.any(Number) as number },
           error: mssqlError,
         })
 
@@ -229,6 +232,7 @@ describe('NorisConnectionSubservice', () => {
       expect(badRequestSpy).toHaveBeenCalledWith({
         errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
         message: expect.stringContaining(errorMessage) as string,
+        console: { elapsedMs: expect.any(Number) as number },
         error: mssqlError,
       })
       expect(internalErrorSpy).not.toHaveBeenCalled()

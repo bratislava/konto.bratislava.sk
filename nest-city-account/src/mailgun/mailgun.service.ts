@@ -37,6 +37,7 @@ export class MailgunService {
     options: Parameters<MailgunTemplates[T]>[0],
     logContext: Record<string, unknown>
   ) {
+    const startedAt = Date.now()
     try {
       this.logger.log('About to send an email with template', templateKey, logContext)
 
@@ -58,7 +59,11 @@ export class MailgunService {
       this.logger.error(
         'WARNING - failed to send Mailgun email, with template',
         templateKey,
-        logContext,
+        {
+          ...logContext,
+          mailgunStatusCode: (error as { status?: unknown } | null)?.status,
+          elapsedMs: Date.now() - startedAt,
+        },
         '. Error:',
         error,
         '. Continuing with regular response'

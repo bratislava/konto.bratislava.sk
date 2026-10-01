@@ -106,6 +106,7 @@ export class PhysicalEntityService {
       throw this.errorFactoryService.BadRequestException({
         errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
         message: 'PhysicalEntity id must be provided to update service',
+        console: { updatedFields: Object.keys(data) },
       })
     }
 

@@ -15,15 +15,19 @@ export class NorisValidatorSubservice {
    * Validates an array of Noris records against the given schema.
    * Invalid items are logged and silently dropped — the returned array may be shorter than the input.
    * If any invalid record should fail the whole batch, use {@link validateSingleNorisData} instead.
+   *
+   * @param logContext - logged with each failure, e.g. the year / tax type of the import.
    */
   validateNorisData<T extends z.ZodType>(
     schema: T,
     data: unknown[],
+    logContext?: Record<string, unknown>,
   ): z.infer<T>[] {
     return data
       .map((item, index) => {
         try {
           return this.validateSingleNorisData(schema, item, {
+            ...logContext,
             index,
             count: data.length,
           })

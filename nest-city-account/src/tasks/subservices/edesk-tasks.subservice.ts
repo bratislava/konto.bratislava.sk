@@ -43,6 +43,7 @@ export class EdeskTasksSubservice {
 
     this.logger.error('Entities that failed to update at least 7 times in a row: ', {
       entities: entitiesFailedToUpdate,
+      entityCount: entitiesFailedToUpdate.length,
       alert: 1,
     })
   }
@@ -65,6 +66,8 @@ export class EdeskTasksSubservice {
 
     this.logger.error('Entities rejected by UPVS IAM in the last month: ', {
       rejections,
+      rejectionCount: rejections.length,
+      since,
       alert: 1,
     })
   }
@@ -125,6 +128,16 @@ export class EdeskTasksSubservice {
         newUri: item.uri_new,
       }))
     )
+
+    const norisIds = norisRecords.map((item) => item.id_noris)
+    this.logger.log('Retrieved new external eDesk checks from Noris', {
+      recordCount: norisRecords.length,
+      // up to 4000 records, so only the range is logged
+      minNorisId: norisIds.length > 0 ? Math.min(...norisIds) : null,
+      maxNorisId: norisIds.length > 0 ? Math.max(...norisIds) : null,
+      physicalPersonsBatchSize: PHYSICAL_PERSONS_RETRIEVE_BATCH_SIZE,
+      legalPersonsBatchSize: LEGAL_PERSONS_RETRIEVE_BATCH_SIZE,
+    })
   }
 
   private async fillQueueWithNewRecordsFromNorisIfEmpty(
@@ -192,7 +205,13 @@ export class EdeskTasksSubservice {
           this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
             message: 'Error mapping eDesk data to Noris type',
-            console: { externalEdeskCheckId: item.id, norisId: item.norisId },
+            console: {
+              externalEdeskCheckId: item.id,
+              norisId: item.norisId,
+              edeskStatus: item.edeskStatus,
+              hasUri: item.uri !== null,
+              hasEdeskNumber: item.edeskNumber !== null,
+            },
             error,
           })
         )
@@ -218,6 +237,17 @@ export class EdeskTasksSubservice {
       where: {
         id: { in: processedExternalItems.map((item) => item.id) },
       },
+    })
+
+    this.logger.log('Updated eDesk checks in Noris', {
+      processedCount: processedExternalItems.length,
+      completedCount: completedItems.length,
+      failedCount: failedItems.length,
+      mappingFailedCount: completedItems.length - completedNorisUpdates.length,
+      pendingInQueueCount: numberOfPendingExternalItemsInQueue,
+      // the queue rows are deleted above, so Noris ids are the only way to trace these checks later
+      completedNorisIds: completedNorisUpdates.map((item) => item.idNoris),
+      failedNorisIds: failedNorisUpdates.map((item) => item.idNoris),
     })
 
     // After the update, if the queue is empty, retrieve new records from Noris to update

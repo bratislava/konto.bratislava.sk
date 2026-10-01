@@ -111,10 +111,12 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
         return request.query(queryWithPlaceholders)
       },
       'Failed to get communal waste tax data from Noris',
+      { year, taxType: this.getTaxType(), batchSize: birthNumbers.length },
     )
     return this.norisValidatorSubservice.validateNorisData(
       NorisCommunalWasteTaxSchema,
       norisData.recordset,
+      { year, taxType: this.getTaxType() },
     )
   }
 
@@ -191,7 +193,11 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
         message: 'Failed to get taxes from Noris',
-        console: { year, batchSize: birthNumbers.length },
+        console: {
+          year,
+          taxType: this.getTaxType(),
+          batchSize: birthNumbers.length,
+        },
         error,
       })
     }
@@ -255,6 +261,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
                 taxId: existingTax.id,
                 norisSubjectId: norisItem.cislo_subjektu,
                 year,
+                taxType: this.getTaxType(),
               },
               error,
             }),

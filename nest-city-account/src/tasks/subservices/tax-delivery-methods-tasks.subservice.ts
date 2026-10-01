@@ -102,7 +102,7 @@ export class TaxDeliveryMethodsTasksSubservice {
         throw this.errorFactoryService.InternalServerErrorException({
           errorEnum: DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
           message: DeliveryMethodErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-          console: { userId: user.id },
+          console: { userId: user.id, deliveryMethod, batchSize: users.length },
         })
       }
 
@@ -291,7 +291,12 @@ export class TaxDeliveryMethodsTasksSubservice {
       processedCount += users.length
       skip += LOCK_DELIVERY_METHODS_BATCH
 
-      this.logger.log(`Completed batch ${batchNumber}. Total processed: ${processedCount} users`)
+      this.logger.log(`Completed batch ${batchNumber}. Total processed: ${processedCount} users`, {
+        batchSize: users.length,
+        edeskCount: edeskUsers.length,
+        postalCount: postalUsers.length,
+        cityAccountCount: cityAccountUsers.length,
+      })
 
       // Break between batches (except for the last one)
       if (users.length === LOCK_DELIVERY_METHODS_BATCH) {
@@ -302,7 +307,14 @@ export class TaxDeliveryMethodsTasksSubservice {
       }
     }
 
-    this.logger.log(`Completed lockDeliveryMethods task. Total processed: ${processedCount} users`)
+    this.logger.log(
+      `Completed lockDeliveryMethods task. Total processed: ${processedCount} users`,
+      {
+        batchCount: batchNumber,
+        jobStartTime,
+        elapsedMs: Date.now() - jobStartTime.getTime(),
+      }
+    )
   }
 
   private getYesterdayRange() {
@@ -474,7 +486,15 @@ export class TaxDeliveryMethodsTasksSubservice {
       const logSuffix = options?.reason ? logSuffixMap[options.reason] : ''
       this.logger.log(`Sent ${deliveryMethodLabel} activation email to user ${userId}${logSuffix}`)
     } catch (err) {
-      this.logger.error(`Failed to send ${deliveryMethod} email for user ${userId}`, err)
+      this.logger.error(
+        `Failed to send ${deliveryMethod} email for user ${userId}`,
+        {
+          externalId,
+          reason: options?.reason,
+          hasPdfAttachment: !!options?.birthNumber,
+        },
+        err
+      )
     }
   }
 
@@ -502,7 +522,11 @@ export class TaxDeliveryMethodsTasksSubservice {
     yesterdayEnd: Date
   ): Promise<void> {
     if (!user.email || !user.externalId || !user.birthNumber) {
-      this.logger.warn(`Skipping user ${user.id}: Missing email, externalId or birth number.`)
+      this.logger.warn(`Skipping user ${user.id}: Missing email, externalId or birth number.`, {
+        externalId: user.externalId,
+        hasEmail: !!user.email,
+        hasBirthNumber: !!user.birthNumber,
+      })
       return
     }
 
@@ -575,7 +599,6 @@ export class TaxDeliveryMethodsTasksSubservice {
     }
 
     const { yesterdayStart, yesterdayEnd } = this.getYesterdayRange()
-
     this.logger.log(`Processing delivery method summaries for: ${yesterdayStart.toDateString()}`)
 
     // Fetch all userIds with detected delivery method change during the previous day.

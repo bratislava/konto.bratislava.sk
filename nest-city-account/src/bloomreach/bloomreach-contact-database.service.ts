@@ -48,10 +48,10 @@ export class BloomreachContactDatabaseService {
         loggedError = this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: `Failed to upsert bloomreach contact on attempt: ${attempt}`,
-          console: { externalId, hasBirthNumber: !!birthNumber, hasIco: !!ico, attempt },
+          console: { externalId, hasBirthNumber: !!birthNumber, hasIco: !!ico },
           error,
         })
-        this.logger.error(loggedError.message) // this won't alert
+        this.logger.error(loggedError.message, { externalId }) // this won't alert
       }
     }
     this.logger.error(loggedError)

@@ -192,6 +192,10 @@ describe('TiersGuard', () => {
       expect(spy).toHaveBeenCalledWith({
         errorEnum: ErrorEnum.FORBIDDEN_ERROR,
         message: 'Forbidden tier',
+        console: expect.objectContaining({
+          tier: CognitoUserAttributesTierEnum.New,
+          requiredTiers: [CognitoUserAttributesTierEnum.IdentityCard],
+        }) as Record<string, unknown>,
       })
     })
   })

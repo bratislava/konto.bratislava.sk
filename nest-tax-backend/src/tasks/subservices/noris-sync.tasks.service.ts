@@ -44,6 +44,7 @@ export default class NorisSyncTasksService {
       this.logger.log(`TasksService: Updating taxes from Noris disabled.`)
       return
     }
+    const startedAt = Date.now()
     try {
       variableSymbolsDb = await this.prismaService.$transaction(
         async (prisma) => {
@@ -70,12 +71,20 @@ export default class NorisSyncTasksService {
         throw this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Query timed out after 2 minutes',
+          console: {
+            batchLimit: MAX_NORIS_PAYMENTS_BATCH_SELECT,
+            elapsedMs: Date.now() - startedAt,
+          },
           error,
         })
       }
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+        console: {
+          batchLimit: MAX_NORIS_PAYMENTS_BATCH_SELECT,
+          elapsedMs: Date.now() - startedAt,
+        },
         error,
       })
     }
@@ -96,7 +105,7 @@ export default class NorisSyncTasksService {
     }
 
     this.logger.log(
-      `TasksService: Updating payments from Noris for tax ids: ${variableSymbolsDb.map((variableSymbolDb) => variableSymbolDb.id).join(', ')}, years: ${data.years.join(', ')}`,
+      `TasksService: Updating payments from Noris for ${variableSymbolsDb.length} tax ids: ${variableSymbolsDb.map((variableSymbolDb) => variableSymbolDb.id).join(', ')}, years: ${data.years.join(', ')}`,
     )
 
     let result: {
@@ -114,6 +123,11 @@ export default class NorisSyncTasksService {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: CustomErrorNorisTypesEnum.UPDATE_PAYMENTS_FROM_NORIS_ERROR,
         message: 'Failed to update payments from Noris',
+        console: {
+          taxCount: variableSymbolsDb.length,
+          years: data.years,
+          elapsedMs: Date.now() - startedAt,
+        },
         error,
       })
     }
@@ -130,7 +144,7 @@ export default class NorisSyncTasksService {
     })
 
     this.logger.log(
-      `TasksService: Updated payments from Noris, result: ${JSON.stringify(result)}`,
+      `TasksService: Updated payments from Noris for ${variableSymbolsDb.length} taxes, result: ${JSON.stringify(result)}, elapsedMs: ${Date.now() - startedAt}`,
     )
   }
 
@@ -148,6 +162,7 @@ export default class NorisSyncTasksService {
   }
 
   private async updateTaxesFromNorisByTaxType(taxType: TaxType) {
+    const startedAt = Date.now()
     const currentYear = new Date().getFullYear()
     const { lastUpdatedAtDatabaseFieldName } = getTaxDefinitionByType(taxType)
 
@@ -175,7 +190,7 @@ export default class NorisSyncTasksService {
     }
 
     this.logger.log(
-      `TasksService: Updating taxes from Noris for tax payers with ids: ${taxPayers.map((t) => t.id).join(', ')}, tax type: ${taxType}, current year: ${currentYear}`,
+      `TasksService: Updating taxes from Noris for ${taxPayers.length} tax payers with ids: ${taxPayers.map((t) => t.id).join(', ')}, tax type: ${taxType}, current year: ${currentYear}`,
     )
 
     const { updated } =
@@ -186,7 +201,7 @@ export default class NorisSyncTasksService {
       )
 
     this.logger.log(
-      `TasksService: Updated ${updated} ${taxType} taxes from Noris`,
+      `TasksService: Updated ${updated} ${taxType} taxes from Noris for ${taxPayers.length} tax payers, year: ${currentYear}, elapsedMs: ${Date.now() - startedAt}`,
     )
 
     await this.prismaService.taxPayer.updateMany({

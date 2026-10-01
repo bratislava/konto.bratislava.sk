@@ -37,7 +37,7 @@ export class NonceService {
       throw this.errorFactoryService.UnauthorizedException({
         errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
         message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
-        console: 'Missing X-Nonce header',
+        console: { reason: 'Missing X-Nonce header' },
       })
     }
 
@@ -46,7 +46,10 @@ export class NonceService {
       throw this.errorFactoryService.UnauthorizedException({
         errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
         message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
-        console: 'Invalid X-Nonce format. Must be at least 16 characters',
+        console: {
+          reason: 'Invalid X-Nonce format. Must be at least 16 characters',
+          nonceLength: nonce.length,
+        },
       })
     }
 
@@ -60,7 +63,9 @@ export class NonceService {
         throw this.errorFactoryService.UnauthorizedException({
           errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
           message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
-          console: 'Nonce has already been used. This request may be a replay attack.',
+          console: {
+            reason: 'Nonce has already been used. This request may be a replay attack.',
+          },
         })
       }
 
@@ -79,7 +84,7 @@ export class NonceService {
       throw this.errorFactoryService.UnauthorizedException({
         errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
         message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
-        console: 'Failed to validate nonce',
+        console: { reason: 'Failed to validate nonce' },
         error: error instanceof Error ? error : undefined,
       })
     }

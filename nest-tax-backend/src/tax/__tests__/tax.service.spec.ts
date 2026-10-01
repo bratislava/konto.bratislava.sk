@@ -139,6 +139,7 @@ describe('TaxService', () => {
       expect(forbiddenExceptionSpy).toHaveBeenCalledWith({
         errorEnum: CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
         message: CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+        console: { type: TaxType.DZN },
       })
     })
 
@@ -268,6 +269,7 @@ describe('TaxService', () => {
       expect(forbiddenExceptionSpy).toHaveBeenCalledWith({
         errorEnum: CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
         message: CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+        console: { type: TaxType.KO },
       })
     })
 
@@ -1460,6 +1462,7 @@ describe('TaxService', () => {
         expect(notFoundExceptionSpy).toHaveBeenCalledWith({
           errorEnum: CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
           message: CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
+          console: { year: 2023, type: TaxType.DZN, order: 1 },
         })
       })
 
@@ -1486,6 +1489,7 @@ describe('TaxService', () => {
         expect(notFoundExceptionSpy).toHaveBeenCalledWith({
           errorEnum: CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
           message: CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+          console: { taxPayerId: 1, year: 2023, type: TaxType.DZN, order: 1 },
         })
       })
 

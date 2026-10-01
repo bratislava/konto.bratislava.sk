@@ -98,6 +98,7 @@ export class AdminService {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'No tax administrator found in the database',
+        console: { year, taxType },
       })
     }
 
@@ -111,6 +112,12 @@ export class AdminService {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Tax with this variable symbol already exists',
+        console: {
+          existingTaxId: taxesByVariableSymbolExist.id,
+          existingTaxPayerId: taxesByVariableSymbolExist.taxPayerId,
+          year,
+          taxType,
+        },
       })
     }
 
@@ -212,6 +219,12 @@ export class AdminService {
         this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: `Error in send Tax data to Bloomreach for tax payer with ID ${taxPayer.id} and year ${year}`,
+          console: {
+            taxId: tax.id,
+            externalId: userDataFromCityAccount.externalId,
+            taxType,
+            order,
+          },
         }),
       )
     }

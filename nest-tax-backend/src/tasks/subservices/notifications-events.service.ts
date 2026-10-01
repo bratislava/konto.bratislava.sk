@@ -136,6 +136,7 @@ export default class NotificationsEventsService {
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatchOptional(
         taxes.map((t) => t.taxPayer.birthNumber),
+        { dueDateType, year, taxIds: taxes.map((t) => t.id) },
       )
 
     const sentResults = await Promise.all(
@@ -177,6 +178,10 @@ export default class NotificationsEventsService {
             throw this.errorFactoryService.InternalServerErrorException({
               errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
               message: `Failed to track event in Bloomreach for taxId: ${tax.id} and externalId: ${externalId}, eventData: ${JSON.stringify(eventData)}`,
+              console: {
+                taxPayerId: tax.taxPayerId,
+                taxInstallmentId: installmentInfo.id,
+              },
             })
           }
           return installmentInfo.id
@@ -187,6 +192,10 @@ export default class NotificationsEventsService {
               : this.errorFactoryService.InternalServerErrorException({
                   errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
                   message: `Failed to process installment reminder for taxId: ${tax.id} and externalId: ${externalId}, eventData: ${JSON.stringify(eventData)}`,
+                  console: {
+                    taxPayerId: tax.taxPayerId,
+                    taxInstallmentId: installmentInfo.id,
+                  },
                   error,
                 }),
           )
@@ -200,7 +209,7 @@ export default class NotificationsEventsService {
 
     if (taxInstallmentIdsSent.length === 0) {
       this.logger.log(
-        `No reminders sent for installment dueDateType: ${dueDateType}.`,
+        `No reminders sent for installment dueDateType: ${dueDateType}, year: ${year}, eligible installments: ${taxInstallmentInfo.length}, taxes: ${taxes.length}.`,
       )
       return
     }
@@ -233,14 +242,16 @@ export default class NotificationsEventsService {
     })
 
     this.logger.log(
-      `Updated ${taxInstallmentIdsSent.length} installments for dueDateType: ${dueDateType}, tax installment IDs: ${taxInstallmentIdsSent.join(', ')}`,
+      `Updated ${taxInstallmentIdsSent.length}/${taxInstallmentInfo.length} eligible installments for dueDateType: ${dueDateType}, year: ${year}, tax installment IDs: ${taxInstallmentIdsSent.join(', ')}`,
     )
   }
 
   async sendUnpaidTaxInstallmentReminders() {
     const year = dayjs().year()
 
-    this.logger.log(`Starting sendUnpaidTaxInstallmentReminders task`)
+    this.logger.log(
+      `Starting sendUnpaidTaxInstallmentReminders task for year: ${year}`,
+    )
 
     await this.processInstallmentReminders(INSTALLMENT_DUE_DATE_TYPE.NEXT, year)
 
@@ -315,7 +326,7 @@ export default class NotificationsEventsService {
       return
     }
     this.logger.log(
-      `TasksService: Sending unpaid tax reminder events for taxes: ${JSON.stringify(
+      `TasksService: Sending unpaid tax reminder events for ${taxes.length} taxes: ${JSON.stringify(
         taxes.map((tax) => ({
           id: tax.id,
         })),
@@ -325,6 +336,7 @@ export default class NotificationsEventsService {
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatchOptional(
         taxes.map((tax) => tax.birthNumber),
+        { taxIds: taxes.map((tax) => tax.id) },
       )
 
     const sentResults = await Promise.all(
@@ -380,6 +392,7 @@ export default class NotificationsEventsService {
 
   async resendBloomreachEvents() {
     this.logger.log('Starting resendBloomreachEvents task')
+    const startedAt = Date.now()
     const payments = await this.prismaService.taxPayment.findMany({
       where: {
         status: PaymentStatus.SUCCESS,
@@ -404,6 +417,7 @@ export default class NotificationsEventsService {
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatch(
         payments.map((payment) => payment.tax.taxPayer.birthNumber),
+        { paymentCount: payments.length },
       )
 
     const trackPaymentWithConcurrencyLimit = async (
@@ -422,7 +436,11 @@ export default class NotificationsEventsService {
       } catch (error) {
         // Throwing would cause the whole task to fail, so we just log the error
         this.logger.error(
-          { taxPaymentId: payment.id, taxId: payment.taxId },
+          {
+            taxPaymentId: payment.id,
+            taxId: payment.taxId,
+            taxPayerId: payment.tax.taxPayerId,
+          },
           error,
         )
         return false
@@ -437,7 +455,7 @@ export default class NotificationsEventsService {
     )
 
     this.logger.log(
-      `TasksService: Resent ${results.filter(Boolean).length} bloomreach payment events. Failed to resend ${results.filter((result) => !result).length} bloomreach payment events.`,
+      `TasksService: Resent ${results.filter(Boolean).length} bloomreach payment events. Failed to resend ${results.filter((result) => !result).length} bloomreach payment events. Total: ${payments.length}, elapsedMs: ${Date.now() - startedAt}`,
     )
   }
 }

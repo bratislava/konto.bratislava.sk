@@ -123,11 +123,11 @@ describe('UpvsQueueService', () => {
     it('repairs one external URI (when no internal is due) and skips the batched search', async () => {
       jest
         .spyOn(edeskUriUpdateService, 'getUriToUpdateExternal')
-        .mockResolvedValue({ uri: 'rc://sk/ext' })
+        .mockResolvedValue({ uri: 'rc://sk/ext', norisId: 42 })
 
       await service.processBatch()
 
-      expect(edeskUriUpdateService.handleUriUpdateExternal).toHaveBeenCalledWith('rc://sk/ext')
+      expect(edeskUriUpdateService.handleUriUpdateExternal).toHaveBeenCalledWith('rc://sk/ext', 42)
       expect(edeskBatchUpdateService.updateEdeskStatusBatch).not.toHaveBeenCalled()
     })
 

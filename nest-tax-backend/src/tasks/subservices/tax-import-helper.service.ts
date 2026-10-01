@@ -182,6 +182,7 @@ export default class TaxImportHelperService {
       return
     }
 
+    const startedAt = Date.now()
     const yearIsCurrent = year === new Date().getFullYear()
     const result =
       await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
@@ -217,7 +218,7 @@ export default class TaxImportHelperService {
     }
 
     this.logger.log(
-      `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,
+      `${result.birthNumbers.length} birth numbers are successfully added to tax backend. TaxType: ${taxType}, year: ${year}, requested: ${birthNumbers.length}, foundInNoris: ${foundInNoris.length}, notFoundInNoris: ${notFoundInNoris.length}, elapsedMs: ${Date.now() - startedAt}`,
     )
   }
 
@@ -230,6 +231,7 @@ export default class TaxImportHelperService {
       return
     }
 
+    const startedAt = Date.now()
     const result =
       await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
         taxType,
@@ -242,7 +244,7 @@ export default class TaxImportHelperService {
       )
 
     this.logger.log(
-      `${result.birthNumbers.length} birth numbers are prepared and ready to import.`,
+      `${result.birthNumbers.length} birth numbers are prepared and ready to import. TaxType: ${taxType}, year: ${year}, requested: ${birthNumbers.length}, elapsedMs: ${Date.now() - startedAt}`,
     )
   }
 }

@@ -48,6 +48,9 @@ export class PaasMpaService {
             userId: user.idUser,
             hasBirthNumber: !!birthNumber,
             hasIco: !!ico,
+            hasEmail: !!user.email,
+            accountType: user[CognitoUserAttributesEnum.ACCOUNT_TYPE],
+            tier: user[CognitoUserAttributesEnum.TIER],
           },
           error,
         })
@@ -121,6 +124,9 @@ export class PaasMpaService {
           console: {
             userId: user.idUser,
             hasPhoneNumber: !!phoneNumber,
+            hasEmail: !!user.email,
+            accountType: user[CognitoUserAttributesEnum.ACCOUNT_TYPE],
+            tier: user[CognitoUserAttributesEnum.TIER],
           },
           error,
         })

@@ -119,11 +119,15 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
     return sanitizedError
   }
 
-  private getNorisUrgentError(errorMessage: string, error: unknown) {
+  private getNorisUrgentError(
+    errorMessage: string,
+    error: unknown,
+    logContext: Record<string, unknown>,
+  ) {
     return this.errorFactoryService.InternalServerErrorException({
       errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
       message: this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
-      console: error instanceof Error ? undefined : (error as string),
+      console: error instanceof Error ? logContext : { ...logContext, error },
       error: error instanceof Error ? this.toLoggableError(error) : undefined,
     })
   }
@@ -131,10 +135,11 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
   private async handleDatabaseError(
     error: unknown,
     errorMessage: string,
+    logContext: Record<string, unknown>,
   ): Promise<never> {
     // https://www.npmjs.com/package/mssql#errors
     if (!(error instanceof MSSQLError)) {
-      throw this.getNorisUrgentError(errorMessage, error)
+      throw this.getNorisUrgentError(errorMessage, error, logContext)
     }
 
     if (
@@ -151,11 +156,12 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
       throw this.errorFactoryService.BadRequestException({
         errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
         message: this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+        console: logContext,
         error: this.toLoggableError(error),
       })
     }
 
-    throw this.getNorisUrgentError(errorMessage, error)
+    throw this.getNorisUrgentError(errorMessage, error, logContext)
   }
 
   /**
@@ -171,18 +177,24 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
    *
    * @param operation - Function to execute with the connection pool
    * @param errorMessage - Message passed to {@link handleDatabaseError} on failure
+   * @param logContext - Non-PII values logged on failure (e.g. year, date range)
    * @returns Result of the operation
    */
   async withConnection<T>(
     operation: (connection: ConnectionPool) => Promise<T>,
     errorMessage: string,
+    logContext?: Record<string, unknown>,
   ): Promise<T> {
+    const startTime = Date.now()
     try {
       const connection = await this.createConnection()
       await this.waitForConnection(connection)
       return await operation(connection)
     } catch (error) {
-      return await this.handleDatabaseError(error, errorMessage)
+      return await this.handleDatabaseError(error, errorMessage, {
+        ...logContext,
+        elapsedMs: Date.now() - startTime,
+      })
     }
   }
 }

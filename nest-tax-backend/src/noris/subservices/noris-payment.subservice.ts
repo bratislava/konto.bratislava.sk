@@ -68,10 +68,12 @@ export class NorisPaymentSubservice {
         return request.query(queryPaymentsFromNorisByFromToDate)
       },
       'Failed to get payment data from Noris by date range.',
+      { fromDate, toDate, overPayments, year },
     )
     return this.norisValidatorSubservice.validateNorisData(
       NorisTaxPaymentSchema,
       norisData.recordset,
+      { fromDate, toDate, overPayments, year },
     )
   }
 
@@ -92,8 +94,8 @@ export class NorisPaymentSubservice {
               count: data.variableSymbols.length,
               // only the shape is kept: digits -> X, letters -> A
               anonymizedVariableSymbol: variableSymbol
-                .replaceAll(/\d/g, 'X')
-                .replaceAll(/\p{L}/gu, 'A'),
+                .replaceAll(/\p{L}/gu, 'A')
+                .replaceAll(/\d/g, 'X'),
             },
           }),
         )
@@ -105,6 +107,10 @@ export class NorisPaymentSubservice {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Years are empty in payment data import from Noris request.',
+        console: {
+          variableSymbolsCount: data.variableSymbols.length,
+          validVariableSymbolsCount: filteredVariableSymbols.length,
+        },
       })
     }
 
@@ -137,10 +143,15 @@ export class NorisPaymentSubservice {
         )
       },
       'Failed to get payment data from Noris by variable symbols.',
+      {
+        years: data.years,
+        variableSymbolsCount: filteredVariableSymbols.length,
+      },
     )
     return this.norisValidatorSubservice.validateNorisData(
       NorisTaxPaymentSchema,
       norisData.recordset,
+      { years: data.years },
     )
   }
 
@@ -160,12 +171,14 @@ export class NorisPaymentSubservice {
         return request.query(queryOverpaymentsFromNorisByDateRange)
       },
       'Failed to get overpayments data from Noris by date range.',
+      { fromDate: data.fromDate, toDate: data.toDate },
     )
 
     const validatedOverpaymentsData =
       this.norisValidatorSubservice.validateNorisData(
         NorisTaxPaymentSchema,
         overpaymentsData.recordset,
+        { fromDate: data.fromDate, toDate: data.toDate, overpayments: true },
       )
     return this.updatePaymentsFromNorisWithData(
       validatedOverpaymentsData,
@@ -222,8 +235,9 @@ export class NorisPaymentSubservice {
     const errors: Error[] = resultList.filter((item) => item instanceof Error)
 
     if (errors.length > 0) {
+      const notExist = resultList.filter((item) => item === 'NOT_EXIST').length
       this.logger.error(
-        `Encountered ${errors.length} errors while batch processing Noris payments.`,
+        `Encountered ${errors.length} errors while batch processing Noris payments. (total: ${norisPaymentData.length}, created: ${created}, alreadyCreated: ${alreadyCreated}, notExist: ${notExist})`,
       )
       errors.forEach((error) => {
         this.logger.error(error)
@@ -328,7 +342,13 @@ export class NorisPaymentSubservice {
       return this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-        console: { taxId: taxData?.id },
+        console: {
+          taxId: taxData?.id,
+          taxPayerId: taxData?.taxPayerId,
+          year: taxData?.year,
+          taxType: taxData?.type,
+          order: taxData?.order,
+        },
         error,
       })
     }
@@ -380,7 +400,16 @@ export class NorisPaymentSubservice {
         throw this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Failed to track payment in Bloomreach.',
-          console: { taxId: taxData.id, taxPaymentId: createdTaxPayment.id },
+          console: {
+            taxId: taxData.id,
+            taxPaymentId: createdTaxPayment.id,
+            taxPayerId: taxData.taxPayerId,
+            externalId: userFromCityAccount.externalId,
+            year: taxData.year,
+            taxType: taxData.type,
+            order: taxData.order,
+            amount: createdTaxPayment.amount,
+          },
         })
       }
     }

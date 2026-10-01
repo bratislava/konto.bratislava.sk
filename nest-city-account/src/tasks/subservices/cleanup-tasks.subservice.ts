@@ -15,7 +15,7 @@ export class CleanupTasksSubservice {
     const today = new Date()
     const oneMonthAgo = new Date(today.setMonth(today.getMonth() - 1))
 
-    await this.prismaService.userIdCardVerify.deleteMany({
+    const deletedUserVerifications = await this.prismaService.userIdCardVerify.deleteMany({
       where: {
         verifyStart: {
           lt: oneMonthAgo,
@@ -23,12 +23,19 @@ export class CleanupTasksSubservice {
       },
     })
 
-    await this.prismaService.legalPersonIcoIdCardVerify.deleteMany({
-      where: {
-        verifyStart: {
-          lt: oneMonthAgo,
+    const deletedLegalPersonVerifications =
+      await this.prismaService.legalPersonIcoIdCardVerify.deleteMany({
+        where: {
+          verifyStart: {
+            lt: oneMonthAgo,
+          },
         },
-      },
+      })
+
+    this.logger.log('Deleted old user verification data', {
+      cutoff: oneMonthAgo,
+      deletedUserIdCardVerifyCount: deletedUserVerifications.count,
+      deletedLegalPersonIcoIdCardVerifyCount: deletedLegalPersonVerifications.count,
     })
   }
 
@@ -47,15 +54,13 @@ export class CleanupTasksSubservice {
       },
       select: {
         id: true,
+        authorizationCode: true,
+        authorizationCodeCreatedAt: true,
       },
     })
 
     if (expiredRecords.length === 0) {
       return
-    }
-
-    for (const record of expiredRecords) {
-      this.logger.warn(`Cleaning up expired oAuth2 tokens with id: ${record.id}`)
     }
 
     await this.prismaService.oAuth2Data.updateMany({
@@ -71,8 +76,18 @@ export class CleanupTasksSubservice {
       },
     })
 
+    // Logged only after the update succeeded. The codes can no longer be exchanged, so logging them
+    // lets us tell a late request with a cleaned-up code apart from a made-up one.
+    for (const record of expiredRecords) {
+      this.logger.warn(`Cleaned up expired oAuth2 tokens with id: ${record.id}`, {
+        authorizationCode: record.authorizationCode,
+        authorizationCodeCreatedAt: record.authorizationCodeCreatedAt,
+      })
+    }
+
     this.logger.debug(
-      `Cleaned up expired authorization codes for ${expiredRecords.length} oAuth2 records.`
+      `Cleaned up expired authorization codes for ${expiredRecords.length} oAuth2 records.`,
+      { cutoff: fiveMinutesAgo }
     )
   }
 
@@ -98,6 +113,7 @@ export class CleanupTasksSubservice {
       },
       select: {
         id: true,
+        authorizationCode: true,
       },
     })
 
@@ -105,15 +121,20 @@ export class CleanupTasksSubservice {
       return
     }
 
-    const recordsInfo = oldRecords.map((r) => r.id).join(', ')
-    this.logger.log(`Deleting ${oldRecords.length} old oAuth2 records: ${recordsInfo}`)
-
     await this.prismaService.oAuth2Data.deleteMany({
       where: {
         id: {
           in: oldRecords.map((record) => record.id),
         },
       },
+    })
+
+    // Logged only after the delete succeeded, so the codes are gone for good. See
+    // cleanupExpiredAuthorizationCodes for why the codes themselves are logged.
+    const recordsInfo = oldRecords.map((r) => `${r.id}/${r.authorizationCode}`).join(', ')
+    this.logger.log(`Deleted ${oldRecords.length} old oAuth2 records: ${recordsInfo}`, {
+      cutoff: oneMonthAgo,
+      recordCount: oldRecords.length,
     })
   }
 }

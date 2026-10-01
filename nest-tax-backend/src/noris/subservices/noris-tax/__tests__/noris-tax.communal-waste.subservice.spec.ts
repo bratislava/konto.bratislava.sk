@@ -222,6 +222,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       expect(norisValidatorSubservice.validateNorisData).toHaveBeenCalledWith(
         expect.any(Object),
         mockData,
+        { year: 2025, taxType: TaxType.KO },
       )
       expect(result).toEqual(mockData)
     })
@@ -343,6 +344,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       expect(norisValidatorSubservice.validateNorisData).toHaveBeenCalledWith(
         expect.any(Object),
         mockData,
+        { year: 2025, taxType: TaxType.KO },
       )
     })
 

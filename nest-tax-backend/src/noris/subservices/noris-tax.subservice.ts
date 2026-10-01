@@ -65,6 +65,7 @@ export class NorisTaxSubservice {
     throw this.errorFactoryService.InternalServerErrorException({
       errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
       message: `Unknown tax type: ${taxType}`,
+      console: { year, count: norisData.length },
     })
   }
 

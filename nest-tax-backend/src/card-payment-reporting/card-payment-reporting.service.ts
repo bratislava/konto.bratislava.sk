@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { parse } from 'csv-parse/sync'
 import dayjs from 'dayjs'
@@ -55,6 +56,10 @@ export interface OutputFile {
 
 @Injectable()
 export class CardPaymentReportingService {
+  private readonly logger = new LineLoggerSubservice(
+    CardPaymentReportingService.name,
+  )
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly baConfigService: BaConfigService,
@@ -64,7 +69,8 @@ export class CardPaymentReportingService {
   ) {}
 
   private getReportTypes(): ReportTypeConfig[] {
-    const { [TaxType.DZN]: dzn, [TaxType.KO]: ko } = this.baConfigService.cardPaymentReporting
+    const { [TaxType.DZN]: dzn, [TaxType.KO]: ko } =
+      this.baConfigService.cardPaymentReporting
     return [
       {
         taxType: TaxType.DZN,
@@ -309,6 +315,12 @@ export class CardPaymentReportingService {
       sftpFiles.map(async (file) => {
         const fileDate = this.extractFileDate(file.name)
         if (!fileDate) {
+          this.logger.warn({
+            message:
+              'Skipping card payment report file without a date in its name.',
+            taxType: reportType.taxType,
+            fileName: file.name,
+          })
           return null
         }
 

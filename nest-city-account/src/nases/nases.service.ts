@@ -26,8 +26,18 @@ import {
 
 export type GetUpvsIdentitiesByUrisParam = {
   physicalEntityId?: string
+  /** Set for external eDesk checks, which have no physical entity; only used for logging. */
+  norisId?: number
   uri: string
 }[]
+
+/** Non-PII ids of lookup inputs, so logs never need the URIs themselves. */
+const getInputLogIds = (inputs: GetUpvsIdentitiesByUrisParam) => ({
+  physicalEntityIds: inputs.flatMap((input) =>
+    input.physicalEntityId ? [input.physicalEntityId] : []
+  ),
+  norisIds: inputs.flatMap((input) => (input.norisId === undefined ? [] : [input.norisId])),
+})
 
 export interface GetUpvsIdentityByUriSuccessType {
   physicalEntityId: string | null
@@ -129,7 +139,7 @@ export class NasesService {
     private readonly logger: LineLoggerSubservice
   ) {}
 
-  async getUpvsIdentity(token: string) {
+  async getUpvsIdentity(token: string, logContext?: Record<string, unknown>) {
     const result = await this.clientsService.slovenskoSkApi
       .apiUpvsIdentityGet({
         headers: { Authorization: `Bearer ${token}` },
@@ -140,12 +150,13 @@ export class NasesService {
           throw this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
             message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-            console: 'Error is not an instance of AxiosError',
+            console: { message: 'Error is not an instance of AxiosError', ...logContext },
             error,
           })
         }
         throw this.errorFactoryService.fromAxiosError(error, {
           message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          console: logContext,
         })
       })
     return result
@@ -205,7 +216,7 @@ export class NasesService {
           throw this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
             message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-            console: 'Error is not an instance of AxiosError',
+            console: { message: 'Error is not an instance of AxiosError', physicalEntityId },
             error,
           })
         }
@@ -219,7 +230,11 @@ export class NasesService {
         }
         throw this.errorFactoryService.fromAxiosError(error, {
           message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          console: consoleMessage,
+          console: {
+            message: consoleMessage,
+            physicalEntityId,
+            upvsFaultCode: iamFault?.code,
+          },
           statusOverrides: {
             // Rate limit must keep its 429 status
             [HttpStatus.TOO_MANY_REQUESTS]: {
@@ -257,12 +272,17 @@ export class NasesService {
         update: faultColumns,
       })
     } catch (persistenceError) {
-      this.logger.error('Failed to persist identity lookup rejection', persistenceError)
+      this.logger.error(
+        'Failed to persist identity lookup rejection',
+        { physicalEntityId, faultCode: fault.code },
+        persistenceError
+      )
     }
   }
 
   private async searchUpvsIdentitiesByUri(inputs: GetUpvsIdentitiesByUrisParam) {
     const uris = inputs.map((input) => input.uri)
+    const inputLogIds = getInputLogIds(inputs)
     const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken(
       this.baConfigService.nases.subNasesTechnicalAccount,
       this.baConfigService.nases.apiTokenPrivate
@@ -284,7 +304,10 @@ export class NasesService {
           throw this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
             message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-            console: 'Error is not an instance of AxiosError',
+            console: {
+              message: 'Error is not an instance of AxiosError',
+              ...inputLogIds,
+            },
             error,
           })
         }
@@ -292,11 +315,7 @@ export class NasesService {
           message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
           console: {
             reason: VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE,
-            physicalEntityIds: inputs.flatMap((input) =>
-              input.physicalEntityId ? [input.physicalEntityId] : []
-            ),
-            // external eDesk checks have no physical entity, only their URI
-            externalUriCount: inputs.filter((input) => !input.physicalEntityId).length,
+            ...inputLogIds,
           },
         })
       })
@@ -315,6 +334,11 @@ export class NasesService {
       throw this.errorFactoryService.BadRequestException({
         errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
         message: 'Must provide between 1 and 10 URIs to validate',
+        console: {
+          inputCount: inputs.length,
+          uniqueInputCount: uniqueInputs.length,
+          ...getInputLogIds(uniqueInputs),
+        },
       })
     }
 
@@ -331,6 +355,10 @@ export class NasesService {
         message:
           'Received at least 10 successful results, cannot determine validity of the rest of the uris',
         alert: 1,
+        uniqueInputCount: uniqueInputs.length,
+        resultCount: results.length,
+        successCount: resultDataSuccess.length,
+        ...getInputLogIds(uniqueInputs),
       })
       return {
         success: resultDataSuccess,
@@ -350,7 +378,8 @@ export class NasesService {
       const unmatchedInput = unmatchedInputs.pop()!
       this.logger.log({
         message: 'Matching the only unmatched result URI to the only unmatched input URI',
-        physicalEntityId: inputsByUri[unmatchedInput.uri]?.physicalEntityId ?? null,
+        physicalEntityId: unmatchedInput.physicalEntityId ?? null,
+        norisId: unmatchedInput.norisId ?? null,
       })
       resultDataSuccess.push({
         inputUri: unmatchedInput.uri,
@@ -395,8 +424,12 @@ export class NasesService {
       this.logger.warn({
         message: 'Failed to match UPVS results to input URIs',
         unmatchedResultCount: unmatchedResults.length,
+        unmatchedInputCount: unmatchedInputs.length,
         unmatchedInputPhysicalEntityIds: unmatchedInputs.map(
           (input) => inputsByUri[input.uri]?.physicalEntityId ?? null
+        ),
+        unmatchedInputNorisIds: unmatchedInputs.flatMap((input) =>
+          input.norisId === undefined ? [] : [input.norisId]
         ),
       })
       possibleUriChanges = unmatchedInputs.map((input) => ({

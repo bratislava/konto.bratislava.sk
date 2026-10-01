@@ -7,7 +7,10 @@ import { MagproxyService } from '../../../magproxy/magproxy.service'
 import { PhysicalEntityService } from '../../../physical-entity/physical-entity.service'
 import { RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
 import { isValidBirthNumber } from '../../../utils/birthNumbers'
-import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
+import {
+  CognitoGetUserData,
+  CognitoUserAttributesEnum,
+} from '../../../utils/global-dtos/cognito.dto'
 import {
   RequestBodyVerifyIdentityCardDto,
   RequestBodyVerifyWithRpoDto,
@@ -91,6 +94,7 @@ export class VerificationSubservice {
       message: 'Could not match birthnumber with statutory organ from RPO',
       ico: legalEntity.ico,
       userSub,
+      statutoryBodyCount: statutoryBodies?.length ?? 0,
     })
     return {
       success: false,
@@ -241,6 +245,9 @@ export class VerificationSubservice {
           cognitoID: user.sub,
           hasGivenName: !!user.given_name,
           hasFamilyName: !!user.family_name,
+          source: 'RFO_LIST',
+          rfoEntryCount: rfoEntries.length,
+          tier: user[CognitoUserAttributesEnum.TIER],
         })
         continue
       }
@@ -316,6 +323,8 @@ export class VerificationSubservice {
         cognitoID: user.sub,
         hasGivenName: !!user.given_name,
         hasFamilyName: !!user.family_name,
+        source: 'DCOM',
+        tier: user[CognitoUserAttributesEnum.TIER],
       })
       return { success: false, reason: VerificationErrorsEnum.NAMES_NOT_MATCHING }
     }

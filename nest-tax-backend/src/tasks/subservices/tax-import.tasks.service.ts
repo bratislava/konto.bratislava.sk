@@ -63,7 +63,7 @@ export default class TaxImportTasksService {
     const importPhase = isWithinWindow && !isLimitReached
 
     this.logger.log(
-      `Time window: ${isWithinWindow ? 'OPEN' : 'CLOSED'}, Today's tax count: ${todayTaxCount}/${dailyLimit}, Phase: ${importPhase ? 'IMPORT' : 'PREPARE'}`,
+      `Time window: ${isWithinWindow ? 'OPEN' : 'CLOSED'}, Today's tax count: ${todayTaxCount}/${dailyLimit}, Phase: ${importPhase ? 'IMPORT' : 'PREPARE'}, TaxType: ${taxType}, year: ${thisYear}`,
     )
 
     const { birthNumbers, newlyCreated } =
@@ -77,7 +77,7 @@ export default class TaxImportTasksService {
     // Import newly created users
     if (newlyCreated.length > 0) {
       this.logger.log(
-        `Found ${newlyCreated.length} newly created users, importing all taxes immediately`,
+        `Found ${newlyCreated.length} newly created users, importing all taxes immediately for years ${firstHistoricalYear}-${thisYear}`,
       )
 
       for (let year = firstHistoricalYear; year <= thisYear; year += 1) {
@@ -99,7 +99,7 @@ export default class TaxImportTasksService {
 
     if (birthNumbers.length > 0) {
       this.logger.log(
-        `Found ${birthNumbers.length} existing users, ${importPhase ? 'importing' : 'preparing'}`,
+        `Found ${birthNumbers.length} existing users, ${importPhase ? 'importing' : 'preparing'} ${taxType} taxes for year ${thisYear}`,
       )
       await (importPhase
         ? this.taxImportHelperService.importTaxes(
@@ -115,7 +115,9 @@ export default class TaxImportTasksService {
     }
 
     if (birthNumbers.length === 0 && newlyCreated.length === 0) {
-      this.logger.log('No birth numbers found to import taxes')
+      this.logger.log(
+        `No birth numbers found to import taxes, TaxType: ${taxType}, year: ${thisYear}, Phase: ${importPhase ? 'IMPORT' : 'PREPARE'}`,
+      )
     }
   }
 
@@ -158,6 +160,7 @@ export default class TaxImportTasksService {
       created: number
       alreadyCreated: number
     }
+    const startedAt = Date.now()
     try {
       result = await this.retryService.retryWithDelay(async () => {
         return this.norisService.updateOverpaymentsDataFromNorisByDateRange(
@@ -168,7 +171,7 @@ export default class TaxImportTasksService {
       // Success: reset lookback days to default
       await this.configSubservice.resetOverpaymentsLookbackDays()
       this.logger.log(
-        `TasksService: Loaded overpayments from Noris successfully, result: ${JSON.stringify(result)}`,
+        `TasksService: Loaded overpayments from Noris successfully, result: ${JSON.stringify(result)}, lookbackDays: ${lookbackDays}, elapsedMs: ${Date.now() - startedAt}`,
       )
     } catch (error) {
       // Failure: increment lookback days for next run
@@ -177,6 +180,11 @@ export default class TaxImportTasksService {
         errorEnum: CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
         message:
           'Failed to load overpayments from Noris after all retry attempts',
+        console: {
+          lookbackDays,
+          fromDate: fromDate.toISOString(),
+          elapsedMs: Date.now() - startedAt,
+        },
         error,
       })
     }
@@ -184,6 +192,7 @@ export default class TaxImportTasksService {
 
   async loadHistoricalTaxes() {
     this.logger.log('Starting loadHistoricalTaxes task')
+    const startedAt = Date.now()
 
     const currentYear = new Date().getFullYear()
     const previousYear = currentYear - 1
@@ -225,7 +234,9 @@ export default class TaxImportTasksService {
         LIMIT ${LOAD_HISTORICAL_TAXES_BATCH};
     `
     if (missingTaxAttempts.length === 0) {
-      this.logger.log('No missing historical tax attempts found')
+      this.logger.log(
+        `No missing historical tax attempts found for years ${firstHistoricalYear}-${previousYear}`,
+      )
       return
     }
 
@@ -238,10 +249,10 @@ export default class TaxImportTasksService {
     const sortedGroups = Object.values(grouped).sort(
       (a, b) => a[0].year - b[0].year,
     )
-    for (const items of sortedGroups) {
+    for (const [groupIndex, items] of sortedGroups.entries()) {
       const first = items[0]
       this.logger.log(
-        `Importing ${first.taxType} taxes for ${items.length} users for year ${first.year}`,
+        `Importing ${first.taxType} taxes for ${items.length} users for year ${first.year} (group ${groupIndex + 1}/${sortedGroups.length})`,
       )
       // Intentionally sequential: avoid hammering slow DB
       // eslint-disable-next-line no-await-in-loop
@@ -252,6 +263,8 @@ export default class TaxImportTasksService {
       )
     }
 
-    this.logger.log('Completed loadHistoricalTaxes task')
+    this.logger.log(
+      `Completed loadHistoricalTaxes task, missing attempts: ${missingTaxAttempts.length}, groups: ${sortedGroups.length}, batch limit: ${LOAD_HISTORICAL_TAXES_BATCH}, elapsedMs: ${Date.now() - startedAt}`,
+    )
   }
 }

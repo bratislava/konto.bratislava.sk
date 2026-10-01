@@ -70,7 +70,7 @@ export class CityAccountSubservice {
       this.logger.error(
         this.errorFactoryService.fromAxiosError(error, {
           message: 'Failed to get user data from city account.',
-          console: logContext,
+          console: { ...logContext, status },
         }),
       )
       return null
@@ -79,6 +79,7 @@ export class CityAccountSubservice {
 
   async getUserDataAdminBatch(
     birthNumbers: string[],
+    logContext?: Record<string, unknown>,
   ): Promise<Partial<Record<string, ResponseUserByBirthNumberDto>>> {
     const birthNumbersWithoutSlash = birthNumbers.map((birthNumber) =>
       birthNumber.replaceAll('/', ''),
@@ -105,13 +106,17 @@ export class CityAccountSubservice {
         throw this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Failed to get user data batch from city account.',
-          console: { batchSize: birthNumbers.length },
+          console: { ...logContext, batchSize: birthNumbers.length },
           error,
         })
       }
       throw this.errorFactoryService.fromAxiosError(error, {
         message: 'Failed to get user data batch from city account.',
-        console: { batchSize: birthNumbers.length },
+        console: {
+          ...logContext,
+          batchSize: birthNumbers.length,
+          status: error.response?.status,
+        },
       })
     }
   }
@@ -124,11 +129,12 @@ export class CityAccountSubservice {
    */
   async getUserDataAdminBatchOptional(
     birthNumbers: string[],
+    logContext?: Record<string, unknown>,
   ): Promise<
     Partial<Record<string, ResponseUserByBirthNumberDto> | undefined>
   > {
     try {
-      return await this.getUserDataAdminBatch(birthNumbers)
+      return await this.getUserDataAdminBatch(birthNumbers, logContext)
     } catch (error) {
       this.logger.error(error)
       return undefined
@@ -159,11 +165,18 @@ export class CityAccountSubservice {
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message:
             'Failed to get birth numbers for new verified user accounts.',
+          // raw Date: toISOString() would throw here if `since` is invalid
+          console: { since, take },
           error,
         })
       }
       throw this.errorFactoryService.fromAxiosError(error, {
         message: 'Failed to get birth numbers for new verified user accounts.',
+        console: {
+          since,
+          take,
+          status: error.response?.status,
+        },
       })
     }
   }

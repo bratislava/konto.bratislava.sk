@@ -89,7 +89,10 @@ export class UpvsQueueService {
     }
     const uriToUpdateExternal = await this.edeskUriUpdateService.getUriToUpdateExternal()
     if (uriToUpdateExternal && uriToUpdateExternal.uri) {
-      await this.edeskUriUpdateService.handleUriUpdateExternal(uriToUpdateExternal.uri)
+      await this.edeskUriUpdateService.handleUriUpdateExternal(
+        uriToUpdateExternal.uri,
+        uriToUpdateExternal.norisId
+      )
       result.externalProcessed = 1
       result.totalProcessed = result.urgentProcessed + 1
       this.logger.log(result)
@@ -103,7 +106,11 @@ export class UpvsQueueService {
       result.totalProcessed =
         result.urgentProcessed + search.highPriorityProcessed + search.externalProcessed
     } catch (error) {
-      this.logger.error('Error processing batch', error)
+      this.logger.error(
+        'Error processing batch',
+        { urgentProcessed: result.urgentProcessed },
+        error
+      )
       result.errors.push('\n\n'.concat(toLogfmt(error)))
     }
 

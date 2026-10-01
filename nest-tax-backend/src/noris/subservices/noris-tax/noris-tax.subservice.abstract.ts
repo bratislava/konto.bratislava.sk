@@ -87,6 +87,12 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: `Error in send cancelled Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
+        console: {
+          taxId: tax.id,
+          externalId: userFromCityAccount?.externalId,
+          taxType: this.getTaxType(),
+          order: tax.order,
+        },
       })
     }
   }
@@ -193,7 +199,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     } = options
 
     this.logger.log(
-      `Data loaded from noris - count ${norisData.length}, prepareOnly: ${prepareOnly}, ignoreBatchLimit: ${ignoreBatchLimit}`,
+      `Data loaded from noris - count ${norisData.length}, prepareOnly: ${prepareOnly}, ignoreBatchLimit: ${ignoreBatchLimit}, year: ${year}, taxType: ${this.getTaxType()}, suppressEmail: ${suppressEmail}`,
     )
 
     const taxDefinition = this.getTaxDefinition()
@@ -248,7 +254,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       const uniqueTaxPayersCount = Object.keys(taxesByTaxPayer).length
       if (uniqueTaxPayersCount > batchSizeLimit) {
         this.logger.log(
-          `Limiting batch processing to ${batchSizeLimit} unique tax payers (${recordsToProcess.length} taxes) out of ${uniqueTaxPayersCount} unique tax payers (${norisDataNotInDatabase.length} taxes) available`,
+          `Limiting batch processing to ${batchSizeLimit} unique tax payers (${recordsToProcess.length} taxes) out of ${uniqueTaxPayersCount} unique tax payers (${norisDataNotInDatabase.length} taxes) available, year: ${year}, taxType: ${taxDefinition.type}`,
         )
       }
     }
@@ -271,6 +277,13 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
           )
         }),
       ),
+    )
+
+    const withoutCityAccountUser = recordsToProcess.filter(
+      (norisRecord) => !userDataFromCityAccount[norisRecord.ICO_RC],
+    ).length
+    this.logger.log(
+      `Processed Noris taxes - year: ${year}, taxType: ${taxDefinition.type}, toProcess: ${recordsToProcess.length}, skippedWithoutCityAccountUser: ${withoutCityAccountUser}, processedTaxPayers: ${birthNumbersResult.size}`,
     )
 
     // Add the payments only for processed taxes
@@ -310,7 +323,9 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     birthNumbers: string[],
     options: RequestPostNorisLoadDataOptionsDto,
   ): Promise<CreateBirthNumbersResponseDto> {
-    this.logger.log('Start Loading data from noris')
+    this.logger.log(
+      `Start Loading data from noris - year: ${year}, taxType: ${this.getTaxType()}, batchSize: ${birthNumbers.length}`,
+    )
     const taxDefinition = this.getTaxDefinition()
 
     // Mark the attempt for all requested birth numbers before processing
@@ -384,14 +399,14 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       const batchSizeLimit = parseInt(config.TAX_IMPORT_BATCH_SIZE, 10)
       if (Number.isNaN(batchSizeLimit) || batchSizeLimit < 0) {
         this.logger.warn(
-          `Invalid TAX_IMPORT_BATCH_SIZE config value: ${config.TAX_IMPORT_BATCH_SIZE}, processing all tax payers`,
+          `Invalid TAX_IMPORT_BATCH_SIZE config value: ${config.TAX_IMPORT_BATCH_SIZE}, processing all tax payers, taxType: ${this.getTaxType()}`,
         )
         return undefined
       }
       return batchSizeLimit
     } catch {
       this.logger.warn(
-        'Failed to get TAX_IMPORT_BATCH_SIZE config, processing all tax payers',
+        `Failed to get TAX_IMPORT_BATCH_SIZE config, processing all tax payers, taxType: ${this.getTaxType()}`,
       )
       return undefined
     }
@@ -598,6 +613,13 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
           throw this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
             message: `Error in send Tax data to Bloomreach for tax payer with ID ${tax.taxPayer.id} and year ${year}`,
+            console: {
+              taxId: tax.id,
+              externalId: userFromCityAccount.externalId,
+              taxType: taxDefinition.type,
+              order: tax.order,
+              deliveryMethod: userFromCityAccount.taxDeliveryMethodAtLockDate,
+            },
           })
         }
       })
@@ -609,6 +631,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
           console: {
             norisSubjectId: norisItem.cislo_subjektu,
             norisTaxId: norisItem.cislo_konania,
+            externalId: userDataFromCityAccount[norisItem.ICO_RC]?.externalId,
             year,
             taxType: taxDefinition.type,
           },

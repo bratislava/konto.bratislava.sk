@@ -71,7 +71,10 @@ export class MagproxyService {
             throw this.errorFactoryService.InternalServerErrorException({
               errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
               message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-              console: 'Error is not an instance of AxiosError',
+              console: {
+                reason: 'Error is not an instance of AxiosError',
+                operation: 'azureAdAuth',
+              },
               error,
             })
           }
@@ -93,10 +96,20 @@ export class MagproxyService {
 
     if (!result.success) {
       this.logger.error(
-        `${INCORRECT_RFO_DATA_ERROR} - if we got an array it will be used normally, but the validation schema may need an update (data omitted)`
+        `${INCORRECT_RFO_DATA_ERROR} - if we got an array it will be used normally, but the validation schema may need an update (data omitted)`,
+        {
+          isArray: Array.isArray(data),
+          itemCount: Array.isArray(data) ? data.length : undefined,
+          issues: result.error.issues.map((issue) => ({
+            path: issue.path.join('.'),
+            code: issue.code,
+          })),
+        }
       )
       if (!Array.isArray(data)) {
-        this.logger.error('Invalid data received (expected array), aborting.')
+        this.logger.error('Invalid data received (expected array), aborting.', {
+          dataType: typeof data,
+        })
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: MagproxyErrorsEnum.RFO_DATA_ARRAY_EXPECTED,
           message: MagproxyErrorsResponseEnum.RFO_DATA_ARRAY_EXPECTED,
@@ -129,7 +142,10 @@ export class MagproxyService {
         throw this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-          console: 'Error is not an instance of AxiosError',
+          console: {
+            reason: 'Error is not an instance of AxiosError',
+            operation: 'rfoControllerGetList',
+          },
           error,
         })
       }
@@ -148,6 +164,7 @@ export class MagproxyService {
         // RFO responded but with unexpected data
         errorEnumOverwrite: MagproxyErrorsEnum.RFO_UNEXPECTED_RESPONSE,
         message: MagproxyErrorsResponseEnum.RFO_UNEXPECTED_RESPONSE,
+        console: { operation: 'rfoControllerGetList' },
       })
     }
   }
@@ -174,7 +191,10 @@ export class MagproxyService {
           throw this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
             message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-            console: 'Error is not an instance of AxiosError',
+            console: {
+              reason: 'Error is not an instance of AxiosError',
+              operation: 'rfoControllerGetOneDcom',
+            },
             error,
           })
         }
@@ -195,6 +215,7 @@ export class MagproxyService {
           },
           errorEnumOverwrite: VerificationErrorsEnum.RFO_NOT_RESPONDING,
           message: 'There is problem with unexpected registry response. More details in app logs.',
+          console: { operation: 'rfoControllerGetOneDcom' },
         })
       })
     return result
@@ -219,7 +240,11 @@ export class MagproxyService {
           throw this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
             message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-            console: 'Error is not an instance of AxiosError',
+            console: {
+              reason: 'Error is not an instance of AxiosError',
+              operation: 'rpoControllerGetLegalPerson',
+              ico,
+            },
             error,
           })
         }
@@ -238,6 +263,7 @@ export class MagproxyService {
           },
           errorEnumOverwrite: VerificationErrorsEnum.RPO_NOT_RESPONDING,
           message: 'There is problem with unexpected registry response. More details in app logs.',
+          console: { operation: 'rpoControllerGetLegalPerson', ico },
         })
       })
     return result

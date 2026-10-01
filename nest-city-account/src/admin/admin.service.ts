@@ -83,13 +83,11 @@ export class AdminService {
       }
     }
 
-    let failedCount = 0
     await Promise.all(
       cognitoUsers.map(async (user) => {
         try {
           await this.userService.upsertUserOrLegalPersonRaw(user)
         } catch (error) {
-          failedCount += 1
           this.logger.error(
             {
               userSub: user.sub,
@@ -101,11 +99,6 @@ export class AdminService {
         }
       })
     )
-    this.logger.log({
-      message: 'syncCognitoToDb finished',
-      cognitoUserCount: cognitoUsers.length,
-      failedCount,
-    })
   }
 
   async checkUserVerifyState(email: string): Promise<UserVerifyState> {

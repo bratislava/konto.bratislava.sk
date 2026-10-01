@@ -61,6 +61,7 @@ export class PdfGeneratorService {
         throw this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Shared Chromium browser missing despite active refcount',
+          console: { sharedBrowserRefCount: this.sharedBrowserRefCount },
         })
       }
       this.sharedBrowserRefCount++
@@ -102,6 +103,7 @@ export class PdfGeneratorService {
     password: string
   ): Promise<{ data: Buffer; filename: string; contentType: string }> {
     const template = pdfTemplates[templateName]
+    const startedAt = Date.now()
 
     const browser = await this.acquireSharedBrowser()
     let context: BrowserContext | null = null
@@ -140,7 +142,15 @@ export class PdfGeneratorService {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-        console: 'Error generating PDF from Mailgun template',
+        console: {
+          reason: 'Error generating PDF from Mailgun template',
+          templateName,
+          filename,
+          elapsedMs: Date.now() - startedAt,
+          hasContext: !!context,
+          hasPage: !!page,
+          sharedBrowserRefCount: this.sharedBrowserRefCount,
+        },
         error,
       })
     } finally {
@@ -150,6 +160,7 @@ export class PdfGeneratorService {
             this.errorFactoryService.InternalServerErrorException({
               errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
               message: 'Failed to close page',
+              console: { templateName },
               error: err,
             })
           )
@@ -161,6 +172,7 @@ export class PdfGeneratorService {
             this.errorFactoryService.InternalServerErrorException({
               errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
               message: 'Failed to close browser context',
+              console: { templateName },
               error: err,
             })
           )
@@ -174,6 +186,7 @@ export class PdfGeneratorService {
    * Adds password protection to a PDF buffer using pdf-lib
    */
   async addPasswordToPdf(pdfBuffer: Buffer, password: string): Promise<Buffer> {
+    const startedAt = Date.now()
     const tempInputPath = join(tmpdir(), `input-${uuidv4()}.pdf`)
 
     try {
@@ -195,6 +208,7 @@ export class PdfGeneratorService {
             this.errorFactoryService.InternalServerErrorException({
               errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
               message: 'Failed to start qpdf process',
+              console: { pdfSizeBytes: pdfBuffer.length },
               error: err,
             })
           )
@@ -217,7 +231,11 @@ export class PdfGeneratorService {
               this.errorFactoryService.InternalServerErrorException({
                 errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
                 message: 'PDF encryption failed during processing',
-                console: `qpdf exited with code ${code}: ${stderr}`,
+                console: {
+                  reason: `qpdf exited with code ${code}: ${stderr}`,
+                  pdfSizeBytes: pdfBuffer.length,
+                  elapsedMs: Date.now() - startedAt,
+                },
               })
             )
           }
@@ -228,7 +246,7 @@ export class PdfGeneratorService {
         throw this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Unexpected error during PDF encryption setup',
-          console: error.message,
+          console: { reason: error.message, pdfSizeBytes: pdfBuffer.length },
           error,
         })
       }

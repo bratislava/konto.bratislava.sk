@@ -19,8 +19,8 @@ export function addSlashToBirthNumber(
         ...logContext,
         // only the shape is kept: digits -> X, letters -> A
         anonymizedBirthNumber: birthNumber
-          .replaceAll(/\d/g, 'X')
-          .replaceAll(/\p{L}/gu, 'A'),
+          .replaceAll(/\p{L}/gu, 'A')
+          .replaceAll(/\d/g, 'X'),
       },
     })
   }

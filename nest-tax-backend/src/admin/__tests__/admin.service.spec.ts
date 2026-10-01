@@ -293,6 +293,7 @@ describe('AdminService', () => {
       expect(internalServerErrorSpy).toHaveBeenCalledWith({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: expect.any(String) as string,
+        console: { year: 1970, taxType: TaxType.DZN },
       })
     })
 
@@ -327,6 +328,12 @@ describe('AdminService', () => {
       expect(internalServerErrorSpy).toHaveBeenCalledWith({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: expect.any(String) as string,
+        console: {
+          existingTaxId: 1,
+          existingTaxPayerId: 1,
+          year: 1970,
+          taxType: TaxType.DZN,
+        },
       })
     })
   })

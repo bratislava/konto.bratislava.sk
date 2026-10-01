@@ -96,6 +96,7 @@ export class CognitoSubservice {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: ErrorEnum.UNPROCESSABLE_ENTITY_ERROR,
         message: 'Username undefined in user data from Cognito',
+        console: { externalId, userStatus: result.UserStatus, enabled: result.Enabled },
       })
     }
 
@@ -157,7 +158,11 @@ export class CognitoSubservice {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
         message: SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
-        console: { externalId },
+        console: {
+          externalId,
+          newTier,
+          cognitoErrorName: error instanceof Error ? error.name : undefined,
+        },
         error,
       })
     }
@@ -247,6 +252,7 @@ export class CognitoSubservice {
           errorEnum: ErrorEnum.UNPROCESSABLE_ENTITY_ERROR,
           message:
             'AuthenticationResult undefined in response to refresh tokens request from Cognito',
+          console: { clientId, challengeName: response.ChallengeName },
         })
       }
       return {
@@ -257,6 +263,10 @@ export class CognitoSubservice {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: ErrorEnum.UNPROCESSABLE_ENTITY_ERROR,
         message: 'Unexpected error occurred when refreshing tokens via Cognito',
+        console: {
+          clientId,
+          cognitoErrorName: error instanceof Error ? error.name : undefined,
+        },
         error,
       })
     }

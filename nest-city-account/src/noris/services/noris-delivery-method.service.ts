@@ -146,6 +146,10 @@ export class NorisDeliveryMethodService {
         throw this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Date must be provided when delivery method is CITY_ACCOUNT',
+          console: {
+            deliveryMethod: methodInfo.deliveryMethod,
+            entryCount: Object.keys(data).length,
+          },
         })
       }
 

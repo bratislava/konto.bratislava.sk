@@ -1,4 +1,8 @@
-import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../prisma/prisma.service'
@@ -32,12 +36,13 @@ export default class CityAccountIngestionTasksService {
       )
 
     // Create TaxPayers in database by birthumber if they do not exist. Only value set should be birth number
-    await this.prismaService.taxPayer.createMany({
-      data: data.birthNumbers.map((bn) => {
-        return { birthNumber: bn }
-      }),
-      skipDuplicates: true,
-    })
+    const { count: createdCount } =
+      await this.prismaService.taxPayer.createMany({
+        data: data.birthNumbers.map((bn) => {
+          return { birthNumber: bn }
+        }),
+        skipDuplicates: true,
+      })
 
     const latestRecord = await this.prismaService.config.findFirst({
       where: {
@@ -61,7 +66,7 @@ export default class CityAccountIngestionTasksService {
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message:
           'Database used to contain `LOADING_NEW_USERS_FROM_CITY_ACCOUNT` key in Config table at the start of this task, but it no longer exists. This really should not happen.',
-        console: `New \`nextSince\` was supposed to be set: ${data.nextSince.toISOString()}`,
+        console: `New \`nextSince\` was supposed to be set: ${data.nextSince.toISOString()}, since: ${since.toISOString()}, loaded: ${data.birthNumbers.length}, created: ${createdCount}`,
       })
     }
   }

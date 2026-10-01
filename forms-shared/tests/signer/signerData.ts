@@ -1,9 +1,10 @@
 import { afterAll, beforeEach, describe, expect, test, vi } from 'vitest'
-import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
+
 import {
   FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
 } from '../../src/definitions/formDefinitionTypes'
+import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { getSignerData } from '../../src/signer/signerData'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 

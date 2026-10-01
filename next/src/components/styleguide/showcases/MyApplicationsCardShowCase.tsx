@@ -1,7 +1,7 @@
 import {
   FormState,
   GetFormResponseDtoErrorEnum,
-  GetFormResponseSimpleDto,
+  GetFormsResponseDtoItemsInner as GetFormResponseSimpleDto,
 } from 'openapi-clients/forms'
 import React from 'react'
 
@@ -13,16 +13,21 @@ import { Wrapper } from '../Wrapper'
 const getDummyData = (
   state: FormState,
   error: GetFormResponseDtoErrorEnum,
-): GetFormResponseSimpleDto => ({
-  formDefinitionSlug: 'example-form-definition-slug',
-  id: '1abe3c72-0c1a-4e26-9de9-2207be63d120',
-  createdAt: '2023-09-13T08:48:15.346Z',
-  updatedAt: '2023-09-13T08:48:22.121Z',
-  state,
-  error,
-  formDataJson: { mestoPSCstep: { mestoPSC: { mesto: 'Košice' } } },
-  formSubject: 'Podanie',
-})
+): GetFormResponseSimpleDto => {
+  const base = {
+    formDefinitionSlug: 'example-form-definition-slug',
+    id: '1abe3c72-0c1a-4e26-9de9-2207be63d120',
+    createdAt: '2023-09-13T08:48:15.346Z',
+    updatedAt: '2023-09-13T08:48:22.121Z',
+    error,
+    formDataJson: { mestoPSCstep: { mestoPSC: { mesto: 'Košice' } } },
+    formSubject: 'Podanie',
+  }
+
+  return state === FormState.Draft
+    ? { ...base, state: FormState.Draft, formSentAt: null }
+    : { ...base, state, formSentAt: '2023-09-13T08:48:22.121Z' }
+}
 
 const formDefinitionSlugTitleMap = {
   'example-form-definition-slug': 'Example Form',

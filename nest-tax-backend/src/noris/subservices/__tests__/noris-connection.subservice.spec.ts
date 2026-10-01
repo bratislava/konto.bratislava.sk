@@ -1,11 +1,14 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import mssql, { MSSQLError } from 'mssql'
 
 import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
-import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 
@@ -16,7 +19,7 @@ describe('NorisConnectionSubservice', () => {
   let module: TestingModule
   let service: NorisConnectionSubservice
   let baConfigService: BaConfigService
-  let throwerErrorGuard: ThrowerErrorGuard
+  let errorFactoryService: ErrorFactoryService
   let prismaService: jest.Mocked<PrismaService>
 
   let mockMssqlConnect: jest.Mock
@@ -45,15 +48,16 @@ describe('NorisConnectionSubservice', () => {
 
     module = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         NorisConnectionSubservice,
         { provide: BaConfigService, useValue: baConfigService },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: PrismaService, useValue: prismaService },
       ],
     }).compile()
 
     service = module.get<NorisConnectionSubservice>(NorisConnectionSubservice)
-    throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
   })
 
   afterEach(async () => {
@@ -101,8 +105,8 @@ describe('NorisConnectionSubservice', () => {
 
     it('should throw getNorisUrgentError when error is not an MSSQLError', async () => {
       const genericError = new Error('Generic failure')
-      const throwerErrorGuardSpy = jest.spyOn(
-        throwerErrorGuard,
+      const errorFactoryServiceSpy = jest.spyOn(
+        errorFactoryService,
         'InternalServerErrorException',
       )
 
@@ -112,13 +116,11 @@ describe('NorisConnectionSubservice', () => {
         }, errorMessage),
       ).rejects.toThrow(errorMessage)
 
-      expect(throwerErrorGuardSpy).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        errorMessage,
-        undefined,
-        undefined,
-        genericError,
-      )
+      expect(errorFactoryServiceSpy).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: errorMessage,
+        error: genericError,
+      })
       expect(prismaService.$transaction).not.toHaveBeenCalled()
     })
 
@@ -127,8 +129,8 @@ describe('NorisConnectionSubservice', () => {
         'Query failed',
         'ESOMEOTHER' as mssql.MSSQL_ERROR_CODE,
       )
-      const throwerErrorGuardSpy = jest.spyOn(
-        throwerErrorGuard,
+      const errorFactoryServiceSpy = jest.spyOn(
+        errorFactoryService,
         'InternalServerErrorException',
       )
       await expect(
@@ -137,13 +139,11 @@ describe('NorisConnectionSubservice', () => {
         }, errorMessage),
       ).rejects.toThrow(errorMessage)
 
-      expect(throwerErrorGuardSpy).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        expect.stringContaining(errorMessage),
-        undefined,
-        undefined,
-        mssqlError,
-      )
+      expect(errorFactoryServiceSpy).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: expect.stringContaining(errorMessage) as string,
+        error: mssqlError,
+      })
       expect(prismaService.$transaction).not.toHaveBeenCalled()
     })
 
@@ -158,11 +158,11 @@ describe('NorisConnectionSubservice', () => {
       async (code) => {
         const mssqlError = new MSSQLError('Connection problem', code)
         const badRequestSpy = jest.spyOn(
-          throwerErrorGuard,
+          errorFactoryService,
           'BadRequestException',
         )
         const internalErrorSpy = jest.spyOn(
-          throwerErrorGuard,
+          errorFactoryService,
           'InternalServerErrorException',
         )
 
@@ -172,13 +172,11 @@ describe('NorisConnectionSubservice', () => {
           }, errorMessage),
         ).rejects.toThrow(errorMessage)
 
-        expect(badRequestSpy).toHaveBeenCalledWith(
-          CustomErrorNorisTypesEnum.CONNECTION_ERROR,
-          expect.stringContaining(errorMessage),
-          undefined,
-          undefined,
-          mssqlError,
-        )
+        expect(badRequestSpy).toHaveBeenCalledWith({
+          errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
+          message: expect.stringContaining(errorMessage) as string,
+          error: mssqlError,
+        })
 
         expect(prismaService.$executeRaw).toHaveBeenCalledTimes(1)
 
@@ -188,9 +186,12 @@ describe('NorisConnectionSubservice', () => {
 
     it('should run increment SQL when config row may not exist', async () => {
       const mssqlError = new MSSQLError('Timeout', 'ETIMEOUT')
-      const badRequestSpy = jest.spyOn(throwerErrorGuard, 'BadRequestException')
+      const badRequestSpy = jest.spyOn(
+        errorFactoryService,
+        'BadRequestException',
+      )
       const internalErrorSpy = jest.spyOn(
-        throwerErrorGuard,
+        errorFactoryService,
         'InternalServerErrorException',
       )
 
@@ -201,13 +202,11 @@ describe('NorisConnectionSubservice', () => {
       ).rejects.toThrow()
 
       expect(prismaService.$executeRaw).toHaveBeenCalledTimes(1)
-      expect(badRequestSpy).toHaveBeenCalledWith(
-        CustomErrorNorisTypesEnum.CONNECTION_ERROR,
-        expect.stringContaining(errorMessage),
-        undefined,
-        undefined,
-        mssqlError,
-      )
+      expect(badRequestSpy).toHaveBeenCalledWith({
+        errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
+        message: expect.stringContaining(errorMessage) as string,
+        error: mssqlError,
+      })
       expect(internalErrorSpy).not.toHaveBeenCalled()
     })
   })

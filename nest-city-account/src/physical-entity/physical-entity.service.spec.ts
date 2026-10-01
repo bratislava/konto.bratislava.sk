@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -5,9 +6,7 @@ import prismaMock from '../../test/singleton'
 import { PhysicalEntity } from '../generated/prisma/client'
 import { MagproxyService } from '../magproxy/magproxy.service'
 import { PrismaService } from '../prisma/prisma.service'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { PhysicalEntityService } from './physical-entity.service'
 
 const mockBirthNumber = '123456/7890'
@@ -38,8 +37,9 @@ describe('PhysicalEntityService', () => {
     jest.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         PhysicalEntityService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: MagproxyService, useValue: MagproxyServiceMock },
         { provide: CognitoSubservice, useValue: createMock<CognitoSubservice>() },

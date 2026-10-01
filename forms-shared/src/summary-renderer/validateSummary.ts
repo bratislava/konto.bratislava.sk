@@ -1,12 +1,11 @@
-import type { GenericObjectType, RJSFSchema, ValidationData } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
-import { FileInfoSummary, isErrorFileStatusType } from '../form-files/fileStatus'
+import type { GenericObjectType, RJSFSchema, ValidationData } from '@rjsf/utils'
 import { SchemaValidateFunction } from 'ajv'
-import { getFileValidatorBaRjsf } from '../form-utils/validators'
-import { baGetDefaultFormStateStable } from '../form-utils/defaultFormState'
+
+import { FileInfoSummary, isErrorFileStatusType } from '../form-files/fileStatus'
 import { validateBaFileUuid } from '../form-utils/ajvFormats'
+import { baGetDefaultFormStateStable } from '../form-utils/defaultFormState'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
+import { getFileValidatorBaRjsf } from '../form-utils/validators'
 
 type ValidateSummaryParams = {
   schema: RJSFSchema

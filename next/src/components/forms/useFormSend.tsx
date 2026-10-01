@@ -84,12 +84,8 @@ const useGetContext = () => {
     setSendConfirmationEidModal,
     setSendConfirmationEidLegalModal,
     setSendConfirmationNonAuthenticatedEidModal,
-    setSendPending,
     setEidSendingModal,
     setEidSendErrorModal,
-    setSendEidSaveConceptPending,
-    setSendEidPending,
-    setRedirectingToSlovenskoSkLogin,
   } = useFormModals()
   const { setFormIsSent } = useFormSent()
 
@@ -133,12 +129,15 @@ const useGetContext = () => {
           { authStrategy: 'authOrGuestWithToken' },
         ),
       networkMode: 'always',
-      onSuccess: async () => {
+      onSuccess: () => {
         setSendEidMetadata({ formSlug: slug, formId })
         turnOffLeaveProtection()
         // We are redirecting to a trusted URL
         window.location.href = environment.slovenskoSkLoginUrl
-        setRedirectingToSlovenskoSkLogin(true)
+
+        // a promise returned is awaited before toggling the isLoading
+        // we use this to forbid the user to close the modal / edit the data / send the form again while redirecting
+        return new Promise(() => {})
       },
       onError: () => {
         showToast({ message: t('useFormSend.error'), variant: 'error' })
@@ -189,20 +188,6 @@ const useGetContext = () => {
       }
     },
   })
-
-  // Loading states must be backpropagated to useFormModals as they are parent context to this one
-  // TODO: Come up with better solution
-  useEffect(() => {
-    setSendPending(sendFormIsPending)
-  }, [sendFormIsPending, setSendPending])
-
-  useEffect(() => {
-    setSendEidSaveConceptPending(saveConceptAndSendEidIsPending)
-  }, [saveConceptAndSendEidIsPending, setSendEidSaveConceptPending])
-
-  useEffect(() => {
-    setSendEidPending(sendFormEidIsPending)
-  }, [sendFormEidIsPending, setSendEidPending])
 
   /**
    * As we don't want users to trigger the send again by reload we immediately remove the token from the URL.
@@ -332,6 +317,9 @@ const useGetContext = () => {
   return {
     sendPossible,
     handleSendButtonPress,
+    sendFormIsPending,
+    saveConceptAndSendEidIsPending,
+    sendFormEidIsPending,
     eidSendPossible,
     handleSendEidButtonPress,
     submitDisabled,

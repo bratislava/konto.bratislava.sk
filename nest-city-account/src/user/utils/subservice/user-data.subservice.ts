@@ -1,3 +1,9 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { omit } from 'lodash'
 import { Simplify } from 'type-fest'
@@ -16,9 +22,6 @@ import {
 import { DPBUserLoginStatistics } from '../../../oauth2-clients/dpb/dtos/user.dto'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
-import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { UserIdentitySubservice } from '../../../utils/subservices/user-identity.subservice'
 import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
 import { ResponseLegalPersonDataSimpleDto } from '../../dtos/gdpr.legalperson.dto'
@@ -27,16 +30,13 @@ import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
 
 @Injectable()
 export class UserDataSubservice {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private prisma: PrismaService,
     private bloomreachOutboxService: BloomreachOutboxService,
-    private throwerErrorGuard: ThrowerErrorGuard,
-    private userIdentitySubservice: UserIdentitySubservice
-  ) {
-    this.logger = new LineLoggerSubservice(UserDataSubservice.name)
-  }
+    private errorFactoryService: ErrorFactoryService,
+    private userIdentitySubservice: UserIdentitySubservice,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   private cognitoDataToDatabaseData(cognitoData: CognitoGetUserData): {
     externalId: string
@@ -121,10 +121,10 @@ export class UserDataSubservice {
         return omit(user, ['ifo'])
       }
 
-      throw this.throwerErrorGuard.ForbiddenException(
-        UserErrorsEnum.USER_IS_DECEASED,
-        UserErrorsResponseEnum.USER_IS_DECEASED
-      )
+      throw this.errorFactoryService.ForbiddenException({
+        errorEnum: UserErrorsEnum.USER_IS_DECEASED,
+        message: UserErrorsResponseEnum.USER_IS_DECEASED,
+      })
     }
 
     // user found, update data
@@ -457,10 +457,10 @@ export class UserDataSubservice {
       },
     })
     if (!user) {
-      throw this.throwerErrorGuard.NotFoundException(
-        ErrorsEnum.NOT_FOUND_ERROR,
-        ErrorsResponseEnum.NOT_FOUND_ERROR
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: ErrorEnum.NOT_FOUND_ERROR,
+        message: ErrorResponseEnum.NOT_FOUND_ERROR,
+      })
     }
 
     const active = user.physicalEntity?.activeEdesk

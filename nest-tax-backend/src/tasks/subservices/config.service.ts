@@ -1,3 +1,4 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../prisma/prisma.service'
@@ -5,15 +6,13 @@ import {
   OVERPAYMENTS_LOOKBACK_DAYS,
   OVERPAYMENTS_LOOKBACK_DAYS_DEFAULT,
 } from '../../utils/constants'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export default class TasksConfigSubservice {
-  private readonly logger: LineLoggerSubservice
-
-  constructor(private readonly prismaService: PrismaService) {
-    this.logger = new LineLoggerSubservice(TasksConfigSubservice.name)
-  }
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   async resetOverpaymentsLookbackDays(): Promise<void> {
     await this.prismaService.config.updateMany({

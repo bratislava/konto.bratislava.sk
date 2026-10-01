@@ -1,7 +1,7 @@
-import { createCondition } from '../../generator/helpers'
-import { radioGroup } from '../../generator/functions/radioGroup'
-import { object } from '../../generator/object'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { createCondition } from '../../generator/helpers'
+import { object } from '../../generator/object'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SecondArg<F> = F extends (arg1: any, arg2: infer A, ...rest: any[]) => any ? A : never

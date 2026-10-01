@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
@@ -12,13 +13,12 @@ import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { VerificationErrorsEnum } from '../user-verification/verification.errors.enum'
-import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { CustomErrorEnums } from '../utils/guards/dtos/error.dto'
 import { NasesService } from './nases.service'
 
 describe('NasesService', () => {
   let service: NasesService
-  let throwerErrorGuard: ThrowerErrorGuard
+  let errorFactoryService: ErrorFactoryService
   let clientsService: ClientsService
 
   const mockSearchResults = (results: ApiIamIdentitiesIdGet200Response[]) =>
@@ -31,8 +31,9 @@ describe('NasesService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         NasesService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: ClientsService, useValue: createMock<ClientsService>() },
         { provide: ApiJwtTokensService, useValue: createMock<ApiJwtTokensService>() },
         {
@@ -50,7 +51,7 @@ describe('NasesService', () => {
     }).compile()
 
     service = module.get<NasesService>(NasesService)
-    throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
     clientsService = module.get<ClientsService>(ClientsService)
   })
 
@@ -213,7 +214,7 @@ describe('NasesService', () => {
     })
 
     it('should throw error for invalid input size', async () => {
-      const throwerSpy = jest.spyOn(throwerErrorGuard, 'BadRequestException')
+      const throwerSpy = jest.spyOn(errorFactoryService, 'BadRequestException')
 
       await expect(service.getIdentitiesByUris([])).rejects.toThrow()
       expect(throwerSpy).toHaveBeenCalled()
@@ -285,7 +286,7 @@ describe('NasesService', () => {
         upstreamCase: '429 (rate limit)',
         rejection: axiosErrorWithStatus(429),
         status: HttpStatus.TOO_MANY_REQUESTS,
-        errorName: ErrorsEnum.TOO_MANY_REQUESTS_ERROR,
+        errorName: ErrorEnum.TOO_MANY_REQUESTS_ERROR,
         persistsRejection: false,
       },
       {
@@ -302,42 +303,42 @@ describe('NasesService', () => {
         upstreamCase: '400 without fault (parameter validation)',
         rejection: axiosErrorWithStatus(400, { message: 'Invalid query' }),
         status: HttpStatus.INTERNAL_SERVER_ERROR,
-        errorName: ErrorsEnum.INTERNAL_SERVER_ERROR,
+        errorName: ErrorEnum.INTERNAL_SERVER_ERROR,
         persistsRejection: false,
       },
       {
         upstreamCase: '503 with Retry-After',
         rejection: axiosErrorWithStatus(503, {}, { 'retry-after': '60' }),
         status: HttpStatus.SERVICE_UNAVAILABLE,
-        errorName: ErrorsEnum.SERVICE_UNAVAILABLE_ERROR,
+        errorName: ErrorEnum.SERVICE_UNAVAILABLE_ERROR,
         persistsRejection: false,
       },
       {
         upstreamCase: '503 without Retry-After',
         rejection: axiosErrorWithStatus(503),
         status: HttpStatus.BAD_GATEWAY,
-        errorName: ErrorsEnum.BAD_GATEWAY_ERROR,
+        errorName: ErrorEnum.BAD_GATEWAY_ERROR,
         persistsRejection: false,
       },
       {
         upstreamCase: '401 (broken credentials)',
         rejection: axiosErrorWithStatus(401),
         status: HttpStatus.BAD_GATEWAY,
-        errorName: ErrorsEnum.BAD_GATEWAY_AUTH_ERROR,
+        errorName: ErrorEnum.BAD_GATEWAY_AUTH_ERROR,
         persistsRejection: false,
       },
       {
         upstreamCase: 'network error with no response',
         rejection: new AxiosError('Network Error'),
         status: HttpStatus.BAD_GATEWAY,
-        errorName: ErrorsEnum.BAD_GATEWAY_ERROR,
+        errorName: ErrorEnum.BAD_GATEWAY_ERROR,
         persistsRejection: false,
       },
       {
         upstreamCase: 'non-axios error',
         rejection: new Error('boom'),
         status: HttpStatus.INTERNAL_SERVER_ERROR,
-        errorName: ErrorsEnum.INTERNAL_SERVER_ERROR,
+        errorName: ErrorEnum.INTERNAL_SERVER_ERROR,
         persistsRejection: false,
       },
     ])(

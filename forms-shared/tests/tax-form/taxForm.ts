@@ -1,14 +1,15 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
-import { getTaxFormPdfMapping } from '../../src/tax-form/mapping/pdf/pdf'
+
+import { isSlovenskoSkTaxFormDefinition } from '../../src/definitions/formDefinitionTypes'
+import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
+import { formatValidateXmlResultErrors, validateXml } from '../../src/slovensko-sk/validateXml'
 import { generateTaxPdf } from '../../src/tax-form/generateTaxPdf'
 import { generateTaxXml } from '../../src/tax-form/generateTaxXml'
+import { getTaxFormPdfMapping } from '../../src/tax-form/mapping/pdf/pdf'
+import { getTaxXsd } from '../../src/tax-form/taxXsdXslt'
+import { screenshotTestTimeout } from '../../test-utils/consts'
 import { expectPdfToMatchSnapshot } from '../../test-utils/expectPdfToMatchSnapshot'
 import { filterConsole } from '../../test-utils/filterConsole'
-import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
-import { isSlovenskoSkTaxFormDefinition } from '../../src/definitions/formDefinitionTypes'
-import { screenshotTestTimeout } from '../../test-utils/consts'
-import { getTaxXsd } from '../../src/tax-form/taxXsdXslt'
-import { formatValidateXmlResultErrors, validateXml } from '../../src/slovensko-sk/validateXml'
 
 describe('taxForm', () => {
   const exampleFormPairs = getExampleFormPairs({

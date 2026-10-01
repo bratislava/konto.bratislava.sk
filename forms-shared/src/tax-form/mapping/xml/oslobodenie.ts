@@ -1,5 +1,5 @@
-import { oslobodenieShared } from '../shared/oslobodenieShared'
 import { TaxFormData } from '../../types'
+import { oslobodenieShared } from '../shared/oslobodenieShared'
 
 export const oslobodenieXml = (data: TaxFormData) => {
   const mapping = oslobodenieShared(data)

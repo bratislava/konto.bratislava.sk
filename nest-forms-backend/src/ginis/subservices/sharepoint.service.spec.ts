@@ -23,6 +23,9 @@ import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import SharepointService from './sharepoint.service'
 
+jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
+jest.mock('forms-shared/form-utils/omitExtraData')
+jest.mock('forms-shared/sharepoint/getValuesForSharepoint')
 jest.mock('forms-shared/form-utils/formDataExtractors', () => ({
   extractFormSubjectPlain: jest.fn(),
 }))

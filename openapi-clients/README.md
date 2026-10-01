@@ -45,11 +45,16 @@ pnpm run generate:forms -- --local-url localhost:8080
 1. Add the client type to `validTypes` in `scripts/generateClient.ts`
 2. Add the OpenAPI spec URL to `endpoints` in the same file
 3. Run `pnpm run generate:<new-client>` to generate the client
-4. Add the export path and generation scripts to `package.json`
+4. Add the generation scripts to `package.json`
 
 ### Checking for Changes
 
 The `check-for-changes` script compares newly generated clients with existing ones and shows git-style diffs for any changes. This is useful for CI to ensure clients are up-to-date with their OpenAPI specs.
+
+## Notes
+
+- The package is native ESM (`"type": "module"`). CommonJS consumers such as the Nest backends load it through Node's `require(esm)`.
+- The generated clients import each other without file extensions. The build (`tsdown`) adds the ones Node's ESM loader needs to `dist`.
 
 ## License
 

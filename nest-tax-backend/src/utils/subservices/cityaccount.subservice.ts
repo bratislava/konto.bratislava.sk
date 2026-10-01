@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { HttpStatus, Injectable, Logger } from '@nestjs/common'
 import { isAxiosError } from 'axios'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
@@ -5,15 +6,13 @@ import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import ClientsService from '../../clients/clients.service'
 import BaConfigService from '../../config/ba-config.service'
 import { addSlashToBirthNumber } from '../functions/birthNumber'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
 
 @Injectable()
 export class CityAccountSubservice {
   private readonly logger: Logger
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly clientsService: ClientsService,
     private readonly baConfigService: BaConfigService,
   ) {
@@ -41,13 +40,11 @@ export class CityAccountSubservice {
     } catch (error) {
       if (!isAxiosError(error)) {
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'Failed to get user data from city account.',
-            undefined,
-            undefined,
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: 'Failed to get user data from city account.',
             error,
-          ),
+          }),
         )
         return null
       }
@@ -66,7 +63,7 @@ export class CityAccountSubservice {
       // Any other downstream failure also only affects tracking, so log it
       // (classified via fromAxiosError) without breaking callers.
       this.logger.error(
-        this.throwerErrorGuard.fromAxiosError(error, {
+        this.errorFactoryService.fromAxiosError(error, {
           message: 'Failed to get user data from city account.',
         }),
       )
@@ -100,15 +97,13 @@ export class CityAccountSubservice {
       return result
     } catch (error) {
       if (!isAxiosError(error)) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get user data batch from city account.',
-          undefined,
-          undefined,
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to get user data batch from city account.',
           error,
-        )
+        })
       }
-      throw this.throwerErrorGuard.fromAxiosError(error, {
+      throw this.errorFactoryService.fromAxiosError(error, {
         message: 'Failed to get user data batch from city account.',
       })
     }
@@ -153,15 +148,14 @@ export class CityAccountSubservice {
       return { birthNumbers, nextSince: new Date(requestResult.data.nextSince) }
     } catch (error) {
       if (!isAxiosError(error)) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get birth numbers for new verified user accounts.',
-          undefined,
-          undefined,
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message:
+            'Failed to get birth numbers for new verified user accounts.',
           error,
-        )
+        })
       }
-      throw this.throwerErrorGuard.fromAxiosError(error, {
+      throw this.errorFactoryService.fromAxiosError(error, {
         message: 'Failed to get birth numbers for new verified user accounts.',
       })
     }

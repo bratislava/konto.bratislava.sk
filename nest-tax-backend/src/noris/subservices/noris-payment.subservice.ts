@@ -1,3 +1,8 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+} from '@bratislava/log-nest'
 import { Injectable, Logger } from '@nestjs/common'
 import currency from 'currency.js'
 import dayjs from 'dayjs'
@@ -14,11 +19,6 @@ import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import BaConfigService from '../../config/ba-config.service'
 import { PaymentStatus, TaxPayment } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto'
@@ -40,7 +40,7 @@ export class NorisPaymentSubservice {
   private readonly concurrencyLimit: ReturnType<typeof pLimit>
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly connectionService: NorisConnectionSubservice,
     private readonly prismaService: PrismaService,
     private readonly cityAccountSubservice: CityAccountSubservice,
@@ -84,20 +84,20 @@ export class NorisPaymentSubservice {
           return true
         }
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            `Variable symbol has a wrong format: "${variableSymbol}"`,
-          ),
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: `Variable symbol has a wrong format: "${variableSymbol}"`,
+          }),
         )
         return false
       },
     )
 
     if (data.years.length === 0) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Years are empty in payment data import from Noris request.',
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: 'Years are empty in payment data import from Noris request.',
+      })
     }
 
     const norisData = await this.connectionService.withConnection(
@@ -316,13 +316,11 @@ export class NorisPaymentSubservice {
         return 'CREATED'
       })
     } catch (error) {
-      return this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-        undefined,
-        undefined,
+      return this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
         error,
-      )
+      })
     }
   }
 
@@ -369,10 +367,10 @@ export class NorisPaymentSubservice {
         userFromCityAccount.externalId,
       )
       if (!result) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to track payment in Bloomreach.',
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to track payment in Bloomreach.',
+        })
       }
     }
   }

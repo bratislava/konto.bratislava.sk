@@ -1,13 +1,10 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import axios, { isAxiosError } from 'axios'
 
 import BaConfigService from '../config/ba-config.service'
 import { BloomreachOutbox, BloomreachOutboxStatus, Prisma } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BloomreachBatchCommand,
   BloomreachBatchResponse,
@@ -24,18 +21,16 @@ const RETRY_BACKOFF_BASE_MS = 60_000
 
 @Injectable()
 export class BloomreachOutboxProcessor {
-  private readonly logger: LineLoggerSubservice
-
   private readonly bloomreachCredentials: string
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly baConfigService: BaConfigService
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly baConfigService: BaConfigService,
+    private readonly logger: LineLoggerSubservice
   ) {
     const { apiKey, apiSecret } = this.baConfigService.bloomreach
     this.bloomreachCredentials = Buffer.from(`${apiKey}:${apiSecret}`, 'binary').toString('base64')
-    this.logger = new LineLoggerSubservice(BloomreachOutboxProcessor.name)
   }
 
   async processOutbox(): Promise<void> {
@@ -111,11 +106,11 @@ export class BloomreachOutboxProcessor {
 
       if (failedEntries.length > 0) {
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            `${failedEntries.length}/${entries.length} commands failed in batch`,
-            toLogfmt({ failedIds: failedEntries.map((e) => e.id) })
-          )
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: `${failedEntries.length}/${entries.length} commands failed in batch`,
+            console: { failedIds: failedEntries.map((e) => e.id) },
+          })
         )
         await this.revertEntries(
           failedEntries,
@@ -127,21 +122,21 @@ export class BloomreachOutboxProcessor {
         `Processed batch: ${succeededIds.length} succeeded, ${failedEntries.length} failed`
       )
     } catch (error) {
-      const console = toLogfmt({ batchSize: commands.length, entryCount: entries.length })
+      const console = { batchSize: commands.length, entryCount: entries.length }
       if (isAxiosError(error)) {
         this.logger.error(
-          this.throwerErrorGuard.fromAxiosError(error, {
+          this.errorFactoryService.fromAxiosError(error, {
             console,
           })
         )
       } else {
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'Bloomreach batch send failed',
+          this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: 'Bloomreach batch send failed',
             console,
-            error
-          )
+            error,
+          })
         )
       }
 
@@ -170,11 +165,11 @@ export class BloomreachOutboxProcessor {
 
         if (exhausted) {
           this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              `Giving up on entry after ${MAX_ATTEMPTS} attempts`,
-              toLogfmt({ externalId: entry.externalId, entryId: entry.id })
-            )
+            this.errorFactoryService.InternalServerErrorException({
+              errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+              message: `Giving up on entry after ${MAX_ATTEMPTS} attempts`,
+              console: { externalId: entry.externalId, entryId: entry.id },
+            })
           )
         }
 
@@ -198,12 +193,12 @@ export class BloomreachOutboxProcessor {
     const revertFailures = results.filter((r) => r.status === 'rejected')
     if (revertFailures.length > 0) {
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Failed to revert ${revertFailures.length}/${entries.length} entries`,
-          toLogfmt({ entryIds: entries.map((e) => e.id) }),
-          revertFailures[0].reason
-        )
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Failed to revert ${revertFailures.length}/${entries.length} entries`,
+          console: { entryIds: entries.map((e) => e.id) },
+          error: revertFailures[0].reason,
+        })
       )
     }
   }

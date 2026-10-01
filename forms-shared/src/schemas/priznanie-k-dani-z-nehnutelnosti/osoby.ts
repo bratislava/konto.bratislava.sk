@@ -1,11 +1,11 @@
-import { createCamelCaseItems, createCondition } from '../../generator/helpers'
-import { sharedPhoneNumberField } from '../shared/fields'
-import { esbsNationalityCiselnik } from './esbsCiselniky'
-import { select } from '../../generator/functions/select'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { input } from '../../generator/functions/input'
 import { radioGroup } from '../../generator/functions/radioGroup'
+import { select } from '../../generator/functions/select'
+import { createCamelCaseItems, createCondition } from '../../generator/helpers'
 import { object } from '../../generator/object'
-import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { sharedPhoneNumberField } from '../shared/fields'
+import { esbsNationalityCiselnik } from './esbsCiselniky'
 
 enum UlicaCisloTyp {
   FyzickaOsoba = 'FyzickaOsoba',

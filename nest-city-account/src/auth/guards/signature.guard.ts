@@ -1,9 +1,8 @@
+import { ErrorEnum, ErrorFactoryService, ErrorResponseEnum } from '@bratislava/log-nest'
 import { ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { AuthGuard } from '@nestjs/passport'
 
-import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { REQUIRE_NONCE } from '../decorators/require-nonce.decorator'
 import { SIGNATURE_PUBLIC_KEY } from '../decorators/signature-public-key.decorator'
 import { SignaturePublicKey } from '../types/signature-public-key.enum'
@@ -22,7 +21,7 @@ import { SignatureRequest } from '../types/signature-request.types'
 export class SignatureGuard extends AuthGuard('signature') {
   constructor(
     private readonly reflector: Reflector,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly errorFactoryService: ErrorFactoryService
   ) {
     super()
   }
@@ -36,11 +35,11 @@ export class SignatureGuard extends AuthGuard('signature') {
     )
 
     if (!publicKeyName) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Public key not specified. Use @SignaturePublicKeyName() decorator on the endpoint.'
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+        console: 'Public key not specified. Use @SignaturePublicKeyName() decorator on the endpoint.',
+      })
     }
 
     const requireNonce = this.reflector.getAllAndOverride<boolean | undefined>(REQUIRE_NONCE, [

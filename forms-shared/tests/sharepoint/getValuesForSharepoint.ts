@@ -1,4 +1,6 @@
-import { describe, test, expect } from 'vitest'
+import lodashGet from 'lodash/get'
+import { describe, expect, test } from 'vitest'
+
 import {
   FormDefinitionSlovenskoSkGeneric,
   isSlovenskoSkGenericFormDefinition,
@@ -10,7 +12,6 @@ import {
   getValueAtJsonPath,
   getValuesForFields,
 } from '../../src/sharepoint/getValuesForSharepoint'
-import { get as lodashGet } from 'lodash'
 
 describe('getArrayForOneToMany', () => {
   test('should throw error if at the path there is no array', () => {

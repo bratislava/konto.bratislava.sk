@@ -1,6 +1,6 @@
+import { TaxFormData } from '../../types'
 import { formatDatePdf } from '../shared/dates'
 import { oddiel2Shared } from '../shared/oddiel2Shared'
-import { TaxFormData } from '../../types'
 import {
   formatDecimalPdf,
   formatIntegerPdf,

@@ -1,21 +1,17 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { QueueItemStatusEnum } from '../generated/prisma/enums'
 import { getUpvsDeathDate, NasesService } from '../nases/nases.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { selectUriToUpdateInternal } from './upvs-queue.queries'
 
 @Injectable()
 export class EdeskUriUpdateService {
-  private readonly logger = new LineLoggerSubservice(EdeskUriUpdateService.name)
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly nasesService: NasesService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly errorFactoryService: ErrorFactoryService
   ) {}
 
   async getUriToUpdateInternal() {
@@ -40,11 +36,7 @@ export class EdeskUriUpdateService {
   async handleUriUpdateInternal(input: { uri: string; id: string }) {
     const upvsResult = await this.nasesService.getIdentitiesByUris([input])
     const successItem = upvsResult.success[0]
-    if (
-      upvsResult.success.length === 1 &&
-      successItem.data.uri &&
-      successItem.physicalEntityId
-    ) {
+    if (upvsResult.success.length === 1 && successItem.data.uri && successItem.physicalEntityId) {
       await this.prismaService.physicalEntity.update({
         where: { id: successItem.physicalEntityId },
         data: {
@@ -65,10 +57,10 @@ export class EdeskUriUpdateService {
         activeEdeskUpdateFailCount: { increment: 1 },
       },
     })
-    throw this.throwerErrorGuard.InternalServerErrorException(
-      ErrorsEnum.INTERNAL_SERVER_ERROR,
-      `Failed to update URI for physical entity id ${input.id}`
-    )
+    throw this.errorFactoryService.InternalServerErrorException({
+      errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+      message: `Failed to update URI for physical entity id ${input.id}`,
+    })
   }
 
   async handleUriUpdateExternal(uri: string) {

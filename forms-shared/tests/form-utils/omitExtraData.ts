@@ -1,11 +1,12 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
-import { baOmitExtraData } from '../../src/form-utils/omitExtraData'
-import priznanieKDaniZNehnutelnosti from '../../src/schemas/priznanieKDaniZNehnutelnosti'
-import { filterConsole } from '../../test-utils/filterConsole'
+
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
-import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
+import { baOmitExtraData } from '../../src/form-utils/omitExtraData'
 import { input } from '../../src/generator/functions/input'
 import { object } from '../../src/generator/object'
+import priznanieKDaniZNehnutelnosti from '../../src/schemas/priznanieKDaniZNehnutelnosti'
+import { filterConsole } from '../../test-utils/filterConsole'
+import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 describe('omitExtraData', () => {
   beforeEach(() => {

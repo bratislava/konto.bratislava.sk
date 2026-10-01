@@ -1,5 +1,6 @@
 import { rodnecislo } from 'rodnecislo'
 
+import { safeArray, safeBoolean, safeString } from '../../../form-utils/safeData'
 import {
   DanZBytovANebytovychPriestorov,
   DanZoStaviebJedenUcel,
@@ -8,7 +9,6 @@ import {
   TaxFormData,
 } from '../../types'
 import { fixDate, parseDate } from './dates'
-import { safeArray, safeBoolean, safeString } from '../../../form-utils/safeData'
 
 export const parseDateFieldDate = (date: string | any) => parseDate(date, 'YYYY-MM-DD')
 

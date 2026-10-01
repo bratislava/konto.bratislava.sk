@@ -1,22 +1,20 @@
+import { LineLoggerSubservice, toLogfmt } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { QueueItemStatusEnum } from '../generated/prisma/enums'
 import { PrismaService } from '../prisma/prisma.service'
-import { toLogfmt } from '../utils/logging'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { EdeskBatchUpdateService } from './edesk-batch-update.service'
 import { EdeskUriUpdateService } from './edesk-uri-update.service'
 import { UrgentLookupService } from './urgent-lookup.service'
 
 @Injectable()
 export class UpvsQueueService {
-  private readonly logger = new LineLoggerSubservice(UpvsQueueService.name)
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly urgentLookupService: UrgentLookupService,
     private readonly edeskUriUpdateService: EdeskUriUpdateService,
-    private readonly edeskBatchUpdateService: EdeskBatchUpdateService
+    private readonly edeskBatchUpdateService: EdeskBatchUpdateService,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   async addExternalItemsToQueue(

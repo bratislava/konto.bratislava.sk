@@ -1,5 +1,5 @@
-import { TaxFormData } from '../../types'
 import { safeArray, safeString } from '../../../form-utils/safeData'
+import { TaxFormData } from '../../types'
 
 export const oslobodenieBooleanShared = (data: TaxFormData) => {
   const pozemkyArray = safeArray(data.znizenieAleboOslobodenieOdDane?.pozemky)

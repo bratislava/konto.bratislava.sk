@@ -1,6 +1,6 @@
+import { TaxFormData, TaxPdfMapping } from '../../types'
 import { getPocty } from '../shared/functions'
 import { prilohyShared } from '../shared/prilohyShared'
-import { TaxFormData, TaxPdfMapping } from '../../types'
 import { formatIntegerPdf } from './functions'
 
 const poctyKeys = [

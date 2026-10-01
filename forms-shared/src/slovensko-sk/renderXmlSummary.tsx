@@ -1,4 +1,11 @@
 import React, { DetailedHTMLProps, HTMLAttributes } from 'react'
+import { renderToString } from 'react-dom/server'
+import { Parser } from 'xml2js'
+
+import { FileInfoSummary } from '../form-files/fileStatus'
+import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
+import { FormsBackendFile } from '../form-files/serverFilesTypes'
+import { FormSummary } from '../summary/summary'
 import {
   SummaryArrayComponentProps,
   SummaryArrayItemComponentProps,
@@ -9,12 +16,6 @@ import {
   SummaryStepComponentProps,
   SummaryStringValueComponentProps,
 } from '../summary-renderer/SummaryRenderer'
-import { renderToString } from 'react-dom/server'
-import { Parser } from 'xml2js'
-import { FormsBackendFile } from '../form-files/serverFilesTypes'
-import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
-import { FileInfoSummary } from '../form-files/fileStatus'
-import { FormSummary } from '../summary/summary'
 
 type SlovenskoSkSummaryXmlProps = {
   formSummary: FormSummary

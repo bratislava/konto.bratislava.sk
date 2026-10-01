@@ -1,3 +1,4 @@
+import { TaxFormData } from '../../types'
 import {
   esbsDruhPriznaniaCiselnik,
   esbsNationalityCiselnik,
@@ -6,7 +7,6 @@ import {
   esbsTypOsobyCiselnik,
 } from '../shared/esbsCiselniky'
 import { udajeODanovnikoviShared } from '../shared/udajeODanovnikoviShared'
-import { TaxFormData } from '../../types'
 import { getCiselnikEntryByCode, getCiselnikEntryByCondition, tituly } from './ciselniky'
 import { formatIntegerXml, formatXsDateXml, phoneNumberXml } from './functions'
 import { formatRodneCisloXml } from './shared'

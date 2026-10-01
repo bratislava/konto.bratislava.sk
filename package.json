@@ -11,7 +11,7 @@
     "lint": "turbo run lint"
   },
   "devDependencies": {
-    "turbo": "2.11.2"
+    "turbo": "2.11.3"
   },
   "packageManager": "pnpm@12.6.0",
   "devEngines": {

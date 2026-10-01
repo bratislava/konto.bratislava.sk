@@ -1,6 +1,4 @@
-import type { FieldPathId } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { FieldPathId } from '@rjsf/utils'
 
 export const getObjectFieldInfo = (fieldPathId: FieldPathId) => {
   const isFormObject = fieldPathId.path.length === 0

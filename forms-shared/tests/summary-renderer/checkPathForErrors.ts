@@ -1,5 +1,6 @@
-import { describe, test, expect } from 'vitest'
 import { ErrorSchema } from '@rjsf/utils'
+import { describe, expect, test } from 'vitest'
+
 import { checkPathForErrors } from '../../src/summary-renderer/checkPathForErrors'
 
 describe('checkPathForErrors', () => {

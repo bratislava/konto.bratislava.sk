@@ -1,6 +1,6 @@
+import { TaxFormData } from '../../types'
 import { esbsDruhPozemkuDaneCiselnik } from '../shared/esbsCiselniky'
 import { Oddiel2PriznanieShared, oddiel2Shared } from '../shared/oddiel2Shared'
-import { TaxFormData } from '../../types'
 import {
   getCiselnikEntryByCode,
   katastralneUzemie,

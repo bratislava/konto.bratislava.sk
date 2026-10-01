@@ -1,7 +1,7 @@
 import { GeneratorBaseOptions, GeneratorField, GeneratorFieldType } from '../generatorTypes'
-import { ArrayFieldUiOptions } from '../uiOptionsTypes'
-import { simpleObjectInternal } from '../object'
 import { removeUndefinedValues } from '../helpers'
+import { simpleObjectInternal } from '../object'
+import { ArrayFieldUiOptions } from '../uiOptionsTypes'
 
 export const arrayField = (
   property: string,

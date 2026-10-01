@@ -1,10 +1,11 @@
-import React from 'react'
-import { FormsBackendFile } from '../form-files/serverFilesTypes'
-import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
 import { render } from '@react-email/components'
-import { SummaryEmail } from './SummaryEmail'
+import React from 'react'
+
+import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
+import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 import { FormSummary } from '../summary/summary'
+import { SummaryEmail } from './SummaryEmail'
 
 export type FileIdInfoMap = Record<string, { url: string; fileName: string }>
 

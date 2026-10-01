@@ -1,3 +1,4 @@
+import { safeBoolean, safeNumber } from '../../../form-utils/safeData'
 import {
   DanZBytovANebytovychPriestorovPriznanie,
   DanZoStaviebJedenUcelPriznania,
@@ -8,7 +9,6 @@ import {
   TaxFormData,
 } from '../../types'
 import { parseRodneCislo } from './functions'
-import { safeBoolean, safeNumber } from '../../../form-utils/safeData'
 
 export const oddielBaseShared = (
   data: TaxFormData,

@@ -1,23 +1,20 @@
+import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import { connect, ConnectionError, ConnectionPool, MSSQLError } from 'mssql'
 
 import BaConfigService from '../../config/ba-config.service'
 import { PrismaService } from '../../prisma/prisma.service'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 const NORIS_SILENT_CONNECTION_ERRORS_KEY = 'NORIS_SILENT_CONNECTION_ERRORS'
 
 @Injectable()
 export class NorisConnectionService implements OnModuleDestroy {
-  private readonly logger = new LineLoggerSubservice(NorisConnectionService.name)
-
   constructor(
     private readonly baConfigService: BaConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly prismaService: PrismaService
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly prismaService: PrismaService,
+    private readonly logger: LineLoggerSubservice
   ) {}
 
   async onModuleDestroy(): Promise<void> {
@@ -26,12 +23,11 @@ export class NorisConnectionService implements OnModuleDestroy {
       await connection.close()
     } catch (error) {
       this.logger.warn(
-        this.throwerErrorGuard.BadRequestException(
-          ErrorsEnum.BAD_REQUEST_ERROR,
-          'Failed to close MSSQL connection on shutdown',
-          undefined,
-          error
-        )
+        this.errorFactoryService.BadRequestException({
+          errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+          message: 'Failed to close MSSQL connection on shutdown',
+          error,
+        })
       )
     }
   }
@@ -79,7 +75,6 @@ export class NorisConnectionService implements OnModuleDestroy {
     if (error instanceof MSSQLError) {
       const mssqlErrorDetails = {
         code: error.code,
-        message: error.message,
         name: error.name,
       }
       return `${errorMessage}: ${JSON.stringify(mssqlErrorDetails)}`
@@ -88,12 +83,11 @@ export class NorisConnectionService implements OnModuleDestroy {
   }
 
   private getNorisUrgentError(errorMessage: string, error: unknown) {
-    return this.throwerErrorGuard.InternalServerErrorException(
-      ErrorsEnum.INTERNAL_SERVER_ERROR,
-      this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
-      undefined,
-      error
-    )
+    return this.errorFactoryService.InternalServerErrorException({
+      errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+      message: this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+      error,
+    })
   }
 
   private async handleDatabaseError(error: unknown, errorMessage: string): Promise<never> {
@@ -109,12 +103,11 @@ export class NorisConnectionService implements OnModuleDestroy {
         WHERE "key" = ${NORIS_SILENT_CONNECTION_ERRORS_KEY}
       `
 
-      throw this.throwerErrorGuard.BadRequestException(
-        CustomErrorNorisTypesEnum.CONNECTION_ERROR,
-        this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
-        undefined,
-        error
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
+        message: this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+        error,
+      })
     }
 
     throw this.getNorisUrgentError(errorMessage, error)

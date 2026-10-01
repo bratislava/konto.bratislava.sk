@@ -1,7 +1,10 @@
 import { DateFormatter, parseDate } from '@internationalized/date'
-
+import type { EnumOptionsType, WidgetProps } from '@rjsf/utils'
 import { JSONSchema7 } from 'json-schema'
 
+import { baTimeRegex, validateBaFileUuid } from '../form-utils/ajvFormats'
+import { WithEnumOptions } from '../form-utils/WithEnumOptions'
+import { mergeEnumOptionsMetadata } from '../generator/optionItems'
 import {
   BaWidgetType,
   CheckboxGroupUiOptions,
@@ -10,12 +13,6 @@ import {
   RadioGroupUiOptions,
   SelectUiOptions,
 } from '../generator/uiOptionsTypes'
-import type { EnumOptionsType, WidgetProps } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
-import { baTimeRegex, validateBaFileUuid } from '../form-utils/ajvFormats'
-import { mergeEnumOptionsMetadata } from '../generator/optionItems'
-import { WithEnumOptions } from '../form-utils/WithEnumOptions'
 
 export enum SummaryDisplayValueType {
   String = 'String',

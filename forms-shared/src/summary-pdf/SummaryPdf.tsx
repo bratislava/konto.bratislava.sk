@@ -1,4 +1,10 @@
+import type { GenericObjectType, ValidationData } from '@rjsf/utils'
+import cx from 'classnames'
 import React from 'react'
+import Markdown from 'react-markdown'
+
+import { FileInfoSummary } from '../form-files/fileStatus'
+import { FormSummary } from '../summary/summary'
 import {
   SummaryArrayComponentProps,
   SummaryArrayItemComponentProps,
@@ -9,13 +15,6 @@ import {
   SummaryStepComponentProps,
   SummaryStringValueComponentProps,
 } from '../summary-renderer/SummaryRenderer'
-import Markdown from 'react-markdown'
-import cx from 'classnames'
-import type { GenericObjectType, ValidationData } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
-import { FileInfoSummary } from '../form-files/fileStatus'
-import { FormSummary } from '../summary/summary'
 
 type SummaryPdfProps = {
   formSummary: FormSummary
@@ -116,28 +115,29 @@ const ArrayItemComponent = ({ arrayItem, children }: SummaryArrayItemComponentPr
 
 const SummaryMarkdown = ({ className, children }: { className: string; children: string }) => {
   return (
-    <Markdown
-      className={className}
-      components={{
-        h2: ({ children }) => <h2 className="text-h-xl font-semibold mb-4">{children}</h2>,
-        h3: ({ children }) => <h3 className="text-h-lg font-semibold mb-3">{children}</h3>,
-        h4: ({ children }) => <h4 className="text-h-md font-semibold mb-2">{children}</h4>,
-        h5: ({ children }) => <h5 className="text-h-base font-semibold mb-2">{children}</h5>,
-        h6: ({ children }) => <h6 className="text-h-xs font-semibold mb-2">{children}</h6>,
-        p: ({ children }) => <p className="text-p-md font-normal mb-4">{children}</p>,
-        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-        ol: ({ children }) => <ol className="list-decimal pl-8 mb-4">{children}</ol>,
-        ul: ({ children }) => <ul className="list-disc pl-8 mb-4">{children}</ul>,
-        li: ({ children }) => <li className="text-p-md font-normal mb-2">{children}</li>,
-        a: ({ children, href }) => (
-          <a href={href} className="font-semibold underline" target="_blank">
-            {children}
-          </a>
-        ),
-      }}
-    >
-      {children}
-    </Markdown>
+    <div className={className}>
+      <Markdown
+        components={{
+          h2: ({ children }) => <h2 className="text-h-xl font-semibold mb-4">{children}</h2>,
+          h3: ({ children }) => <h3 className="text-h-lg font-semibold mb-3">{children}</h3>,
+          h4: ({ children }) => <h4 className="text-h-md font-semibold mb-2">{children}</h4>,
+          h5: ({ children }) => <h5 className="text-h-base font-semibold mb-2">{children}</h5>,
+          h6: ({ children }) => <h6 className="text-h-xs font-semibold mb-2">{children}</h6>,
+          p: ({ children }) => <p className="text-p-md font-normal mb-4">{children}</p>,
+          strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+          ol: ({ children }) => <ol className="list-decimal pl-8 mb-4">{children}</ol>,
+          ul: ({ children }) => <ul className="list-disc pl-8 mb-4">{children}</ul>,
+          li: ({ children }) => <li className="text-p-md font-normal mb-2">{children}</li>,
+          a: ({ children, href }) => (
+            <a href={href} className="font-semibold underline" target="_blank">
+              {children}
+            </a>
+          ),
+        }}
+      >
+        {children}
+      </Markdown>
+    </div>
   )
 }
 

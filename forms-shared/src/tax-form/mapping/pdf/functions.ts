@@ -1,7 +1,7 @@
-import { mapKeys } from 'lodash'
+import mapKeys from 'lodash/mapKeys'
 
-import { ParsedRodneCislo } from '../shared/functions'
 import { TaxPdfMapping } from '../../types'
+import { ParsedRodneCislo } from '../shared/functions'
 
 export function mergeObjects<T extends object>(array: T[]): T {
   return array.reduce((acc, object) => ({ ...acc, ...object }), {} as T)

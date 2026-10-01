@@ -1,6 +1,6 @@
+import { TaxFormData } from '../../types'
 import { poznamkaShared } from '../shared/poznamkaShared'
 import { prilohyShared } from '../shared/prilohyShared'
-import { TaxFormData } from '../../types'
 
 export const prilohyXml = (data: TaxFormData) => {
   const mapping = prilohyShared(data)

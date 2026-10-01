@@ -1,6 +1,7 @@
-import { describe, expect, test } from 'vitest'
-import { getRenderedAssets } from '../scripts/assets/assets'
 import fs from 'fs/promises'
+import { describe, expect, test } from 'vitest'
+
+import { getRenderedAssets } from '../scripts/assets/assets'
 
 describe('Verify assets', () => {
   test('should have file contents that match the expected contents', async () => {

@@ -1,4 +1,4 @@
-import type { ErrorSchema } from '@rjsf/utils' with { 'resolution-mode': 'import' }
+import type { ErrorSchema } from '@rjsf/utils'
 
 /**
  * Checks if a field or any of its children has errors. This is used to determine if a field should be highlighted in the

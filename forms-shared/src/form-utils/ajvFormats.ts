@@ -1,5 +1,5 @@
-import { validate as validateUuid, version as uuidVersion } from 'uuid'
 import { electronicFormatIBAN, validateIBAN } from 'ibantools'
+import { validate as validateUuid, version as uuidVersion } from 'uuid'
 // https://stackoverflow.com/a/51177696
 export const baTimeRegex = /^(\d|0\d|1\d|2[0-3]):[0-5]\d$/
 

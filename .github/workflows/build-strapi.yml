@@ -68,12 +68,13 @@ jobs:
           buildx_driver_opts: |
             network=host
 
-      - name: Docker metadata
-        id: meta
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+      - name: Docker build config
+        id: config
+        uses: ./.github/actions/docker-build-config
         with:
           image: ${{ inputs.image }}
           prefix: ${{ env.CLUSTER_PREFIX }}
+          push: ${{ inputs.cluster != '' }}
 
       - name: Check for existing image
         if: ${{ inputs.cluster != '' }}
@@ -96,10 +97,10 @@ jobs:
           source: .
           files: ${{ env.BAKE_FILES }}
           targets: strapi
-          push: ${{ inputs.cluster != '' }}
           allow: network.host
         env:
-          CACHE_FROM: ${{ steps.meta.outputs.cache_from }}
-          CACHE_TO: ${{ steps.meta.outputs.cache_to }}
-          TAGS: ${{ steps.meta.outputs.tags }}
+          CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).main.from }}
+          CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).main.to }}
+          TAGS: ${{ join(fromJSON(steps.config.outputs.meta).tags, ' ') }}
+          OUTPUT: ${{ steps.config.outputs.image_output }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}

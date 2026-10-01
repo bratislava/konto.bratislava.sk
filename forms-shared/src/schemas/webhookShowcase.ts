@@ -1,8 +1,8 @@
-import { input } from '../generator/functions/input'
-import { step } from '../generator/functions/step'
-import { schema } from '../generator/functions/schema'
-import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
 import { FormFiles } from '../definitions/formDefinitionTypes'
+import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
+import { input } from '../generator/functions/input'
+import { schema } from '../generator/functions/schema'
+import { step } from '../generator/functions/step'
 
 export default schema(
   {

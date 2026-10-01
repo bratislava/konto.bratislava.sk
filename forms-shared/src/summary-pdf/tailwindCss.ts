@@ -1,9 +1,10 @@
-import postcss from 'postcss'
-import tailwindPostcss from '@tailwindcss/postcss'
-import path from 'path'
 import fs from 'node:fs'
 
-const baseCssPath = path.join(__dirname, './base.css')
+import tailwindPostcss from '@tailwindcss/postcss'
+import path from 'path'
+import postcss from 'postcss'
+
+const baseCssPath = path.join(import.meta.dirname, './base.css')
 const baseCss = fs.readFileSync(baseCssPath, 'utf8')
 
 export const getTailwindCss = async () => {

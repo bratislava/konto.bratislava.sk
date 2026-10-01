@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest'
+
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { getSummaryJsonNode } from '../../src/summary-json/getSummaryJsonNode'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'

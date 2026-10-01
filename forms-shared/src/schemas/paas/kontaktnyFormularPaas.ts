@@ -1,13 +1,13 @@
-import { createCondition } from '../../generator/helpers'
-import { select } from '../../generator/functions/select'
-import { input } from '../../generator/functions/input'
-import { textArea } from '../../generator/functions/textArea'
-import { step } from '../../generator/functions/step'
-import { conditionalFields } from '../../generator/functions/conditionalFields'
-import { schema } from '../../generator/functions/schema'
-import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
-import { object } from '../../generator/object'
 import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { input } from '../../generator/functions/input'
+import { schema } from '../../generator/functions/schema'
+import { select } from '../../generator/functions/select'
+import { step } from '../../generator/functions/step'
+import { textArea } from '../../generator/functions/textArea'
+import { createCondition } from '../../generator/helpers'
+import { object } from '../../generator/object'
 
 const kategorieItems = [
   {

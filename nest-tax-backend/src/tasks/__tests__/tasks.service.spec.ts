@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -5,8 +6,6 @@ import { Test, TestingModule } from '@nestjs/testing'
 import prismaMock from '../../../test/singleton'
 import { PrismaService } from '../../prisma/prisma.service'
 import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../utils/constants'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import CityAccountIngestionTasksService from '../subservices/city-account-ingestion.tasks.service'
 import NorisSyncTasksService from '../subservices/noris-sync.tasks.service'
@@ -22,7 +21,7 @@ describe('TasksService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TasksService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         {
           provide: ReportingTasksService,
           useValue: createMock<ReportingTasksService>(),
@@ -72,8 +71,8 @@ describe('TasksService', () => {
       const updateManySpy = jest
         .spyOn(service['prismaService'].config, 'updateMany')
         .mockResolvedValue({ count: 0 })
-      const throwerErrorGuardSpy = jest.spyOn(
-        service['throwerErrorGuard'],
+      const errorFactoryServiceSpy = jest.spyOn(
+        service['errorFactoryService'],
         'InternalServerErrorException',
       )
 
@@ -83,7 +82,7 @@ describe('TasksService', () => {
         where: { key: NORIS_SILENT_CONNECTION_ERRORS_KEY },
         data: { value: '0' },
       })
-      expect(throwerErrorGuardSpy).not.toHaveBeenCalled()
+      expect(errorFactoryServiceSpy).not.toHaveBeenCalled()
     })
 
     it('should return without throwing when numberOfErrors is below threshold', async () => {
@@ -96,8 +95,8 @@ describe('TasksService', () => {
       const updateManySpy = jest
         .spyOn(service['prismaService'].config, 'updateMany')
         .mockResolvedValue({ count: 0 })
-      const throwerErrorGuardSpy = jest.spyOn(
-        service['throwerErrorGuard'],
+      const errorFactoryServiceSpy = jest.spyOn(
+        service['errorFactoryService'],
         'InternalServerErrorException',
       )
 
@@ -107,7 +106,7 @@ describe('TasksService', () => {
         where: { key: NORIS_SILENT_CONNECTION_ERRORS_KEY },
         data: { value: '0' },
       })
-      expect(throwerErrorGuardSpy).not.toHaveBeenCalled()
+      expect(errorFactoryServiceSpy).not.toHaveBeenCalled()
     })
 
     it('should throw when config value is invalid (NaN)', async () => {
@@ -118,8 +117,8 @@ describe('TasksService', () => {
           [NORIS_SILENT_CONNECTION_ERRORS_KEY]: invalidValue,
         })
 
-      const throwerErrorGuardSpy = jest
-        .spyOn(service['throwerErrorGuard'], 'InternalServerErrorException')
+      const errorFactoryServiceSpy = jest
+        .spyOn(service['errorFactoryService'], 'InternalServerErrorException')
         .mockReturnValue(
           new HttpException(
             'Internal Server Error',
@@ -129,10 +128,10 @@ describe('TasksService', () => {
 
       // Method is decorated with @HandleErrors, so it catches the error and returns null
       await service.alertSilentNorisConnectionErrors()
-      expect(throwerErrorGuardSpy).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value: ${invalidValue}. Must be a number.`,
-      )
+      expect(errorFactoryServiceSpy).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value: ${invalidValue}. Must be a number.`,
+      })
     })
 
     it('should reset config to 0 and throw when numberOfErrors is at or above threshold', async () => {
@@ -145,8 +144,8 @@ describe('TasksService', () => {
       const updateManySpy = jest
         .spyOn(service['prismaService'].config, 'updateMany')
         .mockResolvedValue({ count: 1 })
-      const throwerErrorGuardSpy = jest
-        .spyOn(service['throwerErrorGuard'], 'InternalServerErrorException')
+      const errorFactoryServiceSpy = jest
+        .spyOn(service['errorFactoryService'], 'InternalServerErrorException')
         .mockReturnValue(
           new HttpException(
             'Internal Server Error',
@@ -160,10 +159,11 @@ describe('TasksService', () => {
         where: { key: NORIS_SILENT_CONNECTION_ERRORS_KEY },
         data: { value: '0' },
       })
-      expect(throwerErrorGuardSpy).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Number of silenced Noris connection errors in last 24 hours is 25.',
-      )
+      expect(errorFactoryServiceSpy).toHaveBeenCalledWith({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message:
+          'Number of silenced Noris connection errors in last 24 hours is 25.',
+      })
     })
   })
 })

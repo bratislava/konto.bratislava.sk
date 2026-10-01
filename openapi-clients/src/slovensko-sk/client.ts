@@ -1,3 +1,5 @@
+import type { AxiosInstance } from 'axios'
+
 import {
   CentrlnaRadnTabuaDostupnLenPreOVMApiFactory,
   DlhodobLoiskoApiFactory,
@@ -9,11 +11,10 @@ import {
   StavKomponentuMonitoringApiFactory,
   UniverzlneSynchrnneRozhranieSluiebPVSApiFactory,
   VyhadvanieIdenttDostupnLenPreOVMApiFactory,
-  ZasielaniePodanApiFactory,
   ZasielaniePodanAdministrciaApiFactory,
+  ZasielaniePodanApiFactory,
 } from './api'
 import { Configuration, ConfigurationParameters } from './configuration'
-import type { AxiosInstance } from 'axios'
 
 type ClientConfig = {
   basePath: string

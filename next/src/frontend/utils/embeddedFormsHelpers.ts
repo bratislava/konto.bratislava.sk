@@ -18,7 +18,7 @@ const getEmbeddedFormsAllowedOrigins = (formDefinition: FormDefinition) => {
 
   return [
     ...map[formDefinition.embedded],
-    environment.featureToggles.developmentForms ? environment.selfUrl : null,
+    environment.featureToggles.developmentForms ? environment.siteUrl : null,
   ].filter(isDefined)
 }
 

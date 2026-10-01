@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { environment } from '@/src/environment'
 
-const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
+const handler = (_req: NextApiRequest, res: NextApiResponse) => {
   if (environment.isStaging) {
     return res.send(
       `
@@ -12,7 +12,10 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
     )
   }
 
-  return res.send('')
+  return res.send(`
+      # Sitemaps
+      Sitemap: ${process.env.NEXT_PUBLIC_SITE_URL}/sitemap.xml
+      `)
 }
 
 export default handler

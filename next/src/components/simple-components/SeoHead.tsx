@@ -18,9 +18,7 @@ const SeoHead = ({ title, ogType = 'website', description }: SeoHeadProps) => {
   const { t } = useTranslation()
   const { asPath } = useRouter()
 
-  const fullUrl = `${
-    environment.nodeEnv === 'production' ? 'https://konto.bratislava.sk' : environment.selfUrl
-  }${asPath}`
+  const fullUrl = `${environment.siteUrl}${asPath}`
 
   const metaTitle = `${title || ''} - ${t('common.bratislavaAccount')}`
 

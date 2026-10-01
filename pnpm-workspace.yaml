@@ -63,6 +63,18 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - '@bratislava/*'
 
+# @swc/core 1.16.x (1.16.12 and 1.16.13) can't load its native binding on Windows: the cache-root
+# ACL check rejects ordinary profile directories, so i18next-cli (`parse-translations`) and the
+# Strapi admin build crash on Windows dev machines. Fixed upstream in
+# https://github.com/swc-project/swc/pull/12452 but not released yet. 1.15.43 is the version the
+# NestJS CLI already uses. Scoped to the affected consumers: a bare `@swc/core` override makes pnpm
+# re-resolve every package that depends on it, including the NestJS CLI's webpack.
+# TODO: Drop these overrides once an @swc/core release includes that fix.
+overrides:
+  'i18next-cli>@swc/core': 1.15.43
+  'i18next-resources-for-ts>@swc/core': 1.15.43
+  '@vitejs/plugin-react-swc>@swc/core': 1.15.43
+
 # @golevelup/nestjs-rabbitmq 9.0.2 and its @golevelup/nestjs-discovery still cap
 # their NestJS peers at v11. They run on NestJS 12 unchanged: the only Nest
 # internals they import (`@nestjs/common/constants`,

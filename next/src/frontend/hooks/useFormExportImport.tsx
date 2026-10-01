@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { usePlausible } from 'next-plausible'
 import { UpdateFormResponseDto } from 'openapi-clients/forms'
-import React, { createContext, PropsWithChildren, useContext, useEffect, useRef } from 'react'
+import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
 
 import { formsClient } from '@/src/clients/forms'
 import { useFormSignature } from '@/src/components/forms/signer/useFormSignature'
@@ -37,7 +37,7 @@ export const useGetContext = () => {
   const { formData } = useFormData()
   const { setRegistrationModal, setTaxFormPdfExportModal, setXmlImportVersionConfirmationModal } =
     useFormModals()
-  const { setConceptSaveErrorModal, setDeleteConceptPending } = useFormModals()
+  const { setConceptSaveErrorModal } = useFormModals()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const { signature } = useFormSignature()
   const { clientFiles } = useFormFileUpload()
@@ -125,11 +125,6 @@ export const useGetContext = () => {
       showToast({ message: t('useFormExportImport.errors.conceptDelete'), variant: 'error' })
     },
   })
-
-  // Loading state must be backpropagated to useFormModals as it is parent context to this one
-  useEffect(() => {
-    setDeleteConceptPending(deleteConceptIsPending)
-  }, [deleteConceptIsPending, setDeleteConceptPending])
 
   const migrateForm = () => {
     if (migrateFormIsPending) {
@@ -329,6 +324,7 @@ export const useGetContext = () => {
     handleImportXml,
     handleImportJson,
     deleteConcept,
+    deleteConceptIsPending,
   }
 }
 

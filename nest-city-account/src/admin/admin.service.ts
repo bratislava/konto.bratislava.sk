@@ -10,6 +10,7 @@ import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
 import { UserService } from '../user/user.service'
 import { VerificationDataForUserResponseDto } from '../user-verification/dtos/verification-response.dto'
 import { VerificationService } from '../user-verification/verification.service'
+import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { ManuallyVerifyUserRequestDto } from './dtos/requests.admin.dto'
 import { OnlySuccessDto, UserVerifyState } from './dtos/responses.admin.dto'
@@ -73,20 +74,38 @@ export class AdminService {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
           message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
-          console: { userSub: user.sub },
+          console: {
+            userSub: user.sub,
+            hasEmail: !!user.email,
+            cognitoUserCount: cognitoUsers.length,
+          },
         })
       }
     }
 
+    let failedCount = 0
     await Promise.all(
       cognitoUsers.map(async (user) => {
         try {
           await this.userService.upsertUserOrLegalPersonRaw(user)
         } catch (error) {
-          this.logger.error({ userSub: user.sub }, error)
+          failedCount += 1
+          this.logger.error(
+            {
+              userSub: user.sub,
+              accountType: user[CognitoUserAttributesEnum.ACCOUNT_TYPE],
+              tier: user[CognitoUserAttributesEnum.TIER],
+            },
+            error
+          )
         }
       })
     )
+    this.logger.log({
+      message: 'syncCognitoToDb finished',
+      cognitoUserCount: cognitoUsers.length,
+      failedCount,
+    })
   }
 
   async checkUserVerifyState(email: string): Promise<UserVerifyState> {

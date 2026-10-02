@@ -1,11 +1,12 @@
 name: Renovate
 
 on:
-  # Temporary: a dry run on every push to this branch, to check the config
-  # before it is merged. Remove together with the config copy step below.
-  push:
-    branches:
-      - renovate-setup
+  # A pull request that changes the Renovate config gets a dry run with that
+  # config, so its effect is visible before it is merged.
+  pull_request:
+    paths:
+      - renovate.json5
+      - .github/workflows/renovate.yml
   schedule:
     - cron: '0 3 * * 0'
   workflow_dispatch:
@@ -18,24 +19,36 @@ on:
 permissions:
   contents: read
 
-concurrency: renovate
+# Real runs share one group so they never overlap; each pull request gets its
+# own, and a new push replaces its previous dry run.
+concurrency:
+  group: renovate-${{ github.event_name == 'pull_request' && github.ref || 'master' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   renovate:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      DRY_RUN: ${{ github.event_name == 'push' || inputs.dryRun }}
+      IS_PULL_REQUEST: ${{ github.event_name == 'pull_request' }}
+      DRY_RUN: ${{ github.event_name == 'pull_request' || inputs.dryRun }}
     steps:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
 
-      # Renovate reads renovate.json5 from master, which has none yet, so this
-      # branch's config is passed in as global config instead. The action mounts
-      # /tmp into the Renovate container.
-      - name: Use this branch's config
-        run: cp renovate.json5 /tmp/renovate-config.json5
+      # Renovate always reads renovate.json5 from master. On a pull request, its
+      # own config is passed in as global config instead, and the one on master
+      # is ignored (RENOVATE_REQUIRE_CONFIG below), so the dry run shows what
+      # the proposed config would do. The action mounts /tmp into the Renovate
+      # container.
+      - name: Prepare config
+        run: |
+          if [ "$IS_PULL_REQUEST" = 'true' ]; then
+            cp renovate.json5 /tmp/renovate-config.json5
+          else
+            echo '{}' > /tmp/renovate-config.json5
+          fi
 
       - id: token
         uses: actions/create-github-app-token@v3
@@ -49,7 +62,7 @@ jobs:
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
           RENOVATE_CONFIG_FILE: /tmp/renovate-config.json5
-          RENOVATE_REQUIRE_CONFIG: optional
+          RENOVATE_REQUIRE_CONFIG: ${{ env.IS_PULL_REQUEST == 'true' && 'ignored' || 'optional' }}
           RENOVATE_ONBOARDING: 'false'
           RENOVATE_PLATFORM_COMMIT: enabled
           RENOVATE_DRY_RUN: ${{ env.DRY_RUN == 'true' && 'full' || '' }}

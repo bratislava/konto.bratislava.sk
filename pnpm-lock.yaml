@@ -867,6 +867,9 @@ importers:
       '@bratislava/ginis-sdk':
         specifier: 2.4.0
         version: 2.4.0(axios@1.18.1(debug@4.4.3(supports-color@10.2.2))(supports-color@10.2.2))
+      '@bratislava/log-nest':
+        specifier: 1.1.0
+        version: 1.1.0(@nestjs/common@12.1.0(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(axios@1.18.1(debug@4.4.3(supports-color@10.2.2))(supports-color@10.2.2))(express@5.2.1(supports-color@10.2.2))(reflect-metadata@0.2.2)
       '@golevelup/nestjs-rabbitmq':
         specifier: 9.1.0
         version: 9.1.0(@nestjs/common@12.1.0(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -39414,10 +39417,10 @@ snapshots:
       typescript: 6.0.3
       yargs-parser: 21.1.1
     optionalDependencies:
-      '@babel/core': 7.29.7(supports-color@10.2.2)
+      '@babel/core': 7.29.0(supports-color@10.2.2)
       '@jest/transform': 30.4.1(supports-color@10.2.2)
       '@jest/types': 30.4.1
-      babel-jest: 30.4.1(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2)
+      babel-jest: 30.4.1(@babel/core@7.29.0(supports-color@10.2.2))(supports-color@10.2.2)
       esbuild: 0.28.1
       jest-util: 30.4.1
 

@@ -1,3 +1,4 @@
+import { LogAllowList } from '@bratislava/log-nest'
 import { Body, Controller, Post, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
@@ -29,6 +30,7 @@ export class FormsV2Controller {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard)
+  @LogAllowList({ formDefinitionSlug: true, formId: true })
   @Post()
   async createForm(
     @Body() data: CreateFormInput,

@@ -1,9 +1,9 @@
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { NestFactory } from '@nestjs/core'
 
 import AppModule from './app.module'
 import { bootstrap } from './bootstrap'
 import BaConfigService from './config/ba-config.service'
-import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice'
 
 async function main(): Promise<void> {
   const logger = new LineLoggerSubservice('Nest')

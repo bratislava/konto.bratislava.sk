@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosError } from 'axios'
@@ -16,7 +17,6 @@ import ApiJwtTokensService from '../../../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../../../clients/clients.service'
 import BaConfigService from '../../../config/ba-config.service'
 import { ClusterEnv } from '../../../config/environment-variables'
-import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
@@ -24,9 +24,10 @@ import {
 import FormRegistrationStatusRepository from '../../repositories/form-registration-status.repository'
 import NasesCronService from '../nases.cron.service'
 
-jest.mock('../../../utils/subservices/line-logger.subservice', () => ({
-  __esModule: true,
-  default: jest.fn(),
+jest.mock('@bratislava/log-nest', () => ({
+  ...jest.requireActual<typeof import('@bratislava/log-nest')>(
+    '@bratislava/log-nest',
+  ),
   LineLoggerSubservice: jest.fn().mockImplementation(() => ({
     log: jest.fn(),
     error: jest.fn(),
@@ -54,7 +55,7 @@ jest.mock('forms-shared/definitions/formDefinitions', () => ({
 describe('NasesCronService', () => {
   let service: NasesCronService
   let apiJwtTokensService: jest.Mocked<ApiJwtTokensService>
-  let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
+  let errorFactoryService: jest.Mocked<ErrorFactoryService>
 
   const mockSlovenskoSkApi = {
     apiEformStatusGet: jest.fn(),
@@ -65,6 +66,7 @@ describe('NasesCronService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         NasesCronService,
         {
           provide: ClientsService,
@@ -79,8 +81,8 @@ describe('NasesCronService', () => {
           }),
         },
         {
-          provide: ThrowerErrorGuard,
-          useValue: createMock<ThrowerErrorGuard>({
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>({
             InternalServerErrorException: jest.fn(),
           }),
         },
@@ -105,7 +107,7 @@ describe('NasesCronService', () => {
 
     service = module.get<NasesCronService>(NasesCronService)
     apiJwtTokensService = module.get(ApiJwtTokensService)
-    throwerErrorGuard = module.get(ThrowerErrorGuard)
+    errorFactoryService = module.get(ErrorFactoryService)
   })
 
   describe('constructor', () => {
@@ -190,12 +192,6 @@ describe('NasesCronService', () => {
         'setStatus',
       )
 
-      const alertErrorSpy = jest.fn()
-      jest.doMock('../../../utils/subservices/line-logger.subservice', () => ({
-        __esModule: true,
-        default: alertErrorSpy,
-      }))
-
       await service.validateFormRegistrations()
 
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(2)
@@ -240,13 +236,12 @@ describe('NasesCronService', () => {
 
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(2)
       expect(
-        throwerErrorGuard.InternalServerErrorException,
-      ).toHaveBeenCalledWith(
-        NasesErrorsEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
-        NasesErrorsResponseEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
-        undefined,
-        genericError,
-      )
+        errorFactoryService.InternalServerErrorException,
+      ).toHaveBeenCalledWith({
+        errorEnum: NasesErrorsEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
+        message: NasesErrorsResponseEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
+        error: genericError,
+      })
     })
 
     it('should skip non-slovensko.sk forms', async () => {

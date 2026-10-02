@@ -1,3 +1,9 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { isAxiosError } from 'axios'
 import {
@@ -6,12 +12,6 @@ import {
 } from 'openapi-clients/slovensko-sk'
 
 import ClientsService from '../../clients/clients.service'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from '../nases.errors.enum'
 
 interface NaturalPersonData {
@@ -42,14 +42,11 @@ export interface CorporateBodyExtractedData {
 
 @Injectable()
 export default class NasesContactsService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly clientsService: ClientsService,
-  ) {
-    this.logger = new LineLoggerSubservice(NasesContactsService.name)
-  }
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   async getUpvsIdentity(token: string) {
     const result = await this.clientsService.slovenskoSkApi
@@ -60,16 +57,16 @@ export default class NasesContactsService {
       .catch((error: unknown) => {
         if (!isAxiosError(error)) {
           this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-              `Failed to get nases identity`,
+            this.errorFactoryService.InternalServerErrorException({
+              errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+              message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+              console: `Failed to get nases identity`,
               error,
-            ),
+            }),
           )
         } else {
           this.logger.error(
-            this.throwerErrorGuard.fromAxiosError(error, {
+            this.errorFactoryService.fromAxiosError(error, {
               console: `Failed to get nases identity`,
             }),
           )
@@ -155,10 +152,10 @@ export default class NasesContactsService {
 
       // don't throw, alert only
       this.logger.error(
-        this.throwerErrorGuard.UnprocessableEntityException(
-          NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
-          `extractCorporateBodyData: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: ICO not found in contact returned by nases ${contact.uri}.`,
-        ),
+        this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
+          message: `extractCorporateBodyData: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: ICO not found in contact returned by nases.`,
+        }),
       )
     }
 

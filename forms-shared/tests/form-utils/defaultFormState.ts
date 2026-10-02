@@ -11,6 +11,7 @@ import { checkboxGroup } from '../../src/generator/functions/checkboxGroup'
 import { conditionalFields } from '../../src/generator/functions/conditionalFields'
 import { fileUploadMultiple } from '../../src/generator/functions/fileUploadMultiple'
 import { input } from '../../src/generator/functions/input'
+import { radioGroup } from '../../src/generator/functions/radioGroup'
 import { selectMultiple } from '../../src/generator/functions/selectMultiple'
 import { createCondition } from '../../src/generator/helpers'
 import { object } from '../../src/generator/object'
@@ -112,6 +113,27 @@ describe('defaultFormState', () => {
         { title: 'Checkbox with const value', required: true, constValue: true },
         { checkboxLabel: 'I agree' },
       ),
+    ])
+
+    expect(baGetDefaultFormState(definition.schema, {}, testValidatorRegistry)).toEqual({})
+  })
+
+  test('getDefaultForm should not prefill required booleans without default', () => {
+    const definition = object('defaultFormState', {}, [
+      radioGroup(
+        'booleanRadioGroup',
+        {
+          type: 'boolean',
+          title: 'Boolean radio group',
+          required: true,
+          items: [
+            { value: true, label: 'Yes' },
+            { value: false, label: 'No' },
+          ],
+        },
+        {},
+      ),
+      checkbox('checkbox', { title: 'Checkbox', required: true }, { checkboxLabel: 'Checkbox' }),
     ])
 
     expect(baGetDefaultFormState(definition.schema, {}, testValidatorRegistry)).toEqual({})

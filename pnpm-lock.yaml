@@ -177,14 +177,14 @@ catalogs:
       specifier: 3.36.1
       version: 3.36.1
     '@rjsf/core':
-      specifier: 6.5.2
-      version: 6.5.2
+      specifier: 6.11.0
+      version: 6.11.0
     '@rjsf/utils':
-      specifier: 6.5.2
-      version: 6.5.2
+      specifier: 6.11.0
+      version: 6.11.0
     '@rjsf/validator-ajv8':
-      specifier: 6.5.2
-      version: 6.5.2
+      specifier: 6.11.0
+      version: 6.11.0
     '@types/node':
       specifier: 24.19.0
       version: 24.19.0
@@ -229,6 +229,7 @@ overrides:
   i18next-cli>@swc/core: 1.15.43
   i18next-resources-for-ts>@swc/core: 1.15.43
   '@vitejs/plugin-react-swc>@swc/core': 1.15.43
+  '@x0k/json-schema-merge': 1.1.0
 
 packageExtensionsChecksum: sha256-hh+vk1Vy6nvxUNQgQU4+cBiJbEhsLTqBqmZzROX6FR0=
 
@@ -257,7 +258,7 @@ importers:
         version: 1.63.0
       '@rjsf/utils':
         specifier: 'catalog:'
-        version: 6.5.2(react@19.3.0)
+        version: 6.11.0(react@19.3.0)
       '@types/node':
         specifier: 'catalog:'
         version: 24.19.0
@@ -290,13 +291,13 @@ importers:
         version: 1.0.12(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@rjsf/core':
         specifier: 'catalog:'
-        version: 6.5.2(@rjsf/utils@6.5.2(react@19.3.0))(react@19.3.0)
+        version: 6.11.0(@rjsf/utils@6.11.0(react@19.3.0))(react@19.3.0)
       '@rjsf/utils':
         specifier: 'catalog:'
-        version: 6.5.2(react@19.3.0)
+        version: 6.11.0(react@19.3.0)
       '@rjsf/validator-ajv8':
         specifier: 'catalog:'
-        version: 6.5.2(@rjsf/utils@6.5.2(react@19.3.0))
+        version: 6.11.0(@rjsf/utils@6.11.0(react@19.3.0))
       ajv:
         specifier: 'catalog:'
         version: 8.20.0
@@ -905,7 +906,7 @@ importers:
         version: 7.9.0(prisma@7.9.0(@types/react-dom@19.2.3(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3))(typescript@6.0.3)
       '@rjsf/utils':
         specifier: 'catalog:'
-        version: 6.5.2(react@19.3.0)
+        version: 6.11.0(react@19.3.0)
       amqplib:
         specifier: 2.0.1
         version: 2.0.1
@@ -1357,13 +1358,13 @@ importers:
         version: 3.34.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@rjsf/core':
         specifier: 'catalog:'
-        version: 6.5.2(@rjsf/utils@6.5.2(react@19.3.0))(react@19.3.0)
+        version: 6.11.0(@rjsf/utils@6.11.0(react@19.3.0))(react@19.3.0)
       '@rjsf/utils':
         specifier: 'catalog:'
-        version: 6.5.2(react@19.3.0)
+        version: 6.11.0(react@19.3.0)
       '@rjsf/validator-ajv8':
         specifier: 'catalog:'
-        version: 6.5.2(@rjsf/utils@6.5.2(react@19.3.0))
+        version: 6.11.0(@rjsf/utils@6.11.0(react@19.3.0))
       '@sindresorhus/slugify':
         specifier: 3.0.1
         version: 3.0.1
@@ -7103,24 +7104,24 @@ packages:
   '@repeaterjs/repeater@3.1.0':
     resolution: {integrity: sha512-TaoVksZRSx2KWYYpyLQtMQXXeS98VsgZImzW65xmiVgbYhXLk+aEsmzPLirqVuE4/XuUapH2iMtxUzaBNDzdSQ==}
 
-  '@rjsf/core@6.5.2':
-    resolution: {integrity: sha512-Fx+aVNQRYQyoY0vM8zYDZkuOiNe+5PLsxUySUdHfjljlT23mJnTCpPKMkxWJwh4UEWeSN0xjmknW9LfIwuQmOg==}
+  '@rjsf/core@6.11.0':
+    resolution: {integrity: sha512-8Hp3nd2RysjfmxHKy3/1GJtdAaDBt9VkU/c+pSXrs332BvliJM/Tp/QXTTnHYKYUSi1klFTygnvq1ujSefpcug==}
     engines: {node: '>=20'}
     peerDependencies:
-      '@rjsf/utils': ^6.5.x
+      '@rjsf/utils': ^6.11.0
       react: '>=18'
 
-  '@rjsf/utils@6.5.2':
-    resolution: {integrity: sha512-qBVQ5qf9BKMOQy/DjMl/IjD5s6akRDx18cgiSYunKt/CYc+kPzHyCVA2TU0rXCsigNlhgnfM8piC3LEHye6vpA==}
+  '@rjsf/utils@6.11.0':
+    resolution: {integrity: sha512-jWYFXmPR5OVehb66Z2RDJFEgI7b7YSXe0FIco5kb7noqaDmjMOMFu4MnDKXPJLLdOW6YRd3MYZCbIPWvJeua4g==}
     engines: {node: '>=20'}
     peerDependencies:
       react: '>=18'
 
-  '@rjsf/validator-ajv8@6.5.2':
-    resolution: {integrity: sha512-MSyF0Q0lZhmByDV/eL3QF03g1K7RVGGAHMytlQ2ybuakvzJGODGzWKfTLcP320ixrrCqDq5rs8IJP+WJCRnhig==}
+  '@rjsf/validator-ajv8@6.11.0':
+    resolution: {integrity: sha512-pTzuYODewEE3qkTC5UwGvVvG0eetq72/h+rP9PsjPhF1lp2KZ5WrR44a29ipSnMTP2vorO80AvC/O9AXvBfVYw==}
     engines: {node: '>=20'}
     peerDependencies:
-      '@rjsf/utils': ^6.5.x
+      '@rjsf/utils': ^6.11.0
 
   '@rolldown/binding-android-arm-eabi@1.2.11':
     resolution: {integrity: sha512-A5kXfGKvKWWZE0TtPrfsvT+q4Y5d1QG8gGUzpYjGydM+fARM9MuX90PrXYXe0XbsDVgyxxNzHo6giCj90bsFNw==}
@@ -11883,6 +11884,9 @@ packages:
   fast-uri@3.1.3:
     resolution: {integrity: sha512-i70LwGWUduXqzicKXWshooq+sWL1K3WUU5rKZNG/0i3a1OSoX3HqhH5WbWwTmqWfor4urUakGPiRQcleRZTwOg==}
 
+  fast-uri@4.2.1:
+    resolution: {integrity: sha512-TmHQgewjHtMq1E5QKA0tOE0yeYGQs25KZC/ziJpubRtWI15W92e6vPFydWOeZBVROSHBYw/QhD9d5OefdD6LDg==}
+
   fast-wrap-ansi@0.2.2:
     resolution: {integrity: sha512-7F2Fl+TjRSenLqlU3UjSH0iyqopqoZIu7eZVpEirP2g1GtWa2G/ecEmBdgz31+Mxr+ELclgg6sokpSFIQiZ02Q==}
 
@@ -14071,13 +14075,22 @@ packages:
   markdown-table@3.0.4:
     resolution: {integrity: sha512-wiYz4+JrLyb/DqW2hkFJxP7Vd7JuTDm77fvbM8VfEQdmSMqcImWeeRbHwZjBjIFki/VaMK2BhFi7oUUZeM5bqw==}
 
-  markdown-to-jsx@8.0.0:
-    resolution: {integrity: sha512-hWEaRxeCDjes1CVUQqU+Ov0mCqBqkGhLKjL98KdbwHSgEWZZSJQeGlJQatVfeZ3RaxrfTrZZ3eczl2dhp5c/pA==}
-    engines: {node: '>= 10'}
+  markdown-to-jsx@9.10.3:
+    resolution: {integrity: sha512-J5/NCmNYQ0ExsnThzvF3F1fSzNYLgROcW2diUqRqoIoiyhoy8DSI06jLuMYk0c86SQd/FiVYJrV6tIgci9S2tQ==}
+    engines: {node: '>= 18'}
     peerDependencies:
-      react: '>= 0.14.0'
+      react: '>= 16.0.0'
+      react-native: '*'
+      solid-js: '>=1.0.0'
+      vue: '>=3.0.0'
     peerDependenciesMeta:
       react:
+        optional: true
+      react-native:
+        optional: true
+      solid-js:
+        optional: true
+      vue:
         optional: true
 
   marked@14.0.0:
@@ -26038,33 +26051,30 @@ snapshots:
 
   '@repeaterjs/repeater@3.1.0': {}
 
-  '@rjsf/core@6.5.2(@rjsf/utils@6.5.2(react@19.3.0))(react@19.3.0)':
+  '@rjsf/core@6.11.0(@rjsf/utils@6.11.0(react@19.3.0))(react@19.3.0)':
     dependencies:
-      '@rjsf/utils': 6.5.2(react@19.3.0)
-      lodash: 4.18.1
-      lodash-es: 4.18.1
-      markdown-to-jsx: 8.0.0(react@19.3.0)
-      prop-types: 15.8.1
+      '@rjsf/utils': 6.11.0(react@19.3.0)
+      markdown-to-jsx: 9.10.3(react@19.3.0)
       react: 19.3.0
+    transitivePeerDependencies:
+      - react-native
+      - solid-js
+      - vue
 
-  '@rjsf/utils@6.5.2(react@19.3.0)':
+  '@rjsf/utils@6.11.0(react@19.3.0)':
     dependencies:
       '@x0k/json-schema-merge': 1.1.0
       fast-equals: 6.0.0
-      fast-uri: 3.1.3
+      fast-uri: 4.2.1
       jsonpointer: 5.0.1
-      lodash: 4.18.1
-      lodash-es: 4.18.1
       react: 19.3.0
       react-is: 18.3.1
 
-  '@rjsf/validator-ajv8@6.5.2(@rjsf/utils@6.5.2(react@19.3.0))':
+  '@rjsf/validator-ajv8@6.11.0(@rjsf/utils@6.11.0(react@19.3.0))':
     dependencies:
-      '@rjsf/utils': 6.5.2(react@19.3.0)
+      '@rjsf/utils': 6.11.0(react@19.3.0)
       ajv: 8.20.0
       ajv-formats: 2.1.1(ajv@8.20.0)
-      lodash: 4.18.1
-      lodash-es: 4.18.1
 
   '@rolldown/binding-android-arm-eabi@1.2.11':
     optional: true
@@ -32522,6 +32532,8 @@ snapshots:
 
   fast-uri@3.1.3: {}
 
+  fast-uri@4.2.1: {}
+
   fast-wrap-ansi@0.2.2:
     dependencies:
       fast-string-width: 3.0.2
@@ -35401,7 +35413,7 @@ snapshots:
 
   markdown-table@3.0.4: {}
 
-  markdown-to-jsx@8.0.0(react@19.3.0):
+  markdown-to-jsx@9.10.3(react@19.3.0):
     optionalDependencies:
       react: 19.3.0
 
@@ -39417,10 +39429,10 @@ snapshots:
       typescript: 6.0.3
       yargs-parser: 21.1.1
     optionalDependencies:
-      '@babel/core': 7.29.0(supports-color@10.2.2)
+      '@babel/core': 7.29.7(supports-color@10.2.2)
       '@jest/transform': 30.4.1(supports-color@10.2.2)
       '@jest/types': 30.4.1
-      babel-jest: 30.4.1(@babel/core@7.29.0(supports-color@10.2.2))(supports-color@10.2.2)
+      babel-jest: 30.4.1(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2)
       esbuild: 0.28.1
       jest-util: 30.4.1
 

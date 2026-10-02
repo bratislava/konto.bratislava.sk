@@ -23,6 +23,7 @@ export class UserInfoPipe implements PipeTransform {
     }
 
     let userId: string | undefined
+    let externalId: string | null | undefined
     try {
       const response =
         await this.clientsService.cityAccountApi.userControllerUpsertUser({
@@ -32,6 +33,7 @@ export class UserInfoPipe implements PipeTransform {
         })
       const user = response.data
       userId = user.id
+      externalId = user.externalId
 
       if (user.birthNumber) {
         const birthNumberWithSlash: string = addSlashToBirthNumber(
@@ -47,7 +49,7 @@ export class UserInfoPipe implements PipeTransform {
         throw errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Get or create user error',
-          console: { userId },
+          console: { userId, externalId },
           error,
         })
       }

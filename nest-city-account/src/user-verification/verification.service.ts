@@ -241,7 +241,8 @@ export class VerificationService {
       this.logger.error('COGNITO_ERROR - WRITE TIER IDENTITY_CARD', {
         userSub: data.msg.user.sub,
         accountType: data.msg.type,
-        tier: newUserData[CognitoUserAttributesEnum.TIER],
+        oldTier: data.msg.user[CognitoUserAttributesEnum.TIER],
+        newTier: newUserData[CognitoUserAttributesEnum.TIER],
       })
       const userFromDb = await this.verificationDataSubservice.requeuedInVerificationIncrement(
         data.msg.user
@@ -313,7 +314,8 @@ export class VerificationService {
       this.logger.error('COGNITO_ERROR - WRITE TIER NOT_VERIFIED', {
         userSub: data.msg.user.sub,
         accountType: data.msg.type,
-        tier: newUserData[CognitoUserAttributesEnum.TIER],
+        oldTier: data.msg.user[CognitoUserAttributesEnum.TIER],
+        newTier: newUserData[CognitoUserAttributesEnum.TIER],
         reason: verification.reason,
       })
       const userFromDb = await this.verificationDataSubservice.requeuedInVerificationIncrement(

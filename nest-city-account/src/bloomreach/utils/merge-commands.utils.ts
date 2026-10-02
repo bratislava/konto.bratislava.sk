@@ -1,8 +1,21 @@
-import { BloomreachCustomerCommandData } from '../bloomreach.types'
+import { BloomreachCustomerCommandData, BloomreachCustomerProperties } from '../bloomreach.types'
 
-/** Only anonymization explicitly sets `is_identity_verified` to `false`. */
+/**
+ * Customer property marking a Bloomreach profile as anonymized. Only city-account writes it, and only
+ * anonymization sets it to `false` - profiles created by other backends lack it entirely. All anonymization checks
+ * (commands, exported profiles, outbox queries) go through this, so switching to a dedicated property is a change here.
+ */
+export const ANONYMIZATION_PROPERTY =
+  'is_identity_verified' satisfies keyof BloomreachCustomerProperties
+
+export function isAnonymizedProfile(
+  properties: Partial<Record<typeof ANONYMIZATION_PROPERTY, unknown>>
+): boolean {
+  return properties[ANONYMIZATION_PROPERTY] === false
+}
+
 export function isAnonymizationCommand(command: BloomreachCustomerCommandData): boolean {
-  return command.properties.is_identity_verified === false
+  return isAnonymizedProfile(command.properties)
 }
 
 /**

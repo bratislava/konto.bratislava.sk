@@ -28,7 +28,11 @@ import {
   eventsToConsents,
   extractLatestCityAccountConsents,
 } from './utils/consents.utils'
-import { isAnonymizationCommand } from './utils/merge-commands.utils'
+import {
+  ANONYMIZATION_PROPERTY,
+  isAnonymizationCommand,
+  isAnonymizedProfile,
+} from './utils/merge-commands.utils'
 import {
   BLOOMREACH_PROPAGATION_WINDOW_HOURS,
   isLiveOrRecentlyCompleted,
@@ -147,10 +151,7 @@ export class BloomreachMergeConsentService {
       return
     }
 
-    // Only city-account writes is_identity_verified, and only anonymization
-    // sets it to false while the contact_id is retained. Profiles created by
-    // other backends lack the property entirely.
-    const anonymizedInBloomreach = contactProfile.properties.is_identity_verified === false
+    const anonymizedInBloomreach = isAnonymizedProfile(contactProfile.properties)
 
     // The in-flight check below exists purely to catch anonymization the BR
     // doesn't know about yet
@@ -274,7 +275,7 @@ export class BloomreachMergeConsentService {
       WHERE
           "externalId" = ANY (${cityAccountIds})
           AND "commandName" = ${BloomreachCommandName.CUSTOMERS}::"BloomreachCommandName"
-          AND ("commandData" -> 'properties' ->> 'is_identity_verified')::BOOLEAN = FALSE
+          AND ("commandData" -> 'properties' ->> ${ANONYMIZATION_PROPERTY}::TEXT)::BOOLEAN = FALSE
           AND ("commandData" ->> 'update_timestamp')::DOUBLE PRECISION < ${beforeTimestamp}
           AND (
               "status" IN (${BloomreachOutboxStatus.PENDING}::"BloomreachOutboxStatus",
@@ -299,7 +300,7 @@ export class BloomreachMergeConsentService {
         id: { not: entry.id },
         externalId: entry.externalId,
         commandName: BloomreachCommandName.CUSTOMERS,
-        commandData: { path: ['properties', 'is_identity_verified'], equals: false },
+        commandData: { path: ['properties', ANONYMIZATION_PROPERTY], equals: false },
         OR: isLiveOrRecentlyCompleted(),
       },
       select: { id: true },

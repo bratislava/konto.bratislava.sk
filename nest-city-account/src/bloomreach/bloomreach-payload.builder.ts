@@ -18,6 +18,7 @@ import {
 } from './bloomreach.types'
 import { BloomreachContactDatabaseService } from './contact-database/bloomreach-contact-database.service'
 import { consentCategory } from './utils/consents.utils'
+import { ANONYMIZATION_PROPERTY } from './utils/merge-commands.utils'
 
 /** Unix timestamp in seconds, the format Bloomreach expects. */
 export function nowUnixSeconds(): number {
@@ -133,7 +134,7 @@ export class BloomreachPayloadBuilder {
           registration_date: '',
           email: '',
           phone: '',
-          is_identity_verified: false,
+          [ANONYMIZATION_PROPERTY]: false,
           oauth_origin_client_name: '',
           current_tax_correspondence_channel: '',
         },

@@ -17,6 +17,7 @@ import {
   versionCompareBumpDuringSend,
   versionCompareCanSendForm,
 } from 'forms-shared/versioning/version-compare'
+import { Simplify } from 'type-fest'
 
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import { isAuthUser, User } from '../auth-v2/types/user'
@@ -465,7 +466,7 @@ export class FormSenderService {
     form: Forms,
     data: RabbitPayloadDto,
     senderUri: string,
-    additionalFormUpdates?: FormUpdateBodyDto,
+    additionalFormUpdates?: Simplify<FormUpdateBodyDto>,
   ): Promise<void> {
     // send is implemented in a way that it does not throw. Therefore this is not in try-catch block.
     const sendData = await this.nasesSenderService.send(jwt, form, senderUri)
@@ -491,7 +492,6 @@ export class FormSenderService {
     await this.formsService.updateForm(data.formId, {
       state: FormState.DELIVERED_NASES,
       error: FormError.NONE,
-      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- FormUpdateBodyDto is a plain data DTO with no prototype methods; spreading into Prisma update payload is safe
       ...additionalFormUpdates,
     })
 

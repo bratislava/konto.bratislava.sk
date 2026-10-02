@@ -9,6 +9,7 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { versionCompareRequiresBumpToContinue } from 'forms-shared/versioning/version-compare'
+import { Simplify } from 'type-fest'
 
 import { AuthUser, User } from '../auth-v2/types/user'
 import { getUserIco } from '../auth-v2/utils/user-utils'
@@ -186,7 +187,7 @@ export default class FormsService {
 
   async updateFormWithUser(
     id: string,
-    requestData: FormUpdateBodyDto,
+    requestData: Simplify<FormUpdateBodyDto>,
     user: User,
   ): Promise<UpdateFormResponseDto> {
     const form = await this.getUniqueForm(id)
@@ -199,7 +200,6 @@ export default class FormsService {
 
     return this.updateForm(id, {
       ...getUserFormFields(user),
-      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- FormUpdateBodyDto is a plain data DTO; spreading into update payload is safe
       ...requestData,
     })
   }
@@ -207,12 +207,11 @@ export default class FormsService {
   async updateFormEid(
     id: string,
     nasesUser: JwtNasesPayload,
-    requestData: UpdateFormRequestDto,
+    requestData: Simplify<UpdateFormRequestDto>,
     user: User,
   ): Promise<UpdateFormResponseDto> {
     return this.updateFormWithUser(
       id,
-      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- UpdateFormRequestDto is a plain data DTO; spreading into object literal is safe
       { mainUri: nasesUser.sub, actorUri: nasesUser.actor.sub, ...requestData },
       user,
     )

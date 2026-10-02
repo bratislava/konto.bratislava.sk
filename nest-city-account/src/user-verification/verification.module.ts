@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq'
 import { Module } from '@nestjs/common'
 
@@ -34,7 +34,7 @@ import { VerificationService } from './verification.service'
           },
         ],
         connectionInitOptions: { wait: false },
-        logger: new LineLoggerSubservice('RabbitMQ'),
+        logger: new LineLoggerService('RabbitMQ'),
       }),
     }),
     NasesModule,

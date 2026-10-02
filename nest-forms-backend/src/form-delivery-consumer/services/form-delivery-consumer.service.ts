@@ -3,7 +3,7 @@ import { setTimeout } from 'node:timers/promises'
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
@@ -54,7 +54,7 @@ export default class FormDeliveryConsumerService {
     private readonly ginisService: GinisService,
     private readonly convertPdfService: ConvertPdfService,
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   async nackTrueWithWait(seconds: number): Promise<Nack> {
@@ -67,7 +67,7 @@ export default class FormDeliveryConsumerService {
     routingKey: RABBIT_FORM_DELIVERY.ROUTING_KEY,
     queue: RABBIT_FORM_DELIVERY.QUEUE,
     errorHandler: (channel, msg, error) => {
-      const logger = new LineLoggerSubservice('FormDeliveryConsumerService')
+      const logger = new LineLoggerService('FormDeliveryConsumerService')
       const errorFactoryService = new ErrorFactoryService({ alertReporting })
 
       logger.error(

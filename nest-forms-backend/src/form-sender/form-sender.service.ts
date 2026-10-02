@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { ValidatorType } from '@rjsf/utils'
 import {
@@ -64,7 +64,7 @@ export class FormSenderService {
     private readonly convertPdfService: ConvertPdfService,
     private readonly rabbitmqClientService: RabbitmqClientService,
     private readonly nasesSenderService: NasesSenderService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   createUserJwtToken(oboToken: string): string {

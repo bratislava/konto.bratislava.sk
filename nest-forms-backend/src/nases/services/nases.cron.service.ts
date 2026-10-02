@@ -1,7 +1,7 @@
 import {
   ErrorFactoryService,
   HandleErrors,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
@@ -32,7 +32,7 @@ export default class NasesCronService {
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService,
     private readonly formRegistrationStatusRepository: FormRegistrationStatusRepository,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   private resolvePublishedResultKey(

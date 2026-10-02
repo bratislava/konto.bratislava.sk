@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -55,7 +55,7 @@ export class OAuth2Controller {
   constructor(
     private readonly oauth2Service: OAuth2Service,
     private readonly oAuth2ErrorThrower: OAuth2ErrorThrower,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   @Get('authorize')

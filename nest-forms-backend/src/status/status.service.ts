@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
@@ -17,7 +17,7 @@ export default class StatusService {
     private readonly prismaService: PrismaService,
     private readonly scannerClientService: ScannerClientService,
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   // function which checks if prisma is running

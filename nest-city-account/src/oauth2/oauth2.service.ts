@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from 'node:crypto'
 
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import * as jwt from 'jsonwebtoken'
 
@@ -37,7 +37,7 @@ export class OAuth2Service {
     private readonly validationSubservice: OAuth2ValidationSubservice,
     private readonly baConfigService: BaConfigService,
     private readonly oAuth2ClientSubservice: OAuth2ClientSubservice,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   /**

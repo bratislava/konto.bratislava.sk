@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { HttpException, Injectable } from '@nestjs/common'
 import dayjs, { Dayjs } from 'dayjs'
@@ -40,7 +40,7 @@ export default class NotificationsEventsService {
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly paymentService: PaymentService,
     private readonly baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   private async getTaxInstallmentsEligibleForReminder(

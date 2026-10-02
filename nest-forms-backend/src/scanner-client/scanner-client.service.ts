@@ -2,7 +2,7 @@ import {
   ErrorEnum,
   ErrorFactoryService,
   ErrorResponseEnum,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import axios, { AxiosError, AxiosResponse, isAxiosError } from 'axios'
@@ -21,7 +21,7 @@ export default class ScannerClientService {
   constructor(
     private readonly baConfigService: BaConfigService,
     private errorFactoryService: ErrorFactoryService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   // create function which will check health status of forms client with axios and using forms client url NEST_FORMS_BACKEND

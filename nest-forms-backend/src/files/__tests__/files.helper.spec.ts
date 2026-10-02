@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test } from '@nestjs/testing'
 import {
@@ -29,7 +29,7 @@ describe('FilesHelper', () => {
   beforeEach(async () => {
     const app = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         FilesHelper,
         { provide: PrismaService, useValue: prismaMock },
         {

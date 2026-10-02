@@ -2,7 +2,7 @@ import {
   ErrorEnum,
   ErrorFactoryService,
   ErrorResponseEnum,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { isAxiosError } from 'axios'
@@ -45,7 +45,7 @@ export default class NasesContactsService {
   constructor(
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly clientsService: ClientsService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   async getUpvsIdentity(token: string) {

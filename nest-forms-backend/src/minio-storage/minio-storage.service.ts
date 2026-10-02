@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Client } from 'minio'
@@ -25,7 +25,7 @@ export class MinioStorageService {
   constructor(
     private readonly minioClientService: MinioClientService,
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   public client(): Client {

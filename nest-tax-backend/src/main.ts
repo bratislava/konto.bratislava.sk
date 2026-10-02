@@ -1,7 +1,7 @@
 import {
   ErrorFilter,
   HttpExceptionFilter,
-  LineLoggerSubservice,
+  LineLoggerService,
   UnknownExceptionFilter,
 } from '@bratislava/log-nest'
 import { ValidationPipe, VersioningType } from '@nestjs/common'
@@ -13,7 +13,7 @@ import { AppModule } from './app.module'
 import BaConfigService from './config/ba-config.service'
 
 async function bootstrap() {
-  const logger = new LineLoggerSubservice('Nest')
+  const logger = new LineLoggerService('Nest')
   const preview = process.env.NEST_PREVIEW === 'true'
   const app = await NestFactory.create(AppModule, {
     logger,

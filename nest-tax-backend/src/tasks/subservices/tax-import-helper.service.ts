@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -22,7 +22,7 @@ export default class TaxImportHelperService {
     private readonly prismaService: PrismaService,
     private readonly databaseSubservice: DatabaseSubservice,
     private readonly norisService: NorisService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   private async getImportWindowConfig(): Promise<{

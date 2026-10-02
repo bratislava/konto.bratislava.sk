@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import formurlencoded from 'form-urlencoded'
@@ -47,7 +47,7 @@ export class PaymentService {
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly taxService: TaxService,
     private readonly retryService: RetryService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   private getRedirectUrl(taxType: TaxType) {

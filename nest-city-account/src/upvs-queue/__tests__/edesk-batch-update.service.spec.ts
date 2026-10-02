@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -20,7 +20,7 @@ describe('EdeskBatchUpdateService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         EdeskBatchUpdateService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: PhysicalEntityService, useValue: createMock<PhysicalEntityService>() },

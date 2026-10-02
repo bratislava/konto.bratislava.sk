@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -48,7 +48,7 @@ describe('NorisConnectionSubservice', () => {
 
     module = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         NorisConnectionSubservice,
         { provide: BaConfigService, useValue: baConfigService },
         ErrorFactoryService,

@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -60,7 +60,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         TaxDeliveryMethodsTasksSubservice,
         { provide: PrismaService, useValue: prismaMock },
         { provide: NorisDeliveryMethodService, useValue: createMock<NorisDeliveryMethodService>() },

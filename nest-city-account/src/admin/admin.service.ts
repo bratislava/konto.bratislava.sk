@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice, toLogfmt } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService, toLogfmt } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../prisma/prisma.service'
@@ -44,7 +44,7 @@ export class AdminService {
     private prismaService: PrismaService,
     private readonly userService: UserService,
     private readonly verificationService: VerificationService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   /**

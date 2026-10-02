@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import dayjs from 'dayjs'
@@ -37,7 +37,7 @@ export default class TaxImportTasksService {
     private readonly configSubservice: TasksConfigSubservice,
     private readonly retryService: RetryService,
     private readonly prismaService: PrismaService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   async loadTaxesForUsers() {

@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosError } from 'axios'
@@ -28,7 +28,7 @@ jest.mock('@bratislava/log-nest', () => ({
   ...jest.requireActual<typeof import('@bratislava/log-nest')>(
     '@bratislava/log-nest',
   ),
-  LineLoggerSubservice: jest.fn().mockImplementation(() => ({
+  LineLoggerService: jest.fn().mockImplementation(() => ({
     log: jest.fn(),
     error: jest.fn(),
   })),
@@ -66,7 +66,7 @@ describe('NasesCronService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         NasesCronService,
         {
           provide: ClientsService,

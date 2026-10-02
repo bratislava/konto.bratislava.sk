@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../prisma/prisma.service'
@@ -11,7 +11,7 @@ import {
 export default class TasksConfigSubservice {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   async resetOverpaymentsLookbackDays(): Promise<void> {

@@ -1,5 +1,5 @@
 // TODO - communication state to LEGAL_ENTITY
-import { ErrorFactoryService, LineLoggerSubservice, toLogfmt } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService, toLogfmt } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
@@ -60,7 +60,7 @@ export class UserService {
     private cognitoSubservice: CognitoSubservice,
     private userTierService: UserTierService,
     private norisDeliveryMethodService: NorisDeliveryMethodService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   private async hasChangedDeliveryMethodAfterDeadline(userId: string): Promise<boolean> {

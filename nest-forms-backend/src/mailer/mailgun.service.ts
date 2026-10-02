@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import FormData from 'form-data'
@@ -24,7 +24,7 @@ export default class MailgunService implements Mailer {
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly mailgunHelper: MailgunHelper,
     private readonly prismaService: PrismaService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {
     const mailgun = new Mailgun(FormData)
     this.mailgunClient = mailgun.client({

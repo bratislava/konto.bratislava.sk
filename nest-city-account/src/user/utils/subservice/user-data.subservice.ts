@@ -2,7 +2,7 @@ import {
   ErrorEnum,
   ErrorFactoryService,
   ErrorResponseEnum,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { omit } from 'lodash'
@@ -35,7 +35,7 @@ export class UserDataSubservice {
     private bloomreachOutboxService: BloomreachOutboxService,
     private errorFactoryService: ErrorFactoryService,
     private userIdentitySubservice: UserIdentitySubservice,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   private cognitoDataToDatabaseData(cognitoData: CognitoGetUserData): {

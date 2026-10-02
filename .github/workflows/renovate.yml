@@ -53,4 +53,15 @@ jobs:
           RENOVATE_ONBOARDING: 'false'
           RENOVATE_PLATFORM_COMMIT: enabled
           RENOVATE_DRY_RUN: ${{ env.DRY_RUN == 'true' && 'full' || '' }}
-          LOG_LEVEL: ${{ env.DRY_RUN == 'true' && 'debug' || 'info' }}
+          LOG_LEVEL: info
+          # A short JSON summary of the branches and updates per run, uploaded
+          # below. Much easier to read than the log.
+          RENOVATE_REPORT_TYPE: file
+          RENOVATE_REPORT_PATH: /tmp/renovate-report.json
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: renovate-report
+          path: /tmp/renovate-report.json
+          if-no-files-found: ignore

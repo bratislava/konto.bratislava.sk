@@ -91,7 +91,7 @@ packageExtensions:
 
 peerDependencyRules:
   allowedVersions:
-    # @bratislava/log-nest 1.1.0 caps its NestJS peers at v11. Without this rule
+    # @bratislava/log-nest 1.2.0 caps its NestJS peers at v11. Without this rule
     # it gets its own Nest 11 copy, so its HttpExceptions fail `instanceof` checks
     # against Nest 12's.
     # TODO: Drop these rules once log-nest widens its peer range to include v12.

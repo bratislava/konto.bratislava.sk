@@ -6,6 +6,7 @@ import {
 import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
+import { Simplify } from 'type-fest'
 
 import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
@@ -184,7 +185,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     norisData: TaxTypeToNorisData[TTaxType][],
     year: number,
     options: RequestPostNorisLoadDataOptionsDto,
-  ): Promise<CreateBirthNumbersResponseDto> {
+  ): Promise<Simplify<CreateBirthNumbersResponseDto>> {
     const birthNumbersResult = new Set<string>()
     const {
       prepareOnly = false,
@@ -334,7 +335,6 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
 
     // Include birth numbers found in Noris (regardless of whether they were processed)
     return {
-      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- we are spreading a DTO object, which is not a problem
       ...birthNumbersResult,
       foundInNoris: [...new Set(norisData.map((item) => item.ICO_RC))],
     }

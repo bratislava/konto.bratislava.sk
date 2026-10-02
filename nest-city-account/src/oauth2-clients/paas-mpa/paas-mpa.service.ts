@@ -1,8 +1,8 @@
 import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
-import { BloomreachContactDatabaseService } from '../../bloomreach/contact-database/bloomreach-contact-database.service'
 import { BloomreachOutboxService } from '../../bloomreach/bloomreach-outbox.service'
+import { BloomreachContactDatabaseService } from '../../bloomreach/contact-database/bloomreach-contact-database.service'
 import { CognitoUserAttributesTierEnum } from '../../generated/prisma/enums'
 import { PrismaService } from '../../prisma/prisma.service'
 import { CognitoGetUserData, CognitoUserAttributesEnum } from '../../utils/global-dtos/cognito.dto'

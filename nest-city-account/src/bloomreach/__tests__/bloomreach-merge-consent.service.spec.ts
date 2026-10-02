@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -10,7 +11,6 @@ import {
   ConsentEnum,
 } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import * as bloomreachTypes from '../bloomreach.types'
 import {
   BloomreachCommandDataKind,
@@ -76,7 +76,8 @@ describe('BloomreachMergeConsentService', () => {
           provide: BloomreachOutboxWriterService,
           useValue: createMock<BloomreachOutboxWriterService>(),
         },
-        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        LineLoggerSubservice,
+        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
       ],
     }).compile()
 

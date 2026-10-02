@@ -1,3 +1,9 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+  toLogfmt,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { isAxiosError } from 'axios'
 import dayjs from 'dayjs'
@@ -8,10 +14,6 @@ import {
   BloomreachOutboxStatus,
 } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BloomreachConsentActionEnum,
   Consent,
@@ -59,16 +61,13 @@ function normalizeIdValues(value: string | string[] | null | undefined): string[
  */
 @Injectable()
 export class BloomreachMergeConsentService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly exportService: BloomreachExportService,
     private readonly outboxWriter: BloomreachOutboxWriterService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
-  ) {
-    this.logger = new LineLoggerSubservice(BloomreachMergeConsentService.name)
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   /**
    * Checks whether the given outbox entry is about to merge the customer with
@@ -83,16 +82,16 @@ export class BloomreachMergeConsentService {
       await this.queueConsentsSurvivingMerge(entry)
       return true
     } catch (error) {
-      const console = toLogfmt({ entryId: entry.id, externalId: entry.externalId })
+      const console = { entryId: entry.id, externalId: entry.externalId }
       this.logger.error(
         isAxiosError(error)
-          ? this.throwerErrorGuard.fromAxiosError(error, { console })
-          : this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              'Bloomreach merge consent check failed',
+          ? this.errorFactoryService.fromAxiosError(error, { console })
+          : this.errorFactoryService.InternalServerErrorException({
+              errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+              message: 'Bloomreach merge consent check failed',
               console,
-              error
-            )
+              error,
+            })
       )
       return false
     }
@@ -104,11 +103,12 @@ export class BloomreachMergeConsentService {
     }
 
     if (!isBloomreachCustomerData(entry.commandData)) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Bloomreach outbox entry has commandName CUSTOMERS but commandData is not customer command data',
-        toLogfmt({ entryId: entry.id, externalId: entry.externalId })
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message:
+          'Bloomreach outbox entry has commandName CUSTOMERS but commandData is not customer command data',
+        console: { entryId: entry.id, externalId: entry.externalId },
+      })
     }
 
     const commandData = entry.commandData

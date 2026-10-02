@@ -1,12 +1,12 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
 import { bloomreachOutboxFactory } from '../../__tests__/factories/bloomreachOutbox.factory'
-import { expectObjectContaining } from '../../__tests__/jest-matchers'
+import { expectObjectContaining, expectStringContaining } from '../../__tests__/jest-matchers'
 import { BloomreachCommandName } from '../../generated/prisma/enums'
 import { PrismaService } from '../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
   BloomreachCommandDataKind,
   BloomreachCommandNameEnum,
@@ -19,7 +19,7 @@ import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
 describe('BloomreachOutboxWriterService', () => {
   let service: BloomreachOutboxWriterService
   let payloadBuilder: jest.Mocked<BloomreachPayloadBuilder>
-  let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
+  let errorFactoryService: jest.Mocked<ErrorFactoryService>
 
   const externalId = 'external-id'
   // Newer/older relative to each other - what actually matters to the merge
@@ -59,13 +59,14 @@ describe('BloomreachOutboxWriterService', () => {
         BloomreachOutboxWriterService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: BloomreachPayloadBuilder, useValue: createMock<BloomreachPayloadBuilder>() },
-        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        LineLoggerSubservice,
+        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
       ],
     }).compile()
 
     service = module.get<BloomreachOutboxWriterService>(BloomreachOutboxWriterService)
     payloadBuilder = module.get(BloomreachPayloadBuilder)
-    throwerErrorGuard = module.get(ThrowerErrorGuard)
+    errorFactoryService = module.get(ErrorFactoryService)
 
     prismaMock.$transaction.mockImplementation(async (fn) => fn(prismaMock))
   })
@@ -142,14 +143,14 @@ describe('BloomreachOutboxWriterService', () => {
       prismaMock.bloomreachOutbox.create.mockRejectedValue(duplicatePendingError)
 
       // What matters here is that the failure was routed through
-      // throwerErrorGuard with the right context, not what that guard's
+      // errorFactoryService with the right context, not what that guard's
       // (auto-mocked) return value happens to be.
       await expect(service.queueCustomerCommand(externalId)).rejects.toBeDefined()
-      expect(throwerErrorGuard.InternalServerErrorException).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.stringContaining('bloomreach_outbox_customers_pending_key'),
-        expect.anything(),
-        duplicatePendingError
+      expect(errorFactoryService.InternalServerErrorException).toHaveBeenCalledWith(
+        expectObjectContaining({
+          message: expectStringContaining('bloomreach_outbox_customers_pending_key'),
+          error: duplicatePendingError,
+        })
       )
     })
 
@@ -163,7 +164,7 @@ describe('BloomreachOutboxWriterService', () => {
       prismaMock.bloomreachOutbox.create.mockRejectedValue(terminalOverrideError)
 
       await expect(service.queueCustomerCommand(externalId)).resolves.toBeUndefined()
-      expect(throwerErrorGuard.InternalServerErrorException).not.toHaveBeenCalled()
+      expect(errorFactoryService.InternalServerErrorException).not.toHaveBeenCalled()
     })
 
     it('should wrap a terminal-downgrade update failure instead of letting it propagate raw', async () => {
@@ -178,11 +179,11 @@ describe('BloomreachOutboxWriterService', () => {
       prismaMock.bloomreachOutbox.update.mockRejectedValue(downgradeError)
 
       await expect(service.queueCustomerCommand(externalId)).rejects.toBeDefined()
-      expect(throwerErrorGuard.InternalServerErrorException).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.stringContaining('downgrade a terminal outbox entry'),
-        expect.anything(),
-        downgradeError
+      expect(errorFactoryService.InternalServerErrorException).toHaveBeenCalledWith(
+        expectObjectContaining({
+          message: expectStringContaining('downgrade a terminal outbox entry'),
+          error: downgradeError,
+        })
       )
     })
 
@@ -192,7 +193,7 @@ describe('BloomreachOutboxWriterService', () => {
       prismaMock.bloomreachOutbox.create.mockRejectedValue(new Error('connection reset'))
 
       await expect(service.queueCustomerCommand(externalId)).rejects.toThrow('connection reset')
-      expect(throwerErrorGuard.InternalServerErrorException).not.toHaveBeenCalled()
+      expect(errorFactoryService.InternalServerErrorException).not.toHaveBeenCalled()
     })
   })
 
@@ -318,7 +319,7 @@ describe('BloomreachOutboxWriterService', () => {
       prismaMock.bloomreachOutbox.create.mockRejectedValue(terminalOverrideError)
 
       await expect(service.queueConsentEvents([], externalId)).resolves.toBeUndefined()
-      expect(throwerErrorGuard.InternalServerErrorException).not.toHaveBeenCalled()
+      expect(errorFactoryService.InternalServerErrorException).not.toHaveBeenCalled()
     })
 
     it('should wrap a duplicate-pending-event create failure as a locking bug', async () => {
@@ -331,11 +332,11 @@ describe('BloomreachOutboxWriterService', () => {
       prismaMock.bloomreachOutbox.create.mockRejectedValue(duplicatePendingError)
 
       await expect(service.queueConsentEvents([], externalId)).rejects.toBeDefined()
-      expect(throwerErrorGuard.InternalServerErrorException).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.stringContaining('bloomreach_outbox_events_pending_key'),
-        expect.anything(),
-        duplicatePendingError
+      expect(errorFactoryService.InternalServerErrorException).toHaveBeenCalledWith(
+        expectObjectContaining({
+          message: expectStringContaining('bloomreach_outbox_events_pending_key'),
+          error: duplicatePendingError,
+        })
       )
     })
 
@@ -365,11 +366,11 @@ describe('BloomreachOutboxWriterService', () => {
       prismaMock.bloomreachOutbox.update.mockRejectedValue(downgradeError)
 
       await expect(service.queueConsentEvents([], externalId)).rejects.toBeDefined()
-      expect(throwerErrorGuard.InternalServerErrorException).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.stringContaining('downgrade a terminal outbox entry'),
-        expect.anything(),
-        downgradeError
+      expect(errorFactoryService.InternalServerErrorException).toHaveBeenCalledWith(
+        expectObjectContaining({
+          message: expectStringContaining('downgrade a terminal outbox entry'),
+          error: downgradeError,
+        })
       )
     })
   })

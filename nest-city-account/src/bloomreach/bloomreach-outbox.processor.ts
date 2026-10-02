@@ -309,11 +309,12 @@ export class BloomreachOutboxProcessor {
               !isBloomreachCustomerData(commandData) ||
               !isBloomreachCustomerData(newer.commandData)
             ) {
-              throw this.throwerErrorGuard.InternalServerErrorException(
-                ErrorsEnum.INTERNAL_SERVER_ERROR,
-                'Bloomreach outbox entry has commandName CUSTOMERS but commandData is not customer command data',
-                toLogfmt({ entryId: entry.id, externalId: entry.externalId })
-              )
+              throw this.errorFactoryService.InternalServerErrorException({
+                errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+                message:
+                  'Bloomreach outbox entry has commandName CUSTOMERS but commandData is not customer command data',
+                console: { entryId: entry.id, externalId: entry.externalId },
+              })
             }
 
             const merged = mergeCustomerCommandData(commandData, newer.commandData)
@@ -326,16 +327,17 @@ export class BloomreachOutboxProcessor {
               if (!isTerminalDowngradeError(error)) {
                 throw error
               }
-              throw this.throwerErrorGuard.InternalServerErrorException(
-                ErrorsEnum.INTERNAL_SERVER_ERROR,
-                'Attempted to downgrade a terminal outbox entry while merging a superseded entry - mergeCustomerCommandData should have prevented this, investigate',
-                toLogfmt({
+              throw this.errorFactoryService.InternalServerErrorException({
+                errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+                message:
+                  'Attempted to downgrade a terminal outbox entry while merging a superseded entry - mergeCustomerCommandData should have prevented this, investigate',
+                console: {
                   entryId: entry.id,
                   newerEntryId: newer.id,
                   externalId: entry.externalId,
-                }),
-                error
-              )
+                },
+                error,
+              })
             }
           } else if (entry.isTerminal && !newer.isTerminal) {
             // A terminal (anonymize) reject being superseded must still win

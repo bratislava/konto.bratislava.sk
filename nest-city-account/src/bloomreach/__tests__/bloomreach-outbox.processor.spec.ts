@@ -34,7 +34,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>
 describe('BloomreachOutboxProcessor', () => {
   let processor: BloomreachOutboxProcessor
   let mergeConsentService: jest.Mocked<BloomreachMergeConsentService>
-  let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
+  let errorFactoryService: jest.Mocked<ErrorFactoryService>
 
   const now = new Date('2026-03-26T12:00:00Z')
 
@@ -98,7 +98,7 @@ describe('BloomreachOutboxProcessor', () => {
 
     processor = module.get<BloomreachOutboxProcessor>(BloomreachOutboxProcessor)
     mergeConsentService = module.get(BloomreachMergeConsentService)
-    throwerErrorGuard = module.get(ThrowerErrorGuard)
+    errorFactoryService = module.get(ErrorFactoryService)
     // Default: no stale PROCESSING entries to recover
     prismaMock.bloomreachOutbox.findMany.mockResolvedValue([])
     prismaMock.$transaction.mockImplementation(async (fn) => fn(prismaMock))
@@ -410,11 +410,11 @@ describe('BloomreachOutboxProcessor', () => {
       prismaMock.bloomreachOutbox.update.mockRejectedValueOnce(downgradeError)
 
       await expect(processor.processOutbox()).rejects.toBeDefined()
-      expect(throwerErrorGuard.InternalServerErrorException).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.stringContaining('downgrade a terminal outbox entry'),
-        expect.anything(),
-        downgradeError
+      expect(errorFactoryService.InternalServerErrorException).toHaveBeenCalledWith(
+        expectObjectContaining({
+          message: expectStringContaining('downgrade a terminal outbox entry'),
+          error: downgradeError,
+        })
       )
     })
 

@@ -1,11 +1,13 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+  toLogfmt,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { BloomreachCommandName, BloomreachOutboxStatus } from '../generated/prisma/enums'
 import { PrismaService } from '../prisma/prisma.service'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BloomreachCustomerCommandData,
   BloomreachEventCommandData,
@@ -29,15 +31,12 @@ import { lockTransactionWithKey } from './utils/outbox-lock.utils'
 
 @Injectable()
 export class BloomreachOutboxWriterService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly payloadBuilder: BloomreachPayloadBuilder,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
-  ) {
-    this.logger = new LineLoggerSubservice(BloomreachOutboxWriterService.name)
-  }
+    private readonly errorFactoryService: ErrorFactoryService,
+    private readonly logger: LineLoggerSubservice
+  ) {}
 
   async queueCustomerCommand(externalId: string, phoneNumber?: string): Promise<void> {
     const { commandData } = await this.payloadBuilder.buildCustomerCommand(externalId, phoneNumber)
@@ -124,11 +123,12 @@ export class BloomreachOutboxWriterService {
       }
 
       if (!isBloomreachEventCommandData(existing.commandData)) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Bloomreach outbox entry has commandName CUSTOMERS_EVENTS but commandData is not event command data',
-          toLogfmt({ externalId, entryId: existing.id })
-        )
+        throw this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message:
+            'Bloomreach outbox entry has commandName CUSTOMERS_EVENTS but commandData is not event command data',
+          console: { externalId, entryId: existing.id },
+        })
       }
 
       const existingData = existing.commandData
@@ -213,12 +213,13 @@ export class BloomreachOutboxWriterService {
     if (!isTerminalDowngradeError(error)) {
       throw error
     }
-    throw this.throwerErrorGuard.InternalServerErrorException(
-      ErrorsEnum.INTERNAL_SERVER_ERROR,
-      'Attempted to downgrade a terminal outbox entry - isExistingHigherPriorityEventCommand should have prevented this, investigate',
-      toLogfmt(context),
-      error
-    )
+    throw this.errorFactoryService.InternalServerErrorException({
+      errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+      message:
+        'Attempted to downgrade a terminal outbox entry - isExistingHigherPriorityEventCommand should have prevented this, investigate',
+      console: context,
+      error,
+    })
   }
 
   private handleEventCreateFailure(
@@ -237,24 +238,26 @@ export class BloomreachOutboxWriterService {
     if (!isDuplicatePendingEventError(error)) {
       throw error
     }
-    throw this.throwerErrorGuard.InternalServerErrorException(
-      ErrorsEnum.INTERNAL_SERVER_ERROR,
-      'bloomreach_outbox_events_pending_key violated - lockTransactionWithKey should have prevented this, investigate a locking bug',
-      toLogfmt(context),
-      error
-    )
+    throw this.errorFactoryService.InternalServerErrorException({
+      errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+      message:
+        'bloomreach_outbox_events_pending_key violated - lockTransactionWithKey should have prevented this, investigate a locking bug',
+      console: context,
+      error,
+    })
   }
 
   private handleCustomerDowngradeFailure(error: unknown, externalId: string): void {
     if (!isTerminalDowngradeError(error)) {
       throw error
     }
-    throw this.throwerErrorGuard.InternalServerErrorException(
-      ErrorsEnum.INTERNAL_SERVER_ERROR,
-      'Attempted to downgrade a terminal outbox entry - mergeCustomerCommandData should have prevented this, investigate',
-      toLogfmt({ externalId }),
-      error
-    )
+    throw this.errorFactoryService.InternalServerErrorException({
+      errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+      message:
+        'Attempted to downgrade a terminal outbox entry - mergeCustomerCommandData should have prevented this, investigate',
+      console: { externalId },
+      error,
+    })
   }
 
   private handleCustomerCreateFailure(error: unknown, externalId: string): void {
@@ -269,11 +272,12 @@ export class BloomreachOutboxWriterService {
     if (!isDuplicatePendingCustomerError(error)) {
       throw error
     }
-    throw this.throwerErrorGuard.InternalServerErrorException(
-      ErrorsEnum.INTERNAL_SERVER_ERROR,
-      'bloomreach_outbox_customers_pending_key violated - lockTransactionWithKey should have prevented this, investigate a locking bug',
-      toLogfmt({ externalId }),
-      error
-    )
+    throw this.errorFactoryService.InternalServerErrorException({
+      errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+      message:
+        'bloomreach_outbox_customers_pending_key violated - lockTransactionWithKey should have prevented this, investigate a locking bug',
+      console: { externalId },
+      error,
+    })
   }
 }

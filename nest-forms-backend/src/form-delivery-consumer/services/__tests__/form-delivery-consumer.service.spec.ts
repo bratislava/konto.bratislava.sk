@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Nack } from '@golevelup/nestjs-rabbitmq'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -18,7 +19,6 @@ import GinisService from '../../../ginis/ginis.service'
 import MailgunService from '../../../mailer/mailgun.service'
 import PrismaService from '../../../prisma/prisma.service'
 import RabbitmqClientService from '../../../rabbitmq-client/rabbitmq-client.service'
-import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import rabbitmqRequeueDelay from '../../../utils/handlers/rabbitmq.handlers'
 import EmailFormsService from '../email-forms.service'
 import FormDeliveryConsumerService from '../form-delivery-consumer.service'
@@ -38,6 +38,7 @@ describe('FormDeliveryConsumerService', () => {
     // TODO refactor to use imports
     const app: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         FormDeliveryConsumerService,
         {
           provide: RabbitmqClientService,
@@ -60,8 +61,8 @@ describe('FormDeliveryConsumerService', () => {
           useValue: createMock<ConvertPdfService>(),
         },
         {
-          provide: ThrowerErrorGuard,
-          useValue: createMock<ThrowerErrorGuard>(),
+          provide: ErrorFactoryService,
+          useValue: createMock<ErrorFactoryService>(),
         },
       ],
     }).compile()

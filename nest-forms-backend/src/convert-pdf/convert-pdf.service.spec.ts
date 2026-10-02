@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import {
@@ -19,7 +20,6 @@ import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import { PDF_EXPORT_FILE_NAME } from '../utils/files'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import ConvertPdfService from './convert-pdf.service'
 
 jest.mock('../files/files.service')
@@ -59,6 +59,7 @@ describe('ConvertPdfService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),
@@ -92,7 +93,7 @@ describe('ConvertPdfService', () => {
           },
         },
         ScannerClientService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: FormAccessService,

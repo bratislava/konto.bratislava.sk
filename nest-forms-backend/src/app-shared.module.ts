@@ -1,3 +1,10 @@
+import {
+  AppLoggerMiddleware,
+  birthNumberRedactor,
+  emailRedactor,
+  LogSanitizationModule,
+  NestLoggingModule,
+} from '@bratislava/log-nest'
 import { BullModule } from '@nestjs/bull'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ScheduleModule } from '@nestjs/schedule'
@@ -7,11 +14,23 @@ import BaConfigService from './config/ba-config.service'
 import FormValidatorRegistryModule from './form-validator-registry/form-validator-registry.module'
 import { MinioClientModule } from './minio-client/minio-client.module'
 import PrismaModule from './prisma/prisma.module'
-import AppLoggerMiddleware from './utils/middlewares/logger.service'
+import alertReporting from './utils/constants/error.alerts'
 
 @Module({
   imports: [
     BaConfigModule,
+    NestLoggingModule.forRoot({ alertReporting }),
+    LogSanitizationModule.forRoot({
+      redactors: [emailRedactor, birthNumberRedactor],
+      allowShape: {
+        message: true,
+        error: true,
+        statusCode: true,
+        status: true,
+        errorName: true,
+      },
+      onDisallowed: 'redact',
+    }),
     MinioClientModule,
     PrismaModule,
     FormValidatorRegistryModule,

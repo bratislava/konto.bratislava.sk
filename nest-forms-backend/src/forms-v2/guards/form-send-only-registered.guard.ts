@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
@@ -9,14 +10,13 @@ import {
 } from '../../forms/forms.errors.enum'
 import FormRegistrationStatusRepository from '../../nases/repositories/form-registration-status.repository'
 import PrismaService from '../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 
 @Injectable()
 export class FormSendOnlyRegisteredGuard implements CanActivate {
   constructor(
     private readonly formRegistrationStatusRepository: FormRegistrationStatusRepository,
     private readonly prismaService: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -52,11 +52,11 @@ export class FormSendOnlyRegisteredGuard implements CanActivate {
       )
 
     if (!isRegistered) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        FormsErrorsEnum.FORM_NOT_REGISTERED_IN_SLOVENSKO_SK,
-        FormsErrorsResponseEnum.FORM_NOT_REGISTERED_IN_SLOVENSKO_SK,
-        `Form definition with slug ${form.formDefinitionSlug}, pospId ${formDefinition.pospID}, pospVersion ${formDefinition.pospVersion} is not registered in slovensko.sk.`,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_REGISTERED_IN_SLOVENSKO_SK,
+        message: FormsErrorsResponseEnum.FORM_NOT_REGISTERED_IN_SLOVENSKO_SK,
+        console: `Form definition with slug ${form.formDefinitionSlug}, pospId ${formDefinition.pospID}, pospVersion ${formDefinition.pospVersion} is not registered in slovensko.sk.`,
+      })
     }
 
     return true

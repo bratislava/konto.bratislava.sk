@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test } from '@nestjs/testing'
 
@@ -8,7 +9,6 @@ import { FormAccessService } from '../../forms-v2/services/form-access.service'
 import { Files } from '../../generated/prisma/client'
 import { MinioStorageService } from '../../minio-storage/minio-storage.service'
 import PrismaService from '../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import FilesHelper from '../files.helper'
 import FilesService from '../files.service'
 
@@ -20,6 +20,7 @@ describe('FilesService', () => {
   beforeEach(async () => {
     const app = await Test.createTestingModule({
       providers: [
+        LineLoggerSubservice,
         FilesService,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -36,7 +37,7 @@ describe('FilesService', () => {
           provide: FormAccessService,
           useValue: createMock<FormAccessService>(),
         },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
       ],
     }).compile()
 

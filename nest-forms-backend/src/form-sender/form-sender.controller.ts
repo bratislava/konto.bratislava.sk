@@ -1,3 +1,10 @@
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerSubservice,
+  LogAllowList,
+} from '@bratislava/log-nest'
 import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
@@ -20,12 +27,6 @@ import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
 import { FormSendOnlyRegisteredGuard } from '../forms-v2/guards/form-send-only-registered.guard'
 import NasesContactsService from '../nases/services/nases.contacts.service'
 import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { EidUpdateSendFormRequestDto } from './dtos/requests.dto'
 import { SendFormResponseDto } from './dtos/responses.dto'
 import { FormSenderService } from './form-sender.service'
@@ -34,16 +35,13 @@ import { FormSenderService } from './form-sender.service'
 @ApiBearerAuth()
 @Controller('form-sender')
 export default class FormSenderController {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly formsService: FormsService,
     private readonly formSenderService: FormSenderService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly nasesContactsService: NasesContactsService,
-  ) {
-    this.logger = new LineLoggerSubservice(FormSenderController.name)
-  }
+    private readonly logger: LineLoggerSubservice,
+  ) {}
 
   @ApiOperation({
     summary: '',
@@ -64,6 +62,7 @@ export default class FormSenderController {
     FormDefinitionMustBeEnabledGuard,
     FormMustBeEditableGuard,
   )
+  @LogAllowList({ id: true, state: true })
   @Post('send-and-update-form/:formId')
   async sendAndUpdateForm(
     @Body() data: UpdateFormRequestDto,
@@ -92,6 +91,7 @@ export default class FormSenderController {
     FormDefinitionMustBeEnabledGuard,
     FormMustBeEditableGuard,
   )
+  @LogAllowList({ id: true, state: true })
   @Post('eid/send-and-update-form/:formId')
   async sendAndUpdateFormEid(
     @Body() data: EidUpdateSendFormRequestDto,
@@ -100,10 +100,10 @@ export default class FormSenderController {
   ): Promise<SendFormResponseDto> {
     const jwtTest = this.formSenderService.createUserJwtToken(data.eidToken)
     if ((await this.nasesContactsService.getUpvsIdentity(jwtTest)) === null) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+      })
     }
     const nasesUser = jwt.decode(data.eidToken, {
       json: true,

@@ -1,5 +1,10 @@
 import { IncomingHttpHeaders } from 'node:http'
 
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LogAllowList,
+} from '@bratislava/log-nest'
 import { Controller, Get, Headers, UseGuards } from '@nestjs/common'
 import {
   ApiOkResponse,
@@ -11,8 +16,6 @@ import {
 import AdminGuard from '../auth/guards/admin.guard'
 import { ValidateFormRegistrationsResultDto } from '../nases/dtos/responses.dto'
 import NasesCronService from '../nases/services/nases.cron.service'
-import { ErrorsEnum } from '../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import AdminService from './admin.service'
 
 @ApiTags('ADMIN')
@@ -21,7 +24,7 @@ import AdminService from './admin.service'
 export default class AdminController {
   constructor(
     private readonly adminService: AdminService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly nasesCronService: NasesCronService,
   ) {}
 
@@ -67,10 +70,10 @@ export default class AdminController {
   @Get('eid-jwt')
   getEidJwt(@Headers() head: IncomingHttpHeaders): string {
     if (!head.authorization) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        'Authorization not provided',
-      )
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+        message: 'Authorization not provided',
+      })
     }
     return this.adminService.createUserJwtToken(head.authorization)
   }
@@ -85,6 +88,7 @@ export default class AdminController {
     type: ValidateFormRegistrationsResultDto,
   })
   @UseGuards(AdminGuard)
+  @LogAllowList(true)
   @Get('check-form-registrations-in-nases')
   async checkFormsRegistrationsInNases(): Promise<ValidateFormRegistrationsResultDto> {
     return this.nasesCronService.validateFormRegistrations()

@@ -1,5 +1,10 @@
 import { Readable } from 'node:stream'
 
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerSubservice,
+} from '@bratislava/log-nest'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import * as jwt from 'jsonwebtoken'
@@ -24,9 +29,6 @@ import {
 } from '../generated/prisma/client'
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
-import { ErrorsEnum } from '../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BufferedFileDto,
   DownloadTokenResponseDataDto,
@@ -42,8 +44,6 @@ import FilesHelper from './files.helper'
 
 @Injectable()
 export default class FilesService {
-  private readonly logger: LineLoggerSubservice
-
   private readonly jwtSecret: string
 
   constructor(
@@ -53,10 +53,10 @@ export default class FilesService {
     @Inject(forwardRef(() => FormsService))
     private readonly formsService: FormsService,
     private filesHelper: FilesHelper,
-    private throwerErrorGuard: ThrowerErrorGuard,
+    private errorFactoryService: ErrorFactoryService,
     private readonly formAccessService: FormAccessService,
+    private readonly logger: LineLoggerSubservice,
   ) {
-    this.logger = new LineLoggerSubservice('FilesService')
     this.jwtSecret = this.baConfigService.tokens.jwtSecret
   }
 
@@ -69,19 +69,18 @@ export default class FilesService {
         },
       })
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.DATABASE_ERROR,
-        'Error while checking if file exists in the database.',
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.DATABASE_ERROR,
+        message: 'Error while checking if file exists in the database.',
         error,
-      )
+      })
     }
 
     if (!file) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FilesErrorsEnum.FILE_NOT_FOUND_ERROR,
-        `File with fileId: ${fileId} does not exist in the database.`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FilesErrorsEnum.FILE_NOT_FOUND_ERROR,
+        message: `File with fileId: ${fileId} does not exist in the database.`,
+      })
     }
     return file
   }
@@ -103,12 +102,11 @@ export default class FilesService {
         },
       })
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.DATABASE_ERROR,
-        'Error while checking if file exists in the database.',
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.DATABASE_ERROR,
+        message: 'Error while checking if file exists in the database.',
         error,
-      )
+      })
     }
 
     return files
@@ -128,12 +126,11 @@ export default class FilesService {
         },
       })
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.DATABASE_ERROR,
-        'Error while checking if file exists in the database.',
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.DATABASE_ERROR,
+        message: 'Error while checking if file exists in the database.',
         error,
-      )
+      })
     }
 
     return files.map((file) => ({
@@ -152,10 +149,10 @@ export default class FilesService {
     let file: Files | null
 
     if (!isValidScanStatus(status)) {
-      throw this.throwerErrorGuard.NotAcceptableException(
-        FilesErrorsEnum.FILE_WRONG_STATUS_NOT_ACCEPTED_ERROR,
-        `Invalid Files status: ${status}. Unable to save.`,
-      )
+      throw this.errorFactoryService.NotAcceptableException({
+        errorEnum: FilesErrorsEnum.FILE_WRONG_STATUS_NOT_ACCEPTED_ERROR,
+        message: `Invalid Files status: ${status}. Unable to save.`,
+      })
     }
 
     file = await this.prisma.files.findFirst({
@@ -165,10 +162,10 @@ export default class FilesService {
     })
 
     if (!file) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FilesErrorsEnum.FILE_BY_SCANNERID_NOT_FOUND_ERROR,
-        `File with scannerId: ${scannerId}, does not exist in the database.`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FilesErrorsEnum.FILE_BY_SCANNERID_NOT_FOUND_ERROR,
+        message: `File with scannerId: ${scannerId}, does not exist in the database.`,
+      })
     }
 
     try {
@@ -181,16 +178,15 @@ export default class FilesService {
         },
       })
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.DATABASE_ERROR,
-        'Error while updating file status in the database.',
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.DATABASE_ERROR,
+        message: 'Error while updating file status in the database.',
         error,
-      )
+      })
     }
 
     this.logger.debug(
-      `Scanner status update: File ${file.minioFileName} was updated with status: ${status}`,
+      `Scanner status update: File ${file.id} was updated with status: ${status}`,
     )
     return {
       ...file,
@@ -207,20 +203,20 @@ export default class FilesService {
     const fileName = data.filename
     const fileId = data.id
     this.logger.log(
-      `Received file upload request for form ${formId} with filename ${fileName}.`,
+      `Received file upload request for form ${formId} with file id ${fileId}.`,
     )
     if (!bufferedFile) {
-      throw this.throwerErrorGuard.BadRequestException(
-        FilesErrorsEnum.NO_FILE_UPLOAD_DATA_ERROR,
-        FilesErrorsResponseEnum.NO_FILE_UPLOAD_DATA_ERROR,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: FilesErrorsEnum.NO_FILE_UPLOAD_DATA_ERROR,
+        message: FilesErrorsResponseEnum.NO_FILE_UPLOAD_DATA_ERROR,
+      })
     }
 
     if (bufferedFile.size === 0) {
-      throw this.throwerErrorGuard.BadRequestException(
-        FilesErrorsEnum.FILE_SIZE_ZERO_ERROR,
-        `${FilesErrorsResponseEnum.FILE_SIZE_ZERO_ERROR} Received file size: ${bufferedFile.size}`,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: FilesErrorsEnum.FILE_SIZE_ZERO_ERROR,
+        message: `${FilesErrorsResponseEnum.FILE_SIZE_ZERO_ERROR} Received file size: ${bufferedFile.size}`,
+      })
     }
 
     if (
@@ -229,27 +225,27 @@ export default class FilesService {
         bufferedFile.originalname,
       )
     ) {
-      throw this.throwerErrorGuard.BadRequestException(
-        FilesErrorsEnum.FILE_MIME_TYPE_IS_NOT_SUPPORTED_ERROR,
-        `${FilesErrorsResponseEnum.FILE_MIME_TYPE_IS_NOT_SUPPORTED_ERROR} Received file mimetype: ${bufferedFile.mimetype}`,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: FilesErrorsEnum.FILE_MIME_TYPE_IS_NOT_SUPPORTED_ERROR,
+        message: `${FilesErrorsResponseEnum.FILE_MIME_TYPE_IS_NOT_SUPPORTED_ERROR} Received file mimetype: ${bufferedFile.mimetype}`,
+      })
     }
 
     const form = await this.formsService.getUniqueForm(formId)
 
     if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
 
     const maybeFile = await this.filesHelper.checkIfFileExistsInDatabase(fileId)
     if (maybeFile) {
-      throw this.throwerErrorGuard.NotAcceptableException(
-        FilesErrorsEnum.FILE_ID_ALREADY_EXISTS_ERROR,
-        `File id ${fileId} already exists and cannot be created a new one with that id.`,
-      )
+      throw this.errorFactoryService.NotAcceptableException({
+        errorEnum: FilesErrorsEnum.FILE_ID_ALREADY_EXISTS_ERROR,
+        message: `File id ${fileId} already exists and cannot be created a new one with that id.`,
+      })
     }
 
     const formInfo = this.filesHelper.forms2formInfo(form)
@@ -270,13 +266,13 @@ export default class FilesService {
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- upload() type is non-nullable but the if branch throws on unexpected falsy; keeping the guard
     if (!uploadedFile) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FilesErrorsEnum.FILE_ID_ALREADY_EXISTS_ERROR,
-        FilesErrorsResponseEnum.FILE_ID_ALREADY_EXISTS_ERROR,
-      )
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FilesErrorsEnum.FILE_ID_ALREADY_EXISTS_ERROR,
+        message: FilesErrorsResponseEnum.FILE_ID_ALREADY_EXISTS_ERROR,
+      })
     }
 
-    this.logger.log(`File ${minioFileName} was successfully uploaded to Minio.`)
+    this.logger.log(`File ${fileId} was successfully uploaded to Minio.`)
 
     const file = await this.filesHelper.saveFileToDatabase(
       fileId,
@@ -294,10 +290,10 @@ export default class FilesService {
     )
 
     if (!scannerResponse) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        FilesErrorsEnum.SCANNER_NO_RESPONSE_ERROR,
-        FilesErrorsResponseEnum.SCANNER_NO_RESPONSE_ERROR,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: FilesErrorsEnum.SCANNER_NO_RESPONSE_ERROR,
+        message: FilesErrorsResponseEnum.SCANNER_NO_RESPONSE_ERROR,
+      })
     }
 
     return this.filesHelper.updateFile(file, scannerResponse)
@@ -324,27 +320,26 @@ export default class FilesService {
     try {
       decoded = jwt.verify(jwtToken, this.jwtSecret)
     } catch (error) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        FilesErrorsEnum.INVALID_OR_EXPIRED_JWT_TOKEN_ERROR,
-        FilesErrorsResponseEnum.INVALID_OR_EXPIRED_JWT_TOKEN_ERROR,
-        undefined,
+      throw this.errorFactoryService.UnauthorizedException({
+        errorEnum: FilesErrorsEnum.INVALID_OR_EXPIRED_JWT_TOKEN_ERROR,
+        message: FilesErrorsResponseEnum.INVALID_OR_EXPIRED_JWT_TOKEN_ERROR,
         error,
-      )
+      })
     }
 
     // check if decoded is string
     if (typeof decoded === 'string') {
-      throw this.throwerErrorGuard.BadRequestException(
-        FilesErrorsEnum.INVALID_JWT_TOKEN_ERROR,
-        FilesErrorsResponseEnum.INVALID_JWT_TOKEN_ERROR,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: FilesErrorsEnum.INVALID_JWT_TOKEN_ERROR,
+        message: FilesErrorsResponseEnum.INVALID_JWT_TOKEN_ERROR,
+      })
     }
 
     if (decoded.fileId === undefined) {
-      throw this.throwerErrorGuard.BadRequestException(
-        FilesErrorsEnum.NO_FILE_ID_IN_JWT_TOKEN_ERROR,
-        FilesErrorsResponseEnum.NO_FILE_ID_IN_JWT_TOKEN_ERROR,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: FilesErrorsEnum.NO_FILE_ID_IN_JWT_TOKEN_ERROR,
+        message: FilesErrorsResponseEnum.NO_FILE_ID_IN_JWT_TOKEN_ERROR,
+      })
     }
 
     return decoded.fileId as string
@@ -354,15 +349,13 @@ export default class FilesService {
     this.logger.debug(`Received file download request for fileId ${fileId}.`)
     const file = await this.getFile(fileId)
     this.logger.debug(
-      `Minio file name: ${file.minioFileName} was found with scan status: ${file.status}.`,
+      `File ${file.id} was found with scan status: ${file.status}.`,
     )
     const formInfo = this.filesHelper.fileDto2formInfo(file)
     const filePath = this.filesHelper.getPath(formInfo)
     const pathWithMinioFileName = filePath + file.minioFileName
     const bucket = this.filesHelper.getBucketUid(file.status)
-    this.logger.debug(
-      `Downloading from bucket: ${bucket}, file path with minioFileName: ${pathWithMinioFileName}`,
-    )
+    this.logger.debug(`Downloading file ${file.id} from bucket: ${bucket}`)
 
     // download
     return this.minioStorageService.download(bucket, pathWithMinioFileName)
@@ -376,10 +369,10 @@ export default class FilesService {
 
     const form = await this.formsService.getUniqueForm(formId)
     if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
 
     const file = await this.prisma.files.findFirst({
@@ -390,10 +383,10 @@ export default class FilesService {
     })
 
     if (!file) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FilesErrorsEnum.FILE_NOT_FOUND_ERROR,
-        `File with fileId: ${fileId} does not exist or does not belong to form ${formId}.`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FilesErrorsEnum.FILE_NOT_FOUND_ERROR,
+        message: `File with fileId: ${fileId} does not exist or does not belong to form ${formId}.`,
+      })
     }
 
     const payload = { fileId }
@@ -453,12 +446,12 @@ export default class FilesService {
       }
 
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
-          `Form has files in error state. Setting form to ERROR state with error: ${FormError.UNABLE_TO_SCAN_FILES}.`,
-          { formId },
-          result,
-        ),
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
+          message: `Form has files in error state. Setting form to ERROR state with error: ${FormError.UNABLE_TO_SCAN_FILES}.`,
+          console: { formId },
+          error: result,
+        }),
       )
       return result
     }
@@ -484,10 +477,10 @@ export default class FilesService {
 
     /* if we found some file ids that are not in database, throw error */
     if (difference_agaisnt_json.length > 0) {
-      throw this.throwerErrorGuard.BadRequestException(
-        FilesErrorsEnum.FILE_IDS_NOT_FOUND_IN_DB_ERROR,
-        `File ids: ${difference_agaisnt_json.toString()} not found in the database for this form.`,
-      )
+      throw this.errorFactoryService.BadRequestException({
+        errorEnum: FilesErrorsEnum.FILE_IDS_NOT_FOUND_IN_DB_ERROR,
+        message: `File ids: ${difference_agaisnt_json.toString()} not found in the database for this form.`,
+      })
     }
 
     const difference_agaisnt_db = fileUuidsFromDatabase.filter(
@@ -514,22 +507,21 @@ export default class FilesService {
             },
           })
         } catch (error) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.DATABASE_ERROR,
-            'Error while deleting file in the database.',
-            undefined,
+          throw this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.DATABASE_ERROR,
+            message: 'Error while deleting file in the database.',
             error,
-          )
+          })
         }
 
         if (file.scannerId) {
           const deleteScannerStatus =
             await this.filesHelper.deleteFileFromScannerClient(file.scannerId)
           if (deleteScannerStatus === undefined) {
-            throw this.throwerErrorGuard.InternalServerErrorException(
-              FilesErrorsEnum.FILE_DELETE_FROM_SCANNER_ERROR,
-              FilesErrorsResponseEnum.FILE_DELETE_FROM_SCANNER_ERROR,
-            )
+            throw this.errorFactoryService.InternalServerErrorException({
+              errorEnum: FilesErrorsEnum.FILE_DELETE_FROM_SCANNER_ERROR,
+              message: FilesErrorsResponseEnum.FILE_DELETE_FROM_SCANNER_ERROR,
+            })
           }
         }
 
@@ -537,18 +529,18 @@ export default class FilesService {
         const filePath = this.filesHelper.getPath(formInfo)
         const pathWithMinioFileName = filePath + file.minioFileName
         const bucket = this.filesHelper.getBucketUid(file.status)
-        this.logger.debug(
-          `Deleting from bucket: ${bucket}, file path with minioFileName: ${pathWithMinioFileName}`,
-        )
+        this.logger.debug(`Deleting file ${file.id} from bucket: ${bucket}`)
         const deleteStatus = await this.minioStorageService.deleteFile(
           bucket,
           pathWithMinioFileName,
         )
         if (!deleteStatus) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            FilesErrorsEnum.FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-            FilesErrorsResponseEnum.FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-          )
+          throw this.errorFactoryService.InternalServerErrorException({
+            errorEnum:
+              FilesErrorsEnum.FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+            message:
+              FilesErrorsResponseEnum.FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+          })
         }
         this.logger.debug(`File ${fileId} was successfully deleted.`)
       }),

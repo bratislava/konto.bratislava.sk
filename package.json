@@ -11,9 +11,9 @@
     "lint": "turbo run lint"
   },
   "devDependencies": {
-    "turbo": "2.11.3"
+    "turbo": "2.11.5"
   },
-  "packageManager": "pnpm@12.6.0",
+  "packageManager": "pnpm@12.8.1",
   "devEngines": {
     "runtime": {
       "name": "node",
@@ -22,7 +22,7 @@
     },
     "packageManager": {
       "name": "pnpm",
-      "version": "12.6.0",
+      "version": "12.8.1",
       "onFail": "error"
     }
   },

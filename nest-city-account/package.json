@@ -34,7 +34,7 @@
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "3.1095.0",
     "@bratislava/log-nest": "1.1.0",
-    "@golevelup/nestjs-rabbitmq": "9.0.2",
+    "@golevelup/nestjs-rabbitmq": "9.1.0",
     "@keyv/redis": "5.1.6",
     "@nestjs/cache-manager": "12.0.0",
     "@nestjs/common": "12.1.0",
@@ -91,6 +91,7 @@
     "@types/passport-jwt": "4.0.1",
     "@types/supertest": "7.2.0",
     "@types/uuid": "10.0.0",
+    "@typescript-eslint/parser": "8.68.0",
     "dotenv": "17.4.2",
     "eslint": "9.39.4",
     "jest": "30.5.2",
@@ -104,7 +105,8 @@
     "ts-node": "10.9.2",
     "ts-unused-exports": "11.0.1",
     "type-fest": "5.8.0",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.68.0"
   },
   "jest": {
     "moduleFileExtensions": [

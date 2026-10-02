@@ -44,7 +44,7 @@ const theme: ThemeProps = {
   fields: {
     [BaFieldType.CustomComponents]: CustomComponentsFieldRJSF,
     ...defaultFormFields,
-  } satisfies Record<BaFieldType & DefaultFormFieldType, ComponentType<FieldProps>>,
+  } satisfies Record<BaFieldType | DefaultFormFieldType, ComponentType<FieldProps>>,
   templates: {
     ObjectFieldTemplate: BAObjectFieldTemplate,
     ArrayFieldTemplate: BAArrayFieldTemplate,

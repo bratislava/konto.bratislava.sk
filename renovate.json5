@@ -1,6 +1,15 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: ['config:recommended'],
+  // Our own nestjs, prisma, eslint and aws groups below replace these. With
+  // both, a package matched by both rules lands in whichever group is applied
+  // last, so each group would be split across two PRs.
+  ignorePresets: [
+    'group:nestMonorepo',
+    'group:prismaMonorepo',
+    'group:eslintMonorepo',
+    'group:aws-sdk-js-v3Monorepo',
+  ],
   timezone: 'Europe/Bratislava',
   // pnpm rejects versions published too recently (minimumReleaseAge), so a bump
   // of a fresh release would fail to install. Our own packages are exempt there
@@ -27,6 +36,11 @@
       dependencyDashboardApproval: true,
     },
     {
+      description: 'Majors usually need migration work, so they are created only after approval in the Dependency Dashboard.',
+      matchUpdateTypes: ['major'],
+      dependencyDashboardApproval: true,
+    },
+    {
       description: 'Our own packages are exempt from the release age wait, as in pnpm.',
       matchPackageNames: ['@bratislava/*'],
       minimumReleaseAge: null,
@@ -42,6 +56,12 @@
       description: '`pnpm run generate-assets` must be executed after Tailwind update.',
       matchFileNames: ['forms-shared/package.json'],
       matchPackageNames: ['@tailwindcss/postcss', 'tailwindcss', 'postcss'],
+      enabled: false,
+    },
+    {
+      description: 'The @swc/core overrides in pnpm-workspace.yaml pin a version without a Windows bug; they are removed by hand once a fixed release is out.',
+      matchFileNames: ['pnpm-workspace.yaml'],
+      matchPackageNames: ['@swc/core'],
       enabled: false,
     },
     {

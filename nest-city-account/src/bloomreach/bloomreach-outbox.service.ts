@@ -88,7 +88,12 @@ export class BloomreachOutboxService {
         this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Failed to queue consent events',
-          console: { externalId, userType, eventCount: consents.length },
+          console: {
+            externalId,
+            userId,
+            userType,
+            eventCount: consents.length,
+          },
           error,
         })
       )

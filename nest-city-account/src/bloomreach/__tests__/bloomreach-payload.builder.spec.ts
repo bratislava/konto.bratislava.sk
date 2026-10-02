@@ -108,7 +108,8 @@ describe('BloomreachPayloadBuilder', () => {
       expect(contactDbService.upsert).toHaveBeenCalledWith(
         'john@example.com',
         '9001011234',
-        undefined
+        undefined,
+        externalId
       )
     })
 

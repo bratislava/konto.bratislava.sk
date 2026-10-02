@@ -1,4 +1,4 @@
-import { LineLoggerSubservice, toLogfmt } from '@bratislava/log-nest'
+import { LineLoggerSubservice } from '@bratislava/log-nest'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
 import { LookupIdentityFOResult, NasesService } from '../nases/nases.service'
@@ -124,7 +124,11 @@ export class UrgentLookupService {
           outcome: 'failure',
           entityId: entity.entityId,
           reason: 'Missing given_name or family_name in Cognito user data',
-          fields: { externalId: entity.externalId },
+          fields: {
+            externalId: entity.externalId,
+            hasGivenName: !!cognitoUser.given_name,
+            hasFamilyName: !!cognitoUser.family_name,
+          },
         }
       }
 
@@ -140,6 +144,7 @@ export class UrgentLookupService {
           outcome: 'failure',
           entityId: entity.entityId,
           reason: 'Identity lookup returned no URI',
+          fields: { externalId: entity.externalId, upvsStatus: identity.status },
         }
       }
 
@@ -152,11 +157,16 @@ export class UrgentLookupService {
       if (status === HttpStatus.TOO_MANY_REQUESTS) {
         return { outcome: 'rateLimited' }
       }
+      this.logger.warn(
+        'Urgent UPVS identity lookup failed',
+        { physicalEntityId: entity.entityId, externalId: entity.externalId, httpStatus: status },
+        error
+      )
       return {
         outcome: 'failure',
         entityId: entity.entityId,
         reason: 'Lookup failed',
-        fields: { error: toLogfmt(error) },
+        fields: { externalId: entity.externalId, httpStatus: status },
       }
     }
   }
@@ -184,6 +194,7 @@ export class UrgentLookupService {
       event: 'upvs_lookup_rate_limited',
       attempted,
       total,
+      batchSize: this.URGENT_BATCH_SIZE,
       succeeded: run.successes.length,
       failed: run.failedIds.length,
       alert: 1,

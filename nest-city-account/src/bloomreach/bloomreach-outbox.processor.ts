@@ -109,7 +109,13 @@ export class BloomreachOutboxProcessor {
           this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
             message: `${failedEntries.length}/${entries.length} commands failed in batch`,
-            console: { failedIds: failedEntries.map((e) => e.id) },
+            console: {
+              failedIds: failedEntries.map((e) => e.id),
+              failedCount: failedEntries.length,
+              succeededCount: succeededIds.length,
+              batchSize: entries.length,
+              resultCount: response.results.length,
+            },
           })
         )
         await this.revertEntries(
@@ -119,10 +125,19 @@ export class BloomreachOutboxProcessor {
       }
 
       this.logger.log(
-        `Processed batch: ${succeededIds.length} succeeded, ${failedEntries.length} failed`
+        `Processed batch: ${succeededIds.length} succeeded, ${failedEntries.length} failed`,
+        {
+          batchSize: entries.length,
+          succeededCount: succeededIds.length,
+          failedCount: failedEntries.length,
+        }
       )
     } catch (error) {
-      const console = { batchSize: commands.length, entryCount: entries.length }
+      const console = {
+        batchSize: commands.length,
+        entryCount: entries.length,
+        entryIds: entries.map((e) => e.id),
+      }
       if (isAxiosError(error)) {
         this.logger.error(
           this.errorFactoryService.fromAxiosError(error, {
@@ -168,7 +183,12 @@ export class BloomreachOutboxProcessor {
             this.errorFactoryService.InternalServerErrorException({
               errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
               message: `Giving up on entry after ${MAX_ATTEMPTS} attempts`,
-              console: { externalId: entry.externalId, entryId: entry.id },
+              console: {
+                externalId: entry.externalId,
+                entryId: entry.id,
+                attempts: newAttempts,
+                entryCreatedAt: entry.createdAt,
+              },
             })
           )
         }
@@ -196,7 +216,12 @@ export class BloomreachOutboxProcessor {
         this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: `Failed to revert ${revertFailures.length}/${entries.length} entries`,
-          console: { entryIds: entries.map((e) => e.id) },
+          console: {
+            entryIds: entries.map((e) => e.id),
+            failedEntryIds: entries
+              .filter((_, index) => results.at(index)?.status === 'rejected')
+              .map((e) => e.id),
+          },
           error: revertFailures[0].reason,
         })
       )
@@ -291,7 +316,10 @@ export class BloomreachOutboxProcessor {
 
     await this.revertEntries(staleEntries)
 
-    this.logger.warn(`Recovered ${staleEntries.length} stale PROCESSING entries`)
+    this.logger.warn(`Recovered ${staleEntries.length} stale PROCESSING entries`, {
+      staleEntryIds: staleEntries.map((e) => e.id),
+      thresholdMs: STALE_PROCESSING_THRESHOLD_MS,
+    })
   }
 
   private async sendBatch(commands: BloomreachBatchCommand[]): Promise<BloomreachBatchResponse> {

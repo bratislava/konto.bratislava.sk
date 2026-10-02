@@ -1,5 +1,5 @@
 // TODO - communication state to LEGAL_ENTITY
-import { ErrorFactoryService, LineLoggerSubservice, toLogfmt } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
@@ -195,6 +195,7 @@ export class UserService {
       throw this.errorFactoryService.NotFoundException({
         errorEnum: UserErrorsEnum.USER_NOT_FOUND,
         message: UserErrorsResponseEnum.USER_NOT_FOUND,
+        console: { externalId: id },
         error,
       })
     }
@@ -219,6 +220,7 @@ export class UserService {
       throw this.errorFactoryService.NotFoundException({
         errorEnum: UserErrorsEnum.USER_NOT_FOUND,
         message: UserErrorsResponseEnum.USER_NOT_FOUND,
+        console: { externalId: id },
         error,
       })
     }
@@ -244,7 +246,11 @@ export class UserService {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
           message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
-          console: toLogfmt(cognitoUserData),
+          console: {
+            userSub: cognitoUserData.sub,
+            accountType,
+            tier: cognitoUserData[CognitoUserAttributesEnum.TIER],
+          },
         })
     }
   }
@@ -264,6 +270,11 @@ export class UserService {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
           message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          console: {
+            userSub: cognitoUserData.sub,
+            accountType,
+            tier: cognitoUserData[CognitoUserAttributesEnum.TIER],
+          },
         })
     }
   }
@@ -287,6 +298,11 @@ export class UserService {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
           message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          console: {
+            externalId,
+            accountType,
+            tier: cognitoUserData[CognitoUserAttributesEnum.TIER],
+          },
         })
     }
   }
@@ -306,6 +322,7 @@ export class UserService {
           throw this.errorFactoryService.NotFoundException({
             errorEnum: UserErrorsEnum.USER_NOT_FOUND,
             message: `User not found for external ID: ${externalId}`,
+            console: { accountType, tier: cognitoData[CognitoUserAttributesEnum.TIER] },
           })
         }
 
@@ -326,6 +343,7 @@ export class UserService {
           throw this.errorFactoryService.NotFoundException({
             errorEnum: UserErrorsEnum.USER_NOT_FOUND,
             message: `Legal person not found for external ID: ${externalId}`,
+            console: { accountType, tier: cognitoData[CognitoUserAttributesEnum.TIER] },
           })
         }
 
@@ -341,6 +359,11 @@ export class UserService {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
           message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          console: {
+            externalId,
+            accountType,
+            tier: cognitoData[CognitoUserAttributesEnum.TIER],
+          },
         })
     }
   }
@@ -446,6 +469,11 @@ export class UserService {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
           message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          console: {
+            externalId,
+            accountType,
+            tier: cognitoUser[CognitoUserAttributesEnum.TIER],
+          },
         })
     }
 
@@ -467,6 +495,7 @@ export class UserService {
           this.errorFactoryService.InternalServerErrorException({
             errorEnum: CustomErrorNorisTypesEnum.FAILED_TO_REMOVE_DELIVERY_METHOD_FROM_NORIS,
             message: CustomErrorNorisTypesResponseEnum.FAILED_TO_REMOVE_DELIVERY_METHOD_FROM_NORIS,
+            console: { externalId, userId: removedUser.id, accountType },
             error,
           })
         )
@@ -519,8 +548,13 @@ export class UserService {
           let cognitoSuccess = true
           try {
             await this.cognitoSubservice.cognitoDeactivateUser(item.externalId)
-          } catch {
+          } catch (error) {
             cognitoSuccess = false
+            this.logger.warn(
+              'Failed to deactivate Cognito user while marking account as deceased',
+              { externalId: item.externalId },
+              error
+            )
           }
 
           await this.bloomreachOutboxService.anonymizeCustomer(item.externalId)
@@ -584,6 +618,12 @@ export class UserService {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: CustomErrorAdminTypesEnum.TOO_MANY_USERS_VERIFIED_WITH_THE_SAME_TIMESTAMP,
         message: CustomErrorAdminTypesResponseEnum.TOO_MANY_USERS_VERIFIED_WITH_THE_SAME_TIMESTAMP,
+        console: {
+          since,
+          take,
+          limitedTake,
+          sharedTimestamp: users[0].lastVerificationIdentityCard,
+        },
       })
     }
 
@@ -632,6 +672,12 @@ export class UserService {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
           message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          console: {
+            userSub: cognitoUserData.sub,
+            accountType,
+            tier: cognitoUserData[CognitoUserAttributesEnum.TIER],
+            deliveryMethod,
+          },
         })
       }
     }
@@ -668,6 +714,12 @@ export class UserService {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
           message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          console: {
+            userSub: cognitoUserData.sub,
+            accountType,
+            tier: cognitoUserData[CognitoUserAttributesEnum.TIER],
+            consentType,
+          },
         })
     }
   }

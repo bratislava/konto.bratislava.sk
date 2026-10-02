@@ -19,8 +19,12 @@ export class CityAccountSubservice {
     this.logger = new Logger('CityAccountSubservice')
   }
 
+  /**
+   * @param logContext non-PII ids (e.g. taxPayerId) attached to error logs.
+   */
   async getUserDataAdmin(
     birthNumber: string,
+    logContext?: Record<string, unknown>,
   ): Promise<ResponseUserByBirthNumberDto | null> {
     const birthNumberWithoutSlash = birthNumber.replace('/', '')
     try {
@@ -43,6 +47,7 @@ export class CityAccountSubservice {
           this.errorFactoryService.InternalServerErrorException({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
             message: 'Failed to get user data from city account.',
+            console: logContext,
             error,
           }),
         )
@@ -65,6 +70,7 @@ export class CityAccountSubservice {
       this.logger.error(
         this.errorFactoryService.fromAxiosError(error, {
           message: 'Failed to get user data from city account.',
+          console: { ...logContext, status },
         }),
       )
       return null
@@ -73,6 +79,7 @@ export class CityAccountSubservice {
 
   async getUserDataAdminBatch(
     birthNumbers: string[],
+    logContext?: Record<string, unknown>,
   ): Promise<Partial<Record<string, ResponseUserByBirthNumberDto>>> {
     const birthNumbersWithoutSlash = birthNumbers.map((birthNumber) =>
       birthNumber.replaceAll('/', ''),
@@ -88,23 +95,28 @@ export class CityAccountSubservice {
           },
         )
 
-      const result: Record<string, ResponseUserByBirthNumberDto> = {}
-      Object.keys(userDataResult.data.users).forEach((birthNumber) => {
-        const modifiedKey = addSlashToBirthNumber(birthNumber)
-        result[modifiedKey] = userDataResult.data.users[birthNumber]
-      })
-
-      return result
+      return Object.fromEntries(
+        Object.entries(userDataResult.data.users).map(([birthNumber, user]) => [
+          addSlashToBirthNumber(birthNumber, { externalId: user.externalId }),
+          user,
+        ]),
+      )
     } catch (error) {
       if (!isAxiosError(error)) {
         throw this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: 'Failed to get user data batch from city account.',
+          console: { ...logContext, batchSize: birthNumbers.length },
           error,
         })
       }
       throw this.errorFactoryService.fromAxiosError(error, {
         message: 'Failed to get user data batch from city account.',
+        console: {
+          ...logContext,
+          batchSize: birthNumbers.length,
+          status: error.response?.status,
+        },
       })
     }
   }
@@ -117,11 +129,12 @@ export class CityAccountSubservice {
    */
   async getUserDataAdminBatchOptional(
     birthNumbers: string[],
+    logContext?: Record<string, unknown>,
   ): Promise<
     Partial<Record<string, ResponseUserByBirthNumberDto> | undefined>
   > {
     try {
-      return await this.getUserDataAdminBatch(birthNumbers)
+      return await this.getUserDataAdminBatch(birthNumbers, logContext)
     } catch (error) {
       this.logger.error(error)
       return undefined
@@ -142,8 +155,8 @@ export class CityAccountSubservice {
             },
           },
         )
-      const birthNumbers = requestResult.data.birthNumbers.map((bn) =>
-        addSlashToBirthNumber(bn),
+      const birthNumbers = requestResult.data.birthNumbers.map((bn, index) =>
+        addSlashToBirthNumber(bn, { since: since.toISOString(), index }),
       )
       return { birthNumbers, nextSince: new Date(requestResult.data.nextSince) }
     } catch (error) {
@@ -152,11 +165,18 @@ export class CityAccountSubservice {
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message:
             'Failed to get birth numbers for new verified user accounts.',
+          // raw Date: toISOString() would throw here if `since` is invalid
+          console: { since, take },
           error,
         })
       }
       throw this.errorFactoryService.fromAxiosError(error, {
         message: 'Failed to get birth numbers for new verified user accounts.',
+        console: {
+          since,
+          take,
+          status: error.response?.status,
+        },
       })
     }
   }

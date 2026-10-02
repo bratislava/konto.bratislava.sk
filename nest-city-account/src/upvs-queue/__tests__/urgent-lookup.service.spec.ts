@@ -120,12 +120,19 @@ describe('UrgentLookupService', () => {
     jest
       .spyOn(cognitoSubservice, 'getDataFromCognito')
       .mockResolvedValue(cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' }))
-    jest.spyOn(nasesService, 'lookupIdentityFO').mockRejectedValue(new Error('upstream down'))
+    const lookupError = new Error('upstream down')
+    jest.spyOn(nasesService, 'lookupIdentityFO').mockRejectedValue(lookupError)
+    const warnSpy = jest.spyOn(service['logger'], 'warn').mockImplementation(jest.fn())
 
     const result = await service.processUrgentItems()
 
     expect(result.rateLimited).toBe(false)
     expect(result.failures).toEqual([expect.objectContaining({ reason: 'Lookup failed' })])
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Urgent UPVS identity lookup failed',
+      expect.objectContaining({ physicalEntityId: urgentEntity().entityId }),
+      lookupError
+    )
   })
 
   it('stops the run, logs an alert, and persists nothing further on HTTP 429', async () => {

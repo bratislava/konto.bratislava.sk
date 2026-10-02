@@ -78,8 +78,7 @@ export class TasksService {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
         message: CustomErrorTaxTypesResponseEnum.STATE_HOLIDAY_NOT_EXISTS,
-        console:
-          'Please fill in the state holidays for the next year in the `src/tax/utils/unified-tax.utils.ts`. The holidays are used to calculate taxes.',
+        console: `Please fill in the state holidays for the next year (${nextYear}) in the \`src/tax/utils/unified-tax.utils.ts\`. The holidays are used to calculate taxes.`,
       })
     }
   }
@@ -147,6 +146,7 @@ export class TasksService {
     throw this.errorFactoryService.InternalServerErrorException({
       errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
       message: `Number of silenced Noris connection errors in last 24 hours is ${numberOfErrors}.`,
+      console: { threshold: NORIS_SILENT_CONNECTION_ERRORS_THRESHOLD },
     })
   }
 }

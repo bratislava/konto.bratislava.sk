@@ -94,6 +94,12 @@ export class VerificationService {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
         message: SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+        console: {
+          userSub: user.sub,
+          accountType: type,
+          tier: user[CognitoUserAttributesEnum.TIER],
+          targetTier: CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD,
+        },
         error,
       })
     }
@@ -109,6 +115,7 @@ export class VerificationService {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: SendToQueueErrorsEnum.RABBIT_PUSH_DATA_ERROR,
         message: SendToQueueErrorsResponseEnum.RABBIT_PUSH_DATA_ERROR,
+        console: { userSub: user.sub, accountType: type },
         error,
       })
     }
@@ -126,8 +133,12 @@ export class VerificationService {
     queue: RABBIT_MQ.QUEUE,
     errorHandler: async (channel: Channel, message: ConsumeMessage) => {
       channel.reject(message, false)
+      let userSub: string | undefined
+      let accountType: CognitoUserAccountTypesEnum | undefined
       try {
         const data = JSON.parse(message.content.toString()) as RabbitMessageDto
+        userSub = data.msg.user.sub
+        accountType = data.msg.type
         const errorFactoryService = new ErrorFactoryService({ alertReporting })
         const prismaService = new PrismaService(
           getBaConfigInstance(),
@@ -165,7 +176,16 @@ export class VerificationService {
         await bloomreachOutboxService.trackCustomer(data.msg.user.idUser)
       } catch (errorCatch) {
         const logger = new LineLoggerSubservice('RabbitRPC')
-        logger.error('RabbitMQ error handler - catch cognito/parser error', errorCatch)
+        logger.error(
+          'RabbitMQ error handler - catch cognito/parser error',
+          {
+            userSub,
+            accountType,
+            redelivered: message.fields.redelivered,
+            deliveryTag: message.fields.deliveryTag,
+          },
+          errorCatch
+        )
       }
     },
   })
@@ -189,7 +209,10 @@ export class VerificationService {
           break
         }
         default:
-          this.logger.error('Not exists type of RPO or RFO verification', data.msg.user.sub)
+          this.logger.error('Not exists type of RPO or RFO verification', {
+            userSub: data.msg.user.sub,
+            accountType: data.msg.type,
+          })
           return new Nack()
       }
     } catch (error) {
@@ -215,7 +238,12 @@ export class VerificationService {
       newUserData[CognitoUserAttributesEnum.TIER] ===
       CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD
     ) {
-      this.logger.error('COGNITO_ERROR - WRITE TIER IDENTITY_CARD', data.msg.user)
+      this.logger.error('COGNITO_ERROR - WRITE TIER IDENTITY_CARD', {
+        userSub: data.msg.user.sub,
+        accountType: data.msg.type,
+        oldTier: data.msg.user[CognitoUserAttributesEnum.TIER],
+        newTier: newUserData[CognitoUserAttributesEnum.TIER],
+      })
       const userFromDb = await this.verificationDataSubservice.requeuedInVerificationIncrement(
         data.msg.user
       )
@@ -231,24 +259,38 @@ export class VerificationService {
       const firstName = data.msg.user.given_name
       const email = data.msg.user.email
       if (!email) {
-        this.logger.error(
-          "Error - no email sent, couldn't find email in user object: ",
-          JSON.stringify(data.msg.user)
-        )
-      } else {
-        await this.mailgunService.sendEmail('2023-identity-check-successful', {
-          to: email,
-          variables: {
-            firstName: firstName ?? null,
-          },
+        this.logger.error("Error - no email sent, couldn't find email in user object", {
+          userSub: data.msg.user.sub,
+          accountType: data.msg.type,
+          tier: newUserData[CognitoUserAttributesEnum.TIER],
         })
+      } else {
+        await this.mailgunService.sendEmail(
+          '2023-identity-check-successful',
+          {
+            to: email,
+            variables: {
+              firstName: firstName ?? null,
+            },
+          },
+          { userSub: data.msg.user.sub }
+        )
       }
     } catch (error) {
-      this.logger.error('Error while sending verification success email: ', error)
+      this.logger.error(
+        'Error while sending verification success email: ',
+        {
+          userSub: data.msg.user.sub,
+          accountType: data.msg.type,
+          tier: newUserData[CognitoUserAttributesEnum.TIER],
+        },
+        error
+      )
     }
     this.logger.log({
       type: 'ALL GOOD - 200',
-      user: data.msg.user,
+      userSub: data.msg.user.sub,
+      accountType: data.msg.type,
       cognitoData: newUserData[CognitoUserAttributesEnum.TIER],
     })
     return new Nack()
@@ -269,7 +311,13 @@ export class VerificationService {
       newUserData[CognitoUserAttributesEnum.TIER] ===
       CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD
     ) {
-      this.logger.error('COGNITO_ERROR - WRITE TIER NOT_VERIFIED', data.msg.user)
+      this.logger.error('COGNITO_ERROR - WRITE TIER NOT_VERIFIED', {
+        userSub: data.msg.user.sub,
+        accountType: data.msg.type,
+        oldTier: data.msg.user[CognitoUserAttributesEnum.TIER],
+        newTier: newUserData[CognitoUserAttributesEnum.TIER],
+        reason: verification.reason,
+      })
       const userFromDb = await this.verificationDataSubservice.requeuedInVerificationIncrement(
         data.msg.user
       )
@@ -285,26 +333,42 @@ export class VerificationService {
       const firstName = data.msg.user.given_name
       const email = data.msg.user.email
       if (!email) {
-        this.logger.error(
-          "Error - no email sent, couldn't find given_name or email in user object: ",
-          JSON.stringify(data.msg.user)
-        )
-      } else {
-        await this.mailgunService.sendEmail('2023-identity-check-rejected', {
-          to: email,
-          variables: {
-            firstName: firstName ?? null,
-          },
+        this.logger.error("Error - no email sent, couldn't find email in user object", {
+          userSub: data.msg.user.sub,
+          accountType: data.msg.type,
+          tier: newUserData[CognitoUserAttributesEnum.TIER],
         })
+      } else {
+        await this.mailgunService.sendEmail(
+          '2023-identity-check-rejected',
+          {
+            to: email,
+            variables: {
+              firstName: firstName ?? null,
+            },
+          },
+          { userSub: data.msg.user.sub }
+        )
       }
       return new Nack()
     } catch (error) {
-      this.logger.error('Error while sending verification failed email: ', error)
+      this.logger.error(
+        'Error while sending verification failed email: ',
+        {
+          userSub: data.msg.user.sub,
+          accountType: data.msg.type,
+          tier: newUserData[CognitoUserAttributesEnum.TIER],
+          reason: verification.reason,
+        },
+        error
+      )
     }
     this.logger.error({
       type: 'Not Verified without error - 200',
-      user: data.msg.user,
-      error: verification,
+      userSub: data.msg.user.sub,
+      accountType: data.msg.type,
+      reason: verification.reason,
+      cognitoData: newUserData[CognitoUserAttributesEnum.TIER],
     })
     return new Nack()
   }
@@ -315,7 +379,19 @@ export class VerificationService {
     error?: unknown
     reason?: CustomErrorEnums
   }) {
-    this.logger.error({ options })
+    // `options.data` is the whole queue message (birth number, identity card,
+    // Cognito profile), so log only ids and the reason.
+    this.logger.error(
+      {
+        message: options.message,
+        reason: options.reason,
+        type: options.data.msg.type,
+        userSub: options.data.msg.user.sub,
+        // tier when the message was queued, i.e. before QUEUE_IDENTITY_CARD was set
+        tierBeforeQueue: options.data.msg.user[CognitoUserAttributesEnum.TIER],
+      },
+      options.error
+    )
     const userFromDb = await this.verificationDataSubservice.requeuedInVerificationIncrement(
       options.data.msg.user
     )
@@ -336,13 +412,19 @@ export class VerificationService {
       oboToken,
       this.baConfigService.nases.apiTokenPrivate
     )
+    const eidLogContext = {
+      userSub: user.sub,
+      accountType: user[CognitoUserAttributesEnum.ACCOUNT_TYPE],
+      tier: user[CognitoUserAttributesEnum.TIER],
+    }
     try {
       // we do this only to verify that the token is valid, we don't need the result
-      await this.nasesService.getUpvsIdentity(jwtToken)
+      await this.nasesService.getUpvsIdentity(jwtToken, { userSub: user.sub })
     } catch (error) {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
         message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+        console: eidLogContext,
         error,
       })
     }
@@ -357,7 +439,11 @@ export class VerificationService {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
         message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-        console: 'Failed to retrieve birth number from URI',
+        console: {
+          message: 'Failed to retrieve birth number from URI',
+          ...eidLogContext,
+          uriType: type,
+        },
       })
     }
 
@@ -369,6 +455,7 @@ export class VerificationService {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
         message: VerificationErrorsResponseEnum.BIRTH_NUMBER_NOT_PROVIDED,
+        console: { ...eidLogContext, uriType: type },
       })
     }
     if (
@@ -380,6 +467,7 @@ export class VerificationService {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
         message: VerificationErrorsResponseEnum.ICO_NOT_PROVIDED,
+        console: { ...eidLogContext, uriType: type },
       })
     }
 
@@ -394,7 +482,11 @@ export class VerificationService {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
           message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          console: 'Failed to verify FO with birth number',
+          console: {
+            message: 'Failed to verify FO with birth number',
+            ...eidLogContext,
+            reason: response.reason,
+          },
         })
       }
     }
@@ -405,7 +497,7 @@ export class VerificationService {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
           message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          console: 'Failed to retrieve ico from URI',
+          console: { message: 'Failed to retrieve ico from URI', ...eidLogContext, uriType: type },
         })
       }
       const response =
@@ -418,7 +510,11 @@ export class VerificationService {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
           message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          console: 'Failed to verify PO with ico and birth number',
+          console: {
+            message: 'Failed to verify PO with ico and birth number',
+            ...eidLogContext,
+            reason: response.reason,
+          },
         })
       }
     }
@@ -435,6 +531,11 @@ export class VerificationService {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
         message: SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+        console: {
+          ...eidLogContext,
+          targetTier: CognitoUserAttributesTierEnum.EID,
+          tierAfterUpdate: newUserData[CognitoUserAttributesEnum.TIER],
+        },
       })
     }
 
@@ -480,8 +581,18 @@ export class VerificationService {
     const birthNumberEncrypted = encryptData(data.birthNumber)
     const idCardEncrypted = encryptData(data.identityCard)
 
+    // TODO this should not be undefined at this point
+    const givenNameEncrypted = encryptData(user.given_name ?? 'not-set')
+    const familyNameEncrypted = encryptData(user.family_name ?? 'not-set')
+
     await this.prisma.userIdCardVerify.create({
-      data: { userId: userFromDb.id, birthNumber: birthNumberEncrypted, idCard: idCardEncrypted },
+      data: {
+        userId: userFromDb.id,
+        birthNumber: birthNumberEncrypted,
+        idCard: idCardEncrypted,
+        givenName: givenNameEncrypted,
+        familyName: familyNameEncrypted,
+      },
     })
   }
 
@@ -503,12 +614,18 @@ export class VerificationService {
     const idCardEncrypted = encryptData(data.identityCard)
     const icoEncrypted = encryptData(data.ico)
 
+    // TODO this should not be undefined at this point
+    const givenNameEncrypted = encryptData(user.given_name ?? 'not-set')
+    const familyNameEncrypted = encryptData(user.family_name ?? 'not-set')
+
     await this.prisma.legalPersonIcoIdCardVerify.create({
       data: {
         legalPersonId: legalPerson.id,
         birthNumber: birthNumberEncrypted,
         idCard: idCardEncrypted,
         ico: icoEncrypted,
+        givenName: givenNameEncrypted,
+        familyName: familyNameEncrypted,
       },
     })
   }
@@ -715,6 +832,7 @@ export class VerificationService {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: UserErrorsEnum.NO_EXTERNAL_ID,
         message: UserErrorsResponseEnum.NO_EXTERNAL_ID,
+        console: { id: user.id, isLegalPerson },
       })
     }
 
@@ -724,6 +842,7 @@ export class VerificationService {
         throw this.errorFactoryService.BadRequestException({
           errorEnum: VerificationErrorsEnum.ICO_NOT_PROVIDED,
           message: VerificationErrorsResponseEnum.ICO_NOT_PROVIDED,
+          console: { legalPersonId: user.id, externalId: user.externalId },
         })
       }
 
@@ -742,6 +861,7 @@ export class VerificationService {
         throw this.errorFactoryService.BadRequestException({
           errorEnum: VerificationErrorsEnum.IFO_NOT_PROVIDED,
           message: VerificationErrorsResponseEnum.IFO_NOT_PROVIDED,
+          console: { userId: user.id, externalId: user.externalId },
         })
       }
 

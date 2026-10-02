@@ -163,6 +163,7 @@ describe('TasksService', () => {
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message:
           'Number of silenced Noris connection errors in last 24 hours is 25.',
+        console: { threshold: 20 },
       })
     })
   })

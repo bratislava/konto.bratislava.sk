@@ -123,11 +123,11 @@ describe('UpvsQueueService', () => {
     it('repairs one external URI (when no internal is due) and skips the batched search', async () => {
       jest
         .spyOn(edeskUriUpdateService, 'getUriToUpdateExternal')
-        .mockResolvedValue({ uri: 'rc://sk/ext' })
+        .mockResolvedValue({ uri: 'rc://sk/ext', norisId: 42 })
 
       await service.processBatch()
 
-      expect(edeskUriUpdateService.handleUriUpdateExternal).toHaveBeenCalledWith('rc://sk/ext')
+      expect(edeskUriUpdateService.handleUriUpdateExternal).toHaveBeenCalledWith('rc://sk/ext', 42)
       expect(edeskBatchUpdateService.updateEdeskStatusBatch).not.toHaveBeenCalled()
     })
 
@@ -164,9 +164,22 @@ describe('UpvsQueueService', () => {
 
       expect(logSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          errors: [expect.stringContaining('urgentFailures')],
+          urgentFailures: [{ entityId: 'e1', reason: 'Lookup failed' }],
+          failedSteps: [],
         })
       )
+    })
+
+    it('marks a failed step in the report and logs the error object itself', async () => {
+      const urgentError = new Error('urgent down')
+      jest.spyOn(urgentLookupService, 'processUrgentItems').mockRejectedValue(urgentError)
+      const errorSpy = jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
+      const logSpy = jest.spyOn(service['logger'], 'log').mockImplementation(jest.fn())
+
+      await service.processBatch()
+
+      expect(errorSpy).toHaveBeenCalledWith('Error processing urgent items', urgentError)
+      expect(logSpy).toHaveBeenCalledWith(expect.objectContaining({ failedSteps: ['urgent'] }))
     })
   })
 })

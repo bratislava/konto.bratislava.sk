@@ -29,19 +29,17 @@ export class MailgunService {
 
   // only throws if passed unserializable options
   // otherwise only prints warnings to console
-  // we can use the logs to resend failed mails manually
+  // options hold PII (email, name, birth number), so only `logContext` ids are
+  // logged; a failed mail can be rebuilt from the DB using them
   // TODO consider storing failed email options in DB / or an email scheduler
   async sendEmail<T extends keyof MailgunTemplates>(
     templateKey: T,
-    options: Parameters<MailgunTemplates[T]>[0]
+    options: Parameters<MailgunTemplates[T]>[0],
+    logContext: Record<string, unknown>
   ) {
+    const startedAt = Date.now()
     try {
-      this.logger.log(
-        'About to send an email with template',
-        templateKey,
-        'and options',
-        JSON.stringify(options)
-      )
+      this.logger.log('About to send an email with template', templateKey, logContext)
 
       // Use the injected factory instance to get the correct method
       // TypeScript cannot properly narrow down the union type when using dynamic property access with generics.
@@ -61,8 +59,11 @@ export class MailgunService {
       this.logger.error(
         'WARNING - failed to send Mailgun email, with template',
         templateKey,
-        'and options',
-        JSON.stringify(options),
+        {
+          ...logContext,
+          mailgunStatusCode: (error as { status?: unknown } | null)?.status,
+          elapsedMs: Date.now() - startedAt,
+        },
         '. Error:',
         error,
         '. Continuing with regular response'

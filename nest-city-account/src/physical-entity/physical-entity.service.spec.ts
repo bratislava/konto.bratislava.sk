@@ -3,6 +3,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../test/singleton'
+import { expectObjectContaining } from '../__tests__/jest-matchers'
 import { PhysicalEntity } from '../generated/prisma/client'
 import { MagproxyService } from '../magproxy/magproxy.service'
 import { PrismaService } from '../prisma/prisma.service'
@@ -86,7 +87,8 @@ describe('PhysicalEntityService', () => {
         where: { birthNumber: mockBirthNumber },
       })
       expect(loggerSpy).toHaveBeenCalledWith(
-        `Multiple physical entities in database with birthnumber: ${mockBirthNumber}.`
+        'Multiple physical entities in database with the same birth number.',
+        expectObjectContaining({ userId: 'user123' })
       )
     })
 
@@ -101,7 +103,8 @@ describe('PhysicalEntityService', () => {
         where: { birthNumber: mockBirthNumber },
       })
       expect(loggerSpy).toHaveBeenCalledWith(
-        `Entity with birth number ${mockBirthNumber} does not exist.`
+        'Physical entity with the given birth number does not exist.',
+        { userId: 'user123' }
       )
     })
   })

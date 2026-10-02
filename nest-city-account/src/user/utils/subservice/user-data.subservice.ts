@@ -21,7 +21,10 @@ import {
 } from '../../../generated/prisma/client'
 import { DPBUserLoginStatistics } from '../../../oauth2-clients/dpb/dtos/user.dto'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
-import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
+import {
+  CognitoGetUserData,
+  CognitoUserAttributesEnum,
+} from '../../../utils/global-dtos/cognito.dto'
 import { UserIdentitySubservice } from '../../../utils/subservices/user-identity.subservice'
 import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
 import { ResponseLegalPersonDataSimpleDto } from '../../dtos/gdpr.legalperson.dto'
@@ -83,7 +86,11 @@ export class UserDataSubservice {
     }
 
     this.logger.warn(
-      `Requested user does not exist. Creating the user as a fallback option. externalId: ${cognitoUserData.idUser}`
+      `Requested user does not exist. Creating the user as a fallback option. externalId: ${cognitoUserData.idUser}`,
+      {
+        accountType: cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE],
+        tier: cognitoUserData[CognitoUserAttributesEnum.TIER],
+      }
     )
 
     return this.createUser(cognitoUserData)
@@ -124,14 +131,18 @@ export class UserDataSubservice {
       throw this.errorFactoryService.ForbiddenException({
         errorEnum: UserErrorsEnum.USER_IS_DECEASED,
         message: UserErrorsResponseEnum.USER_IS_DECEASED,
+        console: {
+          userId: user.id,
+          externalId: userData.externalId,
+          foundByEmail,
+          markedDeceasedAt: user.markedDeceasedAt,
+        },
       })
     }
 
     // user found, update data
     if (!foundByEmail) {
-      this.logger.log(
-        `Email changed for user ${userData.externalId}. Old email: ${user.email}, new email: ${userData.email}.`
-      )
+      this.logger.log(`Email changed for user ${userData.externalId} (userId: ${user.id}).`)
     }
 
     user = await this.prisma.user.update({
@@ -189,7 +200,11 @@ export class UserDataSubservice {
     }
 
     this.logger.warn(
-      `Requested legalPerson does not exist. Creating the legalPerson as a fallback option. externalId: ${cognitoLegalPersonData.idUser}`
+      `Requested legalPerson does not exist. Creating the legalPerson as a fallback option. externalId: ${cognitoLegalPersonData.idUser}`,
+      {
+        accountType: cognitoLegalPersonData[CognitoUserAttributesEnum.ACCOUNT_TYPE],
+        tier: cognitoLegalPersonData[CognitoUserAttributesEnum.TIER],
+      }
     )
 
     return this.createLegalPerson(cognitoLegalPersonData)
@@ -232,7 +247,7 @@ export class UserDataSubservice {
     // LegalPerson found, update data
     if (!foundByEmail) {
       this.logger.log(
-        `Email changed for legal person ${legalPersonData.externalId}. Old email: ${legalPerson.email}, new email: ${legalPersonData.email}.`
+        `Email changed for legal person ${legalPersonData.externalId} (legalPersonId: ${legalPerson.id}).`
       )
     }
 
@@ -460,6 +475,7 @@ export class UserDataSubservice {
       throw this.errorFactoryService.NotFoundException({
         errorEnum: ErrorEnum.NOT_FOUND_ERROR,
         message: ErrorResponseEnum.NOT_FOUND_ERROR,
+        console: { userId: where.id, externalId: where.externalId },
       })
     }
 

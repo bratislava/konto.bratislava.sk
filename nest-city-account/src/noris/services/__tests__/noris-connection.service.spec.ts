@@ -142,6 +142,7 @@ describe('NorisConnectionService', () => {
       expect(errorFactoryService.InternalServerErrorException).toHaveBeenCalledWith({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'fail',
+        console: { database: 'testdb' },
         error: opError,
       })
     })

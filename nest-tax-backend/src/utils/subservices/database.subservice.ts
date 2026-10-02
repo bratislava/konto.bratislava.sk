@@ -54,7 +54,7 @@ export default class DatabaseSubservice {
         throw this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.DATABASE_ERROR,
           message: ErrorResponseEnum.DATABASE_ERROR,
-          console: `Could not find '${key}' settings in database. ${JSON.stringify(constants)}`,
+          console: `Could not find '${key}' settings in database. Found keys: ${Object.keys(constants).join(', ')}`,
         })
       }
     })

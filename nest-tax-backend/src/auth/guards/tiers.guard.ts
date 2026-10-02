@@ -33,6 +33,11 @@ export class TiersGuard implements CanActivate {
       throw this.errorFactoryService.ForbiddenException({
         errorEnum: ErrorEnum.FORBIDDEN_ERROR,
         message: 'Forbidden tier',
+        console: {
+          cognitoId: cognito_jwt_payload.sub,
+          tier,
+          requiredTiers: requiredRoles,
+        },
       })
     }
     return result

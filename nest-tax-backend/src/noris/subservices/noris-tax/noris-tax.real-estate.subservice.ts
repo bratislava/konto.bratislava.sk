@@ -81,10 +81,12 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
         )
       },
       'Failed to get taxes from Noris',
+      { year, taxType: this.getTaxType(), batchSize: birthNumbers.length },
     )
     return this.norisValidatorSubservice.validateNorisData(
       NorisRealEstateTaxSchema,
       norisData.recordset,
+      { year, taxType: this.getTaxType() },
     )
   }
 
@@ -102,6 +104,11 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
         message: 'Failed to get taxes from Noris',
+        console: {
+          year,
+          taxType: this.getTaxType(),
+          batchSize: birthNumbers.length,
+        },
         error,
       })
     }
@@ -161,6 +168,12 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
             this.errorFactoryService.InternalServerErrorException({
               errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
               message: 'Failed to update tax in database.',
+              console: {
+                taxId: existingTax.id,
+                norisSubjectId: norisItem.cislo_subjektu,
+                year,
+                taxType: this.getTaxType(),
+              },
               error,
             }),
           )

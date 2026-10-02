@@ -236,6 +236,7 @@ describe('NorisPaymentSubservice', () => {
       expect(withConnectionMock).toHaveBeenCalledWith(
         expect.any(Function),
         expect.any(String),
+        { fromDate: mockData.fromDate, toDate: mockData.toDate },
       )
       expect(result).toEqual({
         created: 2,
@@ -1117,6 +1118,13 @@ describe('NorisPaymentSubservice', () => {
       expect(errorFactoryServiceMock).toHaveBeenCalledWith({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+        console: {
+          taxId: 1,
+          taxPayerId: undefined,
+          year: 2024,
+          taxType: undefined,
+          order: undefined,
+        },
         error: transactionError,
       })
     })

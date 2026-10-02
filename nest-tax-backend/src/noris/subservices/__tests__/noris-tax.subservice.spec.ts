@@ -188,6 +188,7 @@ describe('NorisTaxSubservice', () => {
       ).toHaveBeenCalledWith({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: expect.stringContaining('Unknown tax type') as string,
+        console: { year: mockYear, count: 0 },
       })
     })
   })

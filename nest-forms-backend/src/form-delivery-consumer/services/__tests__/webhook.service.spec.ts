@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -32,8 +32,8 @@ describe('WebhookService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
-          provide: LineLoggerSubservice,
-          useValue: createMock<LineLoggerSubservice>(),
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
         },
         WebhookService,
         {

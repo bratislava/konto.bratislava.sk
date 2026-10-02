@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton'
@@ -21,7 +21,7 @@ describe('TaxImportHelperService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         TaxImportHelperService,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -44,7 +44,7 @@ describe('TaxImportHelperService', () => {
     databaseSubservice = module.get<DatabaseSubservice>(DatabaseSubservice)
     norisService = module.get<NorisService>(NorisService)
 
-    jest.spyOn(LineLoggerSubservice.prototype, 'log').mockImplementation()
+    jest.spyOn(LineLoggerService.prototype, 'log').mockImplementation()
   })
 
   afterEach(() => {

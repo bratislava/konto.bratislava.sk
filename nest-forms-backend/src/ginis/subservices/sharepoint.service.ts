@@ -2,7 +2,7 @@ import {
   ErrorEnum,
   ErrorFactoryService,
   ErrorResponseEnum,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { OnQueueFailed, Process, Processor } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
@@ -44,7 +44,7 @@ export default class SharepointService {
     private prismaService: PrismaService,
     private readonly baConfigService: BaConfigService,
     private formValidatorRegistryService: FormValidatorRegistryService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   @Process()

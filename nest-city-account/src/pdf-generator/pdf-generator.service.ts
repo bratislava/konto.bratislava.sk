@@ -7,7 +7,7 @@ import {
   ErrorEnum,
   ErrorFactoryService,
   ErrorResponseEnum,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import pLimit from 'p-limit'
@@ -28,7 +28,7 @@ export class PdfGeneratorService {
   constructor(
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   /**

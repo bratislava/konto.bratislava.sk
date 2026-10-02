@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -36,7 +36,7 @@ import {
 export default class ConvertController {
   constructor(
     private readonly convertService: ConvertService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   @ApiOperation({

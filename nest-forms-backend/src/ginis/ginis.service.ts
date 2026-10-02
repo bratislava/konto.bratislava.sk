@@ -5,7 +5,7 @@ import {
   ErrorEnum,
   ErrorFactoryService,
   ErrorResponseEnum,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { InjectQueue } from '@nestjs/bull'
@@ -82,7 +82,7 @@ export default class GinisService {
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly nasesContactsService: NasesContactsService,
     @InjectQueue('sharepoint') private readonly sharepointQueue: Queue,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {
     if (
       !['production', 'development', 'staging'].includes(
@@ -321,7 +321,7 @@ export default class GinisService {
     routingKey: RABBIT_GINIS.ROUTING_KEY,
     queue: RABBIT_GINIS.QUEUE,
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
-      const logger = new LineLoggerSubservice('Rabbit')
+      const logger = new LineLoggerService('Rabbit')
       logger.error(`GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`)
       channel.reject(message, false)
     },

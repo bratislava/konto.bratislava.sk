@@ -1,7 +1,7 @@
 import {
   ErrorFactoryService,
   HandleErrors,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
@@ -32,7 +32,7 @@ export default class GinisTasksSubservice {
     private readonly ginisHelper: GinisHelper,
     private readonly ginisApiService: GinisAPIService,
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   private async updateSubmissionState(submission: Forms): Promise<void> {

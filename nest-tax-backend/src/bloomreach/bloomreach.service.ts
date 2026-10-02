@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
@@ -20,7 +20,7 @@ export class BloomreachService {
   constructor(
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {
     const { apiKey, apiSecret } = this.baConfigService.bloomreach
     this.bloomreachCredentials = Buffer.from(

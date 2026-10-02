@@ -1,4 +1,4 @@
-import { escapeForLogfmt, LineLoggerSubservice } from '@bratislava/log-nest'
+import { escapeForLogfmt, LineLoggerService } from '@bratislava/log-nest'
 import { Injectable, OnModuleInit } from '@nestjs/common'
 import { PrismaPg } from '@prisma/adapter-pg'
 
@@ -27,7 +27,7 @@ export class PrismaService
 {
   constructor(
     baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {
     super(getPrismaClientOptions(baConfigService.database.url))
     this.$on('info', (e) => {

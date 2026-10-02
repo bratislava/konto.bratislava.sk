@@ -3,7 +3,7 @@ import { Readable } from 'node:stream'
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
@@ -55,7 +55,7 @@ export default class FilesService {
     private filesHelper: FilesHelper,
     private errorFactoryService: ErrorFactoryService,
     private readonly formAccessService: FormAccessService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {
     this.jwtSecret = this.baConfigService.tokens.jwtSecret
   }

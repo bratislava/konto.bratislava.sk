@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 
@@ -11,7 +11,7 @@ export default class FormsTaskSubservice {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly filesService: FilesService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_1AM)

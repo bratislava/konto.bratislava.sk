@@ -1,7 +1,7 @@
 import { Readable } from 'node:stream'
 
 import { SslPridatSouborPridatSoubor } from '@bratislava/ginis-sdk'
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -69,7 +69,7 @@ describe('GinisService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         GinisService,
         GinisAPIService,
         GinisHelper,
@@ -138,7 +138,7 @@ describe('GinisService', () => {
     const realNasesContactsService = new NasesContactsService(
       module.get(ErrorFactoryService),
       module.get(ClientsService),
-      new LineLoggerSubservice(NasesContactsService.name),
+      new LineLoggerService(NasesContactsService.name),
     )
 
     // Use real implementations for extraction methods

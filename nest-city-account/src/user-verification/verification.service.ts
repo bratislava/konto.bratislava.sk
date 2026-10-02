@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { AmqpConnection, Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
 import { Channel, ConsumeMessage } from 'amqplib'
@@ -65,7 +65,7 @@ export class VerificationService {
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly userTierService: UserTierService,
     private readonly baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   async sendToQueue(
@@ -131,7 +131,7 @@ export class VerificationService {
         const errorFactoryService = new ErrorFactoryService({ alertReporting })
         const prismaService = new PrismaService(
           getBaConfigInstance(),
-          new LineLoggerSubservice(PrismaService.name)
+          new LineLoggerService(PrismaService.name)
         )
         const cognitoSubservice = new CognitoSubservice(errorFactoryService, getBaConfigInstance())
         const userTierService = new UserTierService(cognitoSubservice, prismaService)
@@ -144,7 +144,7 @@ export class VerificationService {
         const bloomreachContactDatabaseService = new BloomreachContactDatabaseService(
           errorFactoryService,
           getBloomreachContactDatabase(),
-          new LineLoggerSubservice(BloomreachContactDatabaseService.name)
+          new LineLoggerService(BloomreachContactDatabaseService.name)
         )
 
         const userIdentitySubservice = new UserIdentitySubservice(prismaService)
@@ -159,12 +159,12 @@ export class VerificationService {
           bloomreachPayloadBuilder,
           errorFactoryService,
           getBaConfigInstance(),
-          new LineLoggerSubservice(BloomreachOutboxService.name)
+          new LineLoggerService(BloomreachOutboxService.name)
         )
 
         await bloomreachOutboxService.trackCustomer(data.msg.user.idUser)
       } catch (errorCatch) {
-        const logger = new LineLoggerSubservice('RabbitRPC')
+        const logger = new LineLoggerService('RabbitRPC')
         logger.error('RabbitMQ error handler - catch cognito/parser error', errorCatch)
       }
     },

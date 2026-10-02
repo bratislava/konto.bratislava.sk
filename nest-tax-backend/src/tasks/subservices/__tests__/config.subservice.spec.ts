@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -17,7 +17,7 @@ describe('TasksConfigSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         TasksConfigSubservice,
         { provide: PrismaService, useValue: prismaMock },
       ],
@@ -25,7 +25,7 @@ describe('TasksConfigSubservice', () => {
 
     service = module.get<TasksConfigSubservice>(TasksConfigSubservice)
 
-    jest.spyOn(LineLoggerSubservice.prototype, 'log').mockImplementation()
+    jest.spyOn(LineLoggerService.prototype, 'log').mockImplementation()
   })
 
   describe('resetOverpaymentsLookbackDays', () => {

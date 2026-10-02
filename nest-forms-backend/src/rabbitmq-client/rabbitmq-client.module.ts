@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { AmqpConnection, RabbitMQModule } from '@golevelup/nestjs-rabbitmq'
 import { Module } from '@nestjs/common'
 
@@ -23,7 +23,7 @@ import RabbitmqClientService from './rabbitmq-client.service'
           },
         ],
         connectionInitOptions: { wait: false },
-        logger: new LineLoggerSubservice('RabbitMQ'),
+        logger: new LineLoggerService('RabbitMQ'),
       }),
       inject: [BaConfigService],
     }),
@@ -36,11 +36,11 @@ export default class RabbitmqClientModule {
     private rabbitmqClientService: RabbitmqClientService,
     private amqpConnection: AmqpConnection,
     private baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {
     this.rabbitmqClientService = new RabbitmqClientService(
       amqpConnection,
-      new LineLoggerSubservice(RabbitmqClientService.name),
+      new LineLoggerService(RabbitmqClientService.name),
     )
     // only the host is logged, the uri contains credentials
     const host =

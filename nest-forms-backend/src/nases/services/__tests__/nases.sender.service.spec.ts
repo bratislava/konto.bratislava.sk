@@ -1,6 +1,6 @@
 import { Readable } from 'node:stream'
 
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { v1, v4 } from 'uuid'
@@ -41,7 +41,7 @@ describe('NasesSenderService', () => {
     jest.resetAllMocks()
     const app: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         NasesSenderService,
         ConvertService,
         ErrorFactoryService,

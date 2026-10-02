@@ -1,4 +1,4 @@
-import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { Inject, Injectable } from '@nestjs/common'
 import { IDatabase } from 'pg-promise'
 
@@ -15,7 +15,7 @@ export class BloomreachContactDatabaseService {
   constructor(
     private readonly errorFactoryService: ErrorFactoryService,
     @Inject('BLOOMREACH_CONTACT_DB') private readonly contactDatabase: IDatabase<unknown>,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   /**

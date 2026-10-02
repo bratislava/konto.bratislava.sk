@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -37,7 +37,7 @@ describe('PhysicalEntityService', () => {
     jest.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         PhysicalEntityService,
         ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },
@@ -78,7 +78,7 @@ describe('PhysicalEntityService', () => {
       jest
         .spyOn(prismaMock.physicalEntity, 'findMany')
         .mockResolvedValue([mockPhysicalEntity, { ...mockPhysicalEntity, id: 'another-id' }])
-      const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
+      const loggerSpy = jest.spyOn(LineLoggerService.prototype, 'error')
 
       await service.linkToUserIdByBirthnumber(mockUserId, mockBirthNumber)
 
@@ -93,7 +93,7 @@ describe('PhysicalEntityService', () => {
     it('should fail if no entity is found for the given birthNumber', async () => {
       const mockUserId = 'user123'
       jest.spyOn(prismaMock.physicalEntity, 'findMany').mockResolvedValue([])
-      const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
+      const loggerSpy = jest.spyOn(LineLoggerService.prototype, 'error')
 
       await service.linkToUserIdByBirthnumber(mockUserId, mockBirthNumber)
 

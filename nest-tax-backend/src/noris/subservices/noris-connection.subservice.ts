@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import { connect, ConnectionError, ConnectionPool, MSSQLError } from 'mssql'
@@ -17,7 +17,7 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
     private readonly baConfigService: BaConfigService,
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly prismaService: PrismaService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   async onModuleDestroy(): Promise<void> {

@@ -4,7 +4,7 @@ import {
   ErrorEnum,
   ErrorFactoryService,
   ErrorResponseEnum,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
@@ -53,7 +53,7 @@ export default class FilesHelper {
     private minioStorageService: MinioStorageService,
     private scannerClientService: ScannerClientService,
     private errorFactoryService: ErrorFactoryService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {
     this.supportedMimeTypes =
       this.baConfigService.files.mimeTypeWhitelist.split(' ')

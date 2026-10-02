@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
@@ -14,7 +14,7 @@ describe('MagproxyService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         MagproxyService,
         ErrorFactoryService,
         { provide: ClientsService, useValue: createMock<ClientsService>() },

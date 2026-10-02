@@ -2,7 +2,7 @@ import {
   ErrorEnum,
   ErrorFactoryService,
   HandleErrors,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
@@ -22,7 +22,7 @@ export class AdminCronSubservice {
     private readonly prismaService: PrismaService,
     private readonly adminService: AdminService,
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   // even though this is a cron job, it only runs once then it deactivates itself,

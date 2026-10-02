@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
 import { Replies } from 'amqplib'
@@ -11,7 +11,7 @@ import { RABBIT_FORM_DELIVERY, RABBIT_GINIS } from '../utils/constants'
 export default class RabbitmqClientService {
   constructor(
     private readonly amqpConnection: AmqpConnection,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   public async publish(message: RabbitPayloadDto): Promise<Replies.Empty> {

@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import formData from 'form-data'
 import Mailgun from 'mailgun.js'
@@ -17,7 +17,7 @@ export class MailgunService {
   constructor(
     private readonly mailgunMessageBuilder: MailgunMessageBuilder,
     private readonly baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {
     this.mg = mailgun.client({
       username: 'api',

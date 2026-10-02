@@ -2,7 +2,7 @@ import {
   ErrorEnum,
   ErrorFactoryService,
   ErrorResponseEnum,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { AxiosError, isAxiosError } from 'axios'
@@ -126,7 +126,7 @@ export class NasesService {
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly prismaService: PrismaService,
     private readonly baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   async getUpvsIdentity(token: string) {

@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { QueueItemStatusEnum } from '../generated/prisma/enums'
@@ -22,7 +22,7 @@ export class EdeskBatchUpdateService {
     private readonly prismaService: PrismaService,
     private readonly physicalEntityService: PhysicalEntityService,
     private readonly nasesService: NasesService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   /**

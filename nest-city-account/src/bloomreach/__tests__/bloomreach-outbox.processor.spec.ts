@@ -283,7 +283,7 @@ describe('BloomreachOutboxProcessor', () => {
         where: { id: 'entry-1' },
         data: {
           status: BloomreachOutboxStatus.PENDING,
-          // Doesn't count toward the attempts budge
+          // Doesn't count toward the attempts budget
           attempts: 0,
           lastError: 'Bloomreach merge consent check failed',
         },

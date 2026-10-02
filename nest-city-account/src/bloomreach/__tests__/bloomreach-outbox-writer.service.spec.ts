@@ -23,7 +23,7 @@ describe('BloomreachOutboxWriterService', () => {
 
   const externalId = 'external-id'
   // Newer/older relative to each other - what actually matters to the merge
-  // and priority logic under test, not their absolute values.
+  // and timestamp comparison logic under test, not their absolute values.
   const NEW_TIMESTAMP = 200
   const OLD_TIMESTAMP = 100
   const VERY_OLD_TIMESTAMP = 1
@@ -253,7 +253,7 @@ describe('BloomreachOutboxWriterService', () => {
       })
     })
 
-    it('should replace an existing lower-priority PENDING event', async () => {
+    it('should replace an existing older non-terminal PENDING event', async () => {
       payloadBuilder.buildConsentEventCommands.mockReturnValue([eventCommand])
       const existing = bloomreachOutboxFactory({
         id: 'existing-event',
@@ -281,7 +281,7 @@ describe('BloomreachOutboxWriterService', () => {
       })
     })
 
-    it('should skip updating when the existing event outranks the incoming one', async () => {
+    it('should skip updating when the existing event is terminal and the incoming one is not', async () => {
       payloadBuilder.buildConsentEventCommands.mockReturnValue([eventCommand])
       const terminalExisting = bloomreachOutboxFactory({
         id: 'existing-event',

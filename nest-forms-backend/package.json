@@ -118,6 +118,7 @@
     "ts-jest": "29.4.11",
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
+    "type-fest": "5.8.0",
     "typescript": "6.0.3"
   },
   "volta": {

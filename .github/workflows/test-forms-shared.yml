@@ -36,7 +36,7 @@ jobs:
           fetch-depth: 1
 
       - name: Set up Docker build
-        uses: bratislava/github-actions/.github/actions/setup-docker-build@272d6b1600749fed6a62d00434c0302d50bb1458 # v2.4.0
+        uses: bratislava/github-actions/.github/actions/setup-docker-build@7a3c849b65c1edbea5c3a95fd29952ae1f3e1412 # v3.0.1
         with:
           docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}

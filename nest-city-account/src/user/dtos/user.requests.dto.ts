@@ -5,7 +5,7 @@ import {
   ConsentEnum,
   DeliveryMethodUserPreferenceEnum,
   LoginClientEnum,
-} from '../../generated/prisma/client'
+} from '../../generated/prisma/enums'
 
 export class UpsertUserRecordClientRequestDto {
   @ApiProperty({

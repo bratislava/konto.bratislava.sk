@@ -1,11 +1,55 @@
-import { BloomreachCustomerCommandData } from '../bloomreach.types'
+import { BloomreachCustomerCommandData, BloomreachCustomerProperties } from '../bloomreach.types'
+
+/**
+ * Customer property marking a Bloomreach profile as anonymized. Only city-account writes it, and only
+ * anonymization sets it to `false` - profiles created by other backends lack it entirely. All anonymization checks
+ * (commands, exported profiles, outbox queries) go through this, so switching to a dedicated property is a change here.
+ */
+export const ANONYMIZATION_PROPERTY =
+  'is_identity_verified' satisfies keyof BloomreachCustomerProperties
+
+export function isAnonymizedProfile(
+  properties: Partial<Record<typeof ANONYMIZATION_PROPERTY, unknown>>
+): boolean {
+  return properties[ANONYMIZATION_PROPERTY] === false
+}
+
+export function isAnonymizationCommand(command: BloomreachCustomerCommandData): boolean {
+  return isAnonymizedProfile(command.properties)
+}
+
+/**
+ * Returns true if the existing command should override the incoming command.
+ *
+ * Terminal always wins over non-terminal regardless of timestamp. Within the same terminal-ness, whichever side actually has the newer
+ * timestamp wins.
+ */
+export function isExistingHigherPriorityEventCommand(
+  existing: { isTerminal: boolean; timestamp: number },
+  incoming: { isTerminal: boolean; timestamp: number }
+): boolean {
+  return (
+    (existing.isTerminal && !incoming.isTerminal) ||
+    (existing.isTerminal === incoming.isTerminal && existing.timestamp > incoming.timestamp)
+  )
+}
 
 export function mergeCustomerCommandData(
   base: BloomreachCustomerCommandData,
   override: BloomreachCustomerCommandData
 ): BloomreachCustomerCommandData {
+  const [older, newer] =
+    base.update_timestamp <= override.update_timestamp ? [base, override] : [override, base]
+
+  // An anonymize command is terminal
+  if (isAnonymizationCommand(older) || isAnonymizationCommand(newer)) {
+    return isAnonymizationCommand(newer) ? newer : older
+  }
+
   return {
-    customer_ids: { ...base.customer_ids, ...override.customer_ids },
-    properties: { ...base.properties, ...override.properties },
+    kind: newer.kind,
+    customer_ids: { ...older.customer_ids, ...newer.customer_ids },
+    properties: { ...older.properties, ...newer.properties },
+    update_timestamp: newer.update_timestamp,
   }
 }

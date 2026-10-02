@@ -60,7 +60,7 @@ export default class SharepointService {
         errorEnum: SharepointErrorsEnum.GENERAL_ERROR,
         message: SharepointErrorsResponseEnum.GENERAL_ERROR,
         console: `Sending form ${job.data.formId} to Sharepoint has failed.`,
-        error: error,
+        error,
       }),
     )
 

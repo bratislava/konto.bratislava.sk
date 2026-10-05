@@ -106,6 +106,13 @@ describe('BloomreachOutboxProcessor', () => {
     prismaMock.$queryRaw.mockResolvedValueOnce([{ acquired: true }])
   })
 
+  // The raw claim query returns ids; the rows are then loaded with findMany
+  // (the first findMany call is stale-entry recovery).
+  const mockClaimedEntries = (entries: BloomreachOutbox[]) => {
+    prismaMock.$queryRaw.mockResolvedValue(entries.map(({ id }) => ({ id })))
+    prismaMock.bloomreachOutbox.findMany.mockResolvedValueOnce([]).mockResolvedValueOnce(entries)
+  }
+
   afterEach(() => {
     jest.clearAllMocks()
   })
@@ -130,13 +137,17 @@ describe('BloomreachOutboxProcessor', () => {
 
     it('should send batch with command_id and mark entries as COMPLETED on success', async () => {
       const entry = makeEntry()
-      prismaMock.$queryRaw.mockResolvedValue([entry])
+      mockClaimedEntries([entry])
       mockedAxios.post.mockResolvedValue({
         data: { success: true, results: [{ success: true, time: 0.01 }] },
       })
 
       await processor.processOutbox()
 
+      expect(prismaMock.bloomreachOutbox.findMany).toHaveBeenCalledWith({
+        where: { id: { in: ['entry-1'] } },
+        orderBy: { createdAt: 'asc' },
+      })
       expect(mockedAxios.post).toHaveBeenCalledWith(
         'https://api.bloomreach.test/track/v2/projects/test-project/batch',
         {
@@ -162,7 +173,7 @@ describe('BloomreachOutboxProcessor', () => {
 
     it('should mark entries back to PENDING on API failure when under max attempts', async () => {
       const entry = makeEntry({ attempts: 1 })
-      prismaMock.$queryRaw.mockResolvedValue([entry])
+      mockClaimedEntries([entry])
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
       mockedAxios.post.mockRejectedValue(new Error('Request failed with status code 500'))
 
@@ -180,7 +191,7 @@ describe('BloomreachOutboxProcessor', () => {
 
     it('should mark entries as FAILED when max attempts reached', async () => {
       const entry = makeEntry({ attempts: 4 })
-      prismaMock.$queryRaw.mockResolvedValue([entry])
+      mockClaimedEntries([entry])
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
       mockedAxios.post.mockRejectedValue(new Error('Request failed'))
 
@@ -198,7 +209,7 @@ describe('BloomreachOutboxProcessor', () => {
 
     it('should handle per-command failures from batch response', async () => {
       const entries = [makeEntry({ id: 'entry-1' }), makeEntry({ id: 'entry-2' })]
-      prismaMock.$queryRaw.mockResolvedValue(entries)
+      mockClaimedEntries(entries)
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
       mockedAxios.post.mockResolvedValue({
         data: {
@@ -230,7 +241,7 @@ describe('BloomreachOutboxProcessor', () => {
 
     it('should roll back all entries when API returns no results', async () => {
       const entry = makeEntry()
-      prismaMock.$queryRaw.mockResolvedValue([entry])
+      mockClaimedEntries([entry])
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
       mockedAxios.post.mockResolvedValue({ data: { success: false } })
 
@@ -249,7 +260,7 @@ describe('BloomreachOutboxProcessor', () => {
         makeEntry({ id: 'entry-1' }),
         makeEntry({ id: 'entry-2', commandName: BloomreachCommandName.CUSTOMERS_EVENTS }),
       ]
-      prismaMock.$queryRaw.mockResolvedValue(entries)
+      mockClaimedEntries(entries)
       mockedAxios.post.mockResolvedValue({
         data: {
           success: true,
@@ -272,7 +283,7 @@ describe('BloomreachOutboxProcessor', () => {
 
     it('should revert entry without sending when the merge consent check fails', async () => {
       const entry = makeEntry()
-      prismaMock.$queryRaw.mockResolvedValue([entry])
+      mockClaimedEntries([entry])
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
       mergeConsentService.ensureConsentsSurviveMerge.mockResolvedValue(false)
 
@@ -292,7 +303,7 @@ describe('BloomreachOutboxProcessor', () => {
 
     it('should send remaining entries when one merge consent check fails', async () => {
       const entries = [makeEntry({ id: 'entry-1' }), makeEntry({ id: 'entry-2' })]
-      prismaMock.$queryRaw.mockResolvedValue(entries)
+      mockClaimedEntries(entries)
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
       // Checks run in claim order — the first call is for entry-1
       mergeConsentService.ensureConsentsSurviveMerge
@@ -347,7 +358,7 @@ describe('BloomreachOutboxProcessor', () => {
         },
       })
 
-      prismaMock.$queryRaw.mockResolvedValue([oldEntry])
+      mockClaimedEntries([oldEntry])
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerPendingEntry)
       mockedAxios.post.mockRejectedValue(new Error('API down'))
 
@@ -398,7 +409,7 @@ describe('BloomreachOutboxProcessor', () => {
         },
       })
 
-      prismaMock.$queryRaw.mockResolvedValue([oldEntry])
+      mockClaimedEntries([oldEntry])
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerPendingEntry)
       mockedAxios.post.mockRejectedValue(new Error('API down'))
       const downgradeError = Object.assign(new Error('rejected by trigger'), {
@@ -451,7 +462,7 @@ describe('BloomreachOutboxProcessor', () => {
         },
       })
 
-      prismaMock.$queryRaw.mockResolvedValue([oldEventEntry])
+      mockClaimedEntries([oldEventEntry])
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerEventEntry)
       mockedAxios.post.mockRejectedValue(new Error('API down'))
 

@@ -7,7 +7,7 @@ export async function lockTransactionWithKey(
 ): Promise<void> {
   const key = keyParts.join(':')
   //language=postgresql
-  await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${key}))`
+  await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${key}))`
 }
 
 export async function runWithAdvisoryLock(
@@ -28,6 +28,6 @@ export async function runWithAdvisoryLock(
     await fn()
   } finally {
     //language=postgresql
-    await prisma.$queryRaw`SELECT pg_advisory_unlock(hashtext(${key}))`
+    await prisma.$executeRaw`SELECT pg_advisory_unlock(hashtext(${key}))`
   }
 }

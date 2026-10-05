@@ -55,7 +55,7 @@ export class BloomreachOutboxProcessor {
     // Backoff: skip entries that were recently retried (updatedAt + attempts * base delay > now)
     const now = new Date()
     //language=postgresql
-    const claimedEntries = await this.prisma.$queryRaw<BloomreachOutbox[]>`
+    const claimedIds = await this.prisma.$queryRaw<{ id: string }[]>`
     WITH claimed AS
         (SELECT "id"
          FROM
@@ -77,12 +77,18 @@ export class BloomreachOutboxProcessor {
         claimed
     WHERE
         b."id" = claimed."id"
-    RETURNING b.*
+    RETURNING b."id"
     `
 
-    if (claimedEntries.length === 0) {
+    if (claimedIds.length === 0) {
       return
     }
+
+    // Load the claimed rows through the typed client
+    const claimedEntries = await this.prisma.bloomreachOutbox.findMany({
+      where: { id: { in: claimedIds.map(({ id }) => id) } },
+      orderBy: { createdAt: 'asc' },
+    })
 
     const entries = await this.runMergeConsentChecks(claimedEntries)
 

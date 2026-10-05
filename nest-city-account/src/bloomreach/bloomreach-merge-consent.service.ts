@@ -269,7 +269,7 @@ export class BloomreachMergeConsentService {
       FROM "BloomreachOutbox"
       WHERE
           "externalId" = ANY (${cityAccountIds})
-          AND "commandName" = ${BloomreachCommandName.CUSTOMERS}::"BloomreachCommandName"
+          AND "commandName" = 'customers'::"BloomreachCommandName"
           AND ("commandData" -> 'properties' ->> ${IDENTITY_PROPERTY}::TEXT)::BOOLEAN = FALSE
           AND ("commandData" ->> 'update_timestamp')::DOUBLE PRECISION < ${beforeTimestamp}
           AND (

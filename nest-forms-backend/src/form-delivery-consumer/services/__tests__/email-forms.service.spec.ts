@@ -220,18 +220,13 @@ describe('EmailFormsService', () => {
     beforeEach(async () => {
       prismaMock.forms.findUnique.mockResolvedValue(mockForm)
       prismaMock.forms.update.mockResolvedValue(mockForm)
-      vi.spyOn(
-        getFormDefinitionBySlug,
-        'getFormDefinitionBySlug',
-      ).mockImplementation((slug: string) => {
-        if (slug === 'test-form-email') {
-          return mockFormDefinitionWithSendEmail as FormDefinitionEmail
-        }
-        if (slug === 'test-form-olo') {
-          return mockFormDefinitionWithSendOloEmail as FormDefinitionEmail
-        }
-        return null
+      vi.when(vi.mocked(getFormDefinitionBySlug.getFormDefinitionBySlug), {
+        onUnmatched: () => null,
       })
+        .calledWith('test-form-email')
+        .thenReturn(mockFormDefinitionWithSendEmail as FormDefinitionEmail)
+        .calledWith('test-form-olo')
+        .thenReturn(mockFormDefinitionWithSendOloEmail as FormDefinitionEmail)
       vi.spyOn(renderSummaryEmail, 'renderSummaryEmail').mockResolvedValue(
         '<html>Test Email Content</html>',
       )

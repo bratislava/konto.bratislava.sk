@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -59,7 +59,7 @@ describe('BloomreachOutboxWriterService', () => {
         BloomreachOutboxWriterService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: BloomreachPayloadBuilder, useValue: createMock<BloomreachPayloadBuilder>() },
-        LineLoggerSubservice,
+        LineLoggerService,
         { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
       ],
     }).compile()

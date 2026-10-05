@@ -159,7 +159,7 @@ export class VerificationService {
           prismaService,
           bloomreachPayloadBuilder,
           errorFactoryService,
-          new LineLoggerSubservice(BloomreachOutboxWriterService.name)
+          new LineLoggerService(BloomreachOutboxWriterService.name)
         )
         const bloomreachOutboxService = new BloomreachOutboxService(
           bloomreachOutboxWriterService,

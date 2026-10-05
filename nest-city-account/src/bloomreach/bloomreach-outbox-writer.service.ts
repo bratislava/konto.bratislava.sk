@@ -1,9 +1,4 @@
-import {
-  ErrorEnum,
-  ErrorFactoryService,
-  LineLoggerSubservice,
-  toLogfmt,
-} from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService, LineLoggerService, toLogfmt } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { BloomreachCommandName, BloomreachOutboxStatus } from '../generated/prisma/enums'
@@ -35,7 +30,7 @@ export class BloomreachOutboxWriterService {
     private readonly prisma: PrismaService,
     private readonly payloadBuilder: BloomreachPayloadBuilder,
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   async queueCustomerCommand(externalId: string, phoneNumber?: string): Promise<void> {

@@ -1,9 +1,4 @@
-import {
-  ErrorEnum,
-  ErrorFactoryService,
-  LineLoggerSubservice,
-  toLogfmt,
-} from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService, LineLoggerService, toLogfmt } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { isAxiosError } from 'axios'
 import dayjs from 'dayjs'
@@ -70,7 +65,7 @@ export class BloomreachMergeConsentService {
     private readonly exportService: BloomreachExportService,
     private readonly outboxWriter: BloomreachOutboxWriterService,
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   /**

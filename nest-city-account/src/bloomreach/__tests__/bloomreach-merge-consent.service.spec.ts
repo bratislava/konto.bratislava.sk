@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -76,7 +76,7 @@ describe('BloomreachMergeConsentService', () => {
           provide: BloomreachOutboxWriterService,
           useValue: createMock<BloomreachOutboxWriterService>(),
         },
-        LineLoggerSubservice,
+        LineLoggerService,
         { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
       ],
     }).compile()

@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import type { GenericObjectType } from '@rjsf/utils' with {
@@ -56,7 +56,7 @@ export default class EmailFormsService {
     private baConfigService: BaConfigService,
     private convertService: ConvertService,
     private formValidatorRegistryService: FormValidatorRegistryService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   /**

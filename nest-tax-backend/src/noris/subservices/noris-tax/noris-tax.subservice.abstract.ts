@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
@@ -45,7 +45,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     protected readonly bloomreachService: BloomreachService,
     protected readonly errorFactoryService: ErrorFactoryService,
     protected readonly databaseSubservice: DatabaseSubservice,
-    protected readonly logger: LineLoggerSubservice,
+    protected readonly logger: LineLoggerService,
     protected readonly cityAccountSubservice: CityAccountSubservice,
     protected readonly paymentSubservice: NorisPaymentSubservice,
     protected readonly baConfigService: BaConfigService,

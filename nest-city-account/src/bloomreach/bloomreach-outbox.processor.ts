@@ -1,4 +1,4 @@
-import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import axios, { isAxiosError } from 'axios'
 
@@ -34,7 +34,7 @@ export class BloomreachOutboxProcessor {
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly mergeConsentService: BloomreachMergeConsentService,
     private readonly baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {
     const { apiKey, apiSecret } = this.baConfigService.bloomreach
     this.bloomreachCredentials = Buffer.from(`${apiKey}:${apiSecret}`, 'binary').toString('base64')

@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { ResponseRpoLegalPersonDto } from 'openapi-clients/magproxy'
 
@@ -22,7 +22,7 @@ export class VerificationSubservice {
     private magproxyService: MagproxyService,
     private verificationDataSubservice: VerificationDataSubservice,
     private physicalEntityService: PhysicalEntityService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   private checkIdentityCard(

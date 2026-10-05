@@ -89,15 +89,6 @@ packageExtensions:
       typescript:
         optional: true
 
-peerDependencyRules:
-  allowedVersions:
-    # @bratislava/log-nest 1.1.0 caps its NestJS peers at v11. Without this rule
-    # it gets its own Nest 11 copy, so its HttpExceptions fail `instanceof` checks
-    # against Nest 12's.
-    # TODO: Drop these rules once log-nest widens its peer range to include v12.
-    '@bratislava/log-nest>@nestjs/common': '12'
-    '@bratislava/log-nest>@nestjs/core': '12'
-
 # The root package.json pins Node and pnpm in devEngines with `onFail: error`,
 # so any tool that reads that contract and finds the wrong version stops instead
 # of running on a mismatch. That is the right default for a consumer that only

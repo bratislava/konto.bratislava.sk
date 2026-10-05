@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Interfaces } from 'mailgun.js/definitions'
@@ -31,7 +31,7 @@ describe('MailgunService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         MailgunService,
         MailgunMessageBuilder,
         { provide: CognitoSubservice, useValue: createMock<CognitoSubservice>() },

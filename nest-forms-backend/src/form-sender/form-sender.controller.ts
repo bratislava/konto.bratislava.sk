@@ -2,7 +2,7 @@ import {
   ErrorEnum,
   ErrorFactoryService,
   ErrorResponseEnum,
-  LineLoggerSubservice,
+  LineLoggerService,
   LogAllowList,
 } from '@bratislava/log-nest'
 import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common'
@@ -40,7 +40,7 @@ export default class FormSenderController {
     private readonly formSenderService: FormSenderService,
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly nasesContactsService: NasesContactsService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   @ApiOperation({

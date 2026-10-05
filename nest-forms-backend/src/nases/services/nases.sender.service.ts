@@ -3,7 +3,7 @@ import { Stream } from 'node:stream'
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { isAxiosError } from 'axios'
@@ -48,7 +48,7 @@ export default class NasesSenderService {
     private taxService: TaxService,
     private readonly baConfigService: BaConfigService,
     private readonly clientsService: ClientsService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   private async stream2buffer(stream: Stream): Promise<Buffer> {

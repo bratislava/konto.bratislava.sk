@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import {
   BadRequestException,
   Injectable,
@@ -21,7 +21,7 @@ const getMigrationExpirationDate = () => {
 export class FormMigrationsService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   /**

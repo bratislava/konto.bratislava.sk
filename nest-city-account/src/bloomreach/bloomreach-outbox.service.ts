@@ -1,4 +1,4 @@
-import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import BaConfigService from '../config/ba-config.service'
@@ -13,7 +13,7 @@ export class BloomreachOutboxService {
     private readonly outboxWriter: BloomreachOutboxWriterService,
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   async trackCustomer(externalId: string, phoneNumber?: string): Promise<void> {

@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import axios, { isAxiosError } from 'axios'
@@ -31,7 +31,7 @@ export default class WebhookService {
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   async sendWebhook(formId: string): Promise<void> {

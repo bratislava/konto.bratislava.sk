@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
@@ -19,7 +19,7 @@ describe('StatusService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         // TODO we want to mock most of these
-        LineLoggerSubservice,
+        LineLoggerService,
         StatusService,
         MinioStorageService,
         PrismaService,

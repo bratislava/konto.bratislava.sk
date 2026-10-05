@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import Turnstile, { TurnstileResponse } from 'cf-turnstile'
 
@@ -24,7 +24,7 @@ export class TurnstileSubservice {
   constructor(
     private errorFactoryService: ErrorFactoryService,
     baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {
     const { turnstileSecret } = baConfigService.security
     this.turnstile = Turnstile(turnstileSecret)

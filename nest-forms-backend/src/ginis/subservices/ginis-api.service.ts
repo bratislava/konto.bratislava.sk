@@ -11,7 +11,7 @@ import {
   SslPridatSouborPridatSoubor,
   SslPrideleniPrideleni,
 } from '@bratislava/ginis-sdk'
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import omit from 'lodash/omit'
 
@@ -74,7 +74,7 @@ export default class GinisAPIService {
 
   constructor(
     private readonly baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {
     this.ginis = new Ginis({
       // connect to any subset of services needed, all the urls are optional but requests to services missing urls will fail

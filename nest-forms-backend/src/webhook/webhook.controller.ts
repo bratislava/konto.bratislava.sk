@@ -1,4 +1,4 @@
-import { LineLoggerSubservice, LogAllowList } from '@bratislava/log-nest'
+import { LineLoggerService, LogAllowList } from '@bratislava/log-nest'
 import { Body, Controller, Post } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
@@ -7,7 +7,7 @@ import WebhookDto from '../form-delivery-consumer/dtos/webhook.dto'
 @ApiTags('webhook')
 @Controller('webhook')
 export default class WebhookController {
-  constructor(private readonly logger: LineLoggerSubservice) {}
+  constructor(private readonly logger: LineLoggerService) {}
 
   @ApiOkResponse({})
   @ApiOperation({

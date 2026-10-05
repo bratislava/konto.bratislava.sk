@@ -5,9 +5,9 @@ catalog:
   '@playwright/test': 1.63.0
   '@react-aria/utils': 3.34.1
   '@react-types/shared': 3.36.1
-  '@rjsf/core': 6.5.2
-  '@rjsf/utils': 6.5.2
-  '@rjsf/validator-ajv8': 6.5.2
+  '@rjsf/core': 6.11.0
+  '@rjsf/utils': 6.11.0
+  '@rjsf/validator-ajv8': 6.11.0
   '@types/node': 24.19.0
   '@types/react': 19.3.0
   '@types/react-dom': 19.3.0
@@ -73,6 +73,12 @@ overrides:
   'i18next-cli>@swc/core': 1.15.43
   'i18next-resources-for-ts>@swc/core': 1.15.43
   '@vitejs/plugin-react-swc>@swc/core': 1.15.43
+  # `@x0k/json-schema-merge` (used by @rjsf/utils to merge `allOf`) before 1.1.0
+  # attached the `else` of a later `allOf` condition to an earlier `if` that has
+  # none, so RJSF's `omitExtraData` kept data from inactive branches. @rjsf/utils
+  # 6.11.0 still allows ^1.0.6, so this forces the fixed release.
+  # TODO: Drop this override once @rjsf/utils requires ^1.1.0 itself.
+  '@x0k/json-schema-merge': 1.1.0
 
 # These packages import `typescript` without declaring it as a dependency or peer, so instead of
 # the TypeScript of the project that uses them, they get whichever version pnpm happens to hoist,

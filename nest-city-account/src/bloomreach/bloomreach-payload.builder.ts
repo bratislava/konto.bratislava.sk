@@ -119,6 +119,23 @@ export class BloomreachPayloadBuilder {
   }
 
   buildAnonymizeCommand(externalId: string, timestamp: number): BloomreachCustomerCommand {
+    const anonymizationFlags = {
+      [IDENTITY_PROPERTY]: false,
+    }
+
+    const anonymizedData = {
+      first_name: '',
+      last_name: '',
+      name: '',
+      person_type: '',
+      registration_date: '',
+      email: '',
+      phone: '',
+      is_identity_verified: false,
+      oauth_origin_client_name: '',
+      current_tax_correspondence_channel: '',
+    }
+
     return {
       commandName: BloomreachCommandNameEnum.CUSTOMERS,
       commandData: {
@@ -127,16 +144,9 @@ export class BloomreachPayloadBuilder {
           city_account_id: externalId,
         },
         properties: {
-          first_name: '',
-          last_name: '',
-          name: '',
-          person_type: '',
-          registration_date: '',
-          email: '',
-          phone: '',
-          [IDENTITY_PROPERTY]: false,
-          oauth_origin_client_name: '',
-          current_tax_correspondence_channel: '',
+          ...anonymizedData,
+          // Flags currently correspond with data, separated for future use
+          ...anonymizationFlags,
         },
         update_timestamp: timestamp,
       },

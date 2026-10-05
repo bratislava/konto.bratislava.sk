@@ -218,7 +218,6 @@ describe('EmailFormsService', () => {
     let extractFormSubjectSpy: MockInstance
 
     beforeEach(async () => {
-      vi.clearAllMocks()
       prismaMock.forms.findUnique.mockResolvedValue(mockForm)
       prismaMock.forms.update.mockResolvedValue(mockForm)
       vi.spyOn(

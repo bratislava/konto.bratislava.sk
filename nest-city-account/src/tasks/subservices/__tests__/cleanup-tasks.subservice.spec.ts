@@ -22,10 +22,6 @@ describe('CleanupTasksSubservice', () => {
     service = module.get<CleanupTasksSubservice>(CleanupTasksSubservice)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('deleteOldUserVerificationData', () => {
     it('should delete UserIdCardVerify and LegalPersonIcoIdCardVerify records older than 1 month', async () => {
       const userIdCardVerifyDeleteSpy = vi.mocked(prismaMock.userIdCardVerify.deleteMany)

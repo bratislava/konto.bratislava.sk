@@ -105,10 +105,6 @@ describe('TaxService', () => {
     service = module.get<TaxService>(TaxService)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('should be defined', () => {
     expect(service).toBeDefined()
   })

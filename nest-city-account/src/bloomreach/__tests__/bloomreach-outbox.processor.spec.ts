@@ -114,10 +114,6 @@ describe('BloomreachOutboxProcessor', () => {
     prismaMock.bloomreachOutbox.findMany.mockResolvedValueOnce([]).mockResolvedValueOnce(entries)
   }
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('processOutbox', () => {
     it('should skip when integration is not active', async () => {
       bloomreachConfig.integrationState = 'INACTIVE'

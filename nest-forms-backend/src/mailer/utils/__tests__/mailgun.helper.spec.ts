@@ -78,10 +78,6 @@ describe('MailgunHelper', () => {
     mailgunHelper = moduleRef.get<MailgunHelper>(MailgunHelper)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('constructor', () => {
     it('should initialize mailgunClient correctly', () => {
       expect(mailgunHelper.mailgunClient).toBeDefined()

@@ -533,8 +533,6 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
     beforeEach(() => {
       mailgunService = service['mailgunService']
-      // Reset all mocks before each test
-      vi.clearAllMocks()
 
       // Calculate yesterday based on fake timer
       yesterday = new Date()

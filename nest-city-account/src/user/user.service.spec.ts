@@ -68,10 +68,6 @@ describe('UserService', () => {
     errorFactoryService = module.get(ErrorFactoryService)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('hasChangedDeliveryMethodAfterDeadline', () => {
     const mockGetTaxDeadlineDate = getTaxDeadlineDate as MockedFunction<typeof getTaxDeadlineDate>
     const userId = 'test-user-id'
@@ -83,7 +79,6 @@ describe('UserService', () => {
 
     afterEach(() => {
       vi.useRealTimers()
-      vi.clearAllMocks()
     })
 
     it('should return false when now is before the tax deadline', async () => {

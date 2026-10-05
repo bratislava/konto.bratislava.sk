@@ -18,8 +18,6 @@ describe('NorisTaxSubservice', () => {
   let norisTaxCommunalWasteSubservice: Mocked<NorisTaxCommunalWasteSubservice>
 
   beforeEach(async () => {
-    vi.clearAllMocks()
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         NorisTaxSubservice,

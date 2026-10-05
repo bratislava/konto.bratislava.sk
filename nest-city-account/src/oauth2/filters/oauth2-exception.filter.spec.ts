@@ -47,8 +47,6 @@ describe('OAuth2ExceptionFilter', () => {
 
   const authorizePath = '/oauth2/authorize'
   beforeEach(async () => {
-    vi.clearAllMocks()
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LineLoggerService,

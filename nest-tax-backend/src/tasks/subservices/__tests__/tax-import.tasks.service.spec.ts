@@ -435,7 +435,6 @@ describe('TaxImportTasksService', () => {
     let getConfigByKeysMock: MockInstance
 
     beforeEach(() => {
-      vi.clearAllMocks()
       vi.useFakeTimers()
 
       getConfigByKeysMock = vi

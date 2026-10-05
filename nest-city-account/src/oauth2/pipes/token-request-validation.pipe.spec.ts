@@ -16,7 +16,6 @@ describe('TokenRequestValidationPipe', () => {
   const metadata: ArgumentMetadata = { type: 'body', metatype: Object, data: '' }
 
   beforeEach(async () => {
-    vi.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TokenRequestValidationPipe,

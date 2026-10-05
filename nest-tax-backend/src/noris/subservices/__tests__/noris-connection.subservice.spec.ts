@@ -43,9 +43,6 @@ describe('NorisConnectionSubservice', () => {
   }
 
   beforeEach(async () => {
-    vi.clearAllMocks()
-
-    // Assign after clearAllMocks so we hold references to the (now-cleared) mock.
     mockMssqlConnect = mssql.connect as Mock
 
     baConfigService = createMock<BaConfigService>({

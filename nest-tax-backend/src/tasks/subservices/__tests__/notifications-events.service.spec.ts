@@ -837,7 +837,6 @@ describe('NotificationsEventsSubservice', () => {
 
   describe('resendBloomreachEvents', () => {
     beforeEach(() => {
-      vi.clearAllMocks()
       vi.spyOn(service['logger'], 'log').mockImplementation(vi.fn())
       vi.spyOn(service['logger'], 'error').mockImplementation(vi.fn())
     })

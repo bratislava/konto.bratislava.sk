@@ -60,8 +60,6 @@ describe('NasesCronService', () => {
   }
 
   beforeEach(async () => {
-    vi.clearAllMocks()
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LineLoggerService,

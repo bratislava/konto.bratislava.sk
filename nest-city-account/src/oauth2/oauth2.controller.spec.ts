@@ -65,7 +65,6 @@ describe('OAuth2Controller', () => {
   }
 
   beforeEach(async () => {
-    vi.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OAuth2Controller],
       providers: [

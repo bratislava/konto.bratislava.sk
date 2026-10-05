@@ -32,10 +32,6 @@ describe('EdeskUriUpdateService', () => {
     errorFactoryService = module.get(ErrorFactoryService)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('getUriToUpdateInternal', () => {
     it('returns the row when one is due, null otherwise', async () => {
       prismaMock.$queryRaw.mockResolvedValueOnce([{ uri: 'rc://sk/1', id: 'id-1' }])

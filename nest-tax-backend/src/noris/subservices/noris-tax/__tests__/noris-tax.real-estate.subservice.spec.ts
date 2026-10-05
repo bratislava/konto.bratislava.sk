@@ -238,10 +238,6 @@ describe('NorisTaxRealEstateSubservice', () => {
     )
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('constructor', () => {
     it('should be defined', () => {
       expect(service).toBeDefined()

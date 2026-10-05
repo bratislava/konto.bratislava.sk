@@ -43,8 +43,6 @@ describe('OAuth2Service', () => {
   let clientSubservice: OAuth2ClientSubservice
 
   beforeEach(async () => {
-    vi.clearAllMocks()
-
     // clearAllMocks only clears call data, not implementations — restore the module mocks'
     // default behaviour so a `mockImplementation` override in one test cannot leak into the next.
     ;(crypto.encryptData as Mock).mockImplementation((data: string) => `enc:${data}`)

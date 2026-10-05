@@ -72,10 +72,6 @@ describe('BloomreachOutboxWriterService', () => {
     prismaMock.$transaction.mockImplementation(async (fn) => fn(prismaMock))
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('queueCustomerCommand', () => {
     it('should create a new PENDING entry when none exists', async () => {
       payloadBuilder.buildCustomerCommand.mockResolvedValue(customerCommand)

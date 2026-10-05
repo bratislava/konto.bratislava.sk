@@ -68,7 +68,6 @@ describe('NorisPaymentSubservice', () => {
   let cityAccountSubservice: CityAccountSubservice
 
   beforeEach(async () => {
-    vi.clearAllMocks()
     vi.mocked(mssql.Request).mockImplementation(function () {
       return mockRequest
     })
@@ -134,7 +133,6 @@ describe('NorisPaymentSubservice', () => {
     })
 
     beforeEach(() => {
-      vi.clearAllMocks()
       vi.setSystemTime(DEFAULT_TEST_NOW)
     })
 
@@ -581,10 +579,6 @@ describe('NorisPaymentSubservice', () => {
 
   describe('processIndividualPayment', () => {
     const RECENT_DATE = dayjs().subtract(7, 'day').toDate()
-
-    beforeEach(() => {
-      vi.clearAllMocks()
-    })
 
     it('should return NOT_EXIST when tax data is not found', async () => {
       const mockNorisPayment: NorisTaxPayment = {

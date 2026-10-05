@@ -16,8 +16,6 @@ describe('NorisEdeskService', () => {
   let connectionService: NorisConnectionService
 
   beforeEach(async () => {
-    vi.clearAllMocks()
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         NorisEdeskService,
@@ -125,10 +123,6 @@ describe('NorisEdeskService', () => {
   describe('updateEdeskChecks', () => {
     beforeEach(() => {
       vi.mocked(connectionService.withConnection).mockResolvedValue(undefined)
-    })
-
-    afterEach(() => {
-      vi.clearAllMocks()
     })
 
     it('should call withConnection for each edesk check', async () => {

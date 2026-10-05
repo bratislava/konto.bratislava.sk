@@ -47,10 +47,6 @@ describe('SftpFileSubservice', () => {
     service = module.get<SftpFileSubservice>(SftpFileSubservice)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('filterAlreadyReportedFiles should filter out already reported files', async () => {
     const mockFiles: FileInfo[] = [
       {

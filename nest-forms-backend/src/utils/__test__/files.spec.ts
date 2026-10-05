@@ -37,7 +37,6 @@ describe('files utils', () => {
     const mockJwtSecret = 'test-secret'
 
     beforeEach(() => {
-      vi.clearAllMocks()
       ;(jwt.sign as Mock).mockReturnValue(mockJwtToken)
     })
 

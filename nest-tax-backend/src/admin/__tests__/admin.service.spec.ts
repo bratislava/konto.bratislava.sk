@@ -54,10 +54,6 @@ describe('AdminService', () => {
     norisService = module.get<NorisService>(NorisService)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('should be defined', () => {
     expect(adminService).toBeDefined()
   })

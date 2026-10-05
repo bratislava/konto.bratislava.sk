@@ -29,7 +29,7 @@ import {
   extractLatestCityAccountConsents,
 } from './utils/consents.utils'
 import {
-  ANONYMIZATION_PROPERTY,
+  IDENTITY_PROPERTY,
   isAnonymizationCommand,
   isAnonymizedProfile,
 } from './utils/merge-commands.utils'
@@ -275,7 +275,7 @@ export class BloomreachMergeConsentService {
       WHERE
           "externalId" = ANY (${cityAccountIds})
           AND "commandName" = ${BloomreachCommandName.CUSTOMERS}::"BloomreachCommandName"
-          AND ("commandData" -> 'properties' ->> ${ANONYMIZATION_PROPERTY}::TEXT)::BOOLEAN = FALSE
+          AND ("commandData" -> 'properties' ->> ${IDENTITY_PROPERTY}::TEXT)::BOOLEAN = FALSE
           AND ("commandData" ->> 'update_timestamp')::DOUBLE PRECISION < ${beforeTimestamp}
           AND (
               "status" IN (${BloomreachOutboxStatus.PENDING}::"BloomreachOutboxStatus",
@@ -300,7 +300,7 @@ export class BloomreachMergeConsentService {
         id: { not: entry.id },
         externalId: entry.externalId,
         commandName: BloomreachCommandName.CUSTOMERS,
-        commandData: { path: ['properties', ANONYMIZATION_PROPERTY], equals: false },
+        commandData: { path: ['properties', IDENTITY_PROPERTY], equals: false },
         OR: isLiveOrRecentlyCompleted(),
       },
       select: { id: true },

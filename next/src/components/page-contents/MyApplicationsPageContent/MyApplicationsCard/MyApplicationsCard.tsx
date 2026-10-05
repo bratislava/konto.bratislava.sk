@@ -8,7 +8,6 @@ import Icon from '@/src/components/icon-components/Icon'
 import BottomSheetMenuModal from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuModal'
 import { useDeleteFormConcept } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard/useDeleteFormConcept'
 import { useExportFormToPdf } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard/useExportFormToPdf'
-import { useExportFormToXml } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard/useExportFormToXml'
 import { getMyApplicationStateByFormResponseState } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationStates'
 import { useFormDefinitionSlugTitleMap } from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionSlugTitleMap'
 import DropdownMenu, {
@@ -16,6 +15,7 @@ import DropdownMenu, {
 } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import Tag from '@/src/components/simple-components/Tag'
 import MessageModal from '@/src/components/widget-components/Modals/MessageModal'
+import { useExportFormToXml } from '@/src/frontend/hooks/useExportFormToXml'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
@@ -40,7 +40,7 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
   const [showDeleteFormConceptModal, setShowDeleteFormConceptModal] = useState<boolean>(false)
   const [isBottomSheetMenuOpen, setIsBottomSheetMenuOpen] = useState(false)
 
-  const { exportFormToXml } = useExportFormToXml({ form })
+  const { exportFormToXml } = useExportFormToXml()
   const { exportFormToPdf } = useExportFormToPdf({ form })
   const { deleteFormConcept } = useDeleteFormConcept({ form, refreshListData })
 
@@ -72,7 +72,8 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
     {
       title: t('MyApplicationsCard.menu.downloadXml'),
       icon: <Icon name="download" className="size-6" />,
-      onPress: () => exportFormToXml(),
+      // TODO replace form.id - this won't be valid for forms processed on the GINIS side
+      onPress: () => exportFormToXml({ formId: form.id, formSlug }),
     },
     canDownloadPdf
       ? {

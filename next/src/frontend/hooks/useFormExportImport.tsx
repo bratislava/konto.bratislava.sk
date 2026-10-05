@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { usePlausible } from 'next-plausible'
 import { UpdateFormResponseDto } from 'openapi-clients/forms'
-import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
+import { createContext, PropsWithChildren, useContext, useRef } from 'react'
 
 import { formsClient } from '@/src/clients/forms'
 import { useFormSignature } from '@/src/components/forms/signer/useFormSignature'
@@ -17,6 +17,7 @@ import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import { RegistrationModalType } from '@/src/components/modals/RegistrationModal'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import { environment } from '@/src/environment'
+import { useExportFormToXml } from '@/src/frontend/hooks/useExportFormToXml'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { createSerializableFile } from '@/src/frontend/utils/formExportImport'
 import { downloadBlob } from '@/src/frontend/utils/general'
@@ -46,6 +47,7 @@ export const useGetContext = () => {
   const plausible = usePlausible()
 
   const { showToast, closeToasts } = useToast()
+  const { exportFormToXml } = useExportFormToXml()
 
   const importXmlButtonRef = useRef<HTMLButtonElement>(null)
   const importJsonButtonRef = useRef<HTMLButtonElement>(null)
@@ -133,26 +135,7 @@ export const useGetContext = () => {
 
     migrateFormMutate()
   }
-  // TODO refactor, same as next/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard.tsx
-  const exportXml = async () => {
-    showToast({ message: t('useFormExportImport.info.xmlExport'), variant: 'info' })
-    try {
-      const response = await formsClient.convertControllerConvertJsonToXmlV2(
-        formId,
-        {
-          jsonData: formData,
-        },
-        { authStrategy: 'authOrGuestWithToken' },
-      )
-      const fileName = `${slug}_output.xml`
-      downloadBlob(new Blob([response.data]), fileName)
-      closeToasts()
-      showToast({ message: t('useFormExportImport.success.xmlExport'), variant: 'success' })
-      plausible(`${slug}#export-xml`)
-    } catch (error) {
-      showToast({ message: t('useFormExportImport.errors.xmlExport'), variant: 'error' })
-    }
-  }
+  const exportXml = () => exportFormToXml({ formId, formSlug: slug, jsonData: formData })
 
   const exportJson = async () => {
     const fileName = `${slug}_output.json`

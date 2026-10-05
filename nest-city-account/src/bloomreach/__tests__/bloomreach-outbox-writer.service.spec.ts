@@ -129,8 +129,8 @@ describe('BloomreachOutboxWriterService', () => {
 
       await service.queueCustomerCommand(externalId)
 
-      expect(prismaMock.$queryRaw).toHaveBeenCalledTimes(1)
-      expect(prismaMock.$queryRaw.mock.calls[0]).toContain(`${externalId}:CUSTOMERS`)
+      expect(prismaMock.$executeRaw).toHaveBeenCalledTimes(1)
+      expect(prismaMock.$executeRaw.mock.calls[0]).toContain(`${externalId}:CUSTOMERS`)
     })
 
     it('should wrap a duplicate-pending-customer create failure as a locking bug', async () => {

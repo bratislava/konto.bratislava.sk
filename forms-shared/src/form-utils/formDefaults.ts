@@ -1,5 +1,5 @@
-import { baDefaultFormStateBehavior } from './defaultFormState'
 import { BAJSONSchema7 } from './ajvKeywords'
+import { baDefaultFormStateBehavior } from './defaultFormState'
 import { BaRjsfValidatorRegistry } from './validatorRegistry'
 
 /**

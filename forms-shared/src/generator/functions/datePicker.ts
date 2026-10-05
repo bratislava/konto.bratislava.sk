@@ -1,6 +1,6 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
-import { BaWidgetType, DatePickerUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
+import { BaWidgetType, DatePickerUiOptions } from '../uiOptionsTypes'
 
 export const datePicker = (
   property: string,

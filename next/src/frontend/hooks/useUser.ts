@@ -11,8 +11,8 @@ export const prefetchUserQuery = async (
   getSsrAuthSession: () => Promise<AuthSession>,
 ) =>
   // https://github.com/TanStack/query/discussions/3306#discussioncomment-2205514
+  // eslint-disable-next-line @tanstack/query/exhaustive-deps
   queryClient.fetchQuery({
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: userQueryKey,
     queryFn: () =>
       cityAccountClient

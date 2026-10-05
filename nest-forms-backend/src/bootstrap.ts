@@ -1,3 +1,8 @@
+import {
+  ErrorFilter,
+  HttpExceptionFilter,
+  UnknownExceptionFilter,
+} from '@bratislava/log-nest'
 import { INestApplication, ValidationPipe } from '@nestjs/common'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import express, { json } from 'express'
@@ -5,7 +10,6 @@ import express, { json } from 'express'
 import { cognitoGuestIdentityIdHeaderKey } from './auth-v2/utils/extract-cognito-guest-identity-id-from-request'
 import BaConfigService from './config/ba-config.service'
 import { INNOVATION_MAIL } from './utils/constants'
-import { ErrorFilter, HttpExceptionFilter } from './utils/filters/error.filter'
 
 function setupCors(app: INestApplication) {
   const corsOptions = {
@@ -38,7 +42,8 @@ function setupGlobalPipes(app: INestApplication) {
 }
 
 function setupGlobalFilters(app: INestApplication) {
-  app.useGlobalFilters(new ErrorFilter()) // This filter must be first
+  app.useGlobalFilters(new UnknownExceptionFilter())
+  app.useGlobalFilters(new ErrorFilter())
   app.useGlobalFilters(new HttpExceptionFilter())
 }
 

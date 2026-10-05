@@ -1,5 +1,5 @@
-import { poznamkaShared } from '../shared/poznamkaShared'
 import { TaxFormData } from '../../types'
+import { poznamkaShared } from '../shared/poznamkaShared'
 
 export const poznamka = (data: TaxFormData, formId?: string) => {
   const mapping = poznamkaShared(data, formId)

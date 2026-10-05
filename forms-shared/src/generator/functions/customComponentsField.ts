@@ -1,6 +1,6 @@
-import { BaFieldType, CustomComponentFieldUiOptions, CustomComponentType } from '../uiOptionsTypes'
 import { GeneratorField } from '../generatorTypes'
 import { removeUndefinedValues } from '../helpers'
+import { BaFieldType, CustomComponentFieldUiOptions, CustomComponentType } from '../uiOptionsTypes'
 
 /**
  * This is a special field that represents no data in the schema. It is a "hacky way", but the easiest how to display

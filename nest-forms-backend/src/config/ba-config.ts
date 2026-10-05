@@ -162,6 +162,13 @@ export default class BaConfig {
     }
   }
 
+  get pdfGenerator() {
+    return {
+      chromiumExecutablePath:
+        this.validatedConfig.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+    }
+  }
+
   get featureToggles() {
     return {
       versioning: this.validatedConfig.FEATURE_TOGGLE_VERSIONING,

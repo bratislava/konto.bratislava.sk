@@ -5,17 +5,17 @@ import {
   isSlovenskoSkGenericFormDefinition,
   isSlovenskoSkTaxFormDefinition,
 } from '../definitions/formDefinitionTypes'
-import { TaxFormData } from '../tax-form/types'
+import { FormsBackendFile } from '../form-files/serverFilesTypes'
+import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
+import { getHtmlSbXslt } from '../slovensko-sk/file-templates/htmlSbXslt'
+import { getSchemaXsd } from '../slovensko-sk/file-templates/schemaXsd'
+import { generateSlovenskoSkXmlObject } from '../slovensko-sk/generateXml'
+import { buildSlovenskoSkXml } from '../slovensko-sk/xmlBuilder'
+import { getFormSummary } from '../summary/summary'
 import { generateTaxXml } from '../tax-form/generateTaxXml'
 import { getTaxXsd, getTaxXslt } from '../tax-form/taxXsdXslt'
-import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
-import { generateSlovenskoSkXmlObject } from '../slovensko-sk/generateXml'
-import { FormsBackendFile } from '../form-files/serverFilesTypes'
-import { buildSlovenskoSkXml } from '../slovensko-sk/xmlBuilder'
-import { getSchemaXsd } from '../slovensko-sk/file-templates/schemaXsd'
-import { getHtmlSbXslt } from '../slovensko-sk/file-templates/htmlSbXslt'
+import { TaxFormData } from '../tax-form/types'
 import { createFormSignatureId } from './signatureId'
-import { getFormSummary } from '../summary/summary'
 
 export type GetSignerDataParams<
   FormDefinition extends FormDefinitionSlovenskoSk = FormDefinitionSlovenskoSk,

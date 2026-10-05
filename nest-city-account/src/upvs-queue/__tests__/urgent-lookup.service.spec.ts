@@ -1,3 +1,4 @@
+import { LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -27,6 +28,7 @@ describe('UrgentLookupService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerService,
         UrgentLookupService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: PhysicalEntityService, useValue: createMock<PhysicalEntityService>() },

@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
@@ -30,14 +31,13 @@ import MailgunService from '../../../mailer/mailgun.service'
 import OloMailerService from '../../../mailer/olo-mailer.service'
 import PrismaService from '../../../prisma/prisma.service'
 import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
-import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { EmailFormsErrorsResponseEnum } from '../../errors/email-forms.errors.enum'
 import EmailFormsService from '../email-forms.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/summary-email/renderSummaryEmail')
 jest.mock('forms-shared/form-utils/omitExtraData')
+jest.mock('forms-shared/form-utils/formDataExtractors')
 
 const formId = 'test-form-id'
 const userEmail = 'test@example.com'
@@ -160,6 +160,10 @@ describe('EmailFormsService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         EmailFormsService,
         {
           provide: PrismaService,
@@ -185,15 +189,13 @@ describe('EmailFormsService', () => {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),
         },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
       ],
     }).compile()
 
     service = module.get<EmailFormsService>(EmailFormsService)
     mailgunService = module.get(MailgunService)
     oloMailerService = module.get(OloMailerService)
-
-    service['logger'] = createMock<LineLoggerSubservice>()
 
     jest.spyOn(console, 'log').mockImplementation(jest.fn())
     jest.spyOn(console, 'error').mockImplementation(jest.fn())
@@ -235,6 +237,13 @@ describe('EmailFormsService', () => {
       jest
         .spyOn(baOmitExtraData, 'baOmitExtraData')
         .mockReturnValue({ test: 'data' })
+      jest
+        .spyOn(formDataExtractors, 'extractEmailFormAddress')
+        .mockImplementation(
+          jest.requireActual<typeof formDataExtractors>(
+            'forms-shared/form-utils/formDataExtractors',
+          ).extractEmailFormAddress,
+        )
 
       extractEmailFormEmailSpy = jest
         .spyOn(formDataExtractors, 'extractEmailFormEmail')

@@ -1,12 +1,12 @@
-import { createCondition } from '../generator/helpers'
+import { SchemalessFormDataExtractor } from '../form-utils/evaluateFormDataExtractor'
+import { conditionalFields } from '../generator/functions/conditionalFields'
+import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
 import { input } from '../generator/functions/input'
 import { radioGroup } from '../generator/functions/radioGroup'
-import { textArea } from '../generator/functions/textArea'
-import { step } from '../generator/functions/step'
-import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
-import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
-import { SchemalessFormDataExtractor } from '../form-utils/evaluateFormDataExtractor'
+import { step } from '../generator/functions/step'
+import { textArea } from '../generator/functions/textArea'
+import { createCondition } from '../generator/helpers'
 
 export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám' }, [
   step('podnet', { title: 'Podnet' }, [

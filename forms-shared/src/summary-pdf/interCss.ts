@@ -1,5 +1,6 @@
-import * as path from 'node:path'
 import fs from 'node:fs/promises'
+import * as path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const fontMimeTypes: Record<string, string> = {
   '.woff': 'font/woff',
@@ -40,8 +41,8 @@ const getInlinedFontCssByPath = async (filePath: string) => {
 
 export const getInterCss = async () => {
   const paths = [
-    require.resolve('@fontsource/inter/latin.css'),
-    require.resolve('@fontsource/inter/latin-ext.css'),
+    fileURLToPath(import.meta.resolve('@fontsource/inter/latin.css')),
+    fileURLToPath(import.meta.resolve('@fontsource/inter/latin-ext.css')),
   ]
   const css = await Promise.all(paths.map(getInlinedFontCssByPath))
 

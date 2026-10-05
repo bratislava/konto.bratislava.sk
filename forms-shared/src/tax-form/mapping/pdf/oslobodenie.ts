@@ -1,5 +1,5 @@
-import { oslobodenieShared } from '../shared/oslobodenieShared'
 import { TaxFormData } from '../../types'
+import { oslobodenieShared } from '../shared/oslobodenieShared'
 import { udajeODanovnikovi } from './udajeODanovnikovi'
 
 export const oslobodenie = (data: TaxFormData) => {

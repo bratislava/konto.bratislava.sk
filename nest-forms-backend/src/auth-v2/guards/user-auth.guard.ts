@@ -17,7 +17,9 @@ export class UserAuthGuard extends AuthGuard('user-auth') {
     super()
   }
 
-  canActivate(context: ExecutionContext): ReturnType<CanActivate['canActivate']> {
+  canActivate(
+    context: ExecutionContext,
+  ): ReturnType<CanActivate['canActivate']> {
     const allowedUserTypes = this.reflector.getAllAndOverride<
       UserType[] | undefined
     >(ALLOWED_USER_TYPES_KEY, [context.getHandler(), context.getClass()])
@@ -47,13 +49,13 @@ export class UserAuthGuard extends AuthGuard('user-auth') {
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters -- generic required to satisfy IAuthGuard.handleRequest<TUser> contract from @nestjs/passport
   handleRequest<TUser = User>(
-    err: Error | null,
+    error: Error | null,
     user: unknown,
     info: unknown,
     context: ExecutionContext,
   ): TUser {
-    if (err) {
-      throw err
+    if (error) {
+      throw error
     }
     if (!user) {
       throw new UnauthorizedException('No user found in request.')

@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import {
   createParamDecorator,
   ExecutionContext,
@@ -9,9 +10,8 @@ import { isAxiosError } from 'axios'
 import express from 'express'
 
 import ClientsService from '../../clients/clients.service'
+import alertReporting from '../../utils/constants/error.alerts'
 import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 
 @Injectable()
 export class UserInfoPipe implements PipeTransform {
@@ -39,34 +39,35 @@ export class UserInfoPipe implements PipeTransform {
       }
       throw new Error('Birth number is missing')
     } catch (error) {
-      const thrower = new ThrowerErrorGuard()
+      const errorFactoryService = new ErrorFactoryService({ alertReporting })
       if (!isAxiosError(error)) {
-        throw thrower.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Get or create user error: ${String(error)}`,
-        )
+        throw errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Get or create user error',
+          error,
+        })
       }
 
       // The Authorization header is the end user's bearer token, so 401/403
       // from city-account mean the user's token is bad. Surface them as-is
       // instead of letting fromAxiosError's default treat them as our own
       // credentials failing (BAD_GATEWAY_AUTH_ERROR, which alerts).
-      throw thrower.fromAxiosError(error, {
+      throw errorFactoryService.fromAxiosError(error, {
         statusOverrides: {
           [HttpStatus.UNAUTHORIZED]: {
             status: HttpStatus.UNAUTHORIZED,
-            errorEnum: ErrorsEnum.UNAUTHORIZED_ERROR,
+            errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
             message: 'The provided authorization token is invalid or expired.',
           },
           [HttpStatus.FORBIDDEN]: {
             status: HttpStatus.FORBIDDEN,
-            errorEnum: ErrorsEnum.FORBIDDEN_ERROR,
+            errorEnum: ErrorEnum.FORBIDDEN_ERROR,
             message:
               'The provided authorization token is not allowed to get or create this user.',
           },
           [HttpStatus.NOT_FOUND]: {
             status: HttpStatus.NOT_FOUND,
-            errorEnum: ErrorsEnum.NOT_FOUND_ERROR,
+            errorEnum: ErrorEnum.NOT_FOUND_ERROR,
             message:
               'User could not be retrieved or created from city account.',
           },

@@ -1,0 +1,62 @@
+import type { AxiosInstance } from 'axios'
+
+import {
+  ADMINApiFactory,
+  AuthApiFactory,
+  BackendIntegrationAPIApiFactory,
+  DefaultApiFactory,
+  DPBApiFactory,
+  OAuth2ApiFactory,
+  PAASMPAApiFactory,
+  TicketsApiFactory,
+  TowingApiFactory,
+  UserIntegrationApiFactory,
+  UsersManipulationApiFactory,
+  UserVerificationsApiFactory,
+} from './api'
+import { Configuration, ConfigurationParameters } from './configuration'
+
+type ClientConfig = {
+  basePath: string
+  configurationParameters?: ConfigurationParameters
+  axios?: AxiosInstance
+}
+
+export interface CityAccountClient
+  extends
+    ReturnType<typeof ADMINApiFactory>,
+    ReturnType<typeof AuthApiFactory>,
+    ReturnType<typeof BackendIntegrationAPIApiFactory>,
+    ReturnType<typeof DPBApiFactory>,
+    ReturnType<typeof DefaultApiFactory>,
+    ReturnType<typeof OAuth2ApiFactory>,
+    ReturnType<typeof PAASMPAApiFactory>,
+    ReturnType<typeof TicketsApiFactory>,
+    ReturnType<typeof TowingApiFactory>,
+    ReturnType<typeof UserIntegrationApiFactory>,
+    ReturnType<typeof UserVerificationsApiFactory>,
+    ReturnType<typeof UsersManipulationApiFactory> {}
+
+export const createCityAccountClient = ({
+  basePath,
+  configurationParameters = {},
+  axios,
+}: ClientConfig): CityAccountClient => {
+  const configuration = new Configuration(configurationParameters)
+  const args = [configuration, basePath, axios] as const
+
+  return {
+    ...ADMINApiFactory(...args),
+    ...AuthApiFactory(...args),
+    ...BackendIntegrationAPIApiFactory(...args),
+    ...DPBApiFactory(...args),
+    ...DefaultApiFactory(...args),
+    ...OAuth2ApiFactory(...args),
+    ...PAASMPAApiFactory(...args),
+    ...TicketsApiFactory(...args),
+    ...TowingApiFactory(...args),
+    ...UserIntegrationApiFactory(...args),
+    ...UserVerificationsApiFactory(...args),
+    ...UsersManipulationApiFactory(...args),
+  } satisfies CityAccountClient
+}

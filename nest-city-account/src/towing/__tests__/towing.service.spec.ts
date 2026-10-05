@@ -1,11 +1,10 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import axios from 'axios'
 
 import { expectAny, expectObjectContaining } from '../../__tests__/jest-matchers'
 import BaConfigService from '../../config/ba-config.service'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { TowingErrorsEnum } from '../towing.errors.enum'
 import { TowingService } from '../towing.service'
 
@@ -41,7 +40,7 @@ describe('TowingService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TowingService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         {
           provide: BaConfigService,
           useValue: {
@@ -187,7 +186,7 @@ describe('TowingService', () => {
           const httpError = error as HttpException
           expect(httpError.getStatus()).toBe(HttpStatus.BAD_GATEWAY)
           expect((httpError.getResponse() as { errorName: string }).errorName).toBe(
-            ErrorsEnum.BAD_GATEWAY_AUTH_ERROR
+            ErrorEnum.BAD_GATEWAY_AUTH_ERROR
           )
         }
       }
@@ -208,7 +207,7 @@ describe('TowingService', () => {
         const httpError = error as HttpException
         expect(httpError.getStatus()).toBe(HttpStatus.BAD_GATEWAY)
         expect((httpError.getResponse() as { errorName: string }).errorName).toBe(
-          ErrorsEnum.BAD_GATEWAY_ERROR
+          ErrorEnum.BAD_GATEWAY_ERROR
         )
       }
     })

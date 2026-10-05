@@ -1,3 +1,4 @@
+import { LogAllowList } from '@bratislava/log-nest'
 import { Body, Controller, HttpCode, HttpException, Post, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
@@ -21,6 +22,12 @@ import { VerificationService } from './verification.service'
 @ApiTags('User verifications')
 @ApiBearerAuth()
 @Controller('user-verification')
+@LogAllowList({
+  statusCode: true,
+  status: true,
+  message: true,
+  errorName: true,
+})
 export class VerificationController {
   constructor(
     private verificationService: VerificationService,

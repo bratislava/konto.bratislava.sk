@@ -1,3 +1,4 @@
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -8,8 +9,6 @@ import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { QrCodeService } from '../qrcode/qrcode.service'
 import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -46,7 +45,7 @@ const lookingForTaxDate = {
 export class TaxService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly qrCodeService: QrCodeService,
   ) {}
 
@@ -87,10 +86,10 @@ export class TaxService {
     type: TaxType,
   ): Promise<ResponseGetTaxesListDto> {
     if (!birthNumber) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
-        CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
-      )
+      throw this.errorFactoryService.ForbiddenException({
+        errorEnum: CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
+        message: CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+      })
     }
 
     const taxPayer = await this.prisma.taxPayer.findUnique({
@@ -218,10 +217,10 @@ export class TaxService {
     })
 
     if (!taxPayer) {
-      throw this.throwerErrorGuard.NotFoundException(
-        CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
-        CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
+        message: CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
+      })
     }
 
     const tax = await this.prisma.tax.findUnique<{
@@ -240,10 +239,10 @@ export class TaxService {
     })
 
     if (!tax) {
-      throw this.throwerErrorGuard.NotFoundException(
-        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-        CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        message: CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+      })
     }
 
     return tax
@@ -283,10 +282,10 @@ export class TaxService {
 
     // Validate tax details type matches expected type
     if (tax.taxDetails.type !== type) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Tax details type is not ${type}: ${tax.taxDetails.type}`,
-      )
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `Tax details type is not ${type}: ${tax.taxDetails.type}`,
+      })
     }
 
     const detailWithoutQrCode = getTaxDetailPure({
@@ -379,10 +378,10 @@ export class TaxService {
     )
 
     if (tax.isCancelled) {
-      throw this.throwerErrorGuard.NotFoundException(
-        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-        'Cancelled tax cannot be paid.',
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        message: 'Cancelled tax cannot be paid.',
+      })
     }
 
     return getTaxDetailPureForOneTimeGenerator({
@@ -410,10 +409,10 @@ export class TaxService {
     )
 
     if (tax.isCancelled) {
-      throw this.throwerErrorGuard.NotFoundException(
-        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-        'Cancelled tax cannot be paid.',
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        message: 'Cancelled tax cannot be paid.',
+      })
     }
 
     return getTaxDetailPureForInstallmentGenerator({

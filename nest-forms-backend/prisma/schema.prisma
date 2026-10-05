@@ -55,6 +55,9 @@ model Forms {
   files                  Files[]
   archived               Boolean        @default(false)
   ginisState             GinisState     @default(CREATED)
+  // Introduced on 2026-02-19; older sent forms were backfilled manually (approximate values).
+  // for backfill see https://github.com/bratislava/konto.bratislava.sk/pull/4610
+  // DB constraint `form_sent_at_required_when_not_draft`: if state is not DRAFT, formSentAt must be set (not null).
   formSentAt             DateTime?
 }
 

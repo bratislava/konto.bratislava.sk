@@ -1,3 +1,4 @@
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -5,7 +6,6 @@ import { expectObjectContaining } from '../../../../__tests__/jest-matchers'
 import { MagproxyService } from '../../../../magproxy/magproxy.service'
 import { PhysicalEntityService } from '../../../../physical-entity/physical-entity.service'
 import { RfoIdentityListElement } from '../../../../rfo-by-birthnumber/dtos/rfoSchema'
-import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { VerificationErrorsEnum } from '../../../verification.errors.enum'
 import { VerificationSubservice } from '../verification.subservice'
 import { VerificationDataSubservice } from '../verification-data.subservice'
@@ -18,8 +18,9 @@ describe('VerificationSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerService,
         VerificationSubservice,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: MagproxyService, useValue: createMock<MagproxyService>() },
         {
           provide: VerificationDataSubservice,
@@ -193,10 +194,30 @@ describe('VerificationSubservice', () => {
     })
 
     it.each([
-      { scenario: 'diacritics differ in the first name', firstName: 'Jan', lastName: 'Novák' },
-      { scenario: 'diacritics differ in the last name', firstName: 'Ján', lastName: 'Novak' },
       { scenario: 'letter case differs in the first name', firstName: 'ján', lastName: 'Novák' },
       { scenario: 'letter case differs in the last name', firstName: 'Ján', lastName: 'NOVÁK' },
+      { scenario: 'letter case differs in both names', firstName: 'JÁN', lastName: 'nOvÁk' },
+    ])('should match when $scenario', ({ firstName, lastName }) => {
+      const rfoData: RfoIdentityListElement = {
+        menaOsoby: [{ meno: 'Ján' }],
+        priezviskaOsoby: [{ meno: 'Novák' }],
+      }
+
+      expect(service['validatePersonName'](rfoData, firstName, lastName)).toBe(true)
+    })
+
+    it('should ignore letter case in RFO data', () => {
+      const rfoData: RfoIdentityListElement = {
+        menaOsoby: [{ meno: 'JÁN' }, { meno: 'peter' }],
+        priezviskaOsoby: [{ meno: 'NOVÁK' }],
+      }
+
+      expect(service['validatePersonName'](rfoData, 'Ján Peter', 'Novák')).toBe(true)
+    })
+
+    it.each([
+      { scenario: 'diacritics differ in the first name', firstName: 'Jan', lastName: 'Novák' },
+      { scenario: 'diacritics differ in the last name', firstName: 'Ján', lastName: 'Novak' },
       { scenario: 'the first name does not match', firstName: 'Peter', lastName: 'Novák' },
       { scenario: 'the last name does not match', firstName: 'Ján', lastName: 'Horváth' },
     ])('should not match when $scenario', ({ firstName, lastName }) => {

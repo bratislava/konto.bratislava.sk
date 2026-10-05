@@ -1,9 +1,10 @@
 import { ThemeProps, withTheme } from '@rjsf/core'
-import React, { ComponentProps, ComponentType } from 'react'
 import { FieldProps, WidgetProps } from '@rjsf/utils'
-import { BaFieldType, BaWidgetType } from '../src/generator/uiOptionsTypes'
+import React, { ComponentProps, ComponentType } from 'react'
 import { renderToString } from 'react-dom/server'
+
 import { defaultFormFields, DefaultFormFieldType } from '../src/form-utils/defaultFormFields'
+import { BaFieldType, BaWidgetType } from '../src/generator/uiOptionsTypes'
 
 const wrapWidget = (widgetType: BaWidgetType) =>
   function wrap({ id, label, value, children }: WidgetProps) {

@@ -1,3 +1,4 @@
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { ResponseRpoLegalPersonDto } from 'openapi-clients/magproxy'
 
@@ -7,7 +8,6 @@ import { PhysicalEntityService } from '../../../physical-entity/physical-entity.
 import { RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
 import { isValidBirthNumber } from '../../../utils/birthNumbers'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import {
   RequestBodyVerifyIdentityCardDto,
   RequestBodyVerifyWithRpoDto,
@@ -18,15 +18,12 @@ import { VerificationDataSubservice } from './verification-data.subservice'
 
 @Injectable()
 export class VerificationSubservice {
-  private logger: LineLoggerSubservice
-
   constructor(
     private magproxyService: MagproxyService,
     private verificationDataSubservice: VerificationDataSubservice,
-    private physicalEntityService: PhysicalEntityService
-  ) {
-    this.logger = new LineLoggerSubservice(VerificationSubservice.name)
-  }
+    private physicalEntityService: PhysicalEntityService,
+    private readonly logger: LineLoggerService
+  ) {}
 
   private checkIdentityCard(
     rfoData: RfoIdentityListElement,
@@ -102,6 +99,7 @@ export class VerificationSubservice {
 
   /**
    * Validates the first and last name of a person against a provided RFO identity data structure.
+   * The comparison ignores letter case, but not diacritics.
    *
    * @param {RfoIdentityListElement} rfoData - The RFO identity data containing first and last names to compare against.
    * @param {string | undefined} firstName - The first name of the person to validate.
@@ -122,8 +120,10 @@ export class VerificationSubservice {
         .split(/\s+/g) // handles multiple spaces + leading/trailing spaces after trim()
         .filter(Boolean)
 
-    const firstNames = splitToParts(firstName)
-    const lastNames = splitToParts(lastName)
+    const normalizeCase = (str: string): string => str.toLocaleLowerCase('sk')
+
+    const firstNames = splitToParts(firstName).map(normalizeCase)
+    const lastNames = splitToParts(lastName).map(normalizeCase)
 
     if (firstNames.length === 0 || lastNames.length === 0) {
       return false
@@ -133,10 +133,12 @@ export class VerificationSubservice {
     const rfoFirstNames = (rfoData.menaOsoby ?? [])
       .map((x) => x.meno)
       .filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
+      .map(normalizeCase)
 
     const rfoLastNames = (rfoData.priezviskaOsoby ?? [])
       .map((x) => x.meno)
       .filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
+      .map(normalizeCase)
 
     if (rfoFirstNames.length === 0 || rfoLastNames.length === 0) {
       return false

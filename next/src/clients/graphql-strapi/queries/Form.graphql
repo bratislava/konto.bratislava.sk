@@ -53,17 +53,17 @@ fragment FormWithLandingPage on Form {
   }
 }
 
-fragment Form on Form {
-  ...FormWithLandingPage
+fragment FormWithSentPage on Form {
+  ...FormBase
   formSentPage {
     ...FormSentPage
   }
 }
 
-query FormBaseBySlug($slug: String!) {
+query FormWithSentPageBySlug($slug: String!) {
   forms(filters: { slug: { eq: $slug } }) {
     documentId
-    ...FormBase
+    ...FormWithSentPage
   }
 }
 

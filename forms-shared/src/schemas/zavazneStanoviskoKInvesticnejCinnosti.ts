@@ -1,25 +1,25 @@
-import { createCondition } from '../generator/helpers'
-import { selectMultiple } from '../generator/functions/selectMultiple'
-import { input } from '../generator/functions/input'
-import { radioGroup } from '../generator/functions/radioGroup'
-import { fileUpload } from '../generator/functions/fileUpload'
-import { datePicker } from '../generator/functions/datePicker'
-import { step } from '../generator/functions/step'
-import { conditionalFields } from '../generator/functions/conditionalFields'
-import { schema } from '../generator/functions/schema'
-import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
-import {
-  esbsKatastralneUzemiaCiselnik,
-  katastralneUzemiaCodeAbbreviationMap,
-} from '../tax-form/mapping/shared/esbsCiselniky'
-import { textArea } from '../generator/functions/textArea'
-import { object } from '../generator/object'
-import { number } from '../generator/functions/number'
+import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
 import {
   SchemaFormDataExtractor,
   SchemalessFormDataExtractor,
 } from '../form-utils/evaluateFormDataExtractor'
-import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
+import { conditionalFields } from '../generator/functions/conditionalFields'
+import { datePicker } from '../generator/functions/datePicker'
+import { fileUpload } from '../generator/functions/fileUpload'
+import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
+import { input } from '../generator/functions/input'
+import { number } from '../generator/functions/number'
+import { radioGroup } from '../generator/functions/radioGroup'
+import { schema } from '../generator/functions/schema'
+import { selectMultiple } from '../generator/functions/selectMultiple'
+import { step } from '../generator/functions/step'
+import { textArea } from '../generator/functions/textArea'
+import { createCondition } from '../generator/helpers'
+import { object } from '../generator/object'
+import {
+  esbsKatastralneUzemiaCiselnik,
+  katastralneUzemiaCodeAbbreviationMap,
+} from '../tax-form/mapping/shared/esbsCiselniky'
 
 const addressFields = (title: string) => [
   input(

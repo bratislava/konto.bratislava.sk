@@ -1,5 +1,6 @@
 import { useTranslation } from 'next-i18next/pages'
 
+import Markdown from '@/src/components/formatting/Markdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import ThankYouTile, {
   ThankYouTileProps,
@@ -9,8 +10,23 @@ import { ROUTES } from '@/src/utils/routes'
 const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
   const { t } = useTranslation()
 
-  const { isTaxForm, formDefinition, isEmbedded } = useFormContext()
-  const { feedbackLink } = formDefinition
+  const { isTaxForm, isEmbedded, strapiFormSentPage } = useFormContext()
+
+  const feedbackLink = strapiFormSentPage?.feedbackLink?.trim()
+
+  const contentFromStrapi = strapiFormSentPage?.content?.trim()
+  const isContentCentered = strapiFormSentPage?.isContentCentered ?? true
+
+  const alertTitle = strapiFormSentPage?.alert?.title?.trim()
+  const alertContent = strapiFormSentPage?.alert?.content?.trim()
+  const alertProps: ThankYouTileProps['alert'] =
+    alertTitle || alertContent
+      ? {
+          type: 'warning',
+          title: alertTitle,
+          message: alertContent ? <Markdown variant="small" content={alertContent} /> : undefined,
+        }
+      : null
 
   const feedbackButton = feedbackLink
     ? {
@@ -27,15 +43,18 @@ const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
   if (isEmbedded) {
     return {
       title: t('FormSentPageContent.title'),
-      content: t('FormSentPageContent.content.embedded'),
-      isContentCentered: true,
+      content: contentFromStrapi ?? t('FormSentPageContent.content.embedded'),
+      isContentCentered,
+      alert: alertProps,
     }
   }
 
   if (isTaxForm) {
     return {
       title: t('FormSentPageContent.title'),
-      content: t('FormSentPageContent.content.tax'),
+      content: contentFromStrapi ?? t('FormSentPageContent.content.tax'),
+      isContentCentered,
+      alert: alertProps,
       primaryButton: feedbackButton,
       secondaryButton: municipalServicesButton,
     }
@@ -43,8 +62,9 @@ const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
 
   return {
     title: t('FormSentPageContent.title'),
-    content: t('FormSentPageContent.content.generic'),
-    isContentCentered: true,
+    content: contentFromStrapi ?? t('FormSentPageContent.content.generic'),
+    isContentCentered,
+    alert: alertProps,
     primaryButton: feedbackButton,
     secondaryButton: municipalServicesButton,
   }
@@ -55,16 +75,17 @@ const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
  */
 
 const FormSentPageContent = () => {
-  const { title, content, isContentCentered, primaryButton, secondaryButton } =
+  const { title, content, isContentCentered, alert, primaryButton, secondaryButton } =
     useFormSentPageContent()
 
   return (
-    <div className="py-6 lg:py-16">
+    <div className="w-full py-6 lg:py-16">
       <ThankYouTile
         variant="success"
         title={title}
         content={content}
         isContentCentered={isContentCentered}
+        alert={alert}
         primaryButton={primaryButton}
         secondaryButton={secondaryButton}
       />

@@ -1,10 +1,10 @@
-import { createStringItems } from '../../generator/helpers'
-import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
-import { StepEnum } from './stepEnum'
-import { select } from '../../generator/functions/select'
 import { input } from '../../generator/functions/input'
 import { number } from '../../generator/functions/number'
+import { select } from '../../generator/functions/select'
+import { createStringItems } from '../../generator/helpers'
 import { object } from '../../generator/object'
+import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
+import { StepEnum } from './stepEnum'
 
 export const stavbyBase = (step: StepEnum) => [
   input(

@@ -17,6 +17,9 @@ export async function validateXml(
   xmlString: string,
   xsdString: string,
 ): Promise<ValidateXmlResult> {
+  // Must stay a dynamic import: libxml2-wasm uses top-level await, and a static import would make
+  // this module async too, so CommonJS consumers (nest-forms-backend) could no longer require() it.
+  // TODO: Switch to a static import once nest-forms-backend is migrated to ESM.
   const { XmlDocument, XsdValidator, XmlLibError } = await import('libxml2-wasm')
 
   let xmlDoc: InstanceType<typeof XmlDocument> | null = null

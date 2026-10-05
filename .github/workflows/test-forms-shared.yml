@@ -2,11 +2,6 @@ name: Forms Shared Tests
 on:
   workflow_call:
     inputs:
-      directory:
-        description: "Base dir where whole app is located."
-        type: string
-        required: false
-        default: './forms-shared'
       image:
         description: "Full image name including registry/repository for shared Docker cache."
         type: string
@@ -25,6 +20,10 @@ permissions:
 env:
   REGISTRY: harbor.bratislava.sk
   REGISTRY_USERNAME: robot$github_actions
+  BAKE_FILES: |
+    docker-bake.json
+    docker-bake.hcl
+    .github/docker-bake.ci.hcl
 
 jobs:
   test:
@@ -36,19 +35,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "24.15"
-
-      - name: Prepare Docker build args
-        id: docker-build-args
-        shell: bash
-        env:
-          DIRECTORY: ${{ inputs.directory }}
-        run: |
-          node "$DIRECTORY/scripts/printDockerBuildArgs.ts" "$DIRECTORY" >> "$GITHUB_OUTPUT"
-
       - name: Set up Docker build
         uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
         with:
@@ -58,20 +44,18 @@ jobs:
           harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
           harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
-      - name: Docker metadata
-        id: meta
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+      - name: Docker build config
+        id: config
+        uses: ./.github/actions/docker-build-config
         with:
           image: ${{ inputs.image }}
-          suffix: -test
 
       - name: Run tests
-        uses: docker/build-push-action@v7
+        uses: docker/bake-action@v7
         with:
-          context: ${{ inputs.directory }}
-          target: ci-test
-          cache-from: ${{ steps.meta.outputs.cache_from }}
-          cache-to: ${{ steps.meta.outputs.cache_to }}
-          build-args: |
-            PLAYWRIGHT_VERSION=${{ steps.docker-build-args.outputs.PLAYWRIGHT_VERSION }}
-            SLOVENSKO_MEF_JSON_LAST_MODIFIED=${{ steps.docker-build-args.outputs.SLOVENSKO_MEF_JSON_LAST_MODIFIED }}
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: forms-shared-test
+        env:
+          CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).main.from }}
+          CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).main.to }}

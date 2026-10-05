@@ -1,10 +1,11 @@
+import { ErrorEnum } from '@bratislava/log-nest'
+
 import { CustomErrorNorisTypesEnum } from '../../noris/noris.errors'
 import {
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
 } from '../../payment/dtos/error.dto'
 import { CustomErrorTaxTypesEnum } from '../../tax/dtos/error.dto'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
 
 /**
  * This set contains all of the errors, which should be alerted in grafana when they are thrown.
@@ -13,9 +14,9 @@ import { ErrorsEnum } from '../guards/dtos/error.dto'
  * invoked when a client tries to retrieve a form with nonexistent uuid.
  */
 export default [
-  ErrorsEnum.INTERNAL_SERVER_ERROR,
-  ErrorsEnum.DATABASE_ERROR,
-  ErrorsEnum.BAD_GATEWAY_AUTH_ERROR,
+  ErrorEnum.INTERNAL_SERVER_ERROR,
+  ErrorEnum.DATABASE_ERROR,
+  ErrorEnum.BAD_GATEWAY_AUTH_ERROR,
   CustomErrorPaymentTypesEnum.DATABASE_ERROR,
   CustomErrorPaymentTypesEnum.CREATE_PAYMENT_URL,
   CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,

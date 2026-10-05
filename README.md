@@ -2,6 +2,35 @@
 
 Monorepo of services, shared libraries and frontend for [konto.bratislava.sk](https://konto.bratislava.sk).
 
+## Toolchain
+
+**pnpm is the only supported package manager — do not use npm or yarn.**
+
+pnpm must be installed via the [official guide](https://pnpm.io/installation), not through npm, to work correctly.
+
+pnpm resolves this workspace reliably where npm does not: npm installs without complaint but then breaks at build time with obscure module resolution errors on the more complex dependency graphs here, also its flat `node_modules` hides phantom dependencies — packages that are importable without ever being declared.
+
+Node and pnpm versions are pinned once in the root `package.json`. Who makes sure you get the right version depends on how you run things:
+
+| You run | Version comes from | Pinned in | Wrong or missing version |
+| --- | --- | --- | --- |
+| `pnpm …` (including scripts, so `node` started by pnpm) | pnpm itself | `devEngines` | pnpm downloads the pinned version and uses it |
+| `node …` directly | [Volta](https://volta.sh) | `volta.node` | Volta downloads the pinned version and uses it |
+| Any other tool that checks `devEngines` | — | `devEngines` | Stops with an error |
+
+So on a fresh checkout, `pnpm install` is enough: pnpm fetches the right pnpm and Node on its own. The automatic download is enabled by `pmOnFail: download` and `runtimeOnFail: download` in `pnpm-workspace.yaml`; everything else keeps the strict `onFail: error` from `devEngines`.
+
+**Volta** is optional. It is a version manager that switches to the project's Node version whenever you run `node` inside this repository. Install it only if you run `node` directly. Volta can't manage pnpm 12+, so pnpm itself still comes from the official installer.
+
+## Turborepo
+
+[Turborepo](https://turbo.build) is configured once in the root `turbo.json`.
+
+- Every task depends on `^build`, which means "first build every workspace package this one depends on" (the `^` stands for dependencies). So shared packages are always built before whatever uses them, and you never have to rebuild them by hand.
+- Apps that consume those packages have a `build:dependencies` script, which builds everything the package depends on but not the package itself. Use it to get a freshly cloned workspace ready for `pnpm run dev` without building the app first.
+- Task results are cached and replayed instead of re-run when nothing relevant changed. Locally that is a `.turbo` directory; in CI it is a shared remote cache, so a package unchanged since an earlier run is restored rather than rebuilt.
+- We do not currently run several services at once (there is no `dev` task, and a CI build targets a single service), so the parallel-task side of Turborepo buys us little today. The caching and the dependency ordering are the reasons it is here.
+
 ## Product specification
 
 [Product specification for city account (internal)](https://magistratba.sharepoint.com/:w:/s/InnovationTeam/Ee7urGwpSLBGnhyBYT5OJyAB9yPAd8xctA2I_xU6rYWbuA?e=ofobAR)
@@ -54,31 +83,55 @@ Deploy specific service by creating a tag in format: `<environment>-<service-nam
 
 ### How deploys work
 
-Build and deploy share one reusable workflow per service type (`build-nest.yml`, `build-next.yml`, `build-single-image.yml`). On a PR these run in build-only mode; in `deploy.yml` they run in deploy mode (`cluster` set), which builds the service image (if an image for the current commit does not already exist in Harbor) and tags it as `<cluster>-<short-sha>`. In deploy mode the nest builds also skip the validation/test images (`skip_tests`). Once a service image is built, a matching `deploy-*` job in `deploy.yml` calls the shared `trigger-infra-deploy.yml` workflow, which dispatches `deploy.yml` in [infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration); that applies the Terragrunt module for the service (under `clusters/<cluster>/applications/konto.bratislava.sk/<service>`) on the target cluster.
+The pipeline follows the shared Bratislava deployment conventions – see
+[Deployment and releases](https://magistratba.sharepoint.com/:fl:/r/contentstorage/CSP_e7fd7f53-9abe-456a-b0e1-7cc0c63e3f1a/Document%20Library/LoopAppData/Deployment%20%26%20releases.loop?d=we29942dcbfe34648a857e7d3bfb196cf&csf=1&web=1&e=MLf6C9&nav=cz0lMkZjb250ZW50c3RvcmFnZSUyRkNTUF9lN2ZkN2Y1My05YWJlLTQ1NmEtYjBlMS03Y2MwYzYzZTNmMWEmZD1iJTIxVTNfOTU3NmFha1d3NFh6QXhqNF9Hc3RnWmNMRlhXQkR2Z2F4bHUxdEdsNGZsSnk2d2ZCeFRvWi00aXZqZ0o4ayZmPTAxWVJNMktXRzRJS002Rlk1N0pCREtRVjdIMk83M0RGV1AmYz0lMkYmYT1Mb29wQXBwJnA9JTQwZmx1aWR4JTJGbG9vcC1wYWdlLWNvbnRhaW5lciZ4PSU3QiUyMnclMjIlM0ElMjJUMFJUVUh4dFlXZHBjM1J5WVhSaVlTNXphR0Z5WlhCdmFXNTBMbU52Ylh4aUlWVXpYemsxTnpaaFlXdFhkelJZZWtGNGFqUmZSM04wWjFwalRFWllWMEpFZG1kaGVHeDFNWFJIYkRSbWJFcDVObmRtUW5oVWIxb3ROR2wyYW1kS09HdDhNREZaVWsweVMxZERRMUUyTTB4Qk5VODBOMFpHVEVVMFIwNVFTbGRLUlVoYVVRJTNEJTNEJTIyJTJDJTIyaSUyMiUzQSUyMjU1NzQyNmM4LTBmYjMtNDVhYi1iYTg1LWQ0MzZkYzMyODU1MCUyMiU3RA%3D%3D) for the overview and release rules.
+Specific to this repo:
 
-Backend images are environment-agnostic, so a single per-commit build is reused across clusters. The Next.js frontend bakes its environment into the build, so it is rebuilt (with a separate Docker cache and an `-<env>` tag suffix) for every cluster.
-
-The build and deploy plumbing (Buildx setup, registry logins, Docker tag/cache metadata, image reuse checks, and the infrastructure deploy trigger) comes from shared actions in [bratislava/github-actions](https://github.com/bratislava/github-actions).
+- `deploy.yml` maps the ref to a cluster and a service set with an inline resolve step,
+  so tag pushes and `master` pushes are handled by one workflow.
+- Build and deploy share one reusable workflow per service type (`build-nest.yml`,
+  `build-next.yml`, `build-single-image.yml`); in deploy mode the nest builds skip the
+  validation/test images (`skip_tests`).
+- The Terragrunt units live under `clusters/<cluster>/applications/konto.bratislava.sk/<service>`
+  in [infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration)
+  (clusters: `development`, `staging`, `production`).
 
 ### Environment variables and secrets
 
-Runtime configuration is split in two: **non-secret env vars live in this repo**, next to the code they configure, and **secrets live in Passbolt**. The deployment itself is still defined per cluster in [infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration), under `clusters/<cluster>/applications/konto.bratislava.sk/<service>` (clusters: `development`, `staging`, `production`).
+Non-secret env vars live in this repo, secrets live in [Passbolt](https://passbolt.bratislava.sk) –
+the conventions (the `.env.deploy.*` file format, Passbolt naming and syncing, the
+`read-only/` mirrors) are documented in
+[Environment variables & secrets](https://magistratba.sharepoint.com/:fl:/r/contentstorage/CSP_e7fd7f53-9abe-456a-b0e1-7cc0c63e3f1a/Document%20Library/LoopAppData/Environment%20variables%20%26%20Secrets.loop?d=w77387c85f8b94b50a848ccc19d3c0972&csf=1&web=1&e=C9nE81&nav=cz0lMkZjb250ZW50c3RvcmFnZSUyRkNTUF9lN2ZkN2Y1My05YWJlLTQ1NmEtYjBlMS03Y2MwYzYzZTNmMWEmZD1iJTIxVTNfOTU3NmFha1d3NFh6QXhqNF9Hc3RnWmNMRlhXQkR2Z2F4bHUxdEdsNGZsSnk2d2ZCeFRvWi00aXZqZ0o4ayZmPTAxWVJNMktXRUZQUTRIUE9QWUtCRjJRU0dNWUdPVFlDTFMmYz0lMkYmYT1Mb29wQXBwJnA9JTQwZmx1aWR4JTJGbG9vcC1wYWdlLWNvbnRhaW5lciZ4PSU3QiUyMnclMjIlM0ElMjJUMFJUVUh4dFlXZHBjM1J5WVhSaVlTNXphR0Z5WlhCdmFXNTBMbU52Ylh4aUlWVXpYemsxTnpaaFlXdFhkelJZZWtGNGFqUmZSM04wWjFwalRFWllWMEpFZG1kaGVHeDFNWFJIYkRSbWJFcDVObmRtUW5oVWIxb3ROR2wyYW1kS09HdDhNREZaVWsweVMxZERRMUUyTTB4Qk5VODBOMFpHVEVVMFIwNVFTbGRLUlVoYVVRJTNEJTNEJTIyJTJDJTIyaSUyMiUzQSUyMmEzYTI0MjIxLTBkMmUtNGUyYi1iZWEyLTQ4OTBjZGUwYTdkYiUyMiU3RA%3D%3D). Specific to this repo:
 
-**Non-secret env vars** go in `<service>/.env.deploy.<cluster>`, e.g. `nest-forms-backend/.env.deploy.staging`. On deploy the infrastructure repo reads that file from the exact commit being deployed and turns it into the `<service>-env` config map. The format is: one `KEY=VALUE` per line, blank lines and whole-line `#` comments ignored, and one surrounding pair of either `'` or `"` stripped if present (the two ends have to match; a lone quote on one side is kept as part of the value). **A value has to fit on a single line** — there is no line continuation and no escape processing, so a `#` mid-line stays part of the value. Anything multiline (a PEM key, a certificate) must either be rewritten to a single line, or land in Passbolt.
-
-**Secrets** live in [Passbolt](https://www.passbolt.com/) and are synced into the cluster by External Secrets Operator, so you need Passbolt access to change them. Every secret belongs to exactly one service: Passbolt resources are named `<cluster>/<service>/<ENV_VAR_NAME>` (e.g. `staging/nest-city-account/TURNSTILE_SECRET_KEY`) and sync into that service's `<service>-secret` Kubernetes Secret. There are no shared secret groups — a value that two services both need is stored once per service.
-
-Updating the value in Passbolt is enough — it syncs to the cluster automatically with next deploy. Same goes for **new** secret env vars, as long as they are named under an existing service. If needed, it's also possible to sync secrets without full redeployment, only with (rolling - no production downtime) application restart (ask the infra repo maintainers).
-
-A few entries go the other way: credentials Terraform generates for the databases, RabbitMQ and Redis are published *into* Passbolt as `read-only/<cluster>/<service>/<ENV_VAR_NAME>`. Those are a read-only mirror so the team can look the values up — the `read-only/` prefix is what stops External Secrets from syncing them back, and editing them in Passbolt does nothing, as the next apply reverts it.
+- **Non-secret env vars** go in `<service>/.env.deploy.<cluster>`, e.g.
+  `nest-forms-backend/.env.deploy.staging`, and become the `<service>-env` config map.
+- **Secrets** are named `<cluster>/<service>/<ENV_VAR_NAME>` in Passbolt (e.g.
+  `staging/nest-city-account/TURNSTILE_SECRET_KEY`) and sync into `<service>-secret`.
+- Credentials Terraform generates for the databases, RabbitMQ and Redis are mirrored to
+  Passbolt as `read-only/<cluster>/<service>/<ENV_VAR_NAME>` – look-up only.
 
 If you don't have Passbolt access, ask around on the konto.bratislava.sk team.
-
-If you aren't sure where a variable belongs, or need help with anything else deployment-config wise, ask the maintainers of the infrastructure repo.
 
 ### Validation and build pipelines
 
 By creating a PR, GitHub actions will run validation pipelines and Dockerized build, lint and test pipelines.
+
+## Docker
+
+A few things here differ from a typical per-service Docker setup:
+
+- The build context is always the repository root, never the service directory — `turbo prune --docker` needs the workspace metadata to resolve the dependency graph. Hence a single root `.dockerignore`, and `prepare` stages that prune before installing.
+- Bake reads three files, merging targets of the same name:
+  - `docker-bake.hcl` — targets, and everything a laptop can do. `docker buildx bake <target>` works with no arguments.
+  - `docker-bake.json` — toolchain versions only. Plain JSON so [scripts/verify-docker-bake-versions.ts](scripts/verify-docker-bake-versions.ts) can check them against `package.json` and the pnpm catalog without parsing HCL.
+  - `.github/docker-bake.ci.hcl` — CI-only overlay (registry cache, tags, host networking, remote cache). Kept out of the root and off the `docker-bake.override.hcl` name so local bake does not pick it up and fail on the missing `--allow`.
+- pnpm is installed from [pnpm.Dockerfile](pnpm.Dockerfile), which every image `COPY`s from through the `pnpm-dist` bake context.
+- Two Dockerfile checks are skipped for every image, via a `BUILDKIT_DOCKERFILE_CHECK` build arg on the shared bake target instead of a `# check=skip=` directive in each Dockerfile. `docker-bake.hcl` says which and why.
+- CI runs the Turborepo cache server on the runner's loopback, so builds reach it at `127.0.0.1` — no published port, no proxy, no `host.docker.internal` (a Docker Desktop convenience that does not exist on Linux runners). Three pieces have to line up for that: the `network=host` buildx driver option, `network = "host"` on the bake target, and `allow: network.host` on each bake step to grant the gated entitlement. Missing any one of them yields a silent cache miss, not an error.
+- Tests and lint run inside `docker build` as their own stages, not as runner steps, so an unchanged service short-circuits on the layer cache instead of re-running them.
+- Each Nest service's `verify-bootstrap` stage runs its `verify-bootstrap` script on the prod-only runner image: NestJS preview mode resolves the whole DI graph without instantiating providers, catching DI errors and runtime packages left in `devDependencies`. `.env.example` has to pass env validation for it.
+- CI bake steps pass `source: .` so the build uses the files already checked out on the runner. Without it, `docker/bake-action` has Docker download the whole repository again from GitHub, including every tag. That adds about 30 seconds to each build for no benefit.
+- Next.js images bake their environment in, so they are built per cluster. Backend images are environment-agnostic and built once per commit.
 
 ## Acknowledgments
 

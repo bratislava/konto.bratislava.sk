@@ -1,8 +1,9 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
+
 import {
   compareVersions,
-  VersionCompareResult,
   isValidVersion,
+  VersionCompareResult,
 } from '../../src/versioning/version-compare'
 
 describe('version comparison', () => {

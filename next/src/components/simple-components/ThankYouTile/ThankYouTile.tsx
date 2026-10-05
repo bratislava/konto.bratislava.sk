@@ -2,6 +2,7 @@ import { Button, Typography } from '@bratislava/component-library'
 
 import Markdown from '@/src/components/formatting/Markdown'
 import Icon from '@/src/components/icon-components/Icon'
+import Alert, { AlertProps } from '@/src/components/simple-components/Alert'
 import cn from '@/src/utils/cn'
 
 type ThankYouTileButton = {
@@ -14,6 +15,7 @@ export type ThankYouTileProps = {
   title?: string
   content?: string
   isContentCentered?: boolean
+  alert?: AlertProps | null
   primaryButton?: ThankYouTileButton | null
   secondaryButton?: ThankYouTileButton | null
 }
@@ -56,6 +58,7 @@ const ThankYouTile = ({
   title,
   content,
   isContentCentered = true,
+  alert,
   primaryButton,
   secondaryButton,
 }: ThankYouTileProps) => {
@@ -75,6 +78,7 @@ const ThankYouTile = ({
           })}
         />
       </div>
+      {alert ? <Alert fullWidth {...alert} /> : null}
       <div className="flex w-full flex-col items-center gap-3 empty:hidden">
         {primaryButton ? (
           <Button href={primaryButton.href} variant="solid" fullWidth hasLinkIcon={false}>

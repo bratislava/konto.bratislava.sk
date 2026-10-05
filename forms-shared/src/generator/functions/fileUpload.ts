@@ -1,7 +1,7 @@
-import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
-import { BaWidgetType, FileUploadUiOptions } from '../uiOptionsTypes'
-import { removeUndefinedValues } from '../helpers'
 import { FormFiles } from '../../definitions/formDefinitionTypes'
+import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
+import { removeUndefinedValues } from '../helpers'
+import { BaWidgetType, FileUploadUiOptions } from '../uiOptionsTypes'
 
 type FileUploadOptions<K extends FormFiles<string>> = GeneratorBaseOptions & {
   slotId: K['slots'][number]['slotId']

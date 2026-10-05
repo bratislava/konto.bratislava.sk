@@ -1,3 +1,4 @@
+import { LogAllowList } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -36,7 +37,6 @@ import {
   FormAccessAllowMigrations,
   FormAccessGuard,
 } from '../forms-v2/guards/form-access.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { FileUploadInterceptor } from './file-upload.interceptor'
 import {
   BufferedFileDto,
@@ -53,11 +53,7 @@ import FilesService from './files.service'
 @ApiBearerAuth()
 @Controller('files')
 export default class FilesController {
-  private readonly logger: LineLoggerSubservice
-
-  constructor(private readonly filesService: FilesService) {
-    this.logger = new LineLoggerSubservice('FilesController')
-  }
+  constructor(private readonly filesService: FilesService) {}
 
   @ApiOperation({
     summary: 'List of files and statuses based on formId',
@@ -74,6 +70,13 @@ export default class FilesController {
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @FormAccessAllowMigrations()
   @UseGuards(UserAuthGuard, FormAccessGuard)
+  @LogAllowList({
+    id: true,
+    fileSize: true,
+    status: true,
+    ginisOrder: true,
+    ginisUploaded: true,
+  })
   @Get('forms/:formId')
   async getFilesStatusByForm(
     @Param('formId') formId: string,
@@ -93,6 +96,18 @@ export default class FilesController {
   })
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
+  @LogAllowList({
+    id: true,
+    scannerId: true,
+    createdAt: true,
+    updatedAt: true,
+    status: true,
+    fileSize: true,
+    ginisOrder: true,
+    ginisUploaded: true,
+    pospId: true,
+    formId: true,
+  })
   @Patch('scan/:scannerId')
   async updateFileStatusScannerId(
     @Body() statusObject: UpdateFileStatusRequestDto,
@@ -142,6 +157,18 @@ export default class FilesController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard, FormDefinitionMustBeEnabledGuard)
+  @LogAllowList({
+    id: true,
+    scannerId: true,
+    createdAt: true,
+    updatedAt: true,
+    status: true,
+    fileSize: true,
+    ginisOrder: true,
+    ginisUploaded: true,
+    pospId: true,
+    formId: true,
+  })
   @Post('upload/:formId')
   @UseInterceptors(FileUploadInterceptor)
   async uploadFile(

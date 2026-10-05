@@ -1,3 +1,4 @@
+import { LogAllowList } from '@bratislava/log-nest'
 import { Controller, Get } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
@@ -7,6 +8,7 @@ import StatusService from './status.service'
 
 @ApiTags('Statuses')
 @Controller('status')
+@LogAllowList(true)
 export default class StatusController {
   constructor(private readonly statusService: StatusService) {}
 

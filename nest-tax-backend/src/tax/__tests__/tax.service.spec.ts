@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -15,7 +16,6 @@ import { PrismaService } from '../../prisma/prisma.service'
 import { QrCodeGeneratorDto } from '../../qrcode/dtos/qrcode.dto'
 import { QrCodeService } from '../../qrcode/qrcode.service'
 import type { GetTaxDetailPureResponse } from '../../tax-definitions/taxDefinitionsTypes'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -94,7 +94,7 @@ describe('TaxService', () => {
       providers: [
         TaxService,
         { provide: PrismaService, useValue: prismaMock },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: QrCodeService, useValue: createMock<QrCodeService>() },
         { provide: PaymentService, useValue: createMock<PaymentService>() },
       ],
@@ -128,7 +128,7 @@ describe('TaxService', () => {
 
     it('should throw ForbiddenException when birth number is empty', async () => {
       const forbiddenExceptionSpy = jest.spyOn(
-        service['throwerErrorGuard'],
+        service['errorFactoryService'],
         'ForbiddenException',
       )
 
@@ -136,10 +136,10 @@ describe('TaxService', () => {
         service.getListOfTaxesByBirthnumberAndType('', TaxType.DZN),
       ).rejects.toThrow()
 
-      expect(forbiddenExceptionSpy).toHaveBeenCalledWith(
-        CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
-        CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
-      )
+      expect(forbiddenExceptionSpy).toHaveBeenCalledWith({
+        errorEnum: CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
+        message: CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+      })
     })
 
     it('should set taxPayerWasUpdated to false when TaxPayer does not exist', async () => {
@@ -257,7 +257,7 @@ describe('TaxService', () => {
 
     it('should throw ForbiddenException when birth number is empty for KO tax type', async () => {
       const forbiddenExceptionSpy = jest.spyOn(
-        service['throwerErrorGuard'],
+        service['errorFactoryService'],
         'ForbiddenException',
       )
 
@@ -265,10 +265,10 @@ describe('TaxService', () => {
         service.getListOfTaxesByBirthnumberAndType('', TaxType.KO),
       ).rejects.toThrow()
 
-      expect(forbiddenExceptionSpy).toHaveBeenCalledWith(
-        CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
-        CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
-      )
+      expect(forbiddenExceptionSpy).toHaveBeenCalledWith({
+        errorEnum: CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
+        message: CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+      })
     })
 
     it('should set taxPayerWasUpdated to false when TaxPayer does not exist for KO tax type', async () => {
@@ -1443,7 +1443,7 @@ describe('TaxService', () => {
       it('should throw error when tax payer not found', async () => {
         prismaMock.taxPayer.findUnique.mockResolvedValue(null)
         const notFoundExceptionSpy = jest.spyOn(
-          service['throwerErrorGuard'],
+          service['errorFactoryService'],
           'NotFoundException',
         )
 
@@ -1457,10 +1457,10 @@ describe('TaxService', () => {
           ),
         ).rejects.toThrow()
 
-        expect(notFoundExceptionSpy).toHaveBeenCalledWith(
-          CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
-          CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
-        )
+        expect(notFoundExceptionSpy).toHaveBeenCalledWith({
+          errorEnum: CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
+          message: CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
+        })
       })
 
       it('should throw error when tax not found', async () => {
@@ -1469,7 +1469,7 @@ describe('TaxService', () => {
         )
         prismaMock.tax.findUnique.mockResolvedValue(null)
         const notFoundExceptionSpy = jest.spyOn(
-          service['throwerErrorGuard'],
+          service['errorFactoryService'],
           'NotFoundException',
         )
 
@@ -1483,10 +1483,10 @@ describe('TaxService', () => {
           ),
         ).rejects.toThrow()
 
-        expect(notFoundExceptionSpy).toHaveBeenCalledWith(
-          CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-          CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-        )
+        expect(notFoundExceptionSpy).toHaveBeenCalledWith({
+          errorEnum: CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+          message: CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        })
       })
 
       it('should work with birthNumber as tax payer identifier', async () => {

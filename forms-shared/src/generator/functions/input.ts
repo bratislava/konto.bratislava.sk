@@ -1,7 +1,7 @@
-import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaAjvInputFormat } from '../../form-utils/ajvFormats'
-import { BaWidgetType, InputUiOptions } from '../uiOptionsTypes'
+import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { getInputTypeForAjvFormat, removeUndefinedValues, validateInputWidth } from '../helpers'
+import { BaWidgetType, InputUiOptions } from '../uiOptionsTypes'
 
 export const input = (
   property: string,

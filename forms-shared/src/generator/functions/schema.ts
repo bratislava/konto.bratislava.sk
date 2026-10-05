@@ -1,9 +1,8 @@
-import { step } from './step'
-import { conditionalStep } from './conditionalStep'
+import type { RJSFSchema } from '@rjsf/utils'
+
 import { removeUndefinedValues } from '../helpers'
-import type { RJSFSchema } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import { conditionalStep } from './conditionalStep'
+import { step } from './step'
 
 export const schema = (
   options: {

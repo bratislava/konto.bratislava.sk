@@ -1,8 +1,64 @@
-import stanoviskoKInvesticnemuZameru, {
-  stanoviskoKInvesticnemuZameruExtractPlainSubject,
-  stanoviskoKInvesticnemuZameruExtractTechnicalSubject,
-  stanoviskoKInvesticnemuZameruFiles,
-} from '../schemas/stanoviskoKInvesticnemuZameru'
+import komunitneZahrady, {
+  komunitneZahradyExtractPlainSubject,
+  komunitneZahradyExtractTechnicalSubject,
+  komunitneZahradyFiles,
+} from '../schemas/komunitneZahrady'
+import nahlaseniePodnetuKElektrickymKolobezkam, {
+  nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
+  nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
+  nahlaseniePodnetuKElektrickymKolobezkamFiles,
+} from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
+import docisteniStanovistaZbernychNadob, {
+  docisteniStanovistaZbernychNadobExtractEmail,
+  docisteniStanovistaZbernychNadobExtractName,
+} from '../schemas/olo/docisteniStanovistaZbernychNadob'
+import energetickeZhodnotenieOdpaduVZevo from '../schemas/olo/energetickeZhodnotenieOdpaduVZevo'
+import koloTaxi, {
+  koloTaxiExtractEmail,
+  koloTaxiExtractName,
+  koloTaxiFiles,
+} from '../schemas/olo/koloTaxi'
+import mimoriadnyOdvozAZhodnotenieOdpadu, {
+  mimoriadnyOdvozAZhodnotenieOdpaduExtractEmail,
+  mimoriadnyOdvozAZhodnotenieOdpaduExtractName,
+} from '../schemas/olo/mimoriadnyOdvozAZhodnotenieOdpadu'
+import odvozObjemnehoOdpaduValnikom, {
+  odvozObjemnehoOdpaduValnikomExtractEmail,
+  odvozObjemnehoOdpaduValnikomExtractName,
+} from '../schemas/olo/odvozObjemnehoOdpaduValnikom'
+import odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom, {
+  odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractEmail,
+  odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName,
+} from '../schemas/olo/odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom'
+import oloTaxi, { oloTaxiExtractEmail, oloTaxiExtractName } from '../schemas/olo/oloTaxi'
+import podnetyAPochvalyObcanov, {
+  podnetyAPochvalyObcanovExtractEmail,
+  podnetyAPochvalyObcanovExtractName,
+  podnetyAPochvalyObcanovFiles,
+} from '../schemas/olo/podnetyAPochvalyObcanov'
+import {
+  energetickeZhodnotenieOdpaduVZevoFiles,
+  zevoExtractEmail,
+  zevoExtractName,
+} from '../schemas/olo/shared/zevoShared'
+import triedenyZberPapieraPlastovASklaPrePravnickeOsoby, {
+  triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractEmail,
+  triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractName,
+} from '../schemas/olo/triedenyZberPapieraPlastovASklaPrePravnickeOsoby'
+import triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti, {
+  triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail,
+  triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
+} from '../schemas/olo/triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti'
+import uzatvorenieZmluvyONakladaniSOdpadom from '../schemas/olo/uzatvorenieZmluvyONakladaniSOdpadom'
+import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady, {
+  oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyFiles,
+} from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
+import kontaktnyFormularPaas, {
+  kontaktnyFormularPaasExtractEmail,
+  kontaktnyFormularPaasExtractName,
+  kontaktnyFormularPaasExtractTechnicalSubject,
+  kontaktnyFormularPaasFiles,
+} from '../schemas/paas/kontaktnyFormularPaas'
 import predzahradky, {
   predzahradkyExtractPlainSubject,
   predzahradkyExtractTechnicalSubject,
@@ -12,70 +68,11 @@ import priznanieKDaniZNehnutelnosti, {
   priznanieKDaniZNehnutelnostiExtractTechnicalSubject,
   priznanieKDaniZNehnutelnostiFiles,
 } from '../schemas/priznanieKDaniZNehnutelnosti'
-import {
-  generalTermsAndConditions,
-  oloKoloTaxiTermsAndConditions,
-  oloTermsAndConditions,
-  taxTermsAndConditions,
-  ziadostONajomBytuTermsAndConditions,
-} from './termsAndConditions'
-import zavazneStanoviskoKInvesticnejCinnosti, {
-  zavazneStanoviskoKInvesticnejCinnostiExtractPlainSubject,
-  zavazneStanoviskoKInvesticnejCinnostiExtractTechnicalSubject,
-  zavazneStanoviskoKInvesticnejCinnostiFiles,
-} from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
-import komunitneZahrady, {
-  komunitneZahradyExtractPlainSubject,
-  komunitneZahradyExtractTechnicalSubject,
-  komunitneZahradyFiles,
-} from '../schemas/komunitneZahrady'
-import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
-import { ziadostONajomBytuSharepointData } from '../sharepoint/mappings/ziadostONajomBytu'
-import ziadostONajomBytu, {
-  ziadostONajomBytuAdditionalInfoTemplate,
-} from '../schemas/ziadostONajomBytu'
-import mimoriadnyOdvozAZhodnotenieOdpadu, {
-  mimoriadnyOdvozAZhodnotenieOdpaduExtractEmail,
-  mimoriadnyOdvozAZhodnotenieOdpaduExtractName,
-} from '../schemas/olo/mimoriadnyOdvozAZhodnotenieOdpadu'
-import energetickeZhodnotenieOdpaduVZevo from '../schemas/olo/energetickeZhodnotenieOdpaduVZevo'
-import uzatvorenieZmluvyONakladaniSOdpadom from '../schemas/olo/uzatvorenieZmluvyONakladaniSOdpadom'
-import docisteniStanovistaZbernychNadob, {
-  docisteniStanovistaZbernychNadobExtractEmail,
-  docisteniStanovistaZbernychNadobExtractName,
-} from '../schemas/olo/docisteniStanovistaZbernychNadob'
-import odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom, {
-  odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractEmail,
-  odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName,
-} from '../schemas/olo/odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom'
-import koloTaxi, {
-  koloTaxiExtractEmail,
-  koloTaxiExtractName,
-  koloTaxiFiles,
-} from '../schemas/olo/koloTaxi'
-import oloTaxi, { oloTaxiExtractEmail, oloTaxiExtractName } from '../schemas/olo/oloTaxi'
-import podnetyAPochvalyObcanov, {
-  podnetyAPochvalyObcanovExtractEmail,
-  podnetyAPochvalyObcanovExtractName,
-  podnetyAPochvalyObcanovFiles,
-} from '../schemas/olo/podnetyAPochvalyObcanov'
-import odvozObjemnehoOdpaduValnikom, {
-  odvozObjemnehoOdpaduValnikomExtractEmail,
-  odvozObjemnehoOdpaduValnikomExtractName,
-} from '../schemas/olo/odvozObjemnehoOdpaduValnikom'
-import triedenyZberPapieraPlastovASklaPrePravnickeOsoby, {
-  triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractEmail,
-  triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractName,
-} from '../schemas/olo/triedenyZberPapieraPlastovASklaPrePravnickeOsoby'
-import triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti, {
-  triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail,
-  triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
-} from '../schemas/olo/triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti'
-import {
-  energetickeZhodnotenieOdpaduVZevoFiles,
-  zevoExtractEmail,
-  zevoExtractName,
-} from '../schemas/olo/shared/zevoShared'
+import stanoviskoKInvesticnemuZameru, {
+  stanoviskoKInvesticnemuZameruExtractPlainSubject,
+  stanoviskoKInvesticnemuZameruExtractTechnicalSubject,
+  stanoviskoKInvesticnemuZameruFiles,
+} from '../schemas/stanoviskoKInvesticnemuZameru'
 import objednavkaInformativnehoZakresuSieti, {
   objednavkaInformativnehoZakresuSietiExtractEmail,
   objednavkaInformativnehoZakresuSietiExtractName,
@@ -88,23 +85,27 @@ import objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia, {
   objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractTechnicalSubject,
   objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaFiles,
 } from '../schemas/tsb/objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia'
-import ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia, {
-  ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail,
-  ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName,
-  ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractTechnicalSubject,
-  ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaFiles,
-} from '../schemas/tsb/ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia'
 import ziadostOStanoviskoKProjektovejDokumentacii, {
   ziadostOStanoviskoKProjektovejDokumentaciiExtractEmail,
   ziadostOStanoviskoKProjektovejDokumentaciiExtractName,
   ziadostOStanoviskoKProjektovejDokumentaciiExtractTechnicalSubject,
   ziadostOStanoviskoKProjektovejDokumentaciiFiles,
 } from '../schemas/tsb/ziadostOStanoviskoKProjektovejDokumentacii'
-import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady, {
-  oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyFiles,
-} from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
-import { MailgunTemplateEnum } from './emailFormTypes'
-import { FormSendPolicy } from '../send-policy/sendPolicy'
+import ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia, {
+  ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail,
+  ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName,
+  ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractTechnicalSubject,
+  ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaFiles,
+} from '../schemas/tsb/ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia'
+import webhookShowcase, { webhookShowcaseFiles } from '../schemas/webhookShowcase'
+import zavazneStanoviskoKInvesticnejCinnosti, {
+  zavazneStanoviskoKInvesticnejCinnostiExtractPlainSubject,
+  zavazneStanoviskoKInvesticnejCinnostiExtractTechnicalSubject,
+  zavazneStanoviskoKInvesticnejCinnostiFiles,
+} from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
+import ziadostONajomBytu, {
+  ziadostONajomBytuAdditionalInfoTemplate,
+} from '../schemas/ziadostONajomBytu'
 import ziadostOSlobodnyPristupKInformaciam, {
   ziadostOSlobodyPristupKInformaciamFiles,
 } from '../schemas/ziadostOSlobodnyPristupKInformaciam'
@@ -112,18 +113,17 @@ import ziadostOUzemnoplanovaciuInformaciu, {
   ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject,
   ziadostOUzemnoplanovaciuInformaciuFiles,
 } from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
-import webhookShowcase, { webhookShowcaseFiles } from '../schemas/webhookShowcase'
-import nahlaseniePodnetuKElektrickymKolobezkam, {
-  nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
-  nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
-  nahlaseniePodnetuKElektrickymKolobezkamFiles,
-} from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
-import kontaktnyFormularPaas, {
-  kontaktnyFormularPaasExtractEmail,
-  kontaktnyFormularPaasExtractName,
-  kontaktnyFormularPaasExtractTechnicalSubject,
-  kontaktnyFormularPaasFiles,
-} from '../schemas/paas/kontaktnyFormularPaas'
+import { FormSendPolicy } from '../send-policy/sendPolicy'
+import { ziadostONajomBytuSharepointData } from '../sharepoint/mappings/ziadostONajomBytu'
+import { MailgunTemplateEnum } from './emailFormTypes'
+import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
+import {
+  generalTermsAndConditions,
+  oloKoloTaxiTermsAndConditions,
+  oloTermsAndConditions,
+  taxTermsAndConditions,
+  ziadostONajomBytuTermsAndConditions,
+} from './termsAndConditions'
 
 export const formDefinitions: FormDefinition[] = [
   {

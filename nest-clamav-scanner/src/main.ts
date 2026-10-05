@@ -7,7 +7,19 @@ import BaConfigService from './config/ba-config.service'
 async function bootstrap() {
   globalThis.cronRunning = false
 
-  const app = await NestFactory.create(AppModule)
+  const preview = process.env.NEST_PREVIEW === 'true'
+  const app = await NestFactory.create(AppModule, {
+    preview,
+    abortOnError: !preview,
+  })
+
+  if (preview) {
+    await app.close()
+    // eslint-disable-next-line no-console
+    console.log('Preview OK: dependency graph resolved')
+    return
+  }
+
   const baConfigService = app.get(BaConfigService)
   const config = new DocumentBuilder()
     .setTitle('Nest clamav scanner')

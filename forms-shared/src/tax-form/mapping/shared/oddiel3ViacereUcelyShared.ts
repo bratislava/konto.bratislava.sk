@@ -1,12 +1,12 @@
-import { DanZoStaviebViacereUcelyPriznania, TaxFormData, UcelVyuzitiaStavby } from '../../types'
-import { parseDateFieldDate } from './functions'
-import { oddielBaseShared } from './oddielBaseShared'
 import { calculateFormCalculatorFormula } from '../../../form-calculators/calculators'
 import { safeArray, safeBoolean, safeNumber, safeString } from '../../../form-utils/safeData'
 import {
   oddiel3ViacereUcelyCelkovaVymeraFormula,
   oddiel3ViacereUcelyZakladDaneFormula,
 } from '../../formulas'
+import { DanZoStaviebViacereUcelyPriznania, TaxFormData, UcelVyuzitiaStavby } from '../../types'
+import { parseDateFieldDate } from './functions'
+import { oddielBaseShared } from './oddielBaseShared'
 
 const getVymeryStaviebPodlaTypu = (
   stavba: DanZoStaviebViacereUcelyPriznania,

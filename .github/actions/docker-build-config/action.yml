@@ -1,0 +1,252 @@
+# Docker build config
+# ===================
+#
+# One call per image-building job. Runs docker/metadata-action once with the
+# repo's tag rules and derives from that single result the tags, a registry
+# cache pair per build stage, and the image exporter spec.
+#
+#
+#   - name: Docker build config
+#     id: config
+#     uses: ./.github/actions/docker-build-config
+#     with:
+#       image: harbor.bratislava.sk/standalone/nest-forms-backend
+#       prefix: development-            # extra `development-<sha>` deploy tag
+#       caches: builder-deps,test,lint  # one cache per key, plus `main`
+#       push: true
+#
+#   - name: Build deploy image
+#     uses: docker/bake-action@v7
+#     with:
+#       targets: nest-forms-backend
+#     env:
+#       TAGS: ${{ join(fromJSON(steps.config.outputs.meta).tags, ' ') }}
+#       OUTPUT: ${{ steps.config.outputs.image_output }}   # replaces `push:`
+#       CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).main.from }}
+#       CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).main.to }}
+#
+# A cache key containing `-` needs index syntax, because a GitHub expression
+# cannot dereference it with a dot:
+#
+#   fromJSON(steps.config.outputs.cache)['builder-deps'].from
+#
+# Which axis separates a cache
+# ----------------------------
+#
+# Three things can give a build its own cache, and they are not
+# interchangeable even though `suffix` and a cache key produce the same ref:
+#
+#   image    A separately deployable artifact. Its own repository, so its
+#            caches cannot collide -- no suffix and no key needed.
+#   suffix   Same repository and same Dockerfile stage, different build inputs
+#            (next's NEXT_BUILD_ENV). Lands on the tags as well as the cache.
+#   caches   Same repository and same build, a different Dockerfile stage.
+#            Never published. `main` is the stage the image is named for.
+#
+# What varies is the test, not whether the result is pushed: the E2E next
+# image is never pushed and is still a suffix, being the same `runner` stage
+# built with different args. So `caches` is only needed where one repository
+# holds several stages -- today just build-nest.yml.
+#
+# Cache refs
+# ----------
+#
+# Each key exports `<image>:cache-<version>-<key>` and imports that plus
+# `<image>:cache-master<suffix>-<key>`, so a branch reuses its own layers and
+# every branch falls back to master. The `-<key>` marker is what keeps a stage
+# from mixing with the primary build's unmarked `cache-<version>`. `version`
+# comes from metadata-action and already carries the suffix; on a pull_request
+# the branch rule yields nothing, so the head_ref rule supplies the name.
+name: Docker build config
+description: >-
+  Run docker/metadata-action once with the shared tag rules and emit, besides
+  its outputs, per-key registry cache refs and the image exporter spec for
+  docker/build-push-action.
+
+inputs:
+  image:
+    description: Fully qualified image name (registry/repository, no tag).
+    required: true
+  prefix:
+    description: >-
+      Prefix for an extra sha tag, e.g. the cluster prefix `development-`.
+      Empty = no extra prefixed sha tag.
+    required: false
+    default: ""
+  suffix:
+    description: >-
+      Image flavor suffix appended to every tag, e.g. the Next.js per-environment
+      `-dev`, `-staging`, `-prod`. May only contain `A-Z a-z 0-9 . _ -`.
+      Empty = no suffix.
+    required: false
+    default: ""
+  caches:
+    description: >-
+      Cache keys needing their own registry cache, comma-separated without
+      whitespace, e.g. `builder-deps,test,lint,test-e2e`. A key is by
+      convention the Dockerfile stage the build step targets, which for bake
+      is the target `<component>-<key>`. Keys may only contain
+      `A-Z a-z 0-9 . _ -` and become keys in the `cache` output. `main` is
+      reserved for the image's primary build, the unmarked one -- which is not
+      always a deployable image: forms-shared's primary build is its tests.
+    required: false
+    default: ""
+  push:
+    description: Whether `image_output` pushes the image (`true` or `false`).
+    required: false
+    default: "false"
+  compression:
+    description: >-
+      Layer compression of the pushed image and of the registry cache export,
+      `gzip` or `zstd`.
+    required: false
+    default: zstd
+
+outputs:
+  meta:
+    description: >-
+      Everything docker/metadata-action produces, as JSON: `tags`, `tag-names`,
+      `labels` and `annotations`. Read a field with
+      `fromJSON(steps.<id>.outputs.meta).<field>`. `tags` and `annotations` are
+      arrays, `labels` an object, so a value forwarded into a step input needs
+      joining: `join(fromJSON(steps.<id>.outputs.meta).tags, ' ')` for the bake
+      `TAGS` variable, which splits on spaces, or `', '` for a
+      build-push-action list input.
+    value: ${{ steps.meta.outputs.json }}
+  cache:
+    description: >-
+      Registry cache refs as JSON, keyed by cache key plus `main`, each entry
+      `{from, to}`. Read with
+      `fromJSON(steps.<id>.outputs.cache).<key>.from` / `.to` and forward
+      into the bake `CACHE_FROM` / `CACHE_TO` environment variables, or
+      build-push-action `cache-from:` / `cache-to:`.
+    value: ${{ steps.cache.outputs.cache }}
+  image_output:
+    description: >-
+      Image exporter spec, `type=image,push=<push>,oci-mediatypes=true,
+      compression=<compression>`. Forward into the bake `OUTPUT` environment
+      variable, or build-push-action `outputs:`, in place of `push:` -- which
+      is shorthand for `type=registry` and cannot set layer compression, so
+      it would silently cost the zstd layers. oci-mediatypes=true is required
+      for zstd.
+    value: ${{ steps.validate.outputs.image_output }}
+
+runs:
+  using: composite
+  steps:
+    # Fail fast on a bad input with a clear message instead of emitting a
+    # malformed exporter string or cache ref further down.
+    - name: Validate inputs
+      id: validate
+      shell: bash
+      env:
+        IMAGE: ${{ inputs.image }}
+        SUFFIX: ${{ inputs.suffix }}
+        CACHES: ${{ inputs.caches }}
+        PUSH: ${{ inputs.push }}
+        COMPRESSION: ${{ inputs.compression }}
+      run: |
+        case "$PUSH" in
+          true|false) ;;
+          *)
+            echo "::error::Invalid push '$PUSH'. Allowed values: true, false."
+            exit 1
+            ;;
+        esac
+
+        case "$COMPRESSION" in
+          gzip|zstd) ;;
+          *)
+            echo "::error::Invalid compression '$COMPRESSION'. Allowed values: gzip, zstd."
+            exit 1
+            ;;
+        esac
+
+        if [[ ! "$IMAGE" =~ ^[A-Za-z0-9._:/-]+$ ]]; then
+          echo "::error::Invalid image '$IMAGE'. Expected registry/repository without a tag."
+          exit 1
+        fi
+
+        # The suffix and every cache key end up inside cache tags, so they must
+        if [[ ! "$SUFFIX" =~ ^[A-Za-z0-9._-]*$ ]]; then
+          echo "::error::Invalid suffix '$SUFFIX'. Allowed characters: A-Z a-z 0-9 . _ -"
+          exit 1
+        fi
+
+        if [[ -n "$CACHES" && ! "$CACHES" =~ ^[A-Za-z0-9._-]+(,[A-Za-z0-9._-]+)*$ ]]; then
+          echo "::error::Invalid caches '$CACHES'. Expected comma-separated keys without whitespace, e.g. 'builder-deps,test,lint'. Allowed characters: A-Z a-z 0-9 . _ -"
+          exit 1
+        fi
+
+        IFS=',' read -ra keys <<< "$CACHES"
+        key_list=""
+        for key in "${keys[@]}"; do
+          if [[ "$key" == "main" ]]; then
+            echo "::error::Cache key 'main' is reserved for the image's primary build."
+            exit 1
+          fi
+          if [[ " $key_list " == *" $key "* ]]; then
+            echo "::error::Duplicate cache key '$key'."
+            exit 1
+          fi
+          key_list="$key_list $key"
+        done
+
+        {
+          echo "caches=${key_list# }"
+          echo "image_output=type=image,push=$PUSH,oci-mediatypes=true,compression=$COMPRESSION"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Docker metadata
+      id: meta
+      uses: docker/metadata-action@v6
+      with:
+        images: ${{ inputs.image }}
+        flavor: |
+          suffix=${{ inputs.suffix }}
+        tags: |
+          type=ref,event=branch
+          type=raw,value=${{ github.head_ref }},enable=${{ github.event_name == 'pull_request' }}
+          type=sha,prefix=
+          type=sha,prefix=${{ inputs.prefix }},enable=${{ inputs.prefix != '' }}
+
+    # Every key imports the master cache (cross-branch fallback) and its own
+    # per-version cache, and exports the latter. The `-<key>` marker keeps
+    # keys apart; `main` is the image's unmarked primary build. Every value was
+    # validated to tag-safe characters above, so the JSON is assembled directly.
+    #
+    # The export carries the same compression as the pushed image. `mode=max`
+    # compresses every layer of every stage, which makes this the most
+    # expensive export in a build, so it is the one that gains most from zstd.
+    # oci-mediatypes=true is required for zstd, as it is for the image.
+    # Compression is not an import concern, so `from` carries neither.
+    - name: Resolve cache refs
+      id: cache
+      shell: bash
+      env:
+        IMAGE: ${{ inputs.image }}
+        SUFFIX: ${{ inputs.suffix }}
+        CACHES: ${{ steps.validate.outputs.caches }}
+        VERSION: ${{ steps.meta.outputs.version }}
+        COMPRESSION: ${{ inputs.compression }}
+      run: |
+        if [[ -z "$VERSION" ]]; then
+          echo "::error::docker/metadata-action produced no version."
+          exit 1
+        fi
+
+        cache_entry() { # <key> <marker>
+          local key="$1" marker="$2"
+          local master="type=registry,ref=$IMAGE:cache-master$SUFFIX$marker"
+          local branch="type=registry,ref=$IMAGE:cache-$VERSION$marker"
+          local export_to="$branch,mode=max,oci-mediatypes=true,compression=$COMPRESSION"
+          printf '"%s":{"from":"%s\\n%s","to":"%s"}' "$key" "$master" "$branch" "$export_to"
+        }
+
+        json="$(cache_entry main "")"
+        # shellcheck disable=SC2086 # normalized, space-separated list
+        for key in $CACHES; do
+          json="$json,$(cache_entry "$key" "-$key")"
+        done
+
+        echo "cache={$json}" >> "$GITHUB_OUTPUT"

@@ -1,27 +1,28 @@
 import { beforeAll, describe, expect, test } from 'vitest'
-import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
-import { generateSlovenskoSkXmlObject } from '../../src/slovensko-sk/generateXml'
+
+import { formDefinitions } from '../../src/definitions/formDefinitions'
 import { isSlovenskoSkFormDefinition } from '../../src/definitions/formDefinitionTypes'
-import { renderApacheFopPdf } from '../../test-utils/apache-fop/renderApacheFopPdf'
-import { expectPdfToMatchSnapshot } from '../../test-utils/expectPdfToMatchSnapshot'
-import { transformXmlWithXslt } from '../../test-utils/transformXmlWithXslt'
+import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
+import { extractJsonFromSlovenskoSkXml } from '../../src/slovensko-sk/extractJson'
 import { getFoXslt } from '../../src/slovensko-sk/file-templates/foXslt'
 import { getHtmlSbXslt } from '../../src/slovensko-sk/file-templates/htmlSbXslt'
-import { generatePageScreenshot } from '../../test-utils/generatePageScreenshot'
 import { getSchemaXsd } from '../../src/slovensko-sk/file-templates/schemaXsd'
-import { formDefinitions } from '../../src/definitions/formDefinitions'
+import { generateSlovenskoSkXmlObject } from '../../src/slovensko-sk/generateXml'
+import { getSlovenskoSkMetaIdentifier } from '../../src/slovensko-sk/urls'
 import { validateXml } from '../../src/slovensko-sk/validateXml'
+import { buildSlovenskoSkXml } from '../../src/slovensko-sk/xmlBuilder'
+import { getFormSummary } from '../../src/summary/summary'
+import { renderApacheFopPdf } from '../../test-utils/apache-fop/renderApacheFopPdf'
+import { screenshotTestTimeout } from '../../test-utils/consts'
+import { expectPdfToMatchSnapshot } from '../../test-utils/expectPdfToMatchSnapshot'
 import {
   fetchSlovenskoSkMetadata,
   findSlovenskoSkFormMetadata,
   SlovenskoSkMetadataJson,
 } from '../../test-utils/fetchSlovenskoSkFormMetadata'
-import { extractJsonFromSlovenskoSkXml } from '../../src/slovensko-sk/extractJson'
-import { buildSlovenskoSkXml } from '../../src/slovensko-sk/xmlBuilder'
-import { screenshotTestTimeout } from '../../test-utils/consts'
+import { generatePageScreenshot } from '../../test-utils/generatePageScreenshot'
+import { transformXmlWithXslt } from '../../test-utils/transformXmlWithXslt'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
-import { getFormSummary } from '../../src/summary/summary'
-import { getSlovenskoSkMetaIdentifier } from '../../src/slovensko-sk/urls'
 
 const mockFormId = 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
 
@@ -30,7 +31,7 @@ describe('slovenskoSkForm', () => {
 
   beforeAll(async () => {
     slovenskoSkMetadata = await fetchSlovenskoSkMetadata()
-  })
+  }, 60000 /* The file is over 20MB and the download takes a while. */)
 
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
     describe(`${formDefinition.slug}`, () => {

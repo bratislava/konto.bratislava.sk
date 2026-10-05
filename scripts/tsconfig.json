@@ -1,0 +1,16 @@
+{
+  "extends": "@tsconfig/node24/tsconfig.json",
+  // `node <file>.ts` strips the types instead of compiling them, so `tsc` only
+  // typechecks: `erasableSyntaxOnly` keeps the sources within the subset Node can
+  // strip, and `allowImportingTsExtensions` matches the explicit `.ts` extensions
+  // Node's resolver requires.
+  "compilerOptions": {
+    "types": [
+      "node"
+    ],
+    "noUncheckedIndexedAccess": true,
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true
+  }
+}

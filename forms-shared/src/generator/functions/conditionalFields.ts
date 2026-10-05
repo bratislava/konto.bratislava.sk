@@ -1,6 +1,5 @@
-import type { RJSFSchema } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
+import type { RJSFSchema } from '@rjsf/utils'
+
 import { GeneratorConditionalFields, GeneratorFieldType } from '../generatorTypes'
 import { simpleObjectInternal } from '../object'
 

@@ -1,9 +1,10 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
+
 import { addBaOrderToFields } from '../../src/generator/addBaOrderToFields'
-import { createCondition } from '../../src/generator/helpers'
-import { GeneratorConditionalFields, GeneratorField } from '../../src/generator/generatorTypes'
-import { input } from '../../src/generator/functions/input'
 import { conditionalFields } from '../../src/generator/functions/conditionalFields'
+import { input } from '../../src/generator/functions/input'
+import { GeneratorConditionalFields, GeneratorField } from '../../src/generator/generatorTypes'
+import { createCondition } from '../../src/generator/helpers'
 
 describe('addBaOrderToFields', () => {
   test('assigns sequential order to regular fields', () => {

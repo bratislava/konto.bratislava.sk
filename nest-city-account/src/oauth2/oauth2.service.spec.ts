@@ -1,3 +1,4 @@
+import { LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -61,6 +62,7 @@ describe('OAuth2Service', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerService,
         OAuth2Service,
         OAuth2ErrorThrower,
         { provide: PrismaService, useValue: createMock<PrismaService>() },

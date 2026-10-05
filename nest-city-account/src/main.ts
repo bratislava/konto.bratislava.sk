@@ -1,17 +1,31 @@
+import {
+  ErrorFilter,
+  HttpExceptionFilter,
+  LineLoggerService,
+  UnknownExceptionFilter,
+} from '@bratislava/log-nest'
 import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 import { AppModule } from './app.module'
 import BaConfigService from './config/ba-config.service'
-import { ErrorFilter, HttpExceptionFilter, TypeErrorFilter } from './utils/filters/error.filter'
-import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice'
 
 async function bootstrap() {
-  const logger = new LineLoggerSubservice('Nest')
+  const logger = new LineLoggerService('Nest')
+  const preview = process.env.NEST_PREVIEW === 'true'
   const app = await NestFactory.create(AppModule, {
     logger,
+    preview,
+    abortOnError: !preview,
   })
+
+  if (preview) {
+    await app.close()
+    logger.log('Preview OK: dependency graph resolved')
+    return
+  }
+
   const baConfigService = app.get(BaConfigService)
   const corsOptions = {
     origin: true,
@@ -22,8 +36,8 @@ async function bootstrap() {
   }
   app.enableCors(corsOptions)
   app.useGlobalPipes(new ValidationPipe())
-  app.useGlobalFilters(new ErrorFilter()) // This filter must be first
-  app.useGlobalFilters(new TypeErrorFilter())
+  app.useGlobalFilters(new UnknownExceptionFilter())
+  app.useGlobalFilters(new ErrorFilter())
   app.useGlobalFilters(new HttpExceptionFilter())
   const config = new DocumentBuilder()
     .setTitle('User Module - city account')

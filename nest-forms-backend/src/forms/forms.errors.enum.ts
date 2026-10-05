@@ -15,6 +15,7 @@ export enum FormsErrorsEnum {
   FORM_NOT_REGISTERED_IN_SLOVENSKO_SK = 'FORM_NOT_REGISTERED_IN_SLOVENSKO_SK',
   FORM_ARCHIVED = 'FORM_ARCHIVED',
   CITY_ACCOUNT_USER_GET_ERROR = 'CITY_ACCOUNT_USER_GET_ERROR',
+  FORM_SENT_AT_MISSING_ERROR = 'FORM_SENT_AT_MISSING_ERROR',
 }
 
 export enum FormsErrorsResponseEnum {
@@ -34,4 +35,5 @@ export enum FormsErrorsResponseEnum {
   FORM_NOT_REGISTERED_IN_SLOVENSKO_SK = 'Form is not registered in slovensko.sk.',
   FORM_ARCHIVED = 'Form is archived.',
   CITY_ACCOUNT_USER_GET_ERROR = 'There was an error when getting user info from city account backend.',
+  FORM_SENT_AT_MISSING_ERROR = 'Form is not in DRAFT state, but formSentAt is missing.',
 }

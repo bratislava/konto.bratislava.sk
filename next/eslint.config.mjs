@@ -1,4 +1,8 @@
+import { createRequire } from 'node:module'
+
 import { createNextConfig } from '@bratislava/eslint-config-next'
+
+const require = createRequire(import.meta.url)
 
 export default [
   ...createNextConfig({
@@ -16,6 +20,15 @@ export default [
         entryPoint: 'src/pages/globals.css',
         callees: ['cx', 'classnames', 'clsx', 'cn', 'twMerge', 'tw'],
       },
+    },
+  },
+  {
+    settings: {
+      // The shared config sets `version: 'detect'`, and eslint-plugin-react (7.37.5, latest) detects
+      // through `context.getFilename()`, which ESLint 10 removed, so every React rule crashes. Passing
+      // the installed version gives the plugin the same answer without that code path.
+      // TODO: Switch to `@eslint-react/eslint-plugin`.
+      react: { version: require('react/package.json').version },
     },
   },
 

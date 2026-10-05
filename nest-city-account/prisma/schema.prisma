@@ -91,7 +91,7 @@ model User {
   externalId                           String                            @unique
   email                                String?                           @unique
   ifo                                  String?                           @unique
-  birthNumber                          String?                           @unique
+  birthNumber                          String?                           @unique // If set, lastVerificationIdentityCard must also be set; enforced by a hidden DB CHECK constraint not represented here.
   lastVerificationIdentityCard         DateTime?
   oldMagproxyDatabase                  Int                               @default(0)
   requeuedInVerification               Int                               @default(0)
@@ -101,8 +101,8 @@ model User {
   userGdprData                         UserGdprData[]
   physicalEntity                       PhysicalEntity?
   lastTaxDeliveryMethodsUpdateYear     Int?
-  taxDeliveryMethod                    DeliveryMethodUserPreferenceEnum? // User's current delivery method preference for tax documents
-  taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (February 1st) - used for actual delivery
+  taxDeliveryMethod                    DeliveryMethodUserPreferenceEnum? // User's current delivery method preference for tax documents; changes are mirrored into DeliveryMethodPreferenceHistory by a trigger.
+  taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (February 1st) - used for actual delivery; if CITY_ACCOUNT, taxDeliveryMethodCityAccountLockDate must be set (hidden DB CHECK constraint not represented here).
   taxDeliveryMethodCityAccountLockDate DateTime? // Date when CITY_ACCOUNT delivery method was selected by user before lock date
   // This is used to store the last time we tried to update the delivery methods in Noris for this user.
   lastTaxDeliveryMethodsUpdateTry      DateTime                          @default(now())
@@ -186,7 +186,7 @@ model PhysicalEntity {
 
   uriPossiblyOutdated Boolean @default(false)
 
-  activeEdesk                Boolean?
+  activeEdesk                Boolean? // Changing this value updates edeskStatusChangedAt via a trigger.
   edeskStatusChangedAt       DateTime? // Do not update, managed by database.
   activeEdeskUpdatedAt       DateTime?
   activeEdeskUpdateFailedAt  DateTime?

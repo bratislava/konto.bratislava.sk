@@ -1,3 +1,4 @@
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton'
@@ -11,7 +12,11 @@ describe('CleanupTasksSubservice', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CleanupTasksSubservice, { provide: PrismaService, useValue: prismaMock }],
+      providers: [
+        LineLoggerService,
+        CleanupTasksSubservice,
+        { provide: PrismaService, useValue: prismaMock },
+      ],
     }).compile()
 
     service = module.get<CleanupTasksSubservice>(CleanupTasksSubservice)

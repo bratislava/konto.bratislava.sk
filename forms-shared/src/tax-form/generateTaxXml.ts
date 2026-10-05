@@ -1,6 +1,7 @@
 import { Builder } from 'xml2js'
 
-import { TaxFormData } from './types'
+import { FormDefinitionSlovenskoSkTax } from '../definitions/formDefinitionTypes'
+import { removeEmptySubtrees } from './helpers/removeEmptySubtrees'
 import { formatXsDateTimeXml } from './mapping/xml/functions'
 import { oddiel2Xml } from './mapping/xml/oddiel2'
 import { oddiel3JedenUcelXml } from './mapping/xml/oddiel3JedenUcel'
@@ -9,8 +10,7 @@ import { oddiel4Xml } from './mapping/xml/oddiel4'
 import { oslobodenieXml } from './mapping/xml/oslobodenie'
 import { prilohyXml } from './mapping/xml/prilohy'
 import { udajeODanovnikoviXml } from './mapping/xml/udajeODanovnikovi'
-import { removeEmptySubtrees } from './helpers/removeEmptySubtrees'
-import { FormDefinitionSlovenskoSkTax } from '../definitions/formDefinitionTypes'
+import { TaxFormData } from './types'
 
 export const generateTaxXml = (
   data: TaxFormData,

@@ -1,21 +1,22 @@
+import { describe, expect, test } from 'vitest'
+
 import {
   baGetDefaultFormState,
   baGetDefaultFormStateStable,
   isFileMultipleSchema,
 } from '../../src/form-utils/defaultFormState'
-import { ArrayFieldUiOptions } from '../../src/generator/uiOptionsTypes'
-import { filterConsole } from '../../test-utils/filterConsole'
-import { createCondition } from '../../src/generator/helpers'
-import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
-import { selectMultiple } from '../../src/generator/functions/selectMultiple'
-import { input } from '../../src/generator/functions/input'
+import { arrayField } from '../../src/generator/functions/arrayField'
 import { checkbox } from '../../src/generator/functions/checkbox'
 import { checkboxGroup } from '../../src/generator/functions/checkboxGroup'
-import { object } from '../../src/generator/object'
-import { arrayField } from '../../src/generator/functions/arrayField'
 import { conditionalFields } from '../../src/generator/functions/conditionalFields'
 import { fileUploadMultiple } from '../../src/generator/functions/fileUploadMultiple'
-import { describe, expect, test } from 'vitest'
+import { input } from '../../src/generator/functions/input'
+import { selectMultiple } from '../../src/generator/functions/selectMultiple'
+import { createCondition } from '../../src/generator/helpers'
+import { object } from '../../src/generator/object'
+import { ArrayFieldUiOptions } from '../../src/generator/uiOptionsTypes'
+import { filterConsole } from '../../test-utils/filterConsole'
+import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 describe('defaultFormState', () => {
   test('isFileMultipleSchema should return true for file array schema', () => {

@@ -1,7 +1,7 @@
-import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
-import { generalTermsAndConditions } from './termsAndConditions'
 import showcase, { showcaseFiles } from '../schemas/showcase'
 import { FormSendPolicy } from '../send-policy/sendPolicy'
+import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
+import { generalTermsAndConditions } from './termsAndConditions'
 
 export const devFormDefinitions: FormDefinition[] = [
   {

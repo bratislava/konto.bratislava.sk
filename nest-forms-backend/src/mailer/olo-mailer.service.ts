@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import nodemailer from 'nodemailer'
 
@@ -6,8 +7,6 @@ import {
   MailgunErrorsEnum,
   MailgunErrorsResponseEnum,
 } from '../utils/global-enums/mailgun.errors.enum'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { Mailer, MailerSendEmailParams } from './mailer.interface'
 import { getMailgunConfig } from './mailgun.constants'
 import MailgunHelper from './utils/mailgun.helper'
@@ -16,15 +15,11 @@ import MailgunHelper from './utils/mailgun.helper'
 export default class OloMailerService implements Mailer {
   oloTransporter: nodemailer.Transporter
 
-  logger: LineLoggerSubservice
-
   constructor(
     private readonly baConfigService: BaConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly mailgunHelper: MailgunHelper,
   ) {
-    this.logger = new LineLoggerSubservice(OloMailerService.name)
-
     // eslint-disable-next-line sonarjs/no-clear-text-protocols -- 'smtp.office365.com' is an SMTP hostname, not an HTTP URL; STARTTLS on port 587 provides transport security
     this.oloTransporter = nodemailer.createTransport({
       host: 'smtp.office365.com',
@@ -63,12 +58,11 @@ export default class OloMailerService implements Mailer {
         attachments,
       })
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        MailgunErrorsEnum.SEND_OLO_MAIL_ERROR,
-        MailgunErrorsResponseEnum.SEND_OLO_MAIL_ERROR,
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: MailgunErrorsEnum.SEND_OLO_MAIL_ERROR,
+        message: MailgunErrorsResponseEnum.SEND_OLO_MAIL_ERROR,
         error,
-      )
+      })
     }
   }
 }

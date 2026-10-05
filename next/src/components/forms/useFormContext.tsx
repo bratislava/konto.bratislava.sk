@@ -7,7 +7,7 @@ import { GetFileResponseReducedDto } from 'openapi-clients/forms'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { useIsSSR } from 'react-aria/SSRProvider'
 
-import { FormBaseFragment } from '@/src/clients/graphql-strapi/api'
+import { FormWithSentPageFragment } from '@/src/clients/graphql-strapi/api'
 import {
   ClientFormDefinition,
   isClientSlovenskoSkFormDefinition,
@@ -32,7 +32,7 @@ export type FormServerContext = {
   formMigrationRequired: boolean
   isEmbedded: boolean
   isDevRoute?: boolean
-  strapiForm: FormBaseFragment | null
+  strapiForm: FormWithSentPageFragment | null
   versionCompareContinueAction: VersionCompareContinueAction
 }
 
@@ -44,6 +44,8 @@ const useGetContext = (formServerContext: FormServerContext) => {
     formServerContext
 
   const isTemporarilyDisabled = Boolean(strapiForm?.isTemporarilyDisabled)
+
+  const strapiFormSentPage = strapiForm?.formSentPage ?? null
 
   const getSendPolicyAccountType = () => {
     if (!isSignedIn) {
@@ -99,10 +101,13 @@ const useGetContext = (formServerContext: FormServerContext) => {
     isReadonly,
     isDeletable,
     isTemporarilyDisabled,
+    strapiFormSentPage,
   }
 }
 
-export const FormContextContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
+export const FormContextContext = createContext<ReturnType<typeof useGetContext> | undefined>(
+  undefined,
+)
 
 type FormContextProviderProps = {
   formServerContext: FormServerContext

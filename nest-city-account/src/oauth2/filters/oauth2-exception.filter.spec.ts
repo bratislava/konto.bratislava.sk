@@ -34,7 +34,7 @@ describe('OAuth2ExceptionFilter', () => {
   /**
    * Everything the filter sent to the client, captured by the recording
    * response mock below. Tests read this plain object instead of digging
-   * through jest `mock.calls`. `JSON.stringify(sentResponse)` is exactly the
+   * through Vitest `mock.calls`. `JSON.stringify(sentResponse)` is exactly the
    * complete client-visible output (status, headers, redirect, json body),
    * which is what the "no internal data leaks" tests assert against.
    */
@@ -1279,9 +1279,9 @@ describe('OAuth2ExceptionFilter', () => {
       )
 
       // Verify the alert field exists (even if undefined from metadata merge).
-      // `toHaveBeenCalledWith(objectContaining({ alert: undefined }))` cannot
-      // express this — jest equality treats an undefined value the same as an
-      // absent key — hence the captured object and toHaveProperty.
+      // Plain equality (toEqual, toHaveBeenCalledWith with an object literal)
+      // treats an undefined value the same as an absent key, so check the
+      // captured object with toHaveProperty instead.
       expect(loggedObject).toHaveProperty('alert')
     })
 

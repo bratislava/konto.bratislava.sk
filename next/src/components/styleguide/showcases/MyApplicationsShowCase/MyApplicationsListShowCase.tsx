@@ -25,8 +25,8 @@ const MyApplicationsListShowCase = () => {
     [myApplicationState, scenario],
   )
   const queryClient = useMemo(
-    () => createMockQueryClient(applications, myApplicationState),
-    [applications, myApplicationState],
+    () => createMockQueryClient(applications, myApplicationState, scenario),
+    [applications, myApplicationState, scenario],
   )
 
   return (

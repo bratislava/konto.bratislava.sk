@@ -1,7 +1,7 @@
 import {
   FormState,
   GetFormResponseDtoErrorEnum,
-  GetFormsResponseDtoItemsInner as GetFormResponseSimpleDto,
+  GetFormsResponseDtoItemsInner,
 } from 'openapi-clients/forms'
 
 import RowGroupWrapper from '@/src/components/common/RowGroupWrapper'
@@ -14,7 +14,7 @@ import { Wrapper } from '../Wrapper'
 const getDummyData = (
   state: FormState,
   error: GetFormResponseDtoErrorEnum,
-): GetFormResponseSimpleDto => {
+): GetFormsResponseDtoItemsInner => {
   const base = {
     formDefinitionSlug: 'example-form-definition-slug',
     id: '1abe3c72-0c1a-4e26-9de9-2207be63d120',
@@ -37,6 +37,7 @@ const formDefinitionSlugTitleMap = {
 const showCaseCards: { state: FormState; error: GetFormResponseDtoErrorEnum }[] = [
   { state: 'DRAFT', error: 'NONE' },
   { state: 'QUEUED', error: 'NONE' },
+  { state: 'ERROR', error: 'NASES_SEND_ERROR' },
 ]
 
 const MyApplicationsCardShowCase = () => {

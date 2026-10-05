@@ -79,8 +79,9 @@ const MyApplicationsPageContent = () => {
         >
           <TabList className="scrollbar-hide flex gap-2 overflow-x-auto lg:gap-4">
             {MY_APPLICATION_STATE_FILTERS.map((filter) => {
-              const count = totalCounts?.[filter] ?? 0
-              const text = `${tabTitles[filter]} (${count})`
+              const text = totalCounts
+                ? `${tabTitles[filter]} (${totalCounts[filter]})`
+                : tabTitles[filter]
 
               return (
                 <Tab
@@ -101,16 +102,20 @@ const MyApplicationsPageContent = () => {
           </TabList>
           {MY_APPLICATION_STATE_FILTERS.map((variant) => (
             <TabPanel key={variant} id={variant}>
-              {applications?.items.length ? (
+              {/* The empty-state banner is shown only when the list loaded successfully, a failed
+                  request (e.g. 500 from backend) is handled inline by the list with a retry button */}
+              {!isPending && !isError && !applications.items.length ? (
+                <MyApplicationsBanner
+                  variant={selectedMyApplicationState === 'DRAFT' ? 'no-drafts' : 'no-applications'}
+                />
+              ) : (
                 <MyApplicationsList
                   applications={applications}
                   isPending={isPending}
                   isError={isError}
                   refreshListData={refreshListData}
                 />
-              ) : selectedMyApplicationState !== 'DRAFT' ? (
-                <MyApplicationsBanner variant="no-applications" />
-              ) : null}
+              )}
             </TabPanel>
           ))}
         </Tabs>

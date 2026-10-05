@@ -1,4 +1,4 @@
-import { GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
+import { FormState } from 'openapi-clients/forms'
 
 export const MY_APPLICATION_STATES = ['SENT', 'DRAFT'] as const
 export type MyApplicationState = (typeof MY_APPLICATION_STATES)[number]
@@ -12,26 +12,16 @@ export type MyApplicationStateFilter = (typeof MY_APPLICATION_STATE_FILTERS)[num
 /**
  * On frontend, the user sees only two states 'sent' and 'draft'
  * This is a product decision to simplify the user experience
+ *
+ * It matches the backend split into `GetFormResponseSimpleDraftDto` and `GetFormResponseSimpleSentDto`,
+ * where every state other than DRAFT (including ERROR) is considered sent and has `formSentAt` set.
  */
-const formResponseStatesByMyApplicationState: Record<
-  MyApplicationState,
-  GetFormResponseDtoStateEnum[]
-> = {
-  SENT: [
-    'QUEUED',
-    'ERROR',
-    'REJECTED',
-    'FINISHED',
-    'PROCESSING',
-    'DELIVERED_NASES',
-    'DELIVERED_GINIS',
-  ],
-  DRAFT: ['DRAFT'],
-}
+export const getMyApplicationStateByFormResponseState = (state: FormState): MyApplicationState =>
+  state === FormState.Draft ? 'DRAFT' : 'SENT'
 
 export const getFormResponseStatesByMyApplicationState = (
-  myApplicationState: MyApplicationStateFilter,
-): GetFormResponseDtoStateEnum[] =>
-  myApplicationState === 'ALL'
-    ? MY_APPLICATION_STATES.flatMap((state) => formResponseStatesByMyApplicationState[state])
-    : formResponseStatesByMyApplicationState[myApplicationState]
+  filter: MyApplicationStateFilter,
+): FormState[] =>
+  Object.values(FormState).filter(
+    (state) => filter === 'ALL' || getMyApplicationStateByFormResponseState(state) === filter,
+  )

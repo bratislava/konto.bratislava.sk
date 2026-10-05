@@ -1,6 +1,6 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import { GetFormResponseSimpleDto } from 'openapi-clients/forms'
+import { FormState, GetFormsResponseDtoItemsInner } from 'openapi-clients/forms'
 import { useState } from 'react'
 
 import { formatDate } from '@/src/components/formatting/FormatDate'
@@ -9,6 +9,7 @@ import BottomSheetMenuModal from '@/src/components/page-contents/MyApplicationsP
 import { useDeleteFormConcept } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard/useDeleteFormConcept'
 import { useExportFormToPdf } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard/useExportFormToPdf'
 import { useExportFormToXml } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard/useExportFormToXml'
+import { getMyApplicationStateByFormResponseState } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationStates'
 import { useFormDefinitionSlugTitleMap } from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionSlugTitleMap'
 import DropdownMenu, {
   DropdownMenuItemProps,
@@ -20,7 +21,7 @@ import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
-  form: GetFormResponseSimpleDto
+  form: GetFormsResponseDtoItemsInner
   refreshListData: () => Promise<void>
 }
 
@@ -51,22 +52,20 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
   const formPageHref = ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(formSlug, form.id)
   const detailPageHref = ROUTES.MY_APPLICATION_DETAIL(form.id)
 
-  const isEditable = form.state === 'DRAFT' || form.state === 'ERROR'
+  const myApplicationState = getMyApplicationStateByFormResponseState(form.state)
+  const isEditable = myApplicationState === 'DRAFT'
 
-  const dateToDisplay = isEditable
-    ? {
-        label: t('MyApplicationsCard.createdAt'),
-        value: formatDate(form.createdAt),
-      }
-    : {
-        label: t('MyApplicationsCard.updatedAt'),
-        value: formatDate(form.updatedAt),
-        // TODO
-        // - Backend needs to add sentAt to the GetFormResponseSimpleDto
-        // - Afterwards we will use this:
-        // label: t('MyApplicationsCard.sentAt'),
-        // value: formatDate(form.sentAt ?? form.updatedAt),
-      }
+  // narrowing on `form.state` directly, so TS knows `formSentAt` is always set for sent forms
+  const dateToDisplay =
+    form.state === FormState.Draft
+      ? {
+          label: t('MyApplicationsCard.createdAt'),
+          value: formatDate(form.createdAt),
+        }
+      : {
+          label: t('MyApplicationsCard.sentAt'),
+          value: formatDate(form.formSentAt),
+        }
 
   const canDownloadPdf = !isTaxForm({ formSlug })
   const conceptMenuItems: DropdownMenuItemProps[] = [

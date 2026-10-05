@@ -5,7 +5,7 @@ import {
   GetFormResponseDtoErrorEnum,
   GetFormResponseDtoStateEnum,
   GetFormsResponseDto,
-  GetFormsResponseDtoItemsInner as GetFormResponseSimpleDto,
+  GetFormsResponseDtoItemsInner,
   GinisDocumentDetailResponseDto,
 } from 'openapi-clients/forms'
 
@@ -39,66 +39,72 @@ export const sectionOptions: SelectOption[] = MY_APPLICATION_STATE_FILTERS.map((
   label: filter,
 }))
 
-export type ListScenario = 'withItems' | 'empty'
+export type ListScenario = 'withItems' | 'empty' | 'error'
 
 export const listScenarioOptions: SelectOption[] = [
   { value: 'withItems', label: 'With applications' },
   { value: 'empty', label: 'No applications found' },
+  { value: 'error', label: 'Failed to load (e.g. 500 from backend)' },
 ]
 
 type SimpleItemDraft = {
-  state: GetFormResponseDtoStateEnum
+  state: FormState
   error: GetFormResponseDtoErrorEnum
   subject: string
+  // Drafts can have it set too, if a send attempt failed and the form reverted to DRAFT
+  formSentAt?: string
 }
 
 // Representative items per section, covering the states the section can display.
 const sectionItemDrafts: Record<MyApplicationState, SimpleItemDraft[]> = {
   SENT: [
     {
-      state: GetFormResponseDtoStateEnum.DeliveredNases,
+      state: FormState.DeliveredNases,
       error: GetFormResponseDtoErrorEnum.None,
       subject: 'Odoslané – doručené do NASES',
     },
     {
-      state: GetFormResponseDtoStateEnum.DeliveredGinis,
+      state: FormState.DeliveredGinis,
       error: GetFormResponseDtoErrorEnum.None,
       subject: 'Odoslané – doručené do GINIS',
     },
     {
-      state: GetFormResponseDtoStateEnum.Processing,
+      state: FormState.Processing,
       error: GetFormResponseDtoErrorEnum.None,
       subject: 'Spracováva sa na úrade',
     },
     {
-      state: GetFormResponseDtoStateEnum.Finished,
+      state: FormState.Finished,
       error: GetFormResponseDtoErrorEnum.None,
       subject: 'Vybavené',
     },
     {
-      state: GetFormResponseDtoStateEnum.Rejected,
+      state: FormState.Rejected,
       error: GetFormResponseDtoErrorEnum.None,
       subject: 'Zamietnuté',
+    },
+    {
+      state: FormState.Error,
+      error: GetFormResponseDtoErrorEnum.NasesSendError,
+      subject: 'Chyba pri spracovaní',
     },
   ],
   DRAFT: [
     {
-      state: GetFormResponseDtoStateEnum.Draft,
+      state: FormState.Draft,
       error: GetFormResponseDtoErrorEnum.None,
       subject: 'Rozpracovaný koncept',
     },
     {
-      state: GetFormResponseDtoStateEnum.Draft,
-      error: GetFormResponseDtoErrorEnum.None,
-      subject: 'Ďalší rozpracovaný koncept',
+      state: FormState.Draft,
+      error: GetFormResponseDtoErrorEnum.InfectedFiles,
+      subject: 'Koncept vrátený po neúspešnom odoslaní',
+      formSentAt: '2024-04-17T09:30:00.000Z',
     },
   ],
 }
 
-const createSimpleItem = (
-  draft: SimpleItemDraft,
-  index: number,
-): GetFormResponseSimpleDto => {
+const createSimpleItem = (draft: SimpleItemDraft, index: number): GetFormsResponseDtoItemsInner => {
   const base = {
     id: `mock-application-${index}`,
     createdAt: '2024-04-15T08:48:15.346Z',
@@ -110,8 +116,12 @@ const createSimpleItem = (
   }
 
   return draft.state === FormState.Draft
-    ? { ...base, state: FormState.Draft, formSentAt: null }
-    : { ...base, state: draft.state, formSentAt: '2024-04-18T10:00:00.000Z' }
+    ? { ...base, state: FormState.Draft, formSentAt: draft.formSentAt ?? null }
+    : {
+        ...base,
+        state: draft.state,
+        formSentAt: draft.formSentAt ?? '2024-04-18T10:00:00.000Z',
+      }
 }
 
 const getSectionItemDrafts = (section: MyApplicationStateFilter): SimpleItemDraft[] =>
@@ -122,7 +132,7 @@ const getSectionItemDrafts = (section: MyApplicationStateFilter): SimpleItemDraf
 // Mirrors `meta.countByState` from the backend, which counts the forms in all the states
 // regardless of the currently selected section.
 const createCountByState = (scenario: ListScenario): Record<string, number> => {
-  if (scenario === 'empty') {
+  if (scenario !== 'withItems') {
     return {}
   }
 
@@ -139,9 +149,9 @@ export const createMockApplications = (
   scenario: ListScenario,
 ): GetFormsResponseDto => {
   const items =
-    scenario === 'empty'
-      ? []
-      : getSectionItemDrafts(section).map((draft, i) => createSimpleItem(draft, i))
+    scenario === 'withItems'
+      ? getSectionItemDrafts(section).map((draft, i) => createSimpleItem(draft, i))
+      : []
 
   return {
     currentPage: 1,
@@ -157,11 +167,14 @@ export const createMockApplications = (
 export const createMockQueryClient = (
   applications: GetFormsResponseDto,
   section: MyApplicationStateFilter,
+  scenario: ListScenario,
 ): QueryClient => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         retry: false,
+        // Keeps the seeded error state, otherwise the query would call the real API on mount
+        retryOnMount: false,
         staleTime: Infinity,
         refetchOnMount: false,
         refetchOnWindowFocus: false,
@@ -170,14 +183,24 @@ export const createMockQueryClient = (
     },
   })
 
-  queryClient.setQueryData(
-    getMyApplicationsQueryKey({
-      ...myApplicationsDefaultFilters,
-      myApplicationState: section,
-      page: 1,
-    }),
-    applications,
-  )
+  const listQueryKey = getMyApplicationsQueryKey({
+    ...myApplicationsDefaultFilters,
+    myApplicationState: section,
+    page: 1,
+  })
+
+  if (scenario === 'error') {
+    // Simulates both requests failing, e.g. backend throwing FORM_SENT_AT_MISSING_ERROR
+    const error = new Error('Request failed with status code 500')
+    ;[listQueryKey, getMyApplicationsCountQueryKey()].forEach((queryKey) => {
+      const query = queryClient.getQueryCache().build(queryClient, { queryKey })
+      query.setState({ ...query.state, status: 'error', error, errorUpdatedAt: Date.now() })
+    })
+
+    return queryClient
+  }
+
+  queryClient.setQueryData(listQueryKey, applications)
 
   // Derived from the mocked `meta.countByState` the same way `myApplicationsCountFetcher` does it,
   // so the tab counts always match the mocked items.

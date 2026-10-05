@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next/pages'
-import { GetFormResponseSimpleDto } from 'openapi-clients/forms'
+import { GetFormsResponseDtoItemsInner } from 'openapi-clients/forms'
 
 import { formsClient } from '@/src/clients/forms'
 import useToast from '@/src/components/simple-components/Toast/useToast'
@@ -7,7 +7,7 @@ import { downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 
 type Props = {
-  form?: GetFormResponseSimpleDto | null
+  form: GetFormsResponseDtoItemsInner
 }
 
 export const useExportFormToPdf = ({ form }: Props) => {

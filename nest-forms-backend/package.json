@@ -24,7 +24,6 @@
     "test:cov": "vitest run --coverage",
     "test:debug": "vitest --inspect-brk --no-file-parallelism",
     "test:e2e": "vitest run --config ./vitest.config.e2e.mts",
-    "test:emails": "vitest run --config ./vitest.config.emails.mts",
     "db:generate": "cross-env PRISMA_SKIP_DATASOURCE_URL=1 prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",

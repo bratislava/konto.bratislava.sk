@@ -97,14 +97,7 @@ describe('GinisController', () => {
       expect(internalServerErrorSpy).toHaveBeenCalled()
 
       controller['ginisAPIService'].getOwnerDetail = vi.fn()
-      vi.doMock('../utils/ginis/ginis-api-helper', () => ({
-        mapGinisHistory: vi.fn().mockImplementation(() => {
-          throw new Error('Error')
-        }),
-      }))
       await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
-
-      // If th
     })
 
     it('should return GinisDocumentDetailResponseDto', async () => {
@@ -120,9 +113,6 @@ describe('GinisController', () => {
           Prijmeni: 'Brown',
         },
       })
-      vi.doMock('../utils/ginis/ginis-api-helper', () => ({
-        mapGinisHistory: vi.fn(),
-      }))
 
       const result = await controller.getGinisDocumentByFormId('123')
       expect(result.id).toBe('MAG0X05D1111')
@@ -143,9 +133,6 @@ describe('GinisController', () => {
           Prijmeni: '42-Black-Smith',
         },
       })
-      vi.doMock('../utils/ginis/ginis-api-helper', () => ({
-        mapGinisHistory: vi.fn(),
-      }))
 
       const result = await controller.getGinisDocumentByFormId('123')
       expect(result.ownerName).toBe('Jill Mary Black-Smith')

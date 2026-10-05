@@ -7,7 +7,6 @@ import { formatDate } from '@/src/components/formatting/FormatDate'
 import Icon from '@/src/components/icon-components/Icon'
 import BottomSheetMenuModal from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuModal'
 import { useDeleteFormConcept } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard/useDeleteFormConcept'
-import { useExportFormToPdf } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard/useExportFormToPdf'
 import { getMyApplicationStateByFormResponseState } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationStates'
 import { useFormDefinitionSlugTitleMap } from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionSlugTitleMap'
 import DropdownMenu, {
@@ -15,6 +14,7 @@ import DropdownMenu, {
 } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import Tag from '@/src/components/simple-components/Tag'
 import MessageModal from '@/src/components/widget-components/Modals/MessageModal'
+import { useExportFormToPdf } from '@/src/frontend/hooks/useExportFormToPdf'
 import { useExportFormToXml } from '@/src/frontend/hooks/useExportFormToXml'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
@@ -41,7 +41,7 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
   const [isBottomSheetMenuOpen, setIsBottomSheetMenuOpen] = useState(false)
 
   const { exportFormToXml } = useExportFormToXml()
-  const { exportFormToPdf } = useExportFormToPdf({ form })
+  const { exportFormToPdf } = useExportFormToPdf()
   const { deleteFormConcept } = useDeleteFormConcept({ form, refreshListData })
 
   const formSlug = form.formDefinitionSlug
@@ -79,7 +79,8 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
       ? {
           title: t('MyApplicationsCard.menu.downloadPdf'),
           icon: <Icon name="pdf" className="size-6" />,
-          onPress: () => exportFormToPdf(),
+          // TODO replace form.id - this won't be valid for forms processed on the GINIS side
+          onPress: () => exportFormToPdf({ formId: form.id, formSlug }),
         }
       : null,
     {

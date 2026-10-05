@@ -17,9 +17,9 @@ import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import { RegistrationModalType } from '@/src/components/modals/RegistrationModal'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import { environment } from '@/src/environment'
+import { useExportFormToPdf } from '@/src/frontend/hooks/useExportFormToPdf'
 import { useExportFormToXml } from '@/src/frontend/hooks/useExportFormToXml'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
-import { createSerializableFile } from '@/src/frontend/utils/formExportImport'
 import { downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 import { ROUTES } from '@/src/utils/routes'
@@ -48,6 +48,7 @@ export const useGetContext = () => {
 
   const { showToast, closeToasts } = useToast()
   const { exportFormToXml } = useExportFormToXml()
+  const { exportFormToPdf, downloadFormPdf } = useExportFormToPdf()
 
   const importXmlButtonRef = useRef<HTMLButtonElement>(null)
   const importJsonButtonRef = useRef<HTMLButtonElement>(null)
@@ -215,48 +216,17 @@ export const useGetContext = () => {
     showToast({ message: t('useFormExportImport.success.jsonImport'), variant: 'success' })
   }
 
-  const runPdfExport = async (abortController?: AbortController) => {
-    const response = await formsClient.convertControllerConvertToPdf(
-      formId,
-      {
-        jsonData: formData,
-        clientFiles: clientFiles.map((fileInfo) => ({
-          ...fileInfo,
-          file: createSerializableFile(fileInfo.file),
-        })),
-      },
-      {
-        authStrategy: 'authOrGuestWithToken',
-        responseType: 'arraybuffer',
-        signal: abortController?.signal,
-      },
-    )
-    const fileName = `${slug}_output.pdf`
-    downloadBlob(new Blob([response.data as BlobPart]), fileName)
-  }
-
-  const exportOrdinaryPdf = async () => {
-    showToast({ message: t('useFormExportImport.info.pdfExport'), variant: 'info' })
-    try {
-      await runPdfExport()
-    } catch (error) {
-      closeToasts()
-      showToast({ message: t('useFormExportImport.errors.pdfExport'), variant: 'error' })
-
-      return
-    }
-    closeToasts()
-    showToast({ message: t('useFormExportImport.success.pdfExport'), variant: 'success' })
-  }
+  const pdfExportParams = { formId, formSlug: slug, jsonData: formData, clientFiles }
 
   const exportTaxPdf = async () => {
     const abortController = new AbortController()
     setTaxFormPdfExportModal({ type: 'loading', onClose: () => abortController.abort() })
     try {
-      await runPdfExport(abortController)
+      await downloadFormPdf({ ...pdfExportParams, signal: abortController.signal })
     } catch (error) {
       setTaxFormPdfExportModal(null)
       if (!abortController.signal.aborted) {
+        logger.error(error)
         showToast({ message: t('useFormExportImport.errors.pdfExport'), variant: 'error' })
       }
 
@@ -265,10 +235,7 @@ export const useGetContext = () => {
     setTaxFormPdfExportModal({ type: 'success' })
   }
 
-  const exportPdf = async () => {
-    await (isTaxForm ? exportTaxPdf() : exportOrdinaryPdf())
-    plausible(`${slug}#export-pdf`)
-  }
+  const exportPdf = () => (isTaxForm ? exportTaxPdf() : exportFormToPdf(pdfExportParams))
 
   const saveConcept = async (fromModal?: boolean) => {
     if (!isSignedIn) {

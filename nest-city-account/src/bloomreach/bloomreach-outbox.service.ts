@@ -2,22 +2,15 @@ import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/l
 import { Injectable } from '@nestjs/common'
 
 import BaConfigService from '../config/ba-config.service'
-import { BloomreachOutboxStatus, ConsentEnum } from '../generated/prisma/client'
-import { PrismaService } from '../prisma/prisma.service'
-import {
-  BloomreachCommandNameEnum,
-  BloomreachCustomerCommandData,
-  BloomreachEventCommandData,
-  Consent,
-} from './bloomreach.types'
-import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
-import { mergeCustomerCommandData } from './utils/merge-commands.utils'
+import { ConsentEnum } from '../generated/prisma/enums'
+import { Consent } from './bloomreach.types'
+import { BloomreachOutboxWriterService } from './bloomreach-outbox-writer.service'
+import { nowUnixSeconds } from './bloomreach-payload.builder'
 
 @Injectable()
 export class BloomreachOutboxService {
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly payloadBuilder: BloomreachPayloadBuilder,
+    private readonly outboxWriter: BloomreachOutboxWriterService,
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService,
     private readonly logger: LineLoggerService
@@ -29,9 +22,7 @@ export class BloomreachOutboxService {
     }
 
     try {
-      const command = await this.payloadBuilder.buildCustomerCommand(externalId, phoneNumber)
-
-      await this.upsertPendingCustomerCommand(externalId, command.commandData)
+      await this.outboxWriter.queueCustomerCommand(externalId, phoneNumber)
 
       this.logger.debug(`Queued customers command for ${externalId}`)
     } catch (error) {
@@ -55,6 +46,20 @@ export class BloomreachOutboxService {
     userId?: string,
     isLegalPerson?: boolean
   ): Promise<void> {
+    return this.trackConsentsInternal(consents, externalId, userId, isLegalPerson, false)
+  }
+
+  /**
+   * `terminal` is only ever set by {@link anonymizeCustomer} so it is kept out
+   * of {@link trackConsents}'s public signature.
+   */
+  private async trackConsentsInternal(
+    consents: Consent[],
+    externalId: string | null,
+    userId: string | undefined,
+    isLegalPerson: boolean | undefined,
+    terminal: boolean
+  ): Promise<void> {
     if (this.baConfigService.bloomreach.integrationState !== 'ACTIVE') {
       return
     }
@@ -74,15 +79,9 @@ export class BloomreachOutboxService {
     }
 
     try {
-      const commands = this.payloadBuilder.buildConsentEventCommands(consents, externalId)
+      await this.outboxWriter.queueConsentEvents(consents, externalId, terminal)
 
-      await Promise.all(
-        commands.map(async ({ commandData }) =>
-          this.upsertPendingEventCommand(externalId, commandData)
-        )
-      )
-
-      this.logger.debug(`Queued ${commands.length} consent events for ${userType} ${externalId}`)
+      this.logger.debug(`Queued ${consents.length} consent events for ${userType} ${externalId}`)
     } catch (error) {
       this.logger.error(
         this.errorFactoryService.InternalServerErrorException({
@@ -100,18 +99,22 @@ export class BloomreachOutboxService {
       return
     }
 
+    // Unify the anonymization commands timestamps.
+    const anonymizedAt = nowUnixSeconds()
+
+    await this.trackConsentsInternal(
+      [
+        { consentType: ConsentEnum.MARKETING, isGranted: false, timestamp: anonymizedAt },
+        { consentType: ConsentEnum.GENERAL, isGranted: false, timestamp: anonymizedAt },
+      ],
+      externalId,
+      undefined,
+      undefined,
+      true
+    )
+
     try {
-      await this.trackConsents(
-        [
-          { consentType: ConsentEnum.MARKETING, isGranted: false },
-          { consentType: ConsentEnum.GENERAL, isGranted: false },
-        ],
-        externalId
-      )
-
-      const { commandData } = this.payloadBuilder.buildAnonymizeCommand(externalId)
-
-      await this.upsertPendingCustomerCommand(externalId, commandData)
+      await this.outboxWriter.queueAnonymizeCommand(externalId, anonymizedAt)
 
       this.logger.debug(`Queued anonymize commands for ${externalId}`)
     } catch (error) {
@@ -124,88 +127,5 @@ export class BloomreachOutboxService {
         })
       )
     }
-  }
-
-  private async upsertPendingEventCommand(
-    externalId: string,
-    commandData: BloomreachEventCommandData
-  ): Promise<void> {
-    await this.prisma.$transaction(async (tx) => {
-      const existing = await tx.bloomreachOutbox.findFirst({
-        where: {
-          externalId,
-          commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
-          status: BloomreachOutboxStatus.PENDING,
-          AND: [
-            {
-              commandData: {
-                path: ['event_type'],
-                equals: commandData.event_type,
-              },
-            },
-            {
-              commandData: {
-                path: ['properties', 'category'],
-                equals: commandData.properties.category,
-              },
-            },
-          ],
-        },
-      })
-
-      if (existing) {
-        await tx.bloomreachOutbox.update({
-          where: { id: existing.id },
-          data: { commandData },
-        })
-      } else {
-        await tx.bloomreachOutbox.create({
-          data: {
-            externalId,
-            commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
-            commandData,
-          },
-        })
-      }
-    })
-  }
-
-  // Prisma's upsert requires a @@unique constraint, but we can't add one on
-  // (externalId, commandName, status) — multiple COMPLETED/FAILED rows for the
-  // same combo are valid. A partial unique index (WHERE status = 'PENDING')
-  // would work in PostgreSQL, but Prisma doesn't support partial indexes.
-  private async upsertPendingCustomerCommand(
-    externalId: string,
-    commandData: BloomreachCustomerCommandData
-  ): Promise<void> {
-    await this.prisma.$transaction(async (tx) => {
-      const existing = await tx.bloomreachOutbox.findFirst({
-        where: {
-          externalId,
-          commandName: BloomreachCommandNameEnum.CUSTOMERS,
-          status: BloomreachOutboxStatus.PENDING,
-        },
-      })
-
-      if (existing) {
-        await tx.bloomreachOutbox.update({
-          where: { id: existing.id },
-          data: {
-            commandData: mergeCustomerCommandData(
-              existing.commandData as BloomreachCustomerCommandData,
-              commandData
-            ),
-          },
-        })
-      } else {
-        await tx.bloomreachOutbox.create({
-          data: {
-            externalId,
-            commandName: BloomreachCommandNameEnum.CUSTOMERS,
-            commandData,
-          },
-        })
-      }
-    })
   }
 }

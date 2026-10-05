@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { CognitoUserAttributesTierEnum, ConsentEnum } from '../generated/prisma/client'
+import { CognitoUserAttributesTierEnum } from '../generated/prisma/enums'
 import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
@@ -8,6 +8,7 @@ import {
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { UserIdentitySubservice } from '../utils/subservices/user-identity.subservice'
 import {
+  BloomreachCommandDataKind,
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
   BloomreachCustomerCommand,
@@ -15,7 +16,14 @@ import {
   BloomreachEventNameEnum,
   Consent,
 } from './bloomreach.types'
-import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
+import { BloomreachContactDatabaseService } from './contact-database/bloomreach-contact-database.service'
+import { consentCategory } from './utils/consents.utils'
+import { IDENTITY_PROPERTY } from './utils/merge-commands.utils'
+
+/** Unix timestamp in seconds, the format Bloomreach expects. */
+export function nowUnixSeconds(): number {
+  return Date.now() / 1000
+}
 
 @Injectable()
 export class BloomreachPayloadBuilder {
@@ -65,6 +73,7 @@ export class BloomreachPayloadBuilder {
     return {
       commandName: BloomreachCommandNameEnum.CUSTOMERS,
       commandData: {
+        kind: BloomreachCommandDataKind.CUSTOMER,
         customer_ids: {
           city_account_id: externalId,
           ...(contactId && { contact_id: contactId }),
@@ -83,6 +92,7 @@ export class BloomreachPayloadBuilder {
             current_tax_correspondence_channel: correspondenceChannel,
           }),
         },
+        update_timestamp: nowUnixSeconds(),
       },
     }
   }
@@ -108,37 +118,46 @@ export class BloomreachPayloadBuilder {
     return this.bloomreachContactDatabaseService.upsert(email, birthNumber, ico)
   }
 
-  buildAnonymizeCommand(externalId: string): BloomreachCustomerCommand {
+  buildAnonymizeCommand(externalId: string, timestamp: number): BloomreachCustomerCommand {
+    const anonymizationFlags = {
+      [IDENTITY_PROPERTY]: false,
+    }
+
+    const anonymizedData = {
+      first_name: '',
+      last_name: '',
+      name: '',
+      person_type: '',
+      registration_date: '',
+      email: '',
+      phone: '',
+      is_identity_verified: false,
+      oauth_origin_client_name: '',
+      current_tax_correspondence_channel: '',
+    }
+
     return {
       commandName: BloomreachCommandNameEnum.CUSTOMERS,
       commandData: {
+        kind: BloomreachCommandDataKind.CUSTOMER,
         customer_ids: {
           city_account_id: externalId,
         },
         properties: {
-          first_name: '',
-          last_name: '',
-          name: '',
-          person_type: '',
-          registration_date: '',
-          email: '',
-          phone: '',
-          is_identity_verified: false,
-          oauth_origin_client_name: '',
-          current_tax_correspondence_channel: '',
+          ...anonymizedData,
+          // Flags currently correspond with data, separated for future use
+          ...anonymizationFlags,
         },
+        update_timestamp: timestamp,
       },
     }
-  }
-
-  private static consentCategory(consentType: ConsentEnum): string {
-    return `ESBS-${consentType}`
   }
 
   buildConsentEventCommands(consents: Consent[], externalId: string): BloomreachEventCommand[] {
     return consents.map((consent) => ({
       commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
       commandData: {
+        kind: BloomreachCommandDataKind.EVENT,
         customer_ids: {
           city_account_id: externalId,
         },
@@ -146,10 +165,14 @@ export class BloomreachPayloadBuilder {
           action: consent.isGranted
             ? BloomreachConsentActionEnum.ACCEPT
             : BloomreachConsentActionEnum.REJECT,
-          category: BloomreachPayloadBuilder.consentCategory(consent.consentType),
+          category: consentCategory(consent.consentType),
           valid_until: 'unlimited',
         },
         event_type: BloomreachEventNameEnum.CONSENT,
+        // A restored consent (from extractLatestCityAccountConsents) carries
+        // the time it was actually true - stamping it "now" would let it
+        // incorrectly outrank a genuinely newer local change.
+        timestamp: consent.timestamp ?? nowUnixSeconds(),
       },
     }))
   }

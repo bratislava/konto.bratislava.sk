@@ -12,7 +12,7 @@ import {
   ValidationOptions,
 } from 'class-validator'
 
-import { DeliveryMethodEnum } from '../../generated/prisma/client'
+import { DeliveryMethodEnum } from '../../generated/prisma/enums'
 
 /**
  * Decorator that enforces a property to be required when the delivery method is set to CITY_ACCOUNT.

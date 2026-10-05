@@ -28,6 +28,7 @@ import { expectObjectContaining } from '../__tests__/matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
+import { NodeEnv } from '../config/environment-variables'
 import ConvertService from '../convert/convert.service'
 import {
   Files,
@@ -100,7 +101,7 @@ describe('GinisService', () => {
           provide: BaConfigService,
           useValue: {
             environment: {
-              nodeEnv: 'development',
+              nodeEnv: NodeEnv.Development,
             },
             ginisApi: {
               username: '',

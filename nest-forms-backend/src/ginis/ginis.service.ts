@@ -83,19 +83,7 @@ export default class GinisService {
     private readonly nasesContactsService: NasesContactsService,
     @InjectQueue('sharepoint') private readonly sharepointQueue: Queue,
     private readonly logger: LineLoggerService,
-  ) {
-    if (
-      !['production', 'development', 'staging'].includes(
-        this.baConfigService.environment.nodeEnv,
-      ) &&
-      process.env.VITEST === undefined
-    ) {
-      throw this.errorFactoryService.InternalServerErrorException({
-        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: `.env value NODE_ENV must be set to 'production', 'development' or 'staging'`,
-      })
-    }
-  }
+  ) {}
 
   private async updateFailedRegistration(formId: string): Promise<void> {
     await this.prismaService.forms.update({

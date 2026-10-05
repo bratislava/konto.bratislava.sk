@@ -86,10 +86,6 @@ describe('BloomreachOutboxService', () => {
     payloadBuilder = module.get(BloomreachPayloadBuilder)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('trackCustomer', () => {
     it('should skip when integration is not active', async () => {
       bloomreachConfig.integrationState = 'INACTIVE'

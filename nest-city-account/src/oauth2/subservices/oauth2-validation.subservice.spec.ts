@@ -70,7 +70,6 @@ describe('OAuth2ValidationSubservice', () => {
   }
 
   beforeEach(async () => {
-    vi.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OAuth2ValidationSubservice,

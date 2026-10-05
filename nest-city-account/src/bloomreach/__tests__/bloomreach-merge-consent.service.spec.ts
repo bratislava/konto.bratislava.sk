@@ -92,10 +92,6 @@ describe('BloomreachMergeConsentService', () => {
     prismaMock.$queryRaw.mockResolvedValue([])
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('should skip event commands', async () => {
     const isBloomreachCustomerDataSpy = vi.spyOn(bloomreachTypes, 'isBloomreachCustomerData')
 

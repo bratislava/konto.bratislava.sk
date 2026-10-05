@@ -18,7 +18,6 @@ describe('RetryService', () => {
 
   describe('retryWithDelay', () => {
     beforeEach(() => {
-      vi.clearAllMocks()
       vi.useFakeTimers()
     })
 

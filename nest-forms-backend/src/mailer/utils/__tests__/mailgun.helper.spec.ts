@@ -86,10 +86,6 @@ describe('MailgunHelper', () => {
     strapiService = moduleRef.get<StrapiService>(StrapiService)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('constructor', () => {
     it('should initialize mailgunClient correctly', () => {
       expect(mailgunHelper.mailgunClient).toBeDefined()

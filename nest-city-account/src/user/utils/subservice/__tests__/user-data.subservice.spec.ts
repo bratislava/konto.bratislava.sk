@@ -45,10 +45,6 @@ describe('UserDataSubservice', () => {
     })
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('setUserConsents', () => {
     it('should be a no-op when consents array is empty', async () => {
       await service.setUserConsents('user-id', 'external-id', [])

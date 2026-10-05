@@ -59,10 +59,6 @@ describe('EdeskTasksSubservice', () => {
     norisEdeskService = module.get<NorisEdeskService>(NorisEdeskService)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('updateEdesk', () => {
     it('should delegate to UpvsQueueService.processBatch', async () => {
       const processBatchSpy = vi.mocked(upvsQueueService.processBatch)

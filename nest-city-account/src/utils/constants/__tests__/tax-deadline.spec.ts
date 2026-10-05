@@ -17,10 +17,6 @@ const mockTaxDeadline = (config: { month: number; day: number }) => {
 }
 
 describe('tax-deadline', () => {
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('each date to 1st of April should be before deadline, each date from it should be after', () => {
     beforeEach(() => {
       mockTaxDeadline({ month: 4, day: 1 })

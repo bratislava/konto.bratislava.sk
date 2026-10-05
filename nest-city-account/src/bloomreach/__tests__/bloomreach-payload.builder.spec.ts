@@ -59,10 +59,6 @@ describe('BloomreachPayloadBuilder', () => {
     userIdentitySubservice = module.get(UserIdentitySubservice)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('buildCustomerCommand', () => {
     it('should build a basic customer command with user data', async () => {
       cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser)

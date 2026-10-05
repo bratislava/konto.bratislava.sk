@@ -24,7 +24,6 @@ describe('MailgunService', () => {
   })
 
   beforeEach(async () => {
-    vi.clearAllMocks()
     mockCreate.mockResolvedValue({ id: 'mock-message-id', message: 'Queued' })
 
     vi.spyOn(console, 'log').mockImplementation(vi.fn())

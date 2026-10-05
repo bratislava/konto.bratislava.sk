@@ -43,10 +43,6 @@ describe('UrgentLookupService', () => {
     cognitoSubservice = module.get(CognitoSubservice)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('returns an empty result and persists nothing when there are no urgent entities', async () => {
     prismaMock.$queryRaw.mockResolvedValue([])
 

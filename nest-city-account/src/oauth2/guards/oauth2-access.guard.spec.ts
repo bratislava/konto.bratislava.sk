@@ -51,7 +51,6 @@ describe('OAuth2AccessGuard', () => {
   }
 
   beforeEach(() => {
-    vi.clearAllMocks()
     reflector = createMock<Reflector>()
     errorFactoryService = createMock<ErrorFactoryService>()
     clientSubservice = createMock<OAuth2ClientSubservice>()

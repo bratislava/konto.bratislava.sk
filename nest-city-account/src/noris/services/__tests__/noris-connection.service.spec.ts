@@ -30,8 +30,6 @@ describe('NorisConnectionService', () => {
   }
 
   beforeEach(async () => {
-    vi.clearAllMocks()
-
     mockMssqlConnect = mssql.connect as Mock
 
     module = await Test.createTestingModule({
@@ -60,10 +58,6 @@ describe('NorisConnectionService', () => {
 
     service = module.get<NorisConnectionService>(NorisConnectionService)
     errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
-  })
-
-  afterEach(() => {
-    vi.clearAllMocks()
   })
 
   it('should be defined', () => {

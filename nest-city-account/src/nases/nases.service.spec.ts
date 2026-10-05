@@ -55,10 +55,6 @@ describe('NasesService', () => {
     clientsService = module.get<ClientsService>(ClientsService)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('should be defined', () => {
     expect(service).toBeDefined()
   })

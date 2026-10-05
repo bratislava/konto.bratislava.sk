@@ -33,10 +33,6 @@ describe('EdeskBatchUpdateService', () => {
     nasesService = module.get(NasesService)
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   // High-priority selection uses $queryRaw, external selection uses findMany.
   const mockSelection = (highPriority: unknown[], external: Partial<ExternalEdeskCheck>[]) => {
     prismaMock.$queryRaw.mockResolvedValue(highPriority)

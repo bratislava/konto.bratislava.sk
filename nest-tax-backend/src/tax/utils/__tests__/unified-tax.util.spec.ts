@@ -394,10 +394,6 @@ describe('UnifiedTaxUtil', () => {
     )
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('calculateInstallmentAmounts', () => {
     const missingInstallmentError =
       new ErrorFactoryService().InternalServerErrorException({
@@ -1833,10 +1829,6 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     ;(getTaxDefinitionByType as Mock).mockImplementation(
       actualModule.getTaxDefinitionByType,
     )
-  })
-
-  afterEach(() => {
-    vi.clearAllMocks()
   })
 
   it('should generate payment for the first installment', () => {

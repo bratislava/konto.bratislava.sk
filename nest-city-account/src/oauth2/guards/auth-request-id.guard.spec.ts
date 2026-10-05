@@ -75,7 +75,6 @@ describe('AuthRequestIdGuard', () => {
   }
 
   beforeEach(async () => {
-    vi.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthRequestIdGuard,

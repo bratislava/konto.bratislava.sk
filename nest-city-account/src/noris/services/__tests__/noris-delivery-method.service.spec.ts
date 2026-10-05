@@ -37,7 +37,6 @@ describe('NorisDeliveryMethodService', () => {
   let norisValidatorService: NorisValidatorService
 
   beforeEach(async () => {
-    vi.clearAllMocks()
     vi.restoreAllMocks()
     vi.mocked(mssql.Request).mockImplementation(function () {
       return mockRequest

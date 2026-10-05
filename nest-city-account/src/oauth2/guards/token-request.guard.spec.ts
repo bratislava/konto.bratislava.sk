@@ -34,7 +34,6 @@ describe('TokenRequestGuard', () => {
   }
 
   beforeEach(async () => {
-    vi.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TokenRequestGuard,

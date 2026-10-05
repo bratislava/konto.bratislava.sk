@@ -35,7 +35,6 @@ describe('PhysicalEntityService', () => {
   let consoleSpy: MockInstance
   beforeEach(async () => {
     vi.clearAllTimers()
-    vi.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LineLoggerService,

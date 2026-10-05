@@ -47,10 +47,6 @@ describe('UpvsQueueService', () => {
     })
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('public queue API', () => {
     it('addExternalItemsToQueue inserts the records, skipping duplicates', async () => {
       const records = [{ uri: 'rc://sk/1', norisId: 1, newUri: undefined }]

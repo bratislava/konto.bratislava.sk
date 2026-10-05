@@ -55,10 +55,6 @@ describe('TaxImportHelperService', () => {
     vi.spyOn(LineLoggerService.prototype, 'log').mockImplementation(vi.fn())
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('isWithinImportWindow', () => {
     beforeEach(() => {
       vi.useFakeTimers()
@@ -66,7 +62,6 @@ describe('TaxImportHelperService', () => {
 
     afterEach(() => {
       vi.useRealTimers()
-      vi.clearAllMocks()
     })
 
     it('should return true when current time is within the window (7-20)', async () => {
@@ -165,7 +160,6 @@ describe('TaxImportHelperService', () => {
 
     afterEach(() => {
       vi.useRealTimers()
-      vi.clearAllMocks()
     })
 
     it('should return count of taxes created today', async () => {

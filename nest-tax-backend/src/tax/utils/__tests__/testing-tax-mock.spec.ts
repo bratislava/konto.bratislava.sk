@@ -20,7 +20,6 @@ describe('testing-tax-mock', () => {
   let mockNorisData: RequestAdminCreateTestingTaxNorisData
 
   beforeEach(() => {
-    vi.clearAllMocks()
     ;(mockRandomBytes as Mock).mockReturnValue(Buffer.from('abcd1234', 'hex'))
 
     mockTaxAdministrator = {

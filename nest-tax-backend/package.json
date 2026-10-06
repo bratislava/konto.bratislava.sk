@@ -65,7 +65,7 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@bratislava/eslint-config-nest": "0.19.1",
+    "@bratislava/eslint-config-nest": "0.21.0",
     "@golevelup/ts-vitest": "4.0.0",
     "@nestjs/cli": "12.0.6",
     "@nestjs/schematics": "12.0.5",
@@ -79,7 +79,6 @@
     "@types/ssh2-sftp-client": "9.0.6",
     "@typescript-eslint/parser": "8.68.0",
     "@vitest/coverage-v8": "5.0.3",
-    "@vitest/eslint-plugin": "1.6.27",
     "clear": "0.1.0",
     "dotenv": "17.4.2",
     "eslint": "9.39.3",

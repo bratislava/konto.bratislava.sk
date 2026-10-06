@@ -55,7 +55,7 @@
     "prisma": "7.9.0"
   },
   "devDependencies": {
-    "@bratislava/eslint-config-nest": "0.19.1",
+    "@bratislava/eslint-config-nest": "0.21.0",
     "@nestjs/cli": "12.0.6",
     "@nestjs/schematics": "12.0.5",
     "@nestjs/testing": "12.1.0",

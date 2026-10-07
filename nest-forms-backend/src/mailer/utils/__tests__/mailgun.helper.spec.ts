@@ -118,7 +118,7 @@ describe('MailgunHelper', () => {
     })
 
     it('should process FEEDBACK_LINK type variables correctly', async () => {
-      const feedbackLink = 'https://bravo.staffino.com/bratislava/id=WW1hkstR'
+      const feedbackLink = 'https://test.feedback.com/bratislava/'
       jest
         .spyOn(strapiService, 'getFeedbackLink')
         .mockResolvedValue(feedbackLink)

@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest'
 import { resolveFeedbackLink } from '../../src/form-utils/resolveFeedbackLink'
 
 describe('resolveFeedbackLink', () => {
-  const feedbackLink = 'https://bravo.staffino.com/bratislava/id=test'
+  const feedbackLink = 'https://test.feedback.com/bratislava/'
 
   test('returns the feedback link', () => {
     expect(resolveFeedbackLink({ feedbackLink })).toBe(feedbackLink)

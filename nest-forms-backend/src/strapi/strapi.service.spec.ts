@@ -11,7 +11,7 @@ describe('StrapiService', () => {
   let getSpy: jest.SpyInstance
 
   const formDefinitionSlug = 'priznanie-k-dani-z-nehnutelnosti'
-  const feedbackLink = 'https://bravo.staffino.com/bratislava/id=test'
+  const feedbackLink = 'https://test.feedback.com/bratislava/'
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({

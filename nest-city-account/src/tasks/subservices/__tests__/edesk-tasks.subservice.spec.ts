@@ -12,6 +12,7 @@ import {
 import { NorisEdeskService } from '../../../noris/services/noris-edesk.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { UpvsQueueService } from '../../../upvs-queue/upvs-queue.service'
+import alertReporting from '../../../utils/constants/error.alerts'
 import { EdeskTasksSubservice } from '../edesk-tasks.subservice'
 
 const EXTERNAL_ITEMS_PROCESS_BATCH_SIZE = 500
@@ -41,22 +42,24 @@ describe('EdeskTasksSubservice', () => {
   let service: EdeskTasksSubservice
   let upvsQueueService: UpvsQueueService
   let norisEdeskService: NorisEdeskService
+  let logger: LineLoggerService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        { provide: LineLoggerService, useValue: createMock<LineLoggerService>() },
         EdeskTasksSubservice,
         { provide: PrismaService, useValue: prismaMock },
         { provide: UpvsQueueService, useValue: createMock<UpvsQueueService>() },
         { provide: NorisEdeskService, useValue: createMock<NorisEdeskService>() },
-        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
       ],
     }).compile()
 
     service = module.get<EdeskTasksSubservice>(EdeskTasksSubservice)
     upvsQueueService = module.get<UpvsQueueService>(UpvsQueueService)
     norisEdeskService = module.get<NorisEdeskService>(NorisEdeskService)
+    logger = module.get(LineLoggerService)
   })
 
   describe('updateEdesk', () => {
@@ -99,6 +102,13 @@ describe('EdeskTasksSubservice', () => {
           activeEdeskUpdateFailCount: true,
         },
       })
+      expect(vi.mocked(logger.error)).toHaveBeenCalledExactlyOnceWith(
+        'Entities that failed to update at least 7 times in a row: ',
+        {
+          entities: mockFailedEntities,
+          alert: 1,
+        }
+      )
     })
 
     it('should not log anything if there are no failing entities', async () => {
@@ -107,6 +117,7 @@ describe('EdeskTasksSubservice', () => {
       await service.alertFailingEdeskUpdate()
 
       expect(prismaMock.physicalEntity.findMany).toHaveBeenCalled()
+      expect(vi.mocked(logger.error)).not.toHaveBeenCalled()
     })
   })
 

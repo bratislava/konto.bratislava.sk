@@ -1,8 +1,9 @@
-import { ErrorFactoryService } from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 
+import alertReporting from '../../../utils/constants/error.alerts'
 import { DeliveryMethod, IsInCityAccount } from '../../types/noris.enums'
 import { NorisConnectionService } from '../noris-connection.service'
 import {
@@ -35,6 +36,7 @@ describe('NorisDeliveryMethodService', () => {
   let service: NorisDeliveryMethodService
   let connectionService: NorisConnectionService
   let norisValidatorService: NorisValidatorService
+  let errorFactoryService: ErrorFactoryService
 
   beforeEach(async () => {
     vi.restoreAllMocks()
@@ -49,7 +51,7 @@ describe('NorisDeliveryMethodService', () => {
           provide: NorisConnectionService,
           useValue: createMock<NorisConnectionService>(),
         },
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
         {
           provide: NorisValidatorService,
           useValue: createMock<NorisValidatorService>(),
@@ -60,6 +62,7 @@ describe('NorisDeliveryMethodService', () => {
     service = module.get<NorisDeliveryMethodService>(NorisDeliveryMethodService)
     connectionService = module.get<NorisConnectionService>(NorisConnectionService)
     norisValidatorService = module.get<NorisValidatorService>(NorisValidatorService)
+    errorFactoryService = module.get(ErrorFactoryService)
 
     vi.mocked(norisValidatorService.validateNorisData).mockImplementation((schema, data) =>
       (data as unknown[]).map((item) => schema.parse(item))
@@ -152,7 +155,10 @@ describe('NorisDeliveryMethodService', () => {
       } as unknown as UpdateNorisDeliveryMethodsData
 
       await expect(service.updateDeliveryMethods({ data: invalidCityAccountData })).rejects.toThrow(
-        'Date must be provided'
+        errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Date must be provided when delivery method is CITY_ACCOUNT',
+        })
       )
     })
 
@@ -429,6 +435,7 @@ describe('NorisDeliveryMethodService', () => {
       })
 
       it('should handle connection errors during update', async () => {
+        const connectionError = new Error('Database connection failed')
         const mockData = [
           {
             birthNumbers: ['010366/4554'],
@@ -438,12 +445,10 @@ describe('NorisDeliveryMethodService', () => {
           },
         ]
 
-        vi.mocked(connectionService.withConnection).mockRejectedValue(
-          new Error('Database connection failed')
-        )
+        vi.mocked(connectionService.withConnection).mockRejectedValue(connectionError)
 
-        await expect(service['updateDeliveryMethodsInNoris'](mockData)).rejects.toThrow(
-          'Database connection failed'
+        await expect(service['updateDeliveryMethodsInNoris'](mockData)).rejects.toBe(
+          connectionError
         )
       })
 
@@ -594,13 +599,12 @@ describe('NorisDeliveryMethodService', () => {
       })
 
       it('should handle connection errors', async () => {
-        vi.mocked(connectionService.withConnection).mockRejectedValue(
-          new Error('Database connection failed')
-        )
+        const connectionError = new Error('Database connection failed')
+        vi.mocked(connectionService.withConnection).mockRejectedValue(connectionError)
 
         await expect(
           service['getBirthNumbersWithUpdatedDeliveryMethods']([{ cislo_subjektu: 12_345 }])
-        ).rejects.toThrow('Database connection failed')
+        ).rejects.toBe(connectionError)
       })
 
       it('should trim birth numbers from ico field', async () => {

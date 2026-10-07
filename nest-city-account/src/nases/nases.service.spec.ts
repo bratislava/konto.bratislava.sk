@@ -1,6 +1,11 @@
-import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerService,
+} from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
-import { HttpException, HttpStatus } from '@nestjs/common'
+import { HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosError, AxiosResponse } from 'axios'
@@ -12,8 +17,11 @@ import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { VerificationErrorsEnum } from '../user-verification/verification.errors.enum'
-import { CustomErrorEnums } from '../utils/guards/dtos/error.dto'
+import {
+  VerificationErrorsEnum,
+  VerificationErrorsResponseEnum,
+} from '../user-verification/verification.errors.enum'
+import alertReporting from '../utils/constants/error.alerts'
 import { NasesService } from './nases.service'
 
 describe('NasesService', () => {
@@ -33,7 +41,7 @@ describe('NasesService', () => {
       providers: [
         LineLoggerService,
         NasesService,
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
         { provide: ClientsService, useValue: createMock<ClientsService>() },
         { provide: ApiJwtTokensService, useValue: createMock<ApiJwtTokensService>() },
         {
@@ -210,13 +218,15 @@ describe('NasesService', () => {
     })
 
     it('should throw error for invalid input size', async () => {
-      const throwerSpy = vi.spyOn(errorFactoryService, 'BadRequestException')
+      const expectedError = errorFactoryService.BadRequestException({
+        errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+        message: 'Must provide between 1 and 10 URIs to validate',
+      })
 
-      await expect(service.getIdentitiesByUris([])).rejects.toThrow()
-      expect(throwerSpy).toHaveBeenCalled()
+      await expect(service.getIdentitiesByUris([])).rejects.toThrow(expectedError)
 
       const tooManyInputs = Array.from({ length: 11 }, (_, i) => ({ uri: `uri-${i}` }))
-      await expect(service.getIdentitiesByUris(tooManyInputs)).rejects.toThrow()
+      await expect(service.getIdentitiesByUris(tooManyInputs)).rejects.toThrow(expectedError)
     })
 
     it('should deduplicate inputs by URI', async () => {
@@ -245,11 +255,19 @@ describe('NasesService', () => {
         { uri: 'rc://sk/same_uri', physicalEntityId: 'entity-2' },
       ]
 
+      const upvsError = new Error('UPVS server is down')
       const searchSpy = vi
         .mocked(clientsService.slovenskoSkApi.apiIamIdentitiesSearchPost)
-        .mockRejectedValue(new Error('UPVS server is down'))
+        .mockRejectedValue(upvsError)
 
-      await expect(service.getIdentitiesByUris(inputs)).rejects.toThrow()
+      await expect(service.getIdentitiesByUris(inputs)).rejects.toThrow(
+        errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+          console: 'Error is not an instance of AxiosError',
+          error: upvsError,
+        })
+      )
       expect(searchSpy).toHaveBeenCalledTimes(1)
     })
   })
@@ -270,6 +288,27 @@ describe('NasesService', () => {
     const thrownBy = async (): Promise<unknown> =>
       service.lookupIdentityFO('1234567890', 'John', 'Doe', 'entity-1').catch((e: unknown) => e)
 
+    /**
+     * Status overrides of fromAxiosError use node's reason phrase as the response status
+     * (e.g. "Too Many Requests"), which no public factory method produces, so those cases
+     * are matched on status, errorName and message only.
+     */
+    const statusOverrideError = (status: HttpStatus, errorName: string, message: string) =>
+      expectObjectContaining<{ status: number; response: object }>({
+        status,
+        response: expectObjectContaining({ statusCode: status, errorName, message }),
+      })
+
+    const iamFaultRejection = axiosErrorWithStatus(400, {
+      message: 'Invalid query',
+      fault: { code: '00074421', reason: 'Nastala chyba: IDENTITY_ID_FAULT' },
+    })
+    const rejection503WithRetryAfter = axiosErrorWithStatus(503, {}, { 'retry-after': '60' })
+    const rejection503 = axiosErrorWithStatus(503)
+    const rejection401 = axiosErrorWithStatus(401)
+    const networkRejection = new AxiosError('Network Error')
+    const nonAxiosRejection = new Error('boom')
+
     // One table for the whole error mapping documented on lookupIdentityFO.
     // Notes per row:
     // - 429 must keep its status: the urgent queue detects throttling by it.
@@ -283,16 +322,25 @@ describe('NasesService', () => {
         rejection: axiosErrorWithStatus(429),
         status: HttpStatus.TOO_MANY_REQUESTS,
         errorName: ErrorEnum.TOO_MANY_REQUESTS_ERROR,
+        expectedError: () =>
+          statusOverrideError(
+            HttpStatus.TOO_MANY_REQUESTS,
+            ErrorEnum.TOO_MANY_REQUESTS_ERROR,
+            ErrorResponseEnum.TOO_MANY_REQUESTS_ERROR
+          ),
         persistsRejection: false,
       },
       {
         upstreamCase: '400 with fault (UPVS IAM rejection)',
-        rejection: axiosErrorWithStatus(400, {
-          message: 'Invalid query',
-          fault: { code: '00074421', reason: 'Nastala chyba: IDENTITY_ID_FAULT' },
-        }),
+        rejection: iamFaultRejection,
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorName: VerificationErrorsEnum.IDENTITY_LOOKUP_REJECTED,
+        expectedError: () =>
+          statusOverrideError(
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            VerificationErrorsEnum.IDENTITY_LOOKUP_REJECTED,
+            VerificationErrorsResponseEnum.IDENTITY_LOOKUP_REJECTED
+          ),
         persistsRejection: true,
       },
       {
@@ -300,63 +348,96 @@ describe('NasesService', () => {
         rejection: axiosErrorWithStatus(400, { message: 'Invalid query' }),
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorName: ErrorEnum.INTERNAL_SERVER_ERROR,
+        expectedError: () =>
+          statusOverrideError(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            ErrorEnum.INTERNAL_SERVER_ERROR,
+            ErrorResponseEnum.INTERNAL_SERVER_ERROR
+          ),
         persistsRejection: false,
       },
       {
         upstreamCase: '503 with Retry-After',
-        rejection: axiosErrorWithStatus(503, {}, { 'retry-after': '60' }),
+        rejection: rejection503WithRetryAfter,
         status: HttpStatus.SERVICE_UNAVAILABLE,
         errorName: ErrorEnum.SERVICE_UNAVAILABLE_ERROR,
+        expectedError: () =>
+          errorFactoryService.ServiceUnavailableException({
+            errorEnum: ErrorEnum.SERVICE_UNAVAILABLE_ERROR,
+            message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+            error: rejection503WithRetryAfter,
+          }),
         persistsRejection: false,
       },
       {
         upstreamCase: '503 without Retry-After',
-        rejection: axiosErrorWithStatus(503),
+        rejection: rejection503,
         status: HttpStatus.BAD_GATEWAY,
         errorName: ErrorEnum.BAD_GATEWAY_ERROR,
+        expectedError: () =>
+          errorFactoryService.BadGatewayException({
+            errorEnum: ErrorEnum.BAD_GATEWAY_ERROR,
+            message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+            error: rejection503,
+          }),
         persistsRejection: false,
       },
       {
         upstreamCase: '401 (broken credentials)',
-        rejection: axiosErrorWithStatus(401),
+        rejection: rejection401,
         status: HttpStatus.BAD_GATEWAY,
         errorName: ErrorEnum.BAD_GATEWAY_AUTH_ERROR,
+        expectedError: () =>
+          errorFactoryService.BadGatewayException({
+            errorEnum: ErrorEnum.BAD_GATEWAY_AUTH_ERROR,
+            message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+            error: rejection401,
+          }),
         persistsRejection: false,
       },
       {
         upstreamCase: 'network error with no response',
-        rejection: new AxiosError('Network Error'),
+        rejection: networkRejection,
         status: HttpStatus.BAD_GATEWAY,
         errorName: ErrorEnum.BAD_GATEWAY_ERROR,
+        expectedError: () =>
+          errorFactoryService.BadGatewayException({
+            errorEnum: ErrorEnum.BAD_GATEWAY_ERROR,
+            message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+            error: networkRejection,
+          }),
         persistsRejection: false,
       },
       {
         upstreamCase: 'non-axios error',
-        rejection: new Error('boom'),
+        rejection: nonAxiosRejection,
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorName: ErrorEnum.INTERNAL_SERVER_ERROR,
+        expectedError: () =>
+          errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+            console: 'Error is not an instance of AxiosError',
+            error: nonAxiosRejection,
+          }),
         persistsRejection: false,
       },
     ])(
       'maps $upstreamCase to $status $errorName',
       async ({
         rejection,
-        status,
-        errorName,
+        expectedError,
         persistsRejection,
       }: {
         rejection: Error
-        status: HttpStatus
-        errorName: CustomErrorEnums
+        expectedError: () => unknown
         persistsRejection: boolean
       }) => {
         apiIamIdentitiesLookupGetSpy().mockRejectedValue(rejection)
 
-        const error = await thrownBy()
-
-        expect(error).toBeInstanceOf(HttpException)
-        expect((error as HttpException).getStatus()).toBe(status)
-        expect((error as HttpException).getResponse()).toMatchObject({ errorName })
+        await expect(
+          service.lookupIdentityFO('1234567890', 'John', 'Doe', 'entity-1')
+        ).rejects.toThrow(expectedError())
         if (persistsRejection) {
           expect(prismaMock.identityLookupRejection.upsert).toHaveBeenCalled()
         } else {
@@ -368,12 +449,7 @@ describe('NasesService', () => {
     // Rejections are persisted right here in the service - the row's existence
     // excludes the entity from further urgent lookups.
     it('persists the rejection with its fault when UPVS IAM rejects the lookup', async () => {
-      apiIamIdentitiesLookupGetSpy().mockRejectedValue(
-        axiosErrorWithStatus(400, {
-          message: 'Invalid query',
-          fault: { code: '00074421', reason: 'Nastala chyba: IDENTITY_ID_FAULT' },
-        })
-      )
+      apiIamIdentitiesLookupGetSpy().mockRejectedValue(iamFaultRejection)
 
       await thrownBy()
 

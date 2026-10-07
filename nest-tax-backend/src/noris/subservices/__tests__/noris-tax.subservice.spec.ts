@@ -5,6 +5,7 @@ import type { Mocked } from 'vitest'
 
 import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto'
 import { TaxType } from '../../../generated/prisma/client'
+import alertReporting from '../../../utils/constants/error.alerts'
 import { NorisTaxSubservice } from '../noris-tax.subservice'
 import { NorisTaxCommunalWasteSubservice } from '../noris-tax/noris-tax.communal-waste.subservice'
 import { NorisTaxRealEstateSubservice } from '../noris-tax/noris-tax.real-estate.subservice'
@@ -13,7 +14,7 @@ import { createTestNorisRealEstateTax } from './factories/noris-real-estate-tax.
 
 describe('NorisTaxSubservice', () => {
   let service: NorisTaxSubservice
-  let errorFactoryService: ErrorFactoryService
+  const errorFactoryService = new ErrorFactoryService({ alertReporting })
   let norisTaxRealEstateSubservice: Mocked<NorisTaxRealEstateSubservice>
   let norisTaxCommunalWasteSubservice: Mocked<NorisTaxCommunalWasteSubservice>
 
@@ -21,10 +22,7 @@ describe('NorisTaxSubservice', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         NorisTaxSubservice,
-        {
-          provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>(),
-        },
+        { provide: ErrorFactoryService, useValue: errorFactoryService },
         {
           provide: NorisTaxRealEstateSubservice,
           useValue: createMock<NorisTaxRealEstateSubservice>(),
@@ -37,7 +35,6 @@ describe('NorisTaxSubservice', () => {
     }).compile()
 
     service = module.get<NorisTaxSubservice>(NorisTaxSubservice)
-    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
     norisTaxRealEstateSubservice = module.get(NorisTaxRealEstateSubservice)
     norisTaxCommunalWasteSubservice = module.get(
       NorisTaxCommunalWasteSubservice,
@@ -167,27 +164,18 @@ describe('NorisTaxSubservice', () => {
     })
 
     it('should throw for unknown tax type', async () => {
-      const mockError = new Error('Unknown tax type')
-      vi.mocked(
-        errorFactoryService.InternalServerErrorException,
-      ).mockImplementation(() => {
-        throw mockError
-      })
-
       const unknownTaxType = 'UNKNOWN' as TaxType
 
       await expect(
         service.processNorisTaxData(unknownTaxType, [], mockYear, {
           suppressEmail: false,
         }),
-      ).rejects.toThrow(mockError)
-
-      expect(
-        errorFactoryService.InternalServerErrorException,
-      ).toHaveBeenCalledWith({
-        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expect.stringContaining('Unknown tax type') as string,
-      })
+      ).rejects.toThrow(
+        errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Unknown tax type: ${unknownTaxType}`,
+        }),
+      )
     })
   })
 

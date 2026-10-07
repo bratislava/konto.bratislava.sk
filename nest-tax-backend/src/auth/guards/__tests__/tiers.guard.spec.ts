@@ -1,11 +1,12 @@
 import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
-import { ExecutionContext, HttpStatus } from '@nestjs/common'
+import { ExecutionContext } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { Test, TestingModule } from '@nestjs/testing'
 import { CognitoUserAttributesTierEnum } from 'openapi-clients/city-account'
 import type { Mocked } from 'vitest'
 
+import alertReporting from '../../../utils/constants/error.alerts'
 import { TIERS_KEY } from '../../../utils/decorators/tier.decorator'
 import { CognitoSubservice } from '../../../utils/subservices/cognito.subservice'
 import { TiersGuard } from '../tiers.guard'
@@ -23,7 +24,11 @@ describe('TiersGuard', () => {
   let guard: TiersGuard
   let reflector: Mocked<Reflector>
   let cognitoSubservice: Mocked<CognitoSubservice>
-  let errorFactoryService: ErrorFactoryService
+  const errorFactoryService = new ErrorFactoryService({ alertReporting })
+  const forbiddenTierError = errorFactoryService.ForbiddenException({
+    errorEnum: ErrorEnum.FORBIDDEN_ERROR,
+    message: 'Forbidden tier',
+  })
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -34,14 +39,13 @@ describe('TiersGuard', () => {
           provide: CognitoSubservice,
           useValue: createMock<CognitoSubservice>(),
         },
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: errorFactoryService },
       ],
     }).compile()
 
     guard = module.get(TiersGuard)
     reflector = module.get(Reflector)
     cognitoSubservice = module.get(CognitoSubservice)
-    errorFactoryService = module.get(ErrorFactoryService)
   })
 
   describe('when no tiers are required', () => {
@@ -160,9 +164,9 @@ describe('TiersGuard', () => {
         CognitoUserAttributesTierEnum.New,
       )
 
-      await expect(guard.canActivate(makeMockContext())).rejects.toMatchObject({
-        status: HttpStatus.FORBIDDEN,
-      })
+      await expect(guard.canActivate(makeMockContext())).rejects.toThrow(
+        forbiddenTierError,
+      )
     })
 
     it('should throw a 403 ForbiddenException when user tier matches none of multiple required tiers', async () => {
@@ -174,26 +178,9 @@ describe('TiersGuard', () => {
         CognitoUserAttributesTierEnum.New,
       )
 
-      await expect(guard.canActivate(makeMockContext())).rejects.toMatchObject({
-        status: HttpStatus.FORBIDDEN,
-      })
-    })
-
-    it('should call errorFactoryService.ForbiddenException with FORBIDDEN_ERROR', async () => {
-      reflector.getAllAndOverride.mockReturnValue([
-        CognitoUserAttributesTierEnum.IdentityCard,
-      ])
-      cognitoSubservice.getUserTierFromCognito.mockResolvedValue(
-        CognitoUserAttributesTierEnum.New,
+      await expect(guard.canActivate(makeMockContext())).rejects.toThrow(
+        forbiddenTierError,
       )
-      const spy = vi.spyOn(errorFactoryService, 'ForbiddenException')
-
-      await expect(guard.canActivate(makeMockContext())).rejects.toThrow()
-
-      expect(spy).toHaveBeenCalledWith({
-        errorEnum: ErrorEnum.FORBIDDEN_ERROR,
-        message: 'Forbidden tier',
-      })
     })
   })
 

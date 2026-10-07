@@ -14,13 +14,22 @@ import type { Mock, MockInstance } from 'vitest'
 
 import { createTestForm } from '../../../__tests__/factories/form.factory'
 import ConvertPdfService from '../../../convert-pdf/convert-pdf.service'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../../../forms/forms.errors.enum'
 import FormsService from '../../../forms/forms.service'
 import { FormError, Forms, FormState } from '../../../generated/prisma/client'
 import GinisService from '../../../ginis/ginis.service'
 import MailgunService from '../../../mailer/mailgun.service'
 import PrismaService from '../../../prisma/prisma.service'
 import RabbitmqClientService from '../../../rabbitmq-client/rabbitmq-client.service'
+import alertReporting from '../../../utils/constants/error.alerts'
 import rabbitmqRequeueDelay from '../../../utils/handlers/rabbitmq.handlers'
+import {
+  FormDeliveryConsumerErrorsEnum,
+  FormDeliveryConsumerErrorsResponseEnum,
+} from '../../errors/form-delivery-consumer.errors.enum'
 import EmailFormsService from '../email-forms.service'
 import FormDeliveryConsumerService from '../form-delivery-consumer.service'
 import WebhookService from '../webhook.service'
@@ -32,6 +41,8 @@ describe('FormDeliveryConsumerService', () => {
   let service: FormDeliveryConsumerService
   let formsService: FormsService
   let ginisService: GinisService
+  let logger: LineLoggerService
+  const errorFactory = new ErrorFactoryService({ alertReporting })
 
   beforeEach(async () => {
     vi.resetAllMocks()
@@ -39,7 +50,10 @@ describe('FormDeliveryConsumerService', () => {
     // TODO refactor to use imports
     const app: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         FormDeliveryConsumerService,
         {
           provide: RabbitmqClientService,
@@ -61,24 +75,14 @@ describe('FormDeliveryConsumerService', () => {
           provide: ConvertPdfService,
           useValue: createMock<ConvertPdfService>(),
         },
-        {
-          provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>(),
-        },
+        { provide: ErrorFactoryService, useValue: errorFactory },
       ],
     }).compile()
 
     service = app.get<FormDeliveryConsumerService>(FormDeliveryConsumerService)
     formsService = app.get<FormsService>(FormsService)
     ginisService = app.get<GinisService>(GinisService)
-    Object.defineProperty(service, 'logger', {
-      value: {
-        error: vi.fn(),
-        warn: vi.fn(),
-        debug: vi.fn(),
-        log: vi.fn(),
-      },
-    })
+    logger = app.get(LineLoggerService)
 
     // mock resolving mick form & saving file to db in each convert-pdf call
     formsService['getUniqueForm'] = vi.fn().mockResolvedValue({
@@ -94,7 +98,7 @@ describe('FormDeliveryConsumerService', () => {
 
   describe('queueDelayedForm', () => {
     it('should requeue', async () => {
-      const spyError = vi.spyOn(service['logger'], 'error')
+      const spyError = vi.mocked(logger.error)
       const spyDelay = vi.mocked(service['rabbitmqClientService'].publishDelay)
 
       await service['queueDelayedForm']('formIdVal', 2, FormError.NONE, {
@@ -142,7 +146,13 @@ describe('FormDeliveryConsumerService', () => {
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
       expect(result).toEqual(new Nack(false))
-      expect(service['logger'].error).toHaveBeenCalled()
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        errorFactory.BadRequestException({
+          errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+          message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+          console: { formId: mockRabbitPayloadDto.formId },
+        }),
+      )
     })
 
     it('should return Nack(false) when form is archived', async () => {
@@ -153,19 +163,30 @@ describe('FormDeliveryConsumerService', () => {
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
       expect(result).toEqual(new Nack(false))
-      expect(service['logger'].error).toHaveBeenCalled()
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        errorFactory.BadRequestException({
+          errorEnum: FormsErrorsEnum.FORM_ARCHIVED,
+          message: FormsErrorsResponseEnum.FORM_ARCHIVED,
+          console: { formId: mockRabbitPayloadDto.formId },
+        }),
+      )
     })
 
     it('should return Nack(false) when form definition is not found', async () => {
-      vi.spyOn(formsService, 'getUniqueForm').mockResolvedValue({
-        formDefinitionSlug: 'test-slug',
-      } as Forms)
+      const mockForm = { formDefinitionSlug: 'test-slug' } as Forms
+      vi.spyOn(formsService, 'getUniqueForm').mockResolvedValue(mockForm)
       ;(getFormDefinitionBySlug as Mock).mockReturnValue(null)
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
       expect(result).toEqual(new Nack(false))
-      expect(service['logger'].error).toHaveBeenCalled()
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        errorFactory.InternalServerErrorException({
+          errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+          message: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+          console: { formDefinitionSug: mockForm.formDefinitionSlug },
+        }),
+      )
     })
 
     it('should handle email form when form definition type is Email', async () => {
@@ -312,15 +333,23 @@ describe('FormDeliveryConsumerService', () => {
 
     it('should handle error when sending email fails', async () => {
       const mockForm = createTestForm({ id: 'test-id' })
+      const sendEmailError = new Error('Failed to send email')
       vi.mocked(service['emailFormsService'].sendEmailForm).mockRejectedValue(
-        new Error('Failed to send email'),
+        sendEmailError,
       )
       vi.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
 
       const result = await service['handleEmailForm'](mockForm, null, null)
 
       expect(result).toEqual(new Nack(true))
-      expect(service['logger'].error).toHaveBeenCalled()
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        errorFactory.InternalServerErrorException({
+          errorEnum: FormDeliveryConsumerErrorsEnum.SENDING_EMAIL_FAILED,
+          message: FormDeliveryConsumerErrorsResponseEnum.SENDING_EMAIL_FAILED,
+          console: { formId: mockForm.id },
+          error: sendEmailError,
+        }),
+      )
       expect(service.nackTrueWithWait).toHaveBeenCalled()
     })
   })
@@ -337,14 +366,23 @@ describe('FormDeliveryConsumerService', () => {
 
     it('should handle error when sending webhook fails', async () => {
       const mockForm = createTestForm({ id: 'test-id' })
+      const sendWebhookError = new Error('Failed to send webhook')
       vi.mocked(service['webhookService'].sendWebhook).mockRejectedValue(
-        new Error('Failed to send webhook'),
+        sendWebhookError,
       )
       vi.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
 
       const result = await service['handleWebhookForm'](mockForm)
 
       expect(result).toEqual(new Nack(true))
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        errorFactory.InternalServerErrorException({
+          errorEnum: FormDeliveryConsumerErrorsEnum.WEBHOOK_ERROR,
+          message: FormDeliveryConsumerErrorsResponseEnum.WEBHOOK_ERROR,
+          console: { formId: mockForm.id },
+          error: sendWebhookError,
+        }),
+      )
       expect(service.nackTrueWithWait).toHaveBeenCalled()
     })
   })

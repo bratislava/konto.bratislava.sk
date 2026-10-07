@@ -1,4 +1,8 @@
-import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerService,
+} from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
@@ -6,9 +10,11 @@ import type { MockInstance } from 'vitest'
 
 import prismaMock from '../../../../test/singleton'
 import { TaxType } from '../../../generated/prisma/client'
+import { CustomErrorNorisTypesEnum } from '../../../noris/noris.errors'
 import { NorisService } from '../../../noris/noris.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { OVERPAYMENTS_LOOKBACK_DAYS } from '../../../utils/constants'
+import alertReporting from '../../../utils/constants/error.alerts'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { RetryService } from '../../../utils-module/retry.service'
 import TasksConfigSubservice from '../config.service'
@@ -16,6 +22,7 @@ import TaxImportTasksService from '../tax-import.tasks.service'
 import TaxImportHelperService from '../tax-import-helper.service'
 
 describe('TaxImportTasksService', () => {
+  const errorFactoryService = new ErrorFactoryService({ alertReporting })
   let service: TaxImportTasksService
 
   beforeEach(async () => {
@@ -23,7 +30,7 @@ describe('TaxImportTasksService', () => {
       providers: [
         LineLoggerService,
         TaxImportTasksService,
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: errorFactoryService },
         { provide: NorisService, useValue: createMock<NorisService>() },
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -533,18 +540,24 @@ describe('TaxImportTasksService', () => {
     })
 
     it('should throw error when config is invalid', async () => {
+      const invalidLookbackDays = 'invalid'
       getConfigByKeysMock = vi
         .mocked(service['databaseSubservice'].getConfigByKeys)
         .mockResolvedValue({
           OVERPAYMENTS_FROM_NORIS_ENABLED: 'true',
-          OVERPAYMENTS_LOOKBACK_DAYS: 'invalid',
+          OVERPAYMENTS_LOOKBACK_DAYS: invalidLookbackDays,
         })
 
       const updateOverpaymentsDataFromNorisByDateRangeSpy = vi.mocked(
         service['norisService'].updateOverpaymentsDataFromNorisByDateRange,
       )
 
-      await expect(service.loadOverpaymentsFromNoris()).rejects.toThrow()
+      await expect(service.loadOverpaymentsFromNoris()).rejects.toThrow(
+        errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `Invalid OVERPAYMENTS_LOOKBACK_DAYS configuration: ${invalidLookbackDays}. Must be a positive integer.`,
+        }),
+      )
 
       expect(
         updateOverpaymentsDataFromNorisByDateRangeSpy,
@@ -601,7 +614,15 @@ describe('TaxImportTasksService', () => {
         .mocked(service['configSubservice'].incrementOverpaymentsLookbackDays)
         .mockResolvedValue()
 
-      await expect(service.loadOverpaymentsFromNoris()).rejects.toThrow()
+      await expect(service.loadOverpaymentsFromNoris()).rejects.toThrow(
+        errorFactoryService.InternalServerErrorException({
+          errorEnum:
+            CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
+          message:
+            'Failed to load overpayments from Noris after all retry attempts',
+          error,
+        }),
+      )
 
       expect(retryWithDelayMock).toHaveBeenCalled()
       expect(configSubserviceMock).toHaveBeenCalled()
@@ -623,7 +644,15 @@ describe('TaxImportTasksService', () => {
         .mocked(service['configSubservice'].incrementOverpaymentsLookbackDays)
         .mockResolvedValue()
 
-      await expect(service.loadOverpaymentsFromNoris()).rejects.toThrow()
+      await expect(service.loadOverpaymentsFromNoris()).rejects.toThrow(
+        errorFactoryService.InternalServerErrorException({
+          errorEnum:
+            CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
+          message:
+            'Failed to load overpayments from Noris after all retry attempts',
+          error,
+        }),
+      )
 
       expect(configSubserviceMock).toHaveBeenCalled()
     })
@@ -641,7 +670,13 @@ describe('TaxImportTasksService', () => {
       vi.mocked(service['retryService'].retryWithDelay).mockRejectedValue(error)
 
       await expect(service.loadOverpaymentsFromNoris()).rejects.toThrow(
-        'Failed to load overpayments from Noris after all retry attempts',
+        errorFactoryService.InternalServerErrorException({
+          errorEnum:
+            CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
+          message:
+            'Failed to load overpayments from Noris after all retry attempts',
+          error,
+        }),
       )
     })
   })

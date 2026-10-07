@@ -1,4 +1,8 @@
-import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerService,
+} from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
@@ -19,20 +23,26 @@ import { createTestFormDefinitionSlovenskoSkGeneric } from '../../../__tests__/f
 import {
   expectArrayContaining,
   expectObjectContaining,
-  expectStringContaining,
 } from '../../../__tests__/matchers'
 import BaConfigService from '../../../config/ba-config.service'
 import { ClusterEnv } from '../../../config/environment-variables'
 import ConvertService from '../../../convert/convert.service'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
-import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../../../forms/forms.errors.enum'
 import { FormError, Forms, FormState } from '../../../generated/prisma/client'
 import { MailerAttachment } from '../../../mailer/mailer.interface'
 import MailgunService from '../../../mailer/mailgun.service'
 import OloMailerService from '../../../mailer/olo-mailer.service'
 import PrismaService from '../../../prisma/prisma.service'
+import alertReporting from '../../../utils/constants/error.alerts'
 import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
-import { EmailFormsErrorsResponseEnum } from '../../errors/email-forms.errors.enum'
+import {
+  EmailFormsErrorsEnum,
+  EmailFormsErrorsResponseEnum,
+} from '../../errors/email-forms.errors.enum'
 import EmailFormsService from '../email-forms.service'
 
 vi.mock('forms-shared/definitions/getFormDefinitionBySlug')
@@ -155,6 +165,8 @@ describe('EmailFormsService', () => {
   let service: EmailFormsService
   let mailgunService: Mocked<MailgunService>
   let oloMailerService: Mocked<OloMailerService>
+  let logger: LineLoggerService
+  const errorFactory = new ErrorFactoryService({ alertReporting })
 
   beforeEach(async () => {
     mockBaConfigService.environment = { clusterEnv: ClusterEnv.Production }
@@ -190,13 +202,14 @@ describe('EmailFormsService', () => {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),
         },
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: errorFactory },
       ],
     }).compile()
 
     service = module.get<EmailFormsService>(EmailFormsService)
     mailgunService = module.get(MailgunService)
     oloMailerService = module.get(OloMailerService)
+    logger = module.get(LineLoggerService)
 
     vi.spyOn(console, 'log').mockImplementation(vi.fn())
     vi.spyOn(console, 'error').mockImplementation(vi.fn())
@@ -426,7 +439,12 @@ describe('EmailFormsService', () => {
       prismaMock.forms.findUnique.mockResolvedValue(null)
       await expect(
         service.sendEmailForm(formId, userEmail, userFirstName),
-      ).rejects.toThrow(FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR)
+      ).rejects.toThrow(
+        errorFactory.NotFoundException({
+          errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+          message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+        }),
+      )
     })
 
     it('should throw NotFoundException when form definition is not found', async () => {
@@ -437,7 +455,12 @@ describe('EmailFormsService', () => {
 
       await expect(
         service.sendEmailForm(formId, userEmail, userFirstName),
-      ).rejects.toThrow(FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND)
+      ).rejects.toThrow(
+        errorFactory.NotFoundException({
+          errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+          message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${mockForm.formDefinitionSlug}`,
+        }),
+      )
     })
 
     it('should throw UnprocessableEntityException when form is not an email form', async () => {
@@ -449,10 +472,9 @@ describe('EmailFormsService', () => {
       await expect(
         service.sendEmailForm(formId, userEmail, userFirstName),
       ).rejects.toThrow(
-        expectObjectContaining({
-          message: expectStringContaining(
-            EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM,
-          ),
+        errorFactory.UnprocessableEntityException({
+          errorEnum: EmailFormsErrorsEnum.NOT_EMAIL_FORM,
+          message: `${EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM} Form id: ${mockForm.id}.`,
         }),
       )
     })
@@ -466,7 +488,12 @@ describe('EmailFormsService', () => {
 
       await expect(
         service.sendEmailForm(formId, userEmail, userFirstName),
-      ).rejects.toThrow(FormsErrorsResponseEnum.EMPTY_FORM_DATA)
+      ).rejects.toThrow(
+        errorFactory.UnprocessableEntityException({
+          errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+          message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+        }),
+      )
     })
 
     it('should throw UnprocessableEntityException when formSummary is null', async () => {
@@ -478,7 +505,12 @@ describe('EmailFormsService', () => {
 
       await expect(
         service.sendEmailForm(formId, userEmail, userFirstName),
-      ).rejects.toThrow(FormsErrorsResponseEnum.EMPTY_FORM_SUMMARY)
+      ).rejects.toThrow(
+        errorFactory.UnprocessableEntityException({
+          errorEnum: FormsErrorsEnum.EMPTY_FORM_SUMMARY,
+          message: FormsErrorsResponseEnum.EMPTY_FORM_SUMMARY,
+        }),
+      )
     })
 
     it('should extract email from form data when userEmail is null', async () => {
@@ -520,28 +552,31 @@ describe('EmailFormsService', () => {
     })
 
     it('should log error but continue when sending confirmation email fails with sendEmail', async () => {
+      const sendError = new Error('Email sending failed')
       mailgunService.sendEmail.mockResolvedValueOnce() // First call succeeds (department email)
-      mailgunService.sendEmail.mockRejectedValueOnce(
-        new Error('Email sending failed'),
-      ) // Second call fails (user email)
-      const errorSpy = vi.mocked(service['logger'].error)
+      mailgunService.sendEmail.mockRejectedValueOnce(sendError) // Second call fails (user email)
 
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
       // Should still update form state despite email failure
       expect(prismaMock.forms.update).toHaveBeenCalled()
-      expect(errorSpy).toHaveBeenCalled()
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        errorFactory.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Error while sending confirmation email.',
+          console: { formId, hasEmail: true },
+          error: sendError,
+        }),
+      )
     })
 
     it('should log error but continue when sending confirmation email fails with sendOloEmail', async () => {
       prismaMock.forms.findUnique.mockResolvedValue(mockFormWithOloDefinition)
       prismaMock.forms.update.mockResolvedValue(mockFormWithOloDefinition)
-      const errorSpy = vi.mocked(service['logger'].error)
+      const sendError = new Error('OLO email sending failed')
 
       oloMailerService.sendEmail.mockResolvedValueOnce() // First call succeeds (department email)
-      oloMailerService.sendEmail.mockRejectedValueOnce(
-        new Error('OLO email sending failed'),
-      ) // Second call fails (user email)
+      oloMailerService.sendEmail.mockRejectedValueOnce(sendError) // Second call fails (user email)
 
       await service.sendEmailForm(
         mockFormWithOloDefinition.id,
@@ -551,7 +586,14 @@ describe('EmailFormsService', () => {
 
       // Should still update form state despite email failure
       expect(prismaMock.forms.update).toHaveBeenCalled()
-      expect(errorSpy).toHaveBeenCalled()
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        errorFactory.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Error while sending confirmation email.',
+          console: { formId: mockFormWithOloDefinition.id, hasEmail: true },
+          error: sendError,
+        }),
+      )
     })
 
     it('should send JSON data as attachment when sendJsonDataAttachmentInTechnicalMail is true', async () => {
@@ -615,12 +657,19 @@ describe('EmailFormsService', () => {
     })
 
     it('should log error but continue when updating form state fails', async () => {
-      prismaMock.forms.update.mockRejectedValue(new Error('Database error'))
-      const errorSpy = vi.mocked(service['logger'].error)
+      const updateError = new Error('Database error')
+      prismaMock.forms.update.mockRejectedValue(updateError)
 
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
-      expect(errorSpy).toHaveBeenCalled()
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        errorFactory.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Setting form state to FINISHED failed.',
+          console: { formId },
+          error: updateError,
+        }),
+      )
     })
 
     it('should take email based on CLUSTER_ENV', async () => {

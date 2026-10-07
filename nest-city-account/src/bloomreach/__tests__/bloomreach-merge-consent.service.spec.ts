@@ -12,6 +12,7 @@ import {
   ConsentEnum,
 } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
+import alertReporting from '../../utils/constants/error.alerts'
 import * as bloomreachTypes from '../bloomreach.types'
 import {
   BloomreachCommandDataKind,
@@ -78,7 +79,7 @@ describe('BloomreachMergeConsentService', () => {
           useValue: createMock<BloomreachOutboxWriterService>(),
         },
         LineLoggerService,
-        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
       ],
     }).compile()
 

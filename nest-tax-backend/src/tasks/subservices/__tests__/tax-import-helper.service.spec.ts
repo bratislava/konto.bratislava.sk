@@ -1,4 +1,5 @@
 import { LineLoggerService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton'
@@ -21,7 +22,10 @@ describe('TaxImportHelperService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         TaxImportHelperService,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -43,8 +47,6 @@ describe('TaxImportHelperService', () => {
     prismaService = module.get<PrismaService>(PrismaService)
     databaseSubservice = module.get<DatabaseSubservice>(DatabaseSubservice)
     norisService = module.get<NorisService>(NorisService)
-
-    vi.spyOn(LineLoggerService.prototype, 'log').mockImplementation(vi.fn())
   })
 
   describe('isWithinImportWindow', () => {

@@ -1,6 +1,9 @@
-import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerService,
+} from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
-import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
@@ -16,8 +19,14 @@ import {
 } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import { TaxService } from '../../tax/tax.service'
+import alertReporting from '../../utils/constants/error.alerts'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { RetryService } from '../../utils-module/retry.service'
+import {
+  CustomErrorNorisTypesResponseEnum,
+  CustomErrorPaymentResponseTypesEnum,
+  CustomErrorPaymentTypesEnum,
+} from '../dtos/error.dto'
 import { PaymentResponseQueryDto } from '../dtos/gpwebpay.dto'
 import { PaymentRedirectStateEnum } from '../dtos/redirect.payent.dto'
 import { PaymentService } from '../payment.service'
@@ -49,7 +58,8 @@ const createMockBaConfigService = () => ({
 describe('PaymentService', () => {
   let service: PaymentService
   let bloomreachService: BloomreachService
-  let errorFactoryService: ErrorFactoryService
+  const errorFactoryService = new ErrorFactoryService({ alertReporting })
+  let logger: LineLoggerService
   let gpWebpaySubservice: GpWebpaySubservice
   let retryService: RetryService
   let baConfigService: ReturnType<typeof createMockBaConfigService>
@@ -62,17 +72,17 @@ describe('PaymentService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         PaymentService,
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: BloomreachService,
           useValue: createMock<BloomreachService>(),
         },
-        {
-          provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>(),
-        },
+        { provide: ErrorFactoryService, useValue: errorFactoryService },
         {
           provide: BaConfigService,
           useValue: baConfigService,
@@ -95,7 +105,7 @@ describe('PaymentService', () => {
 
     service = module.get<PaymentService>(PaymentService)
     bloomreachService = module.get<BloomreachService>(BloomreachService)
-    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
+    logger = module.get(LineLoggerService)
     gpWebpaySubservice = module.get<GpWebpaySubservice>(GpWebpaySubservice)
     retryService = module.get<RetryService>(RetryService)
   })
@@ -251,10 +261,6 @@ describe('PaymentService', () => {
 
     it('should throw InternalServerErrorException when tracking fails (returns false)', async () => {
       const externalId = 'external-id-123'
-      const mockInternalServerError = new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
       const mockTransaction = vi
         .fn()
         .mockImplementation(
@@ -278,13 +284,15 @@ describe('PaymentService', () => {
 
       vi.mocked(prismaMock.$transaction).mockImplementation(mockTransaction)
       vi.mocked(bloomreachService.trackEventTaxPayment).mockResolvedValue(false)
-      vi.mocked(
-        errorFactoryService.InternalServerErrorException,
-      ).mockReturnValue(mockInternalServerError)
 
       await expect(
         service.trackPaymentInBloomreach(mockTaxPayment, externalId),
-      ).rejects.toThrow(mockInternalServerError)
+      ).rejects.toThrow(
+        errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to track payment in Bloomreach.',
+        }),
+      )
 
       expect(bloomreachService.trackEventTaxPayment).toHaveBeenCalled()
     })
@@ -321,15 +329,10 @@ describe('PaymentService', () => {
 
       vi.mocked(prismaMock.$transaction).mockImplementation(mockTransaction)
       vi.mocked(bloomreachService.trackEventTaxPayment).mockResolvedValue(false)
-      vi.mocked(
-        errorFactoryService.InternalServerErrorException,
-      ).mockImplementation(() => {
-        throw new Error('Internal Server Error')
-      })
 
       await expect(
         service.trackPaymentInBloomreach(mockTaxPayment, externalId),
-      ).rejects.toThrow()
+      ).rejects.toThrow(new Error('Transaction error'))
 
       expect(mockTransaction).toHaveBeenCalled()
       expect(transactionThrow).toBe(true)
@@ -337,10 +340,6 @@ describe('PaymentService', () => {
 
     it('should throw NotFoundException when tax is not found', async () => {
       const externalId = 'external-id-123'
-      const mockNotFoundException = new HttpException(
-        'Not Found',
-        HttpStatus.NOT_FOUND,
-      )
       vi.mocked(prismaMock.$transaction).mockImplementation(
         async (callback) => {
           const mockTx = createMock<Prisma.TransactionClient>({
@@ -355,15 +354,16 @@ describe('PaymentService', () => {
           return callback(mockTx)
         },
       )
-      vi.mocked(errorFactoryService.NotFoundException).mockReturnValue(
-        mockNotFoundException,
-      )
 
       await expect(
         service.trackPaymentInBloomreach(mockTaxPayment, externalId),
-      ).rejects.toThrow(mockNotFoundException)
+      ).rejects.toThrow(
+        errorFactoryService.NotFoundException({
+          errorEnum: ErrorEnum.NOT_FOUND_ERROR,
+          message: `Tax with id ${mockTaxPayment.taxId} not found.`,
+        }),
+      )
 
-      expect(errorFactoryService.NotFoundException).toHaveBeenCalled()
       expect(bloomreachService.trackEventTaxPayment).not.toHaveBeenCalled()
     })
 
@@ -526,6 +526,13 @@ describe('PaymentService', () => {
       )
 
       expect(trackSpy).not.toHaveBeenCalled()
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        errorFactoryService.InternalServerErrorException({
+          errorEnum: CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
+          message: CustomErrorNorisTypesResponseEnum.TAX_NOT_FOUND,
+          console: `We received a valid payment response for payment we do not have in our database. ORDERNUMBER: ${mockQuery.ORDERNUMBER}`,
+        }),
+      )
       expect(result).toBe(
         `${baConfigService.paygate.afterPaymentRedirectFrontend}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`,
       )
@@ -716,20 +723,23 @@ describe('PaymentService', () => {
         mockTaxPayment,
       )
       vi.spyOn(gpWebpaySubservice, 'getDataToVerify').mockReturnValue('data')
+      const unexpectedError = new Error('Unexpected')
       vi.spyOn(gpWebpaySubservice, 'verifyData').mockImplementation(() => {
-        throw new Error('Unexpected')
+        throw unexpectedError
       })
-      const mockError = new HttpException('Mapped Error', 422)
-      vi.mocked(
-        errorFactoryService.UnprocessableEntityException,
-      ).mockReturnValue(mockError)
       const trackSpy = vi
         .spyOn(service, 'trackPaymentInBloomreach')
         .mockResolvedValue(undefined)
 
       await expect(
         service.processPaymentResponse(TaxType.DZN, mockQuery),
-      ).rejects.toThrow('Mapped Error')
+      ).rejects.toThrow(
+        errorFactoryService.UnprocessableEntityException({
+          errorEnum: CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,
+          message: 'Error to redirect to response',
+          error: unexpectedError,
+        }),
+      )
 
       expect(trackSpy).not.toHaveBeenCalled()
     })

@@ -21,8 +21,9 @@ describe('mapDeliveryMethodToNoris', () => {
   })
 
   it('should throw an error for unknown delivery method', () => {
-    expect(() => mapDeliveryMethodToNoris('UNKNOWN' as unknown as DeliveryMethod)).toThrow(
-      'Unknown delivery method: UNKNOWN'
-    )
+    const unknownDeliveryMethod = 'UNKNOWN'
+    expect(() =>
+      mapDeliveryMethodToNoris(unknownDeliveryMethod as unknown as DeliveryMethod)
+    ).toThrow(`Unknown delivery method: ${unknownDeliveryMethod}`)
   })
 })

@@ -1,4 +1,3 @@
-import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -115,10 +114,6 @@ describe('CardPaymentReportingService', () => {
         CardPaymentReportingService,
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: BaConfigService, useValue: mockBaConfigService },
-        {
-          provide: ErrorFactoryService,
-          useValue: { InternalServerErrorException: vi.fn() },
-        },
         { provide: EmailSubservice, useValue: mockEmailSubservice },
         { provide: SftpFileSubservice, useValue: mockSftpFileSubservice },
         { provide: DatabaseSubservice, useValue: mockDatabaseSubservice },

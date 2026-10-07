@@ -18,6 +18,8 @@ import { Files, Forms } from '../../generated/prisma/client'
 import { MinioStorageService } from '../../minio-storage/minio-storage.service'
 import PrismaService from '../../prisma/prisma.service'
 import ScannerClientService from '../../scanner-client/scanner-client.service'
+import alertReporting from '../../utils/constants/error.alerts'
+import { FilesErrorsEnum, FilesErrorsResponseEnum } from '../files.errors.enum'
 import FilesHelper from '../files.helper'
 
 vi.mock('forms-shared/definitions/formDefinitionTypes')
@@ -25,11 +27,16 @@ vi.mock('forms-shared/definitions/getFormDefinitionBySlug')
 
 describe('FilesHelper', () => {
   let service: FilesHelper
+  let logger: LineLoggerService
+  const errorFactory = new ErrorFactoryService({ alertReporting })
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         FilesHelper,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -53,14 +60,12 @@ describe('FilesHelper', () => {
           provide: ScannerClientService,
           useValue: createMock<ScannerClientService>(),
         },
-        {
-          provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>(),
-        },
+        { provide: ErrorFactoryService, useValue: errorFactory },
       ],
     }).compile()
 
     service = app.get<FilesHelper>(FilesHelper)
+    logger = app.get(LineLoggerService)
   })
 
   it('should be defined', () => {
@@ -110,26 +115,16 @@ describe('FilesHelper', () => {
     it('should throw NotFoundException when form definition is not found', () => {
       vi.mocked(getFormDefinitionBySlug).mockReturnValue(null)
 
-      const mockThrowException = vi.fn()
-      service['errorFactoryService'].NotFoundException = mockThrowException
-
-      expect(() => service.forms2formInfo(mockForm)).toThrow()
-      expect(mockThrowException).toHaveBeenCalledWith({
-        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} test-slug`,
-      })
+      expect(() => service.forms2formInfo(mockForm)).toThrow(
+        errorFactory.NotFoundException({
+          errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+          message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${mockForm.formDefinitionSlug}`,
+        }),
+      )
     })
   })
 
   describe('areErrorFilesInForm', () => {
-    beforeEach(() => {
-      vi.spyOn(service['logger'], 'error').mockImplementation(vi.fn())
-    })
-
-    afterEach(() => {
-      vi.spyOn(service['logger'], 'error').mockRestore()
-    })
-
     it('should return true when there are error files', async () => {
       const mockErrorFiles: Files[] = [
         {
@@ -137,11 +132,19 @@ describe('FilesHelper', () => {
         } as Files,
       ]
 
+      const formId = 'test-form-id'
       prismaMock.files.findMany.mockResolvedValue(mockErrorFiles)
 
-      const result = await service.areErrorFilesInForm('test-form-id')
+      const result = await service.areErrorFilesInForm(formId)
 
       expect(result).toBe(true)
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        errorFactory.InternalServerErrorException({
+          errorEnum: FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
+          message: FilesErrorsResponseEnum.FILE_SCANNING_SERVICE_ERROR,
+          console: { formId, errorFiles: mockErrorFiles },
+        }),
+      )
     })
 
     it('should return true when there are multiple error files', async () => {
@@ -167,6 +170,7 @@ describe('FilesHelper', () => {
       const result = await service.areErrorFilesInForm('test-form-id')
 
       expect(result).toBe(false)
+      expect(vi.mocked(logger.error)).not.toHaveBeenCalled()
     })
   })
 })

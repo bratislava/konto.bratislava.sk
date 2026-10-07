@@ -8,6 +8,7 @@ import { bloomreachOutboxFactory } from '../../__tests__/factories/bloomreachOut
 import BaConfigService from '../../config/ba-config.service'
 import { BloomreachCommandName, ConsentEnum } from '../../generated/prisma/enums'
 import { PrismaService } from '../../prisma/prisma.service'
+import alertReporting from '../../utils/constants/error.alerts'
 import {
   BloomreachCommandDataKind,
   BloomreachCommandNameEnum,
@@ -67,10 +68,7 @@ describe('BloomreachOutboxService', () => {
         BloomreachOutboxWriterService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: BloomreachPayloadBuilder, useValue: createMock<BloomreachPayloadBuilder>() },
-        {
-          provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>(),
-        },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
         {
           provide: BaConfigService,
           useValue: {

@@ -14,13 +14,14 @@ import { EdeskBatchUpdateService } from '../edesk-batch-update.service'
 
 describe('EdeskBatchUpdateService', () => {
   let service: EdeskBatchUpdateService
+  let logger: LineLoggerService
   let physicalEntityService: PhysicalEntityService
   let nasesService: NasesService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        { provide: LineLoggerService, useValue: createMock<LineLoggerService>() },
         EdeskBatchUpdateService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: PhysicalEntityService, useValue: createMock<PhysicalEntityService>() },
@@ -29,6 +30,7 @@ describe('EdeskBatchUpdateService', () => {
     }).compile()
 
     service = module.get(EdeskBatchUpdateService)
+    logger = module.get(LineLoggerService)
     physicalEntityService = module.get(PhysicalEntityService)
     nasesService = module.get(NasesService)
   })
@@ -106,7 +108,7 @@ describe('EdeskBatchUpdateService', () => {
     prismaMock.externalEdeskCheck.update.mockResolvedValue(
       externalEdeskCheckFactory({ norisId: 42 })
     )
-    const logSpy = vi.spyOn(service['logger'], 'log').mockImplementation(vi.fn())
+    const logSpy = vi.mocked(logger.log)
 
     await service.updateEdeskStatusBatch()
 

@@ -107,13 +107,17 @@ describe('NotificationsEventsSubservice', () => {
   let service: NotificationsEventsService
   let bloomreachService: Mocked<BloomreachService>
   let cityAccountSubservice: Mocked<CityAccountSubservice>
+  let logger: LineLoggerService
 
   const currentYear = dayjs().year()
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         NotificationsEventsService,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -140,8 +144,7 @@ describe('NotificationsEventsSubservice', () => {
     service = module.get(NotificationsEventsService)
     bloomreachService = module.get(BloomreachService)
     cityAccountSubservice = module.get(CityAccountSubservice)
-
-    vi.spyOn(service['logger'], 'log').mockImplementation(vi.fn())
+    logger = module.get(LineLoggerService)
   })
 
   describe('processInstallmentReminders', () => {
@@ -603,8 +606,6 @@ describe('NotificationsEventsSubservice', () => {
           externalId: 'external-id-123',
         }),
       })
-      vi.spyOn(service['logger'], 'log').mockImplementation(vi.fn())
-
       await service.sendUnpaidTaxReminders()
 
       expect(prismaMock.$queryRaw).toHaveBeenCalled()
@@ -673,8 +674,6 @@ describe('NotificationsEventsSubservice', () => {
           externalId: 'external-id-2',
         }),
       })
-      vi.spyOn(service['logger'], 'log').mockImplementation(vi.fn())
-
       await service.sendUnpaidTaxReminders()
 
       expect(prismaMock.$queryRaw).toHaveBeenCalled()
@@ -836,11 +835,6 @@ describe('NotificationsEventsSubservice', () => {
   })
 
   describe('resendBloomreachEvents', () => {
-    beforeEach(() => {
-      vi.spyOn(service['logger'], 'log').mockImplementation(vi.fn())
-      vi.spyOn(service['logger'], 'error').mockImplementation(vi.fn())
-    })
-
     it('should not process anything when there are no payments', async () => {
       vi.mocked(service['prismaService'].taxPayment.findMany).mockResolvedValue(
         [],
@@ -918,10 +912,10 @@ describe('NotificationsEventsSubservice', () => {
         'external-id-2',
       )
 
-      expect(service['logger'].log).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.log)).toHaveBeenCalledWith(
         expect.stringContaining('2'),
       )
-      expect(service['logger'].log).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.log)).toHaveBeenCalledWith(
         expect.stringContaining('0'),
       )
     })
@@ -1008,11 +1002,11 @@ describe('NotificationsEventsSubservice', () => {
       await service.resendBloomreachEvents()
 
       expect(trackPaymentInBloomreachSpy).toHaveBeenCalledTimes(2)
-      expect(service['logger'].error).toHaveBeenCalledWith(error)
-      expect(service['logger'].log).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(error)
+      expect(vi.mocked(logger.log)).toHaveBeenCalledWith(
         expect.stringContaining('1'),
       )
-      expect(service['logger'].log).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.log)).toHaveBeenCalledWith(
         expect.stringContaining('1'),
       )
     })
@@ -1066,12 +1060,12 @@ describe('NotificationsEventsSubservice', () => {
       await service.resendBloomreachEvents()
 
       expect(trackPaymentInBloomreachSpy).toHaveBeenCalledTimes(2)
-      expect(service['logger'].error).toHaveBeenCalledWith(error1)
-      expect(service['logger'].error).toHaveBeenCalledWith(error2)
-      expect(service['logger'].log).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(error1)
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(error2)
+      expect(vi.mocked(logger.log)).toHaveBeenCalledWith(
         expect.stringContaining('0'),
       )
-      expect(service['logger'].log).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.log)).toHaveBeenCalledWith(
         expect.stringContaining('2'),
       )
     })

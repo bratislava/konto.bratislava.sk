@@ -16,6 +16,7 @@ import {
   GetTaxDetailPureOptions,
   GetTaxDetailPureResponse,
 } from '../../../tax-definitions/taxDefinitionsTypes'
+import alertReporting from '../../../utils/constants/error.alerts'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -395,17 +396,19 @@ describe('UnifiedTaxUtil', () => {
   })
 
   describe('calculateInstallmentAmounts', () => {
-    const missingInstallmentError =
-      new ErrorFactoryService().InternalServerErrorException({
-        errorEnum: CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
-        message: CustomErrorTaxTypesResponseEnum.MISSING_INSTALLMENT_AMOUNTS,
-      })
+    const missingInstallmentError = new ErrorFactoryService({
+      alertReporting,
+    }).InternalServerErrorException({
+      errorEnum: CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
+      message: CustomErrorTaxTypesResponseEnum.MISSING_INSTALLMENT_AMOUNTS,
+    })
 
-    const incorrectCountError =
-      new ErrorFactoryService().InternalServerErrorException({
-        errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-        message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
-      })
+    const incorrectCountError = new ErrorFactoryService({
+      alertReporting,
+    }).InternalServerErrorException({
+      errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+      message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+    })
 
     it('should throw when order 2 is missing (gap in 1..installments.length)', () => {
       const installments = [
@@ -1708,7 +1711,9 @@ describe('UnifiedTaxUtil', () => {
       }
 
       expect(() => getTaxDetailPure(input)).toThrow(
-        new ErrorFactoryService().InternalServerErrorException({
+        new ErrorFactoryService({
+          alertReporting,
+        }).InternalServerErrorException({
           errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
           message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
         }),
@@ -1743,7 +1748,9 @@ describe('UnifiedTaxUtil', () => {
       }
 
       expect(() => getTaxDetailPure(input)).toThrow(
-        new ErrorFactoryService().InternalServerErrorException({
+        new ErrorFactoryService({
+          alertReporting,
+        }).InternalServerErrorException({
           errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
           message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
         }),
@@ -1757,7 +1764,9 @@ describe('UnifiedTaxUtil', () => {
       }
 
       expect(() => getTaxDetailPure(input)).toThrow(
-        new ErrorFactoryService().InternalServerErrorException({
+        new ErrorFactoryService({
+          alertReporting,
+        }).InternalServerErrorException({
           errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
           message: 'No installments found for the tax.',
         }),
@@ -1866,7 +1875,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
         message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
       }),
@@ -1881,7 +1890,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.AFTER_DUE_DATE,
         message: CustomErrorTaxTypesResponseEnum.AFTER_DUE_DATE,
       }),
@@ -1896,7 +1905,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
         message: CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
       }),
@@ -1925,7 +1934,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
         message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
       }),
@@ -1954,7 +1963,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
         message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
       }),
@@ -1974,7 +1983,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
         message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
       }),
@@ -2020,7 +2029,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().InternalServerErrorException({
+      new ErrorFactoryService({ alertReporting }).InternalServerErrorException({
         errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         message: 'No installments found for the tax.',
       }),
@@ -2045,7 +2054,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().InternalServerErrorException({
+      new ErrorFactoryService({ alertReporting }).InternalServerErrorException({
         errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
       }),
@@ -2080,7 +2089,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().InternalServerErrorException({
+      new ErrorFactoryService({ alertReporting }).InternalServerErrorException({
         errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
       }),
@@ -2226,7 +2235,7 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
         ],
       })
     }).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
         message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
       }),
@@ -2245,7 +2254,7 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
         ],
       })
     }).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
         message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
       }),

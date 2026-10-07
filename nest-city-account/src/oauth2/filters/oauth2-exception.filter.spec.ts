@@ -26,6 +26,7 @@ interface MockOAuth2Request {
 
 describe('OAuth2ExceptionFilter', () => {
   let filter: OAuth2ExceptionFilter
+  let logger: LineLoggerService
   let oauth2ClientSubservice: OAuth2ClientSubservice
   let mockResponse: Response
   let mockRequest: MockOAuth2Request
@@ -49,13 +50,14 @@ describe('OAuth2ExceptionFilter', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        { provide: LineLoggerService, useValue: createMock<LineLoggerService>() },
         OAuth2ExceptionFilter,
         { provide: OAuth2ClientSubservice, useValue: createMock<OAuth2ClientSubservice>() },
       ],
     }).compile()
 
     filter = module.get<OAuth2ExceptionFilter>(OAuth2ExceptionFilter)
+    logger = module.get(LineLoggerService)
     oauth2ClientSubservice = module.get<OAuth2ClientSubservice>(OAuth2ClientSubservice)
 
     // Recording response mock — still vi.fn()s (so toHaveBeenCalledWith
@@ -912,7 +914,7 @@ describe('OAuth2ExceptionFilter', () => {
         }
 
         const exception = new HttpException('Store failed', HttpStatus.BAD_REQUEST)
-        const loggerSpy = vi.spyOn(filter['logger'], 'error')
+        const loggerSpy = vi.mocked(logger.error)
 
         filter.catch(exception, mockArgumentsHost)
 
@@ -956,7 +958,7 @@ describe('OAuth2ExceptionFilter', () => {
         delete mockRequest.authorizationRequestData
 
         const exception = new HttpException('Info not found', HttpStatus.NOT_FOUND)
-        const loggerSpy = vi.spyOn(filter['logger'], 'error')
+        const loggerSpy = vi.mocked(logger.error)
 
         filter.catch(exception, mockArgumentsHost)
 
@@ -1134,7 +1136,7 @@ describe('OAuth2ExceptionFilter', () => {
         state: 'correct-state',
       }
 
-      const loggerWarnSpy = vi.spyOn(filter['logger'], 'warn')
+      const loggerWarnSpy = vi.mocked(logger.warn)
 
       const exception = new HttpException(
         {
@@ -1173,7 +1175,7 @@ describe('OAuth2ExceptionFilter', () => {
         state: 'matching-state',
       }
 
-      const loggerWarnSpy = vi.spyOn(filter['logger'], 'warn')
+      const loggerWarnSpy = vi.mocked(logger.warn)
 
       const exception = new HttpException(
         {
@@ -1214,7 +1216,7 @@ describe('OAuth2ExceptionFilter', () => {
         state: 'original-state',
       }
 
-      const loggerWarnSpy = vi.spyOn(filter['logger'], 'warn')
+      const loggerWarnSpy = vi.mocked(logger.warn)
 
       const exception = new HttpException(
         {
@@ -1259,7 +1261,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       // Capture the logged object instead of reading it back from mock.calls
       let loggedObject: object | undefined
-      const loggerSpy = vi.spyOn(filter['logger'], 'error').mockImplementation((logObject) => {
+      const loggerSpy = vi.mocked(logger.error).mockImplementation((logObject) => {
         loggedObject = logObject as object
       })
 
@@ -1335,7 +1337,7 @@ describe('OAuth2ExceptionFilter', () => {
         redirect_uri: 'https://example.com/callback',
       }
 
-      const loggerSpy = vi.spyOn(filter['logger'], 'error')
+      const loggerSpy = vi.mocked(logger.error)
 
       const exception = new OAuth2Exception(
         {
@@ -1385,7 +1387,7 @@ describe('OAuth2ExceptionFilter', () => {
       mockRequest.body = { grant_type: 'authorization_code', code: 'secret-code' }
       mockRequest.get.mockReturnValue('Mozilla/5.0')
 
-      const loggerSpy = vi.spyOn(filter['logger'], 'error')
+      const loggerSpy = vi.mocked(logger.error)
 
       const exception = new HttpException('Token error', HttpStatus.BAD_REQUEST)
 
@@ -1406,7 +1408,7 @@ describe('OAuth2ExceptionFilter', () => {
       mockRequest.path = '/oauth2/token'
       mockRequest.ip = undefined
 
-      const loggerSpy = vi.spyOn(filter['logger'], 'error')
+      const loggerSpy = vi.mocked(logger.error)
 
       const exception = new HttpException('Error', HttpStatus.BAD_REQUEST)
 
@@ -1422,7 +1424,7 @@ describe('OAuth2ExceptionFilter', () => {
     it('should merge OAuth2Exception metadata with log object', () => {
       mockRequest.path = '/oauth2/token'
 
-      const loggerSpy = vi.spyOn(filter['logger'], 'error')
+      const loggerSpy = vi.mocked(logger.error)
 
       const exception = new OAuth2Exception(
         {
@@ -1455,7 +1457,7 @@ describe('OAuth2ExceptionFilter', () => {
     it('should handle regular HttpException without metadata', () => {
       mockRequest.path = '/oauth2/token'
 
-      const loggerSpy = vi.spyOn(filter['logger'], 'error')
+      const loggerSpy = vi.mocked(logger.error)
 
       const exception = new HttpException('Regular error', HttpStatus.BAD_REQUEST)
 

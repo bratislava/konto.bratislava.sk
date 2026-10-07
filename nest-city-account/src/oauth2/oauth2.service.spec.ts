@@ -145,7 +145,8 @@ describe('OAuth2Service', () => {
     })
 
     it('should propagate database errors from prisma.create', async () => {
-      vi.mocked(prisma.oAuth2Data.create).mockRejectedValue(new Error('DB connection failed'))
+      const dbError = new Error('DB connection failed')
+      vi.mocked(prisma.oAuth2Data.create).mockRejectedValue(dbError)
       await expect(
         service.storeAuthorizationRequest({
           response_type: 'code',
@@ -154,7 +155,7 @@ describe('OAuth2Service', () => {
           code_challenge: 'challenge',
           code_challenge_method: 'S256',
         })
-      ).rejects.toThrow('DB connection failed')
+      ).rejects.toBe(dbError)
     })
   })
 

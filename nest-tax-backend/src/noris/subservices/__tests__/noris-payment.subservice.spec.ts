@@ -18,6 +18,7 @@ import {
   TaxType,
 } from '../../../generated/prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
+import alertReporting from '../../../utils/constants/error.alerts'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
 import { NorisTaxPayment } from '../../types/noris.types'
@@ -64,7 +65,7 @@ describe('NorisPaymentSubservice', () => {
   let service: NorisPaymentSubservice
   let bloomreachService: BloomreachService
   let connectionService: NorisConnectionSubservice
-  let errorFactoryService: ErrorFactoryService
+  const errorFactoryService = new ErrorFactoryService({ alertReporting })
   let cityAccountSubservice: CityAccountSubservice
 
   beforeEach(async () => {
@@ -88,10 +89,7 @@ describe('NorisPaymentSubservice', () => {
           provide: NorisConnectionSubservice,
           useValue: createMock<NorisConnectionSubservice>(),
         },
-        {
-          provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>(),
-        },
+        { provide: ErrorFactoryService, useValue: errorFactoryService },
         {
           provide: NorisValidatorSubservice,
           useValue: createMock<NorisValidatorSubservice>(),
@@ -108,7 +106,6 @@ describe('NorisPaymentSubservice', () => {
     connectionService = module.get<NorisConnectionSubservice>(
       NorisConnectionSubservice,
     )
-    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
     cityAccountSubservice = module.get<CityAccountSubservice>(
       CityAccountSubservice,
     )
@@ -263,7 +260,7 @@ describe('NorisPaymentSubservice', () => {
 
       await expect(
         service.updateOverpaymentsDataFromNorisByDateRange(mockData),
-      ).rejects.toThrow('Database connection failed')
+      ).rejects.toThrow(connectionError)
     })
 
     it('should handle mixed scenarios with some payments already created', async () => {
@@ -1097,25 +1094,20 @@ describe('NorisPaymentSubservice', () => {
 
       vi.mocked(prismaMock.$transaction).mockImplementation(mockTransaction)
 
-      const errorFactoryServiceMock = vi
-        .mocked(errorFactoryService.InternalServerErrorException)
-        .mockImplementation(() => {
-          throw new Error('Internal Server Error')
-        })
-
+      // The error is returned (not thrown), so that a single failing payment doesn't stop the batch.
       await expect(
         service['processIndividualPayment'](
           mockNorisPayment,
           taxesDataByVsMap,
           userDataFromCityAccount,
         ),
-      ).rejects.toThrow('Internal Server Error')
-
-      expect(errorFactoryServiceMock).toHaveBeenCalledWith({
-        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-        error: transactionError,
-      })
+      ).resolves.toEqual(
+        errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+          error: transactionError,
+        }),
+      )
     })
 
     it('should handle string amount values correctly', async () => {

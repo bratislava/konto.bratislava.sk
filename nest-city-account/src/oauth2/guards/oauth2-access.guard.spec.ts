@@ -1,9 +1,10 @@
-import { ErrorFactoryService } from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService, ErrorResponseEnum } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
 import { ExecutionContext } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 
 import { cognitoUserDataFactory } from '../../__tests__/factories/cognitoUserData.factory'
+import alertReporting from '../../utils/constants/error.alerts'
 import * as crypto from '../../utils/crypto'
 import * as tokenSerialization from '../../utils/tokenSerialization'
 import { OAuth2Client, OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
@@ -52,22 +53,23 @@ describe('OAuth2AccessGuard', () => {
 
   beforeEach(() => {
     reflector = createMock<Reflector>()
-    errorFactoryService = createMock<ErrorFactoryService>()
+    errorFactoryService = new ErrorFactoryService({ alertReporting })
     clientSubservice = createMock<OAuth2ClientSubservice>()
 
     guard = new OAuth2AccessGuard(reflector, errorFactoryService, clientSubservice)
 
     // Default: reflector returns client name, client lookup succeeds
-    vi.mocked(reflector.getAllAndOverride).mockReturnValue('TEST')
+    vi.mocked(reflector.getAllAndOverride).mockReturnValue(mockClient.name)
     vi.mocked(clientSubservice.findClientByName).mockReturnValue(mockClient)
-
-    // Make errorFactoryService throw real errors
-    vi.mocked(errorFactoryService.UnauthorizedException).mockImplementation(
-      ({ message, console }) => {
-        throw new Error((console as string | undefined) ?? message)
-      }
-    )
   })
+
+  const unauthorizedError = (console: string, error?: Error) =>
+    errorFactoryService.UnauthorizedException({
+      errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
+      message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
+      console,
+      error,
+    })
 
   it('should be defined', () => {
     expect(guard).toBeDefined()
@@ -86,20 +88,26 @@ describe('OAuth2AccessGuard', () => {
     it('should throw Unauthorized when @ClientName() decorator is missing', async () => {
       vi.mocked(reflector.getAllAndOverride).mockReturnValue(undefined)
       const context = createMockContext({ headers: { authorization: 'Bearer enc-token' } })
-      await expect(guard.canActivate(context)).rejects.toThrow('Client name not specified')
+      await expect(guard.canActivate(context)).rejects.toThrow(
+        unauthorizedError('Client name not specified. Use @ClientName() decorator on the endpoint.')
+      )
     })
 
     it('should throw Unauthorized when @ClientName() decorator returns empty string (falsy)', async () => {
       // CUSTOM PROXY DETAIL: Empty string clientName is treated as missing
       vi.mocked(reflector.getAllAndOverride).mockReturnValue('')
       const context = createMockContext({ headers: { authorization: 'Bearer enc-token' } })
-      await expect(guard.canActivate(context)).rejects.toThrow('Client name not specified')
+      await expect(guard.canActivate(context)).rejects.toThrow(
+        unauthorizedError('Client name not specified. Use @ClientName() decorator on the endpoint.')
+      )
     })
 
     it('should throw Unauthorized when client configuration not found for name', async () => {
       vi.mocked(clientSubservice.findClientByName).mockReturnValue(undefined)
       const context = createMockContext({ headers: { authorization: 'Bearer enc-token' } })
-      await expect(guard.canActivate(context)).rejects.toThrow('Client configuration not found')
+      await expect(guard.canActivate(context)).rejects.toThrow(
+        unauthorizedError(`Client configuration not found for client name: ${mockClient.name}`)
+      )
     })
   })
 
@@ -120,7 +128,7 @@ describe('OAuth2AccessGuard', () => {
       // RFC 6750 Section 2.1: Resource servers MUST support Bearer token in Authorization header
       const context = createMockContext({ headers: {} })
       await expect(guard.canActivate(context)).rejects.toThrow(
-        'Missing or invalid Authorization header'
+        unauthorizedError('Missing or invalid Authorization header')
       )
     })
 
@@ -128,18 +136,19 @@ describe('OAuth2AccessGuard', () => {
       // RFC 6750 Section 2.1: MUST use "Bearer" HTTP authorization scheme
       const context = createMockContext({ headers: { authorization: 'Basic abc123' } })
       await expect(guard.canActivate(context)).rejects.toThrow(
-        'Missing or invalid Authorization header'
+        unauthorizedError('Missing or invalid Authorization header')
       )
     })
 
     it('should throw Unauthorized when token after "Bearer " prefix is empty', async () => {
       // RFC 6750 Section 2.1: Token value after "Bearer " must be non-empty
+      const decryptError = new Error('empty input')
       vi.spyOn(crypto, 'decryptData').mockImplementation(() => {
-        throw new Error('empty input')
+        throw decryptError
       })
       const context = createMockContext({ headers: { authorization: 'Bearer ' } })
       await expect(guard.canActivate(context)).rejects.toThrow(
-        'Failed to decrypt or deserialize token'
+        unauthorizedError('Failed to decrypt or deserialize token', decryptError)
       )
     })
 
@@ -172,23 +181,25 @@ describe('OAuth2AccessGuard', () => {
    */
   describe('canActivate - token decryption', () => {
     it('should throw Unauthorized when token decryption fails', async () => {
+      const decryptError = new Error('Decryption failed')
       vi.spyOn(crypto, 'decryptData').mockImplementation(() => {
-        throw new Error('Decryption failed')
+        throw decryptError
       })
       const context = createMockContext({ headers: { authorization: 'Bearer bad-token' } })
       await expect(guard.canActivate(context)).rejects.toThrow(
-        'Failed to decrypt or deserialize token'
+        unauthorizedError('Failed to decrypt or deserialize token', decryptError)
       )
     })
 
     it('should throw Unauthorized when token deserialization fails', async () => {
       vi.spyOn(crypto, 'decryptData').mockReturnValue('not-valid-json')
+      const deserializeError = new Error('Invalid JSON')
       vi.spyOn(tokenSerialization, 'deserializeTokenData').mockImplementation(() => {
-        throw new Error('Invalid JSON')
+        throw deserializeError
       })
       const context = createMockContext({ headers: { authorization: 'Bearer bad-token' } })
       await expect(guard.canActivate(context)).rejects.toThrow(
-        'Failed to decrypt or deserialize token'
+        unauthorizedError('Failed to decrypt or deserialize token', deserializeError)
       )
     })
 
@@ -222,14 +233,17 @@ describe('OAuth2AccessGuard', () => {
   describe('canActivate - client ID isolation', () => {
     it('should throw Unauthorized when token clientId does not match expected client', async () => {
       vi.spyOn(crypto, 'decryptData').mockReturnValue('serialized')
+      const tokenClientId = 'different-client-id'
       vi.spyOn(tokenSerialization, 'deserializeTokenData').mockReturnValue({
         token: 'jwt',
-        clientId: 'different-client-id',
+        clientId: tokenClientId,
       })
 
       const context = createMockContext({ headers: { authorization: 'Bearer token' } })
       await expect(guard.canActivate(context)).rejects.toThrow(
-        'Token client ID does not match expected client ID'
+        unauthorizedError(
+          `Token client ID does not match expected client ID. Expected for ${mockClient.name}: ${mockClient.id}, Got: ${tokenClientId}`
+        )
       )
     })
 
@@ -259,15 +273,17 @@ describe('OAuth2AccessGuard', () => {
     it('should throw Unauthorized when Passport returns an error', () => {
       const context = createMock<ExecutionContext>()
       const error = new Error('Token expired')
-      expect(() => guard.handleRequest(error, null, { message: 'jwt expired' }, context)).toThrow(
-        'Failed to verify token'
+      const info = { message: 'jwt expired' }
+      expect(() => guard.handleRequest(error, null, info, context)).toThrow(
+        unauthorizedError(`Failed to verify token. Info: ${info.message}`, error)
       )
     })
 
     it('should throw Unauthorized when Passport returns no user', () => {
       const context = createMock<ExecutionContext>()
-      expect(() => guard.handleRequest(null, null, { message: 'No user' }, context)).toThrow(
-        'User not found'
+      const info = { message: 'No user' }
+      expect(() => guard.handleRequest(null, null, info, context)).toThrow(
+        unauthorizedError(`User not found. Info: ${info.message}`)
       )
     })
 

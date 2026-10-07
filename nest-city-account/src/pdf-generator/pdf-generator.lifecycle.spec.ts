@@ -4,7 +4,12 @@
  * the integration test in pdf-generator.service.spec.ts needs the real one.
  */
 
-import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerService,
+} from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { chromium } from 'playwright'
 import type { Mock } from 'vitest'
@@ -12,6 +17,7 @@ import type { Mock } from 'vitest'
 import BaConfig from '../config/ba-config'
 import BaConfigService from '../config/ba-config.service'
 import EnvironmentVariables from '../config/environment-variables'
+import alertReporting from '../utils/constants/error.alerts'
 import { PdfGeneratorService } from './pdf-generator.service'
 
 vi.mock('playwright', () => ({
@@ -46,6 +52,7 @@ const buildMockBrowser = (): MockBrowser => ({
 
 describe('PdfGeneratorService — shared browser lifecycle', () => {
   let service: PdfGeneratorService
+  let errorFactoryService: ErrorFactoryService
   let launchMock: Mock
   let mockBrowsers: MockBrowser[]
 
@@ -63,7 +70,7 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
       providers: [
         LineLoggerService,
         PdfGeneratorService,
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
         {
           provide: BaConfigService,
           // `playwright` is mocked at the module level above, so the value here is
@@ -77,6 +84,7 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
     }).compile()
 
     service = module.get<PdfGeneratorService>(PdfGeneratorService)
+    errorFactoryService = module.get(ErrorFactoryService)
 
     vi.spyOn(service, 'addPasswordToPdf').mockResolvedValue(Buffer.from('mock-encrypted-pdf'))
   })
@@ -100,17 +108,25 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
   })
 
   it('releases the inner pin in finally when generateFromTemplate throws', async () => {
+    const pdfError = new Error('page.pdf boom')
     await service.withSharedBrowser(async () => {
       mockBrowsers[0].newContext.mockImplementationOnce(() => ({
         newPage: vi.fn().mockResolvedValue({
           setContent: vi.fn().mockResolvedValue(undefined),
-          pdf: vi.fn().mockRejectedValue(new Error('page.pdf boom')),
+          pdf: vi.fn().mockRejectedValue(pdfError),
           close: vi.fn().mockResolvedValue(undefined),
         }),
         close: vi.fn().mockResolvedValue(undefined),
       }))
 
-      await expect(service.generateFromTemplate(...templateArgs)).rejects.toThrow()
+      await expect(service.generateFromTemplate(...templateArgs)).rejects.toThrow(
+        errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+          console: 'Error generating PDF from Mailgun template',
+          error: pdfError,
+        })
+      )
 
       expect(mockBrowsers[0].close).not.toHaveBeenCalled()
     })

@@ -13,12 +13,14 @@ import {
 } from '../generated/prisma/enums'
 import { NorisDeliveryMethodService } from '../noris/services/noris-delivery-method.service'
 import { PrismaService } from '../prisma/prisma.service'
+import alertReporting from '../utils/constants/error.alerts'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { UserErrorsEnum, UserErrorsResponseEnum } from './user.error.enum'
 import { UserService } from './user.service'
 import { UserTierService } from './user-tier.service'
 import { UserDataSubservice } from './utils/subservice/user-data.subservice'
@@ -28,7 +30,7 @@ vi.mock('../utils/constants/tax-deadline')
 describe('UserService', () => {
   let service: UserService
   let userDataSubservice: Mocked<UserDataSubservice>
-  let errorFactoryService: Mocked<ErrorFactoryService>
+  let errorFactoryService: ErrorFactoryService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -44,10 +46,7 @@ describe('UserService', () => {
           provide: PrismaService,
           useValue: prismaMock,
         },
-        {
-          provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>(),
-        },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
         {
           provide: BloomreachOutboxService,
           useValue: createMock<BloomreachOutboxService>(),
@@ -253,15 +252,16 @@ describe('UserService', () => {
         [CognitoUserAttributesEnum.ACCOUNT_TYPE]:
           'unknown' as unknown as CognitoUserAccountTypesEnum,
       })
-      errorFactoryService.UnprocessableEntityException.mockReturnValueOnce(
-        new Error('invalid account type') as never
-      )
 
       await expect(
         service.updateGdprConsent(cognitoUserData, ConsentEnum.MARKETING, true)
-      ).rejects.toThrow('invalid account type')
+      ).rejects.toThrow(
+        errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        })
+      )
 
-      expect(errorFactoryService.UnprocessableEntityException).toHaveBeenCalled()
       expect(userDataSubservice.setUserConsents).not.toHaveBeenCalled()
       expect(userDataSubservice.setLegalPersonConsents).not.toHaveBeenCalled()
     })
@@ -293,16 +293,18 @@ describe('UserService', () => {
       const cognitoUserData = cognitoUserDataFactory({
         [CognitoUserAttributesEnum.ACCOUNT_TYPE]: accountType,
       })
-      errorFactoryService.UnprocessableEntityException.mockReturnValueOnce(
-        new Error('invalid account type') as never
-      )
 
       await expect(
         service.setDeliveryMethodPreference(
           cognitoUserData,
           DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT
         )
-      ).rejects.toThrow('invalid account type')
+      ).rejects.toThrow(
+        errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        })
+      )
 
       expect(userDataSubservice.setDeliveryMethodPreference).not.toHaveBeenCalled()
     })

@@ -18,19 +18,13 @@ import ApiJwtTokensService from '../../../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../../../clients/clients.service'
 import BaConfigService from '../../../config/ba-config.service'
 import { ClusterEnv } from '../../../config/environment-variables'
+import alertReporting from '../../../utils/constants/error.alerts'
 import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../../nases.errors.enum'
 import FormRegistrationStatusRepository from '../../repositories/form-registration-status.repository'
 import NasesCronService from '../nases.cron.service'
-
-vi.mock('@bratislava/log-nest', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@bratislava/log-nest')>()),
-  LineLoggerService: vi.fn().mockImplementation(function () {
-    return { log: vi.fn(), error: vi.fn() }
-  }),
-}))
 
 vi.mock('forms-shared/definitions/formDefinitions', () => ({
   formDefinitions: [
@@ -53,7 +47,8 @@ vi.mock('forms-shared/definitions/formDefinitions', () => ({
 describe('NasesCronService', () => {
   let service: NasesCronService
   let apiJwtTokensService: Mocked<ApiJwtTokensService>
-  let errorFactoryService: Mocked<ErrorFactoryService>
+  let logger: LineLoggerService
+  const errorFactory = new ErrorFactoryService({ alertReporting })
 
   const mockSlovenskoSkApi = {
     apiEformStatusGet: vi.fn(),
@@ -62,7 +57,10 @@ describe('NasesCronService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         NasesCronService,
         {
           provide: ClientsService,
@@ -76,12 +74,7 @@ describe('NasesCronService', () => {
             createTechnicalAccountJwtToken: vi.fn(),
           }),
         },
-        {
-          provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>({
-            InternalServerErrorException: vi.fn(),
-          }),
-        },
+        { provide: ErrorFactoryService, useValue: errorFactory },
         {
           provide: BaConfigService,
           useValue: {
@@ -103,7 +96,7 @@ describe('NasesCronService', () => {
 
     service = module.get<NasesCronService>(NasesCronService)
     apiJwtTokensService = module.get(ApiJwtTokensService)
-    errorFactoryService = module.get(ErrorFactoryService)
+    logger = module.get(LineLoggerService)
   })
 
   describe('constructor', () => {
@@ -231,13 +224,14 @@ describe('NasesCronService', () => {
       await service.validateFormRegistrations()
 
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(2)
-      expect(
-        errorFactoryService.InternalServerErrorException,
-      ).toHaveBeenCalledWith({
-        errorEnum: NasesErrorsEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
-        message: NasesErrorsResponseEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
-        error: genericError,
-      })
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        errorFactory.InternalServerErrorException({
+          errorEnum: NasesErrorsEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
+          message:
+            NasesErrorsResponseEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
+          error: genericError,
+        }),
+      )
     })
 
     it('should skip non-slovensko.sk forms', async () => {
@@ -266,15 +260,14 @@ describe('NasesCronService', () => {
         data: { status: 'Publikovaný' },
       })
 
-      const logSpy = vi.spyOn(service['logger'], 'log')
-
       await service.validateFormRegistrations()
 
-      expect(logSpy).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.log)).toHaveBeenCalledWith(
         expectStringContaining(
           'All 2 Slovensko.sk form registrations are valid.',
         ),
       )
+      expect(vi.mocked(logger.error)).not.toHaveBeenCalled()
     })
 
     it('should pass if there is an unregistered testing form and the env is production', async () => {
@@ -309,16 +302,15 @@ describe('NasesCronService', () => {
         },
       )
 
-      const logSpy = vi.spyOn(service['logger'], 'log')
-
       await service.validateFormRegistrations()
 
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(2)
-      expect(logSpy).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.log)).toHaveBeenCalledWith(
         expectStringContaining(
           'All 2 Slovensko.sk form registrations are valid.',
         ),
       )
+      expect(vi.mocked(logger.error)).not.toHaveBeenCalled()
     })
 
     it('should fail if there is an unregistered testing form and the env is staging', async () => {
@@ -360,14 +352,17 @@ describe('NasesCronService', () => {
         configurable: true,
       })
 
-      const logSpy = vi.spyOn(service['logger'], 'log')
-      const errorSpy = vi.spyOn(service['logger'], 'error')
-
       const result = await service.validateFormRegistrations()
 
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(3)
-      expect(logSpy).not.toHaveBeenCalled()
-      expect(errorSpy).toHaveBeenCalled()
+      expect(vi.mocked(logger.log)).not.toHaveBeenCalled()
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        errorFactory.InternalServerErrorException({
+          errorEnum: NasesErrorsEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
+          message: NasesErrorsResponseEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
+          console: { validationResult: result },
+        }),
+      )
 
       expect(result['not-published']).toHaveLength(1)
       expect(result['valid']).toHaveLength(2)
@@ -470,8 +465,8 @@ describe('NasesCronService', () => {
         data: { status: 'Publikovaný' },
       })
 
-      const errorSpy = vi.spyOn(service['logger'], 'error')
-      const logSpy = vi.spyOn(service['logger'], 'log')
+      const errorSpy = vi.mocked(logger.error)
+      const logSpy = vi.mocked(logger.log)
 
       await service.validateFormRegistrations()
 

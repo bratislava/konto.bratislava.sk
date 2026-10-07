@@ -1,6 +1,5 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
-import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import axios, { AxiosError } from 'axios'
 import Bull from 'bull'
@@ -18,9 +17,17 @@ import prismaMock from '../../../test/singleton'
 import { createTestFormDefinitionSlovenskoSkGeneric } from '../../__tests__/factories/formDefinition.factory'
 import BaConfigService from '../../config/ba-config.service'
 import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
-import { FormsErrorsResponseEnum } from '../../forms/forms.errors.enum'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../../forms/forms.errors.enum'
 import { FormError, Forms, FormState } from '../../generated/prisma/client'
 import PrismaService from '../../prisma/prisma.service'
+import alertReporting from '../../utils/constants/error.alerts'
+import {
+  SharepointErrorsEnum,
+  SharepointErrorsResponseEnum,
+} from '../../utils/subservices/dtos/sharepoint.errors.enum'
 import SharepointService from './sharepoint.service'
 
 vi.mock('forms-shared/definitions/getFormDefinitionBySlug')
@@ -31,6 +38,7 @@ vi.mock('forms-shared/form-utils/formDataExtractors', () => ({
 }))
 describe('SharepointService', () => {
   let service: SharepointService
+  const errorFactory = new ErrorFactoryService({ alertReporting })
 
   beforeEach(async () => {
     vi.spyOn(console, 'log').mockImplementation(vi.fn())
@@ -39,7 +47,7 @@ describe('SharepointService', () => {
       providers: [
         LineLoggerService,
         SharepointService,
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: errorFactory },
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: BaConfigService,
@@ -87,16 +95,15 @@ describe('SharepointService', () => {
 
   describe('getAccessToken', () => {
     it('should throw BadGateway exception if the request fails', async () => {
-      vi.spyOn(axios, 'post').mockRejectedValue(new AxiosError('some error'))
-      try {
-        await service['getAccessToken']()
-        expect(true).toBeFalsy()
-      } catch (error) {
-        expect(error).toBeInstanceOf(HttpException)
-        expect((error as HttpException).getStatus()).toBe(
-          HttpStatus.BAD_GATEWAY,
-        )
-      }
+      const axiosError = new AxiosError('some error')
+      vi.spyOn(axios, 'post').mockRejectedValue(axiosError)
+      await expect(service['getAccessToken']()).rejects.toThrow(
+        errorFactory.BadGatewayException({
+          errorEnum: SharepointErrorsEnum.ACCESS_TOKEN_ERROR,
+          message: SharepointErrorsResponseEnum.ACCESS_TOKEN_ERROR,
+          error: axiosError,
+        }),
+      )
     })
 
     it('should return the access token', async () => {
@@ -128,20 +135,27 @@ describe('SharepointService', () => {
     })
 
     it('should throw BadGateway exception if the request fails', async () => {
-      vi.spyOn(axios, 'post').mockRejectedValue(new AxiosError('some error'))
-      try {
-        await service['postDataToSharepoint'](
-          'dbNameValue',
+      const axiosError = new AxiosError('some error')
+      const dbName = 'dbNameValue'
+      const fieldValues = { field1: 'value1' }
+      vi.spyOn(axios, 'post').mockRejectedValue(axiosError)
+      await expect(
+        service['postDataToSharepoint'](
+          dbName,
           'accessTokenValue',
-          { field1: 'value1' },
-        )
-        expect(true).toBeFalsy()
-      } catch (error) {
-        expect(error).toBeInstanceOf(HttpException)
-        expect((error as HttpException).getStatus()).toBe(
-          HttpStatus.BAD_GATEWAY,
-        )
-      }
+          fieldValues,
+        ),
+      ).rejects.toThrow(
+        errorFactory.BadGatewayException({
+          errorEnum: SharepointErrorsEnum.POST_DATA_TO_SHAREPOINT_ERROR,
+          message: SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR,
+          console: JSON.stringify({
+            databaseName: dbName,
+            postedFields: Object.keys(fieldValues),
+          }),
+          error: axiosError,
+        }),
+      )
     })
   })
 
@@ -159,19 +173,20 @@ describe('SharepointService', () => {
     })
 
     it('should throw error if we are looking for unknown column', async () => {
-      try {
-        await service['mapColumnsToFields'](
-          ['Title1', 'TitleNotExists'],
+      const unknownColumn = 'TitleNotExists'
+      const dbName = 'dbNameValue'
+      await expect(
+        service['mapColumnsToFields'](
+          ['Title1', unknownColumn],
           'access_token',
-          'dbNameValue',
-        )
-        expect(true).toBeFalsy()
-      } catch (error) {
-        expect(error).toBeInstanceOf(HttpException)
-        expect((error as HttpException).getStatus()).toBe(
-          HttpStatus.BAD_REQUEST,
-        )
-      }
+          dbName,
+        ),
+      ).rejects.toThrow(
+        errorFactory.BadRequestException({
+          errorEnum: SharepointErrorsEnum.UNKNOWN_COLUMN,
+          message: `${SharepointErrorsResponseEnum.UNKNOWN_COLUMN} Column: ${unknownColumn}, dtb name: ${dbName}.`,
+        }),
+      )
     })
 
     it('should return correct mapping', async () => {
@@ -281,47 +296,45 @@ describe('SharepointService', () => {
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockReturnValue(null)
 
-      try {
-        await service.postNewRecord('formId')
-        expect(true).toBeFalsy()
-      } catch (error) {
-        expect(error).toBeInstanceOf(HttpException)
-        expect((error as HttpException).getStatus()).toBe(HttpStatus.NOT_FOUND)
-      }
+      await expect(service.postNewRecord('formId')).rejects.toThrow(
+        errorFactory.NotFoundException({
+          errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+          message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+        }),
+      )
       expect(getFormDefinitionSpy).not.toHaveBeenCalled()
     })
 
     it('should throw error if no form definition is found', async () => {
-      prismaMock.forms.findUnique.mockResolvedValue({} as Forms)
+      const form = {} as Forms
+      prismaMock.forms.findUnique.mockResolvedValue(form)
       const getFormDefinitionSpy = vi
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockReturnValue(null)
 
-      try {
-        await service.postNewRecord('formId')
-        expect(true).toBeFalsy()
-      } catch (error) {
-        expect(error).toBeInstanceOf(HttpException)
-        expect((error as HttpException).getStatus()).toBe(HttpStatus.NOT_FOUND)
-      }
+      await expect(service.postNewRecord('formId')).rejects.toThrow(
+        errorFactory.NotFoundException({
+          errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+          message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+        }),
+      )
       expect(getFormDefinitionSpy).toHaveBeenCalled()
     })
 
     it('should throw error if the form definition has no sharepoint data', async () => {
-      prismaMock.forms.findUnique.mockResolvedValue({} as Forms)
+      const form = {} as Forms
+      prismaMock.forms.findUnique.mockResolvedValue(form)
       const getFormDefinitionSpy = vi
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockReturnValue({} as FormDefinition)
 
-      try {
-        await service.postNewRecord('formId')
-        expect(true).toBeFalsy()
-      } catch (error) {
-        expect(error).toBeInstanceOf(HttpException)
-        expect((error as HttpException).getStatus()).toBe(
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        )
-      }
+      await expect(service.postNewRecord('formId')).rejects.toThrow(
+        errorFactory.UnprocessableEntityException({
+          errorEnum: SharepointErrorsEnum.SHAREPOINT_DATA_NOT_PROVIDED,
+          message: SharepointErrorsResponseEnum.SHAREPOINT_DATA_NOT_PROVIDED,
+          console: { formId: form.id },
+        }),
+      )
       expect(getFormDefinitionSpy).toHaveBeenCalled()
     })
 
@@ -430,10 +443,12 @@ describe('SharepointService', () => {
         'getFormDefinitionBySlug',
       ).mockReturnValue(mockFormDefinition)
 
-      await expect(service.postNewRecord('formId')).rejects.toMatchObject({
-        message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-      })
+      await expect(service.postNewRecord('formId')).rejects.toThrow(
+        errorFactory.UnprocessableEntityException({
+          errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+          message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+        }),
+      )
 
       // Verify that no update was attempted
       expect(prismaMock.forms.update).not.toHaveBeenCalled()

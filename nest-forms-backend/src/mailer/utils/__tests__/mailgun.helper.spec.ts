@@ -1,10 +1,12 @@
 import { ErrorFactoryService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-jest'
 import { Test } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import Handlebars from 'handlebars'
 
 import { expectStringContaining } from '../../../__tests__/jest-matchers'
 import BaConfigService from '../../../config/ba-config.service'
+import StrapiService from '../../../strapi/strapi.service'
 import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
 import {
   MailgunErrorsEnum,
@@ -35,6 +37,7 @@ jest.mock('mailgun.js', () =>
 
 describe('MailgunHelper', () => {
   let mailgunHelper: MailgunHelper
+  let strapiService: StrapiService
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -52,6 +55,10 @@ describe('MailgunHelper', () => {
             frontend: { url: 'https://konto.bratislava.sk' },
             olo: { frontendUrl: 'https://olo.sk' },
           },
+        },
+        {
+          provide: StrapiService,
+          useValue: createMock<StrapiService>(),
         },
         {
           provide: ErrorFactoryService,
@@ -75,6 +82,7 @@ describe('MailgunHelper', () => {
     }).compile()
 
     mailgunHelper = moduleRef.get<MailgunHelper>(MailgunHelper)
+    strapiService = moduleRef.get<StrapiService>(StrapiService)
   })
 
   afterEach(() => {
@@ -90,7 +98,7 @@ describe('MailgunHelper', () => {
   describe('createEmailVariables', () => {
     const mockFormSentAt = new Date('2026-02-11T12:00:00.000Z')
 
-    it('should process PARAMETER type variables correctly', () => {
+    it('should process PARAMETER type variables correctly', async () => {
       const input: SendEmailInputDto = {
         to: 'user@example.com',
         template: MailgunTemplateEnum.GINIS_SENT,
@@ -103,13 +111,17 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = mailgunHelper.createEmailVariables(input)
+      const result = await mailgunHelper.createEmailVariables(input)
 
       expect(result.applicationName).toBe('Test Application')
       expect(result.firstName).toBe('John')
     })
 
-    it('should process SELECT type variables correctly', () => {
+    it('should process FEEDBACK_LINK type variables correctly', async () => {
+      const feedbackLink = 'https://bravo.staffino.com/bratislava/id=WW1hkstR'
+      jest
+        .spyOn(strapiService, 'getFeedbackLink')
+        .mockResolvedValue(feedbackLink)
       const input: SendEmailInputDto = {
         to: 'user@example.com',
         template: MailgunTemplateEnum.GINIS_SUCCESS,
@@ -122,14 +134,16 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = mailgunHelper.createEmailVariables(input)
+      const result = await mailgunHelper.createEmailVariables(input)
 
-      expect(result.feedbackLink).toBe(
-        'https://bravo.staffino.com/bratislava/id=WW1hkstR',
+      expect(strapiService.getFeedbackLink).toHaveBeenCalledWith(
+        'stanovisko-k-investicnemu-zameru',
       )
+      expect(result.feedbackLink).toBe(feedbackLink)
     })
 
-    it('should not set SELECT type variables if slug does not match', () => {
+    it('should not set FEEDBACK_LINK type variables if the form has no feedback link', async () => {
+      jest.spyOn(strapiService, 'getFeedbackLink').mockResolvedValue(null)
       const input: SendEmailInputDto = {
         to: 'user@example.com',
         template: MailgunTemplateEnum.GINIS_SUCCESS,
@@ -142,12 +156,52 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = mailgunHelper.createEmailVariables(input)
+      const result = await mailgunHelper.createEmailVariables(input)
 
       expect(result.feedbackLink).toBeUndefined()
     })
 
-    it('should handle htmlData in OLO_NEW_SUBMISSION template', () => {
+    it('should throw if fetching the feedback link fails', async () => {
+      const error = new Error('Strapi is down')
+      jest.spyOn(strapiService, 'getFeedbackLink').mockRejectedValue(error)
+      const input: SendEmailInputDto = {
+        to: 'user@example.com',
+        template: MailgunTemplateEnum.GINIS_SUCCESS,
+        data: {
+          formId: 'form-123',
+          messageSubject: 'Test Application',
+          firstName: 'John',
+          slug: 'stanovisko-k-investicnemu-zameru',
+          formSentAt: mockFormSentAt,
+        },
+      }
+
+      await expect(mailgunHelper.createEmailVariables(input)).rejects.toBe(
+        error,
+      )
+    })
+
+    it('should not fetch the feedback link if the template has no FEEDBACK_LINK variable', async () => {
+      const getFeedbackLinkSpy = jest.spyOn(strapiService, 'getFeedbackLink')
+      const input: SendEmailInputDto = {
+        to: 'user@example.com',
+        template: MailgunTemplateEnum.GINIS_IN_PROGRESS,
+        data: {
+          formId: 'form-123',
+          messageSubject: 'Test Application',
+          firstName: 'John',
+          slug: 'stanovisko-k-investicnemu-zameru',
+          formSentAt: mockFormSentAt,
+        },
+      }
+
+      const result = await mailgunHelper.createEmailVariables(input)
+
+      expect(getFeedbackLinkSpy).not.toHaveBeenCalled()
+      expect(result.feedbackLink).toBeUndefined()
+    })
+
+    it('should handle htmlData in OLO_NEW_SUBMISSION template', async () => {
       const input: SendEmailInputDto = {
         to: 'olo@example.com',
         template: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
@@ -161,13 +215,13 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = mailgunHelper.createEmailVariables(input)
+      const result = await mailgunHelper.createEmailVariables(input)
 
       expect(result.applicationName).toBe('OLO Test Application')
       expect(result.htmlData).toBe('<p>Form HTML data</p>')
     })
 
-    it('should handle ATTACHMENT_VIRUS template correctly', () => {
+    it('should handle ATTACHMENT_VIRUS template correctly', async () => {
       const input: SendEmailInputDto = {
         to: 'user@example.com',
         template: MailgunTemplateEnum.ATTACHMENT_VIRUS,
@@ -180,7 +234,7 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = mailgunHelper.createEmailVariables(input)
+      const result = await mailgunHelper.createEmailVariables(input)
 
       expect(result.applicationName).toBe('Virus Detected')
       expect(result.firstName).toBe('Jane')

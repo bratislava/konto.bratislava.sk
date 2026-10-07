@@ -111,7 +111,7 @@ describe('mapNorisToTaxAdministratorData', () => {
 })
 
 describe('mapNorisToTaxInstallmentsData', () => {
-  const taxId = 1
+  const taxId = 4711
 
   it('should return single installment when SPL1 is set', () => {
     const spl1Due = new Date('2025-04-15T12:00:00.000Z')
@@ -124,7 +124,7 @@ describe('mapNorisToTaxInstallmentsData', () => {
 
     expect(result).toHaveLength(1)
     expect(result[0]).toEqual({
-      taxId: 1,
+      taxId,
       amount: 10_000,
       order: 1,
       dueDate: spl1Due,
@@ -179,17 +179,17 @@ describe('mapNorisToTaxInstallmentsData', () => {
     expect(result).toHaveLength(3)
     expect(result).toEqual([
       {
-        taxId: 1,
+        taxId,
         amount: 3000,
         order: 1,
       },
       {
-        taxId: 1,
+        taxId,
         amount: 5000,
         order: 2,
       },
       {
-        taxId: 1,
+        taxId,
         amount: 2000,
         order: 3,
       },
@@ -222,7 +222,7 @@ describe('mapNorisToTaxInstallmentsData', () => {
 
     expect(result).toHaveLength(4)
     expect(result).toContainEqual({
-      taxId: 1,
+      taxId,
       amount: 1000,
       order: 4,
     })
@@ -263,9 +263,9 @@ describe('mapNorisToTaxInstallmentsData', () => {
     const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
 
     expect(result).toEqual([
-      { taxId: 1, amount: 100, order: 1, dueDate: d1 },
-      { taxId: 1, amount: 100, order: 2, dueDate: d2 },
-      { taxId: 1, amount: 100, order: 3, dueDate: d3 },
+      { taxId, amount: 100, order: 1, dueDate: d1 },
+      { taxId, amount: 100, order: 2, dueDate: d2 },
+      { taxId, amount: 100, order: 3, dueDate: d3 },
     ])
   })
 
@@ -320,7 +320,7 @@ describe('mapNorisToTaxInstallmentsData', () => {
 
     expect(result).toHaveLength(4)
     expect(result[3]).toEqual({
-      taxId: 1,
+      taxId,
       amount: 1000,
       order: 4,
       dueDate: d4,

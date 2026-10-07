@@ -1,6 +1,7 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { MockedFunction } from 'vitest'
 
 import prismaMock from '../../../../test/singleton'
 import { configFactory } from '../../../__tests__/factories/config.factory'
@@ -12,7 +13,7 @@ import {
   expectArrayContaining,
   expectDefined,
   expectObjectContaining,
-} from '../../../__tests__/jest-matchers'
+} from '../../../__tests__/matchers'
 import getBaConfigInstance from '../../../config/ba-config.instance'
 import {
   DeliveryMethodEnum,
@@ -25,9 +26,10 @@ import { NorisDeliveryMethodService } from '../../../noris/services/noris-delive
 import { DeliveryMethod } from '../../../noris/types/noris.enums'
 import { PdfGeneratorService } from '../../../pdf-generator/pdf-generator.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import alertReporting from '../../../utils/constants/error.alerts'
 import { TaxDeliveryMethodsTasksSubservice } from '../tax-delivery-methods-tasks.subservice'
 
-jest.mock('../../../config/ba-config.instance')
+vi.mock('../../../config/ba-config.instance')
 
 const mockEmail = 'test@example.com'
 
@@ -35,25 +37,25 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
   let service: TaxDeliveryMethodsTasksSubservice
   let errorFactoryService: ErrorFactoryService
 
-  const mockGetBaConfigInstance = getBaConfigInstance as jest.MockedFunction<
-    typeof getBaConfigInstance
-  >
+  const mockGetBaConfigInstance = getBaConfigInstance as MockedFunction<typeof getBaConfigInstance>
 
   beforeAll(() => {
-    jest.spyOn(console, 'log').mockImplementation(jest.fn())
+    vi.spyOn(console, 'log').mockImplementation(vi.fn())
   })
 
   afterAll(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   afterEach(() => {
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
 
   beforeEach(async () => {
-    jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate'] })
-    jest.setSystemTime(new Date('2024-02-15T12:00:00.000Z'))
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date'],
+    })
+    vi.setSystemTime(new Date('2024-02-15T12:00:00.000Z'))
     mockGetBaConfigInstance.mockReturnValue({ taxDeadline: { month: 2, day: 1 } } as ReturnType<
       typeof getBaConfigInstance
     >)
@@ -64,12 +66,12 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         TaxDeliveryMethodsTasksSubservice,
         { provide: PrismaService, useValue: prismaMock },
         { provide: NorisDeliveryMethodService, useValue: createMock<NorisDeliveryMethodService>() },
-        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
         { provide: MailgunService, useValue: createMock<MailgunService>() },
         {
           provide: PdfGeneratorService,
           useValue: createMock<PdfGeneratorService>({
-            withSharedBrowser: jest.fn(async (fn: () => Promise<unknown>) => fn()),
+            withSharedBrowser: vi.fn(async (fn: () => Promise<unknown>) => fn()),
           }),
         },
       ],
@@ -91,15 +93,15 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
   describe('updateDeliveryMethods', () => {
     it('should call the endpoint with the correct data, and update only users who are really updated in Noris', async () => {
-      const updateDeliveryMethodsSpy = jest
-        .spyOn(service['norisDeliveryMethodService'], 'updateDeliveryMethods')
+      const updateDeliveryMethodsSpy = vi
+        .mocked(service['norisDeliveryMethodService'].updateDeliveryMethods)
         .mockResolvedValue({
           birthNumbers: ['123456/2020', '123456/4848', '123456/4649', '123456/4521'],
         })
-      const internalErrorSpy = jest.spyOn(errorFactoryService, 'InternalServerErrorException')
+      const internalErrorSpy = vi.spyOn(errorFactoryService, 'InternalServerErrorException')
 
       prismaMock.user.updateMany.mockResolvedValue({ count: 1 })
-      const prismaUserUpdateSpy = jest.spyOn(prismaMock.user, 'updateMany')
+      const prismaUserUpdateSpy = vi.spyOn(prismaMock.user, 'updateMany')
 
       prismaMock.user.findMany
         // Initial batch
@@ -205,11 +207,10 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should not call the endpoint if there are no users', async () => {
-      const updateDeliveryMethodsSpy = jest.spyOn(
-        service['norisDeliveryMethodService'],
-        'updateDeliveryMethods'
+      const updateDeliveryMethodsSpy = vi.mocked(
+        service['norisDeliveryMethodService'].updateDeliveryMethods
       )
-      const prismaUserUpdateSpy = jest.spyOn(prismaMock.user, 'updateMany')
+      const prismaUserUpdateSpy = vi.mocked(prismaMock.user.updateMany)
 
       prismaMock.user.findMany.mockResolvedValue([])
 
@@ -220,12 +221,11 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should skip deactivated users detected during the lock re-check and not call Noris for them', async () => {
-      const updateDeliveryMethodsSpy = jest.spyOn(
-        service['norisDeliveryMethodService'],
-        'updateDeliveryMethods'
+      const updateDeliveryMethodsSpy = vi.mocked(
+        service['norisDeliveryMethodService'].updateDeliveryMethods
       )
-      const internalErrorSpy = jest.spyOn(errorFactoryService, 'InternalServerErrorException')
-      const prismaUserUpdateSpy = jest
+      const internalErrorSpy = vi.spyOn(errorFactoryService, 'InternalServerErrorException')
+      const prismaUserUpdateSpy = vi
         .spyOn(prismaMock.user, 'updateMany')
         .mockResolvedValue({ count: 1 })
 
@@ -256,11 +256,11 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should call Noris only with users still active after the re-check when some are deactivated mid-flight', async () => {
-      const updateDeliveryMethodsSpy = jest
-        .spyOn(service['norisDeliveryMethodService'], 'updateDeliveryMethods')
+      const updateDeliveryMethodsSpy = vi
+        .mocked(service['norisDeliveryMethodService'].updateDeliveryMethods)
         .mockResolvedValue({ birthNumbers: ['123456/2020'] })
-      const prismaUserUpdateSpy = jest
-        .spyOn(prismaMock.user, 'updateMany')
+      const prismaUserUpdateSpy = vi
+        .mocked(prismaMock.user.updateMany)
         .mockResolvedValue({ count: 1 })
 
       prismaMock.user.findMany
@@ -307,9 +307,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
   describe('lockDeliveryMethods', () => {
     it('should set EDESK delivery method when physicalEntity.activeEdesk is true', async () => {
       const jobStartTime = new Date()
-      const updateManySpy = jest
-        .spyOn(prismaMock.user, 'updateMany')
-        .mockResolvedValue({ count: 1 })
+      const updateManySpy = vi.mocked(prismaMock.user.updateMany).mockResolvedValue({ count: 1 })
 
       prismaMock.user.findMany.mockResolvedValueOnce([
         userWithRelationsFactory({
@@ -340,7 +338,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     it('should set CITY_ACCOUNT delivery method when taxDeliveryMethod is CITY_ACCOUNT and no active eDesk', async () => {
       const jobStartTime = new Date()
       const cityAccountDate = new Date('2024-01-15')
-      const updateSpy = jest.spyOn(prismaMock.user, 'update').mockResolvedValue({} as User)
+      const updateSpy = vi.mocked(prismaMock.user.update).mockResolvedValue({} as User)
 
       prismaMock.user.findMany.mockResolvedValueOnce([
         userWithRelationsFactory({
@@ -373,7 +371,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     it('should set taxDeliveryMethodCityAccountLockDate to latest CITY_ACCOUNT history date', async () => {
       const jobStartTime = new Date()
       const cityAccountDate = new Date('2024-01-15T10:30:00Z')
-      const updateSpy = jest.spyOn(prismaMock.user, 'update').mockResolvedValue({} as User)
+      const updateSpy = vi.mocked(prismaMock.user.update).mockResolvedValue({} as User)
 
       prismaMock.user.findMany.mockResolvedValueOnce([
         userWithRelationsFactory({
@@ -405,9 +403,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
     it('should set POSTAL delivery method when taxDeliveryMethod is not CITY_ACCOUNT and no active eDesk', async () => {
       const jobStartTime = new Date()
-      const updateManySpy = jest
-        .spyOn(prismaMock.user, 'updateMany')
-        .mockResolvedValue({ count: 1 })
+      const updateManySpy = vi.mocked(prismaMock.user.updateMany).mockResolvedValue({ count: 1 })
 
       prismaMock.user.findMany.mockResolvedValueOnce([
         userWithRelationsFactory({
@@ -437,9 +433,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
     it('should clear taxDeliveryMethodCityAccountLockDate for EDESK users', async () => {
       const jobStartTime = new Date()
-      const updateManySpy = jest
-        .spyOn(prismaMock.user, 'updateMany')
-        .mockResolvedValue({ count: 1 })
+      const updateManySpy = vi.mocked(prismaMock.user.updateMany).mockResolvedValue({ count: 1 })
 
       prismaMock.user.findMany.mockResolvedValueOnce([
         userWithRelationsFactory({
@@ -471,9 +465,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
     it('should clear taxDeliveryMethodCityAccountLockDate for POSTAL users', async () => {
       const jobStartTime = new Date()
-      const updateManySpy = jest
-        .spyOn(prismaMock.user, 'updateMany')
-        .mockResolvedValue({ count: 1 })
+      const updateManySpy = vi.mocked(prismaMock.user.updateMany).mockResolvedValue({ count: 1 })
 
       prismaMock.user.findMany.mockResolvedValueOnce([
         userWithRelationsFactory({
@@ -504,9 +496,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     it('should prioritize activeEdesk over CITY_ACCOUNT preference', async () => {
       const jobStartTime = new Date()
       const cityAccountDate = new Date('2024-01-15')
-      const updateManySpy = jest
-        .spyOn(prismaMock.user, 'updateMany')
-        .mockResolvedValue({ count: 1 })
+      const updateManySpy = vi.mocked(prismaMock.user.updateMany).mockResolvedValue({ count: 1 })
 
       prismaMock.user.findMany.mockResolvedValueOnce([
         userWithRelationsFactory({
@@ -544,8 +534,6 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
     beforeEach(() => {
       mailgunService = service['mailgunService']
-      // Reset all mocks before each test
-      jest.clearAllMocks()
 
       // Calculate yesterday based on fake timer
       yesterday = new Date()
@@ -561,7 +549,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         })
       )
 
-      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
+      const sendEmailSpy = vi.mocked(mailgunService.sendEmail)
 
       await service.sendDailyDeliveryMethodSummaries()
 
@@ -616,7 +604,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         }),
       ])
 
-      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
+      const sendEmailSpy = vi.mocked(mailgunService.sendEmail)
 
       await service.sendDailyDeliveryMethodSummaries()
 
@@ -659,7 +647,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         }),
       ])
 
-      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
+      const sendEmailSpy = vi.mocked(mailgunService.sendEmail)
 
       await service.sendDailyDeliveryMethodSummaries()
 
@@ -704,7 +692,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         }),
       ])
 
-      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
+      const sendEmailSpy = vi.mocked(mailgunService.sendEmail)
 
       await service.sendDailyDeliveryMethodSummaries()
 
@@ -756,7 +744,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         }),
       ])
 
-      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
+      const sendEmailSpy = vi.mocked(mailgunService.sendEmail)
 
       await service.sendDailyDeliveryMethodSummaries()
 
@@ -810,7 +798,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         }),
       ])
 
-      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
+      const sendEmailSpy = vi.mocked(mailgunService.sendEmail)
 
       await service.sendDailyDeliveryMethodSummaries()
 
@@ -873,7 +861,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         }),
       ])
 
-      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
+      const sendEmailSpy = vi.mocked(mailgunService.sendEmail)
 
       await service.sendDailyDeliveryMethodSummaries()
 
@@ -920,7 +908,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         }),
       ])
 
-      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
+      const sendEmailSpy = vi.mocked(mailgunService.sendEmail)
 
       await service.sendDailyDeliveryMethodSummaries()
 
@@ -978,7 +966,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         }),
       ])
 
-      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
+      const sendEmailSpy = vi.mocked(mailgunService.sendEmail)
 
       await service.sendDailyDeliveryMethodSummaries()
 
@@ -1144,7 +1132,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         }),
       ])
 
-      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
+      const sendEmailSpy = vi.mocked(mailgunService.sendEmail)
 
       await service.sendDailyDeliveryMethodSummaries()
 
@@ -1246,7 +1234,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         }),
       ])
 
-      const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
+      const sendEmailSpy = vi.mocked(mailgunService.sendEmail)
 
       await service.sendDailyDeliveryMethodSummaries()
 

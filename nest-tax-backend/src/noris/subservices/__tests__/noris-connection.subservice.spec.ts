@@ -3,37 +3,49 @@ import {
   ErrorFactoryService,
   LineLoggerService,
 } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import mssql, { MSSQLError } from 'mssql'
+import type { Mock, Mocked } from 'vitest'
 
 import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import alertReporting from '../../../utils/constants/error.alerts'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 
-const mockConnect = jest.fn()
-jest.spyOn(mssql, 'connect').mockImplementation(mockConnect)
+const { mockConnect } = vi.hoisted(() => ({ mockConnect: vi.fn() }))
+// The service imports `connect` by name, so the module is mocked rather than spied on. mssql is
+// CommonJS, so its exports are only on `default` and are spread into the named exports too.
+vi.mock('mssql', async (importOriginal) => {
+  const actual = await importOriginal<
+    typeof import('mssql') & { default: typeof import('mssql') }
+  >()
+  return {
+    ...actual,
+    ...actual.default,
+    connect: mockConnect,
+    default: { ...actual.default, connect: mockConnect },
+  }
+})
 
 describe('NorisConnectionSubservice', () => {
   let module: TestingModule
   let service: NorisConnectionSubservice
   let baConfigService: BaConfigService
-  let errorFactoryService: ErrorFactoryService
-  let prismaService: jest.Mocked<PrismaService>
+  const errorFactoryService = new ErrorFactoryService({ alertReporting })
+  let logger: LineLoggerService
+  let prismaService: Mocked<PrismaService>
 
-  let mockMssqlConnect: jest.Mock
+  let mockMssqlConnect: Mock
 
   const mockConnectionPool = {
     connected: true,
-    close: jest.fn().mockResolvedValue(undefined),
+    close: vi.fn().mockResolvedValue(undefined),
   }
 
   beforeEach(async () => {
-    jest.clearAllMocks()
-
-    // Assign after clearAllMocks so we hold references to the (now-cleared) mock.
-    mockMssqlConnect = mssql.connect as jest.Mock
+    mockMssqlConnect = mssql.connect as Mock
 
     baConfigService = createMock<BaConfigService>({
       noris: {
@@ -48,16 +60,19 @@ describe('NorisConnectionSubservice', () => {
 
     module = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         NorisConnectionSubservice,
         { provide: BaConfigService, useValue: baConfigService },
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: errorFactoryService },
         { provide: PrismaService, useValue: prismaService },
       ],
     }).compile()
 
     service = module.get<NorisConnectionSubservice>(NorisConnectionSubservice)
-    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
+    logger = module.get(LineLoggerService)
   })
 
   afterEach(async () => {
@@ -74,11 +89,17 @@ describe('NorisConnectionSubservice', () => {
     })
 
     it('should not throw when connect() fails during shutdown', async () => {
-      mockMssqlConnect.mockRejectedValue(new Error('MSSQL unreachable'))
-      const warnSpy = jest.spyOn(service['logger'], 'warn')
+      const connectError = new Error('MSSQL unreachable')
+      mockMssqlConnect.mockRejectedValue(connectError)
 
       await expect(module.close()).resolves.not.toThrow()
-      expect(warnSpy).toHaveBeenCalled()
+      expect(vi.mocked(logger.warn)).toHaveBeenCalledWith(
+        errorFactoryService.BadRequestException({
+          errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+          message: 'Failed to close MSSQL connection on shutdown',
+          error: connectError,
+        }),
+      )
     })
   })
 
@@ -105,22 +126,18 @@ describe('NorisConnectionSubservice', () => {
 
     it('should throw getNorisUrgentError when error is not an MSSQLError', async () => {
       const genericError = new Error('Generic failure')
-      const errorFactoryServiceSpy = jest.spyOn(
-        errorFactoryService,
-        'InternalServerErrorException',
-      )
 
       await expect(
         service.withConnection(async () => {
           return Promise.reject(genericError)
         }, errorMessage),
-      ).rejects.toThrow(errorMessage)
-
-      expect(errorFactoryServiceSpy).toHaveBeenCalledWith({
-        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: errorMessage,
-        error: genericError,
-      })
+      ).rejects.toThrow(
+        errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: errorMessage,
+          error: genericError,
+        }),
+      )
       expect(prismaService.$transaction).not.toHaveBeenCalled()
     })
 
@@ -129,21 +146,17 @@ describe('NorisConnectionSubservice', () => {
         'Query failed',
         'ESOMEOTHER' as mssql.MSSQL_ERROR_CODE,
       )
-      const errorFactoryServiceSpy = jest.spyOn(
-        errorFactoryService,
-        'InternalServerErrorException',
-      )
       await expect(
         service.withConnection(async () => {
           return Promise.reject(mssqlError)
         }, errorMessage),
-      ).rejects.toThrow(errorMessage)
-
-      expect(errorFactoryServiceSpy).toHaveBeenCalledWith({
-        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expect.stringContaining(errorMessage) as string,
-        error: mssqlError,
-      })
+      ).rejects.toThrow(
+        errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: `${errorMessage}: {"code":"${mssqlError.code}","name":"${mssqlError.name}"}`,
+          error: mssqlError,
+        }),
+      )
       expect(prismaService.$transaction).not.toHaveBeenCalled()
     })
 
@@ -157,57 +170,39 @@ describe('NorisConnectionSubservice', () => {
       'should log, increment config value, then throw when MSSQLError has code %s',
       async (code) => {
         const mssqlError = new MSSQLError('Connection problem', code)
-        const badRequestSpy = jest.spyOn(
-          errorFactoryService,
-          'BadRequestException',
-        )
-        const internalErrorSpy = jest.spyOn(
-          errorFactoryService,
-          'InternalServerErrorException',
-        )
 
         await expect(
           service.withConnection(async () => {
             return Promise.reject(mssqlError)
           }, errorMessage),
-        ).rejects.toThrow(errorMessage)
-
-        expect(badRequestSpy).toHaveBeenCalledWith({
-          errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
-          message: expect.stringContaining(errorMessage) as string,
-          error: mssqlError,
-        })
+        ).rejects.toThrow(
+          errorFactoryService.BadRequestException({
+            errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
+            message: `${errorMessage}: {"code":"${code}","name":"${mssqlError.name}"}`,
+            error: mssqlError,
+          }),
+        )
 
         expect(prismaService.$executeRaw).toHaveBeenCalledTimes(1)
-
-        expect(internalErrorSpy).not.toHaveBeenCalled()
       },
     )
 
     it('should run increment SQL when config row may not exist', async () => {
       const mssqlError = new MSSQLError('Timeout', 'ETIMEOUT')
-      const badRequestSpy = jest.spyOn(
-        errorFactoryService,
-        'BadRequestException',
-      )
-      const internalErrorSpy = jest.spyOn(
-        errorFactoryService,
-        'InternalServerErrorException',
-      )
 
       await expect(
         service.withConnection(async () => {
           return Promise.reject(mssqlError)
         }, errorMessage),
-      ).rejects.toThrow()
+      ).rejects.toThrow(
+        errorFactoryService.BadRequestException({
+          errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
+          message: `${errorMessage}: {"code":"${mssqlError.code}","name":"${mssqlError.name}"}`,
+          error: mssqlError,
+        }),
+      )
 
       expect(prismaService.$executeRaw).toHaveBeenCalledTimes(1)
-      expect(badRequestSpy).toHaveBeenCalledWith({
-        errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
-        message: expect.stringContaining(errorMessage) as string,
-        error: mssqlError,
-      })
-      expect(internalErrorSpy).not.toHaveBeenCalled()
     })
   })
 })

@@ -1,10 +1,10 @@
 import { LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
 import { externalEdeskCheckFactory } from '../../__tests__/factories/externalEdeskCheck.factory'
-import { expectObjectContaining } from '../../__tests__/jest-matchers'
+import { expectObjectContaining } from '../../__tests__/matchers'
 import { ExternalEdeskCheck } from '../../generated/prisma/client'
 import { QueueItemStatusEnum } from '../../generated/prisma/enums'
 import { GetIdentitiesByUrisResult, NasesService } from '../../nases/nases.service'
@@ -14,13 +14,14 @@ import { EdeskBatchUpdateService } from '../edesk-batch-update.service'
 
 describe('EdeskBatchUpdateService', () => {
   let service: EdeskBatchUpdateService
+  let logger: LineLoggerService
   let physicalEntityService: PhysicalEntityService
   let nasesService: NasesService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        { provide: LineLoggerService, useValue: createMock<LineLoggerService>() },
         EdeskBatchUpdateService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: PhysicalEntityService, useValue: createMock<PhysicalEntityService>() },
@@ -29,12 +30,9 @@ describe('EdeskBatchUpdateService', () => {
     }).compile()
 
     service = module.get(EdeskBatchUpdateService)
+    logger = module.get(LineLoggerService)
     physicalEntityService = module.get(PhysicalEntityService)
     nasesService = module.get(NasesService)
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
   })
 
   // High-priority selection uses $queryRaw, external selection uses findMany.
@@ -56,7 +54,7 @@ describe('EdeskBatchUpdateService', () => {
 
   it('searches the combined batch and reports the counts', async () => {
     mockSelection([{ id: 'pe-1', uri: 'rc://sk/hp' }], [{ uri: 'rc://sk/ext' }])
-    jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
+    vi.mocked(nasesService.getIdentitiesByUris).mockResolvedValue({
       success: [
         {
           physicalEntityId: 'pe-1',
@@ -92,7 +90,7 @@ describe('EdeskBatchUpdateService', () => {
 
   it('logs a death date when the resolved external identity carries one', async () => {
     mockSelection([], [{ uri: 'rc://sk/ext' }])
-    jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
+    vi.mocked(nasesService.getIdentitiesByUris).mockResolvedValue({
       success: [
         {
           physicalEntityId: null,
@@ -110,7 +108,7 @@ describe('EdeskBatchUpdateService', () => {
     prismaMock.externalEdeskCheck.update.mockResolvedValue(
       externalEdeskCheckFactory({ norisId: 42 })
     )
-    const logSpy = jest.spyOn(service['logger'], 'log').mockImplementation(jest.fn())
+    const logSpy = vi.mocked(logger.log)
 
     await service.updateEdeskStatusBatch()
 
@@ -121,7 +119,7 @@ describe('EdeskBatchUpdateService', () => {
 
   it('requeues possible URI changes and flags the entities outdated', async () => {
     mockSelection([], [{ uri: 'rc://sk/ext' }])
-    jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
+    vi.mocked(nasesService.getIdentitiesByUris).mockResolvedValue({
       success: [],
       failed: [{ inputUri: 'rc://sk/ext', possibleUriChange: true }],
     } satisfies GetIdentitiesByUrisResult)
@@ -140,7 +138,7 @@ describe('EdeskBatchUpdateService', () => {
 
   it('marks plain failures FAILED (external) and bumps the internal fail counter', async () => {
     mockSelection([{ id: 'pe-1', uri: 'rc://sk/hp' }], [{ uri: 'rc://sk/ext' }])
-    jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
+    vi.mocked(nasesService.getIdentitiesByUris).mockResolvedValue({
       success: [],
       failed: [
         { physicalEntityId: 'pe-1', inputUri: 'rc://sk/hp', possibleUriChange: false },

@@ -1,8 +1,9 @@
-import { ErrorFactoryService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 
+import alertReporting from '../../../utils/constants/error.alerts'
 import { DeliveryMethod, IsInCityAccount } from '../../types/noris.enums'
 import { NorisConnectionService } from '../noris-connection.service'
 import {
@@ -15,29 +16,33 @@ interface NorisDeliveryMethodsUpdateResult {
   cislo_subjektu: number
 }
 
-const mockQuery = jest.fn()
-const mockInput = jest.fn()
+const mockQuery = vi.fn()
+const mockInput = vi.fn()
 
 const mockRequest = createMock<mssql.Request>({
   query: mockQuery,
   input: mockInput,
 })
 
-jest.mock('mssql', () => ({
-  Request: jest.fn().mockImplementation(() => mockRequest),
-  VarChar: jest.fn().mockImplementation((length: number) => ({ length })),
-  DateTime: jest.fn(),
+vi.mock('mssql', () => ({
+  Request: vi.fn().mockImplementation(function () {
+    return mockRequest
+  }),
+  VarChar: vi.fn().mockImplementation((length: number) => ({ length })),
+  DateTime: vi.fn(),
 }))
 
 describe('NorisDeliveryMethodService', () => {
   let service: NorisDeliveryMethodService
   let connectionService: NorisConnectionService
   let norisValidatorService: NorisValidatorService
+  let errorFactoryService: ErrorFactoryService
 
   beforeEach(async () => {
-    jest.clearAllMocks()
-    jest.restoreAllMocks()
-    jest.mocked(mssql.Request).mockImplementation(() => mockRequest)
+    vi.restoreAllMocks()
+    vi.mocked(mssql.Request).mockImplementation(function () {
+      return mockRequest
+    })
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -46,7 +51,7 @@ describe('NorisDeliveryMethodService', () => {
           provide: NorisConnectionService,
           useValue: createMock<NorisConnectionService>(),
         },
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
         {
           provide: NorisValidatorService,
           useValue: createMock<NorisValidatorService>(),
@@ -57,12 +62,13 @@ describe('NorisDeliveryMethodService', () => {
     service = module.get<NorisDeliveryMethodService>(NorisDeliveryMethodService)
     connectionService = module.get<NorisConnectionService>(NorisConnectionService)
     norisValidatorService = module.get<NorisValidatorService>(NorisValidatorService)
+    errorFactoryService = module.get(ErrorFactoryService)
 
-    jest
-      .spyOn(norisValidatorService, 'validateNorisData')
-      .mockImplementation((schema, data) => (data as unknown[]).map((item) => schema.parse(item)))
+    vi.mocked(norisValidatorService.validateNorisData).mockImplementation((schema, data) =>
+      (data as unknown[]).map((item) => schema.parse(item))
+    )
 
-    jest.spyOn(connectionService, 'withConnection').mockImplementation(async (fn) => {
+    vi.mocked(connectionService.withConnection).mockImplementation(async (fn) => {
       return fn(createMock<mssql.ConnectionPool>())
     })
   })
@@ -149,7 +155,10 @@ describe('NorisDeliveryMethodService', () => {
       } as unknown as UpdateNorisDeliveryMethodsData
 
       await expect(service.updateDeliveryMethods({ data: invalidCityAccountData })).rejects.toThrow(
-        'Date must be provided'
+        errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Date must be provided when delivery method is CITY_ACCOUNT',
+        })
       )
     })
 
@@ -206,9 +215,9 @@ describe('NorisDeliveryMethodService', () => {
         '010366/4554': { deliveryMethod: DeliveryMethod.EDESK },
       } as const
 
-      jest
-        .spyOn(connectionService, 'withConnection')
-        .mockRejectedValue(new Error('Database connection failed'))
+      vi.mocked(connectionService.withConnection).mockRejectedValue(
+        new Error('Database connection failed')
+      )
 
       await expect(service.updateDeliveryMethods({ data: mockData })).rejects.toThrow()
     })
@@ -221,7 +230,7 @@ describe('NorisDeliveryMethodService', () => {
       mockQuery.mockResolvedValueOnce({ recordset: [] })
 
       let callCount = 0
-      jest.spyOn(connectionService, 'withConnection').mockImplementation(async (fn) => {
+      vi.mocked(connectionService.withConnection).mockImplementation(async (fn) => {
         callCount++
         return fn({} as mssql.ConnectionPool)
       })
@@ -241,9 +250,9 @@ describe('NorisDeliveryMethodService', () => {
         .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_345 }] })
         .mockRejectedValueOnce(new Error('Query failed'))
 
-      jest
-        .spyOn(connectionService, 'withConnection')
-        .mockImplementation(async (fn) => fn({} as mssql.ConnectionPool))
+      vi.mocked(connectionService.withConnection).mockImplementation(async (fn) =>
+        fn({} as mssql.ConnectionPool)
+      )
 
       await expect(service.updateDeliveryMethods({ data: mockData })).rejects.toThrow()
     })
@@ -320,7 +329,7 @@ describe('NorisDeliveryMethodService', () => {
           ],
         })
 
-      const executeDeliveryMethodUpdateSpy = jest.spyOn(service, 'executeDeliveryMethodUpdate')
+      const executeDeliveryMethodUpdateSpy = vi.spyOn(service, 'executeDeliveryMethodUpdate')
 
       const result = await service.updateDeliveryMethods({ data: mockData })
 
@@ -415,8 +424,8 @@ describe('NorisDeliveryMethodService', () => {
           })
           .mockResolvedValueOnce({ recordset: [{ ico: '010366/4554' }, { ico: '010366/4555' }] })
 
-        const withConnectionSpy = jest
-          .spyOn(connectionService, 'withConnection')
+        const withConnectionSpy = vi
+          .mocked(connectionService.withConnection)
           .mockImplementation(async (fn) => fn({} as mssql.ConnectionPool))
 
         const result = await service['updateDeliveryMethodsInNoris'](mockData)
@@ -426,6 +435,7 @@ describe('NorisDeliveryMethodService', () => {
       })
 
       it('should handle connection errors during update', async () => {
+        const connectionError = new Error('Database connection failed')
         const mockData = [
           {
             birthNumbers: ['010366/4554'],
@@ -435,12 +445,10 @@ describe('NorisDeliveryMethodService', () => {
           },
         ]
 
-        jest
-          .spyOn(connectionService, 'withConnection')
-          .mockRejectedValue(new Error('Database connection failed'))
+        vi.mocked(connectionService.withConnection).mockRejectedValue(connectionError)
 
-        await expect(service['updateDeliveryMethodsInNoris'](mockData)).rejects.toThrow(
-          'Database connection failed'
+        await expect(service['updateDeliveryMethodsInNoris'](mockData)).rejects.toBe(
+          connectionError
         )
       })
 
@@ -465,9 +473,9 @@ describe('NorisDeliveryMethodService', () => {
           .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_346 }] })
           .mockResolvedValueOnce({ recordset: [{ ico: '010366/4554' }, { ico: '010366/4555' }] })
 
-        jest
-          .spyOn(connectionService, 'withConnection')
-          .mockImplementation(async (fn) => fn({} as mssql.ConnectionPool))
+        vi.mocked(connectionService.withConnection).mockImplementation(async (fn) =>
+          fn({} as mssql.ConnectionPool)
+        )
 
         const result = await service['updateDeliveryMethodsInNoris'](mockData)
 
@@ -572,9 +580,9 @@ describe('NorisDeliveryMethodService', () => {
           recordset: [{ ico: '010366/4554' }, { ico: '010366/4555' }],
         })
 
-        jest
-          .spyOn(connectionService, 'withConnection')
-          .mockImplementation(async (fn) => fn({} as mssql.ConnectionPool))
+        vi.mocked(connectionService.withConnection).mockImplementation(async (fn) =>
+          fn({} as mssql.ConnectionPool)
+        )
 
         const result = await service['getBirthNumbersWithUpdatedDeliveryMethods'](mockData)
 
@@ -591,21 +599,20 @@ describe('NorisDeliveryMethodService', () => {
       })
 
       it('should handle connection errors', async () => {
-        jest
-          .spyOn(connectionService, 'withConnection')
-          .mockRejectedValue(new Error('Database connection failed'))
+        const connectionError = new Error('Database connection failed')
+        vi.mocked(connectionService.withConnection).mockRejectedValue(connectionError)
 
         await expect(
           service['getBirthNumbersWithUpdatedDeliveryMethods']([{ cislo_subjektu: 12_345 }])
-        ).rejects.toThrow('Database connection failed')
+        ).rejects.toBe(connectionError)
       })
 
       it('should trim birth numbers from ico field', async () => {
         mockQuery.mockResolvedValueOnce({ recordset: [{ ico: '  010366/4554  ' }] })
 
-        jest
-          .spyOn(connectionService, 'withConnection')
-          .mockImplementation(async (fn) => fn({} as mssql.ConnectionPool))
+        vi.mocked(connectionService.withConnection).mockImplementation(async (fn) =>
+          fn({} as mssql.ConnectionPool)
+        )
 
         const result = await service['getBirthNumbersWithUpdatedDeliveryMethods']([
           { cislo_subjektu: 12_345 },

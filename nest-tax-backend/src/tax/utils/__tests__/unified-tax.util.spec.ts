@@ -1,4 +1,5 @@
 import { ErrorFactoryService } from '@bratislava/log-nest'
+import type { Mock } from 'vitest'
 
 import {
   DeliveryMethodNamed,
@@ -15,6 +16,7 @@ import {
   GetTaxDetailPureOptions,
   GetTaxDetailPureResponse,
 } from '../../../tax-definitions/taxDefinitionsTypes'
+import alertReporting from '../../../utils/constants/error.alerts'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -33,7 +35,7 @@ import {
 } from '../unified-tax.util'
 
 // Add this mock at the top after imports
-jest.mock('../../../tax-definitions/getTaxDefinitionByType')
+vi.mock('../../../tax-definitions/getTaxDefinitionByType')
 
 /**
  * NORIS `dueDate` per order. Order 1 is not merged into installment row dates (row 1 uses
@@ -381,34 +383,32 @@ function expectEqualAsJsonStringsWithDates(received: object, expected: object) {
 }
 
 describe('UnifiedTaxUtil', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     // Get the actual implementation
-    const actualModule = jest.requireActual<{
+    const actualModule = await vi.importActual<{
       getTaxDefinitionByType: typeof getTaxDefinitionByType
     }>('../../../tax-definitions/getTaxDefinitionByType')
 
     // Reset and setup default mock to use actual implementation
-    ;(getTaxDefinitionByType as jest.Mock).mockImplementation(
+    ;(getTaxDefinitionByType as Mock).mockImplementation(
       actualModule.getTaxDefinitionByType,
     )
   })
 
-  afterEach(() => {
-    jest.clearAllMocks()
-  })
-
   describe('calculateInstallmentAmounts', () => {
-    const missingInstallmentError =
-      new ErrorFactoryService().InternalServerErrorException({
-        errorEnum: CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
-        message: CustomErrorTaxTypesResponseEnum.MISSING_INSTALLMENT_AMOUNTS,
-      })
+    const missingInstallmentError = new ErrorFactoryService({
+      alertReporting,
+    }).InternalServerErrorException({
+      errorEnum: CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
+      message: CustomErrorTaxTypesResponseEnum.MISSING_INSTALLMENT_AMOUNTS,
+    })
 
-    const incorrectCountError =
-      new ErrorFactoryService().InternalServerErrorException({
-        errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-        message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
-      })
+    const incorrectCountError = new ErrorFactoryService({
+      alertReporting,
+    }).InternalServerErrorException({
+      errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+      message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+    })
 
     it('should throw when order 2 is missing (gap in 1..installments.length)', () => {
       const installments = [
@@ -768,7 +768,7 @@ describe('UnifiedTaxUtil', () => {
             today: new Date('2025-01-21 21:00'),
           })
 
-          const expected = createExpectedOutput(jest.fn())
+          const expected = createExpectedOutput(vi.fn())
 
           expectEqualAsJsonStringsWithDates(output, expected)
         })
@@ -1711,7 +1711,9 @@ describe('UnifiedTaxUtil', () => {
       }
 
       expect(() => getTaxDetailPure(input)).toThrow(
-        new ErrorFactoryService().InternalServerErrorException({
+        new ErrorFactoryService({
+          alertReporting,
+        }).InternalServerErrorException({
           errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
           message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
         }),
@@ -1746,7 +1748,9 @@ describe('UnifiedTaxUtil', () => {
       }
 
       expect(() => getTaxDetailPure(input)).toThrow(
-        new ErrorFactoryService().InternalServerErrorException({
+        new ErrorFactoryService({
+          alertReporting,
+        }).InternalServerErrorException({
           errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
           message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
         }),
@@ -1760,7 +1764,9 @@ describe('UnifiedTaxUtil', () => {
       }
 
       expect(() => getTaxDetailPure(input)).toThrow(
-        new ErrorFactoryService().InternalServerErrorException({
+        new ErrorFactoryService({
+          alertReporting,
+        }).InternalServerErrorException({
           errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
           message: 'No installments found for the tax.',
         }),
@@ -1822,20 +1828,16 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     isCancelled: false,
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // Get the actual implementation
-    const actualModule = jest.requireActual<{
+    const actualModule = await vi.importActual<{
       getTaxDefinitionByType: typeof getTaxDefinitionByType
     }>('../../../tax-definitions/getTaxDefinitionByType')
 
     // Reset and setup default mock to use actual implementation
-    ;(getTaxDefinitionByType as jest.Mock).mockImplementation(
+    ;(getTaxDefinitionByType as Mock).mockImplementation(
       actualModule.getTaxDefinitionByType,
     )
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
   })
 
   it('should generate payment for the first installment', () => {
@@ -1873,7 +1875,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
         message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
       }),
@@ -1888,7 +1890,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.AFTER_DUE_DATE,
         message: CustomErrorTaxTypesResponseEnum.AFTER_DUE_DATE,
       }),
@@ -1903,7 +1905,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
         message: CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
       }),
@@ -1932,7 +1934,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
         message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
       }),
@@ -1961,7 +1963,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
         message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
       }),
@@ -1981,21 +1983,21 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
         message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
       }),
     )
   })
 
-  it('should work when threshold is 0', () => {
+  it('should work when threshold is 0', async () => {
     // Get the actual implementation and override just paymentCalendarThreshold
-    const actualModule = jest.requireActual<{
+    const actualModule = await vi.importActual<{
       getTaxDefinitionByType: typeof getTaxDefinitionByType
     }>('../../../tax-definitions/getTaxDefinitionByType')
     const actualDefinition = actualModule.getTaxDefinitionByType(TaxType.DZN)
 
-    ;(getTaxDefinitionByType as jest.Mock).mockReturnValue({
+    ;(getTaxDefinitionByType as Mock).mockReturnValue({
       ...actualDefinition,
       paymentCalendarThreshold: 0,
     })
@@ -2027,7 +2029,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().InternalServerErrorException({
+      new ErrorFactoryService({ alertReporting }).InternalServerErrorException({
         errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         message: 'No installments found for the tax.',
       }),
@@ -2052,7 +2054,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().InternalServerErrorException({
+      new ErrorFactoryService({ alertReporting }).InternalServerErrorException({
         errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
       }),
@@ -2087,7 +2089,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().InternalServerErrorException({
+      new ErrorFactoryService({ alertReporting }).InternalServerErrorException({
         errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
       }),
@@ -2233,7 +2235,7 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
         ],
       })
     }).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
         message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
       }),
@@ -2252,7 +2254,7 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
         ],
       })
     }).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
+      new ErrorFactoryService({ alertReporting }).UnprocessableEntityException({
         errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
         message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
       }),

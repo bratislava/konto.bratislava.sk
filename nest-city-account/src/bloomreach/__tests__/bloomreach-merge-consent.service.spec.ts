@@ -1,9 +1,10 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { Mocked } from 'vitest'
 
 import prismaMock from '../../../test/singleton'
-import { expectObjectContaining } from '../../__tests__/jest-matchers'
+import { expectObjectContaining } from '../../__tests__/matchers'
 import {
   BloomreachCommandName,
   BloomreachOutbox,
@@ -11,6 +12,7 @@ import {
   ConsentEnum,
 } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
+import alertReporting from '../../utils/constants/error.alerts'
 import * as bloomreachTypes from '../bloomreach.types'
 import {
   BloomreachCommandDataKind,
@@ -23,8 +25,8 @@ import { BloomreachOutboxWriterService } from '../bloomreach-outbox-writer.servi
 
 describe('BloomreachMergeConsentService', () => {
   let service: BloomreachMergeConsentService
-  let exportService: jest.Mocked<BloomreachExportService>
-  let outboxWriter: jest.Mocked<BloomreachOutboxWriterService>
+  let exportService: Mocked<BloomreachExportService>
+  let outboxWriter: Mocked<BloomreachOutboxWriterService>
 
   const externalId = 'cognito-new'
   const contactId = 'contact-1'
@@ -77,7 +79,7 @@ describe('BloomreachMergeConsentService', () => {
           useValue: createMock<BloomreachOutboxWriterService>(),
         },
         LineLoggerService,
-        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
       ],
     }).compile()
 
@@ -91,12 +93,8 @@ describe('BloomreachMergeConsentService', () => {
     prismaMock.$queryRaw.mockResolvedValue([])
   })
 
-  afterEach(() => {
-    jest.clearAllMocks()
-  })
-
   it('should skip event commands', async () => {
-    const isBloomreachCustomerDataSpy = jest.spyOn(bloomreachTypes, 'isBloomreachCustomerData')
+    const isBloomreachCustomerDataSpy = vi.spyOn(bloomreachTypes, 'isBloomreachCustomerData')
 
     const result = await service.ensureConsentsSurviveMerge(
       makeEntry({ commandName: BloomreachCommandName.CUSTOMERS_EVENTS })

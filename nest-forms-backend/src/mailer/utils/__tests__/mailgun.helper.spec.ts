@@ -2,9 +2,11 @@ import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Test } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import Handlebars from 'handlebars'
+import type { Mock } from 'vitest'
 
-import { expectStringContaining } from '../../../__tests__/jest-matchers'
+import { expectStringContaining } from '../../../__tests__/matchers'
 import BaConfigService from '../../../config/ba-config.service'
+import alertReporting from '../../../utils/constants/error.alerts'
 import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
 import {
   MailgunErrorsEnum,
@@ -16,25 +18,26 @@ import MailgunHelper from '../mailgun.helper'
 const mockMailgunClient = {
   domains: {
     domainTemplates: {
-      get: jest.fn(),
+      get: vi.fn(),
     },
   },
 }
 
 // Mock for Handlebars.compile
-jest.mock('handlebars', () => ({
-  compile: jest.fn(),
+vi.mock('handlebars', () => ({
+  default: { compile: vi.fn() },
 }))
 
 // Mock for Mailgun
-jest.mock('mailgun.js', () =>
-  jest.fn().mockImplementation(() => ({
-    client: jest.fn().mockReturnValue(mockMailgunClient),
-  })),
-)
+vi.mock('mailgun.js', () => ({
+  default: vi.fn().mockImplementation(function () {
+    return { client: vi.fn().mockReturnValue(mockMailgunClient) }
+  }),
+}))
 
 describe('MailgunHelper', () => {
   let mailgunHelper: MailgunHelper
+  const errorFactory = new ErrorFactoryService({ alertReporting })
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -53,32 +56,11 @@ describe('MailgunHelper', () => {
             olo: { frontendUrl: 'https://olo.sk' },
           },
         },
-        {
-          provide: ErrorFactoryService,
-          useValue: {
-            NotFoundException: jest
-              .fn()
-              .mockImplementation(
-                ({
-                  errorEnum,
-                  message,
-                }: {
-                  errorEnum: string
-                  message: string
-                }) => {
-                  throw new Error(`NotFound: ${errorEnum} - ${message}`)
-                },
-              ),
-          },
-        },
+        { provide: ErrorFactoryService, useValue: errorFactory },
       ],
     }).compile()
 
     mailgunHelper = moduleRef.get<MailgunHelper>(MailgunHelper)
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
   })
 
   describe('constructor', () => {
@@ -202,12 +184,12 @@ describe('MailgunHelper', () => {
       })
 
       // Mock Handlebars.compile
-      const mockCompiledTemplate = jest
+      const mockCompiledTemplate = vi
         .fn()
         .mockReturnValue(
           '<p>Hello John, your application Test Application is being processed.</p>',
         )
-      ;(Handlebars.compile as jest.Mock).mockReturnValue(mockCompiledTemplate)
+      ;(Handlebars.compile as Mock).mockReturnValue(mockCompiledTemplate)
 
       const variables = {
         firstName: 'John',
@@ -242,10 +224,15 @@ describe('MailgunHelper', () => {
         version: null,
       })
 
+      const templateName = 'missing-template'
+
       await expect(
-        mailgunHelper.getFilledTemplate('missing-template', {}),
+        mailgunHelper.getFilledTemplate(templateName, {}),
       ).rejects.toThrow(
-        `NotFound: ${MailgunErrorsEnum.TEMPLATE_NOT_FOUND} - ${MailgunErrorsResponseEnum.TEMPLATE_NOT_FOUND}: missing-template`,
+        errorFactory.NotFoundException({
+          errorEnum: MailgunErrorsEnum.TEMPLATE_NOT_FOUND,
+          message: `${MailgunErrorsResponseEnum.TEMPLATE_NOT_FOUND}: ${templateName}`,
+        }),
       )
     })
   })

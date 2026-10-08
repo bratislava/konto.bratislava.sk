@@ -87,7 +87,7 @@ jobs:
           --health-retries 15
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.sha }}
           fetch-depth: 1
@@ -97,7 +97,7 @@ jobs:
         run: echo "short_sha=${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker build
-        uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
+        uses: bratislava/github-actions/.github/actions/setup-docker-build@7a3c849b65c1edbea5c3a95fd29952ae1f3e1412 # v3.0.1
         with:
           docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
@@ -131,7 +131,7 @@ jobs:
       # hence `allow: network.host` on each step.
       - name: Build validation image
         if: ${{ !inputs.skip_tests }}
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}
@@ -144,7 +144,7 @@ jobs:
 
       - name: Run unit tests
         if: ${{ !inputs.skip_tests }}
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}
@@ -157,7 +157,7 @@ jobs:
 
       - name: Run ESLint
         if: ${{ !inputs.skip_tests }}
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}
@@ -170,7 +170,7 @@ jobs:
 
       - name: Run E2E tests
         if: ${{ !inputs.skip_tests && inputs.e2e_tests }}
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}
@@ -186,7 +186,7 @@ jobs:
       # CI mode: build the final `runner` image, do not push.
       - name: Build final image
         if: ${{ inputs.cluster == '' }}
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}
@@ -199,7 +199,7 @@ jobs:
 
       - name: Verify bootstrap
         if: ${{ !inputs.skip_tests }}
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}
@@ -215,7 +215,7 @@ jobs:
       - name: Check for existing image
         if: ${{ inputs.cluster != '' }}
         id: existing
-        uses: bratislava/github-actions/.github/actions/check-existing-image@beta
+        uses: bratislava/github-actions/.github/actions/check-existing-image@7a3c849b65c1edbea5c3a95fd29952ae1f3e1412 # v3.0.1
         with:
           existing_tag: ${{ inputs.image }}:${{ steps.sha.outputs.short_sha }}
           new_tag: ${{ inputs.image }}:${{ env.CLUSTER_PREFIX }}${{ steps.sha.outputs.short_sha }}
@@ -223,7 +223,7 @@ jobs:
       # Deploy mode: build+push the deployable image when not reused.
       - name: Build deploy image
         if: ${{ inputs.cluster != '' && steps.existing.outputs.found != 'true' }}
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}

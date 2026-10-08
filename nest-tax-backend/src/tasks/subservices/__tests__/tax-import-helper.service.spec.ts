@@ -3,8 +3,16 @@ import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton'
 import { createTestTaxPayer } from '../../../__tests__/factories/taxPayer.factory'
+import {
+  expectAny,
+  expectObjectContaining,
+} from '../../../__tests__/jest-matchers'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
-import { TaxType } from '../../../generated/prisma/client'
+import {
+  Prisma,
+  TaxImportStatus,
+  TaxType,
+} from '../../../generated/prisma/client'
 import { NorisService } from '../../../noris/noris.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
@@ -419,8 +427,8 @@ describe('TaxImportHelperService', () => {
           taxType,
         },
         data: {
-          updatedAt: expect.any(Date) as Date,
-          status: 'NOT_FOUND',
+          updatedAt: expectAny<Date>(Date),
+          status: TaxImportStatus.NOT_FOUND,
         },
       })
     })
@@ -524,8 +532,8 @@ describe('TaxImportHelperService', () => {
           taxType,
         },
         data: {
-          updatedAt: expect.any(Date) as Date,
-          status: 'NOT_FOUND',
+          updatedAt: expectAny<Date>(Date),
+          status: TaxImportStatus.NOT_FOUND,
         },
       })
     })
@@ -558,8 +566,8 @@ describe('TaxImportHelperService', () => {
           taxType,
         },
         data: {
-          updatedAt: expect.any(Date) as Date,
-          status: 'NOT_FOUND',
+          updatedAt: expectAny<Date>(Date),
+          status: TaxImportStatus.NOT_FOUND,
         },
       })
     })
@@ -593,8 +601,8 @@ describe('TaxImportHelperService', () => {
           taxType,
         },
         data: {
-          updatedAt: expect.any(Date) as Date,
-          status: 'NOT_FOUND',
+          updatedAt: expectAny<Date>(Date),
+          status: TaxImportStatus.NOT_FOUND,
         },
       })
     })
@@ -671,6 +679,103 @@ describe('TaxImportHelperService', () => {
       })
     })
 
+    it('should mark birth numbers not found in Noris as NOT_FOUND', async () => {
+      const taxType = TaxType.DZN
+      const birthNumbers = ['123456/7890', '987654/3210']
+      const year = 2024
+      const mockResult: CreateBirthNumbersResponseDto = {
+        birthNumbers: ['123456/7890'],
+        foundInNoris: ['123456/7890'],
+      }
+
+      jest
+        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
+        .mockResolvedValue(mockResult)
+
+      const updateManySpy = jest
+        .spyOn(prismaService.taxImportAttempt, 'updateMany')
+        .mockResolvedValue({ count: 1 })
+
+      await service.prepareTaxes(taxType, birthNumbers, year)
+
+      expect(updateManySpy).toHaveBeenCalledWith({
+        where: {
+          taxPayer: {
+            birthNumber: { in: ['987654/3210'] },
+          },
+          year,
+          taxType,
+        },
+        data: {
+          updatedAt: expectAny<Date>(Date),
+          status: TaxImportStatus.NOT_FOUND,
+        },
+      })
+    })
+
+    it('should mark only birth numbers not found in Noris when processed ones are a subset of found ones', async () => {
+      const taxType = TaxType.DZN
+      const birthNumbers = [
+        '123456/7890',
+        '987654/3210',
+        '111111/2222',
+        '333333/4444',
+      ]
+      const year = 2024
+      const mockResult: CreateBirthNumbersResponseDto = {
+        birthNumbers: ['123456/7890'],
+        foundInNoris: ['123456/7890', '987654/3210', '111111/2222'],
+      }
+
+      jest
+        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
+        .mockResolvedValue(mockResult)
+
+      const updateManySpy = jest
+        .spyOn(prismaService.taxImportAttempt, 'updateMany')
+        .mockResolvedValue({ count: 1 })
+
+      await service.prepareTaxes(taxType, birthNumbers, year)
+
+      expect(updateManySpy).toHaveBeenCalledTimes(1)
+      expect(updateManySpy).toHaveBeenCalledWith({
+        where: {
+          taxPayer: {
+            birthNumber: { in: ['333333/4444'] },
+          },
+          year,
+          taxType,
+        },
+        data: {
+          updatedAt: expectAny<Date>(Date),
+          status: TaxImportStatus.NOT_FOUND,
+        },
+      })
+    })
+
+    it('should not mark NOT_FOUND when all birth numbers are found in Noris', async () => {
+      const taxType = TaxType.DZN
+      const birthNumbers = ['123456/7890', '987654/3210']
+      const year = 2024
+      const mockResult: CreateBirthNumbersResponseDto = {
+        birthNumbers,
+        foundInNoris: birthNumbers,
+      }
+
+      jest
+        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
+        .mockResolvedValue(mockResult)
+
+      const updateManySpy = jest.spyOn(
+        prismaService.taxImportAttempt,
+        'updateMany',
+      )
+
+      await service.prepareTaxes(taxType, birthNumbers, year)
+
+      expect(updateManySpy).not.toHaveBeenCalled()
+    })
+
     it('should complete successfully even if noris call succeeds', async () => {
       const taxType = TaxType.DZN
       const birthNumbers = ['123456/7890', '987654/3210']
@@ -686,6 +791,119 @@ describe('TaxImportHelperService', () => {
       await expect(
         service.prepareTaxes(taxType, birthNumbers, year),
       ).resolves.not.toThrow()
+    })
+  })
+
+  describe('markNotFoundInNoris', () => {
+    const taxType = TaxType.KO
+    const year = 2024
+
+    it('should mark only birth numbers missing from foundInNoris as NOT_FOUND', async () => {
+      const updateManySpy = jest
+        .spyOn(prismaService.taxImportAttempt, 'updateMany')
+        .mockResolvedValue({ count: 2 })
+
+      await service['markNotFoundInNoris'](
+        taxType,
+        ['123456/7890', '987654/3210', '111111/2222'],
+        year,
+        ['987654/3210'],
+      )
+
+      expect(updateManySpy).toHaveBeenCalledTimes(1)
+      expect(updateManySpy).toHaveBeenCalledWith({
+        where: {
+          taxPayer: {
+            birthNumber: { in: ['123456/7890', '111111/2222'] },
+          },
+          year,
+          taxType,
+        },
+        data: {
+          updatedAt: expectAny<Date>(Date),
+          status: TaxImportStatus.NOT_FOUND,
+        },
+      })
+    })
+
+    it('should mark all birth numbers as NOT_FOUND when foundInNoris is omitted', async () => {
+      const updateManySpy = jest
+        .spyOn(prismaService.taxImportAttempt, 'updateMany')
+        .mockResolvedValue({ count: 2 })
+
+      await service['markNotFoundInNoris'](
+        taxType,
+        ['123456/7890', '987654/3210'],
+        year,
+      )
+
+      expect(updateManySpy).toHaveBeenCalledWith(
+        expectObjectContaining<Prisma.TaxImportAttemptUpdateManyArgs>({
+          where: {
+            taxPayer: {
+              birthNumber: { in: ['123456/7890', '987654/3210'] },
+            },
+            year,
+            taxType,
+          },
+        }),
+      )
+    })
+
+    it('should ignore foundInNoris entries that were not requested', async () => {
+      const updateManySpy = jest
+        .spyOn(prismaService.taxImportAttempt, 'updateMany')
+        .mockResolvedValue({ count: 1 })
+
+      await service['markNotFoundInNoris'](taxType, ['123456/7890'], year, [
+        '999999/9999',
+      ])
+
+      expect(updateManySpy).toHaveBeenCalledWith(
+        expectObjectContaining<Prisma.TaxImportAttemptUpdateManyArgs>({
+          where: expectObjectContaining<Prisma.TaxImportAttemptWhereInput>({
+            taxPayer: { birthNumber: { in: ['123456/7890'] } },
+          }),
+        }),
+      )
+    })
+
+    it('should not update when all birth numbers were found in Noris', async () => {
+      const updateManySpy = jest.spyOn(
+        prismaService.taxImportAttempt,
+        'updateMany',
+      )
+
+      await service['markNotFoundInNoris'](
+        taxType,
+        ['123456/7890', '987654/3210'],
+        year,
+        ['987654/3210', '123456/7890'],
+      )
+
+      expect(updateManySpy).not.toHaveBeenCalled()
+    })
+
+    it('should not update when birth numbers are empty', async () => {
+      const updateManySpy = jest.spyOn(
+        prismaService.taxImportAttempt,
+        'updateMany',
+      )
+
+      await service['markNotFoundInNoris'](taxType, [], year, [])
+
+      expect(updateManySpy).not.toHaveBeenCalled()
+    })
+
+    it('should propagate database errors', async () => {
+      const error = new Error('Database update failed')
+      jest
+        .spyOn(prismaService.taxImportAttempt, 'updateMany')
+        .mockRejectedValue(error)
+
+      await expect(
+        service['markNotFoundInNoris'](taxType, ['123456/7890'], year, []),
+      ).rejects.toThrow(error)
     })
   })
 })

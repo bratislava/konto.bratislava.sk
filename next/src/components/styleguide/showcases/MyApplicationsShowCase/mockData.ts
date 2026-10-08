@@ -5,12 +5,23 @@ import {
   GetFormResponseDtoErrorEnum,
   GetFormResponseDtoStateEnum,
   GetFormsResponseDto,
-  GetFormsResponseDtoItemsInner as GetFormResponseSimpleDto,
+  GetFormsResponseDtoItemsInner,
   GinisDocumentDetailResponseDto,
 } from 'openapi-clients/forms'
 
+import { getMyApplicationsCountQueryKey } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationsCountFetcher'
+import {
+  getMyApplicationsQueryKey,
+  myApplicationsDefaultFilters,
+} from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationsFetcher'
+import {
+  getFormResponseStatesByMyApplicationState,
+  MY_APPLICATION_STATE_FILTERS,
+  MY_APPLICATION_STATES,
+  MyApplicationState,
+  MyApplicationStateFilter,
+} from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationStates'
 import { SelectOption } from '@/src/components/widget-components/SelectField/SelectField'
-import { ApplicationsListVariant } from '@/src/pages/moje-ziadosti'
 
 // ─── Shared showcase data ───
 
@@ -21,93 +32,79 @@ export const formDefinitionSlugTitleMap: Record<string, string> = {
   [MOCK_FORM_SLUG]: MOCK_FORM_CATEGORY,
 }
 
-export const emailFormSlugs: string[] = []
-
 // ─── List page (MyApplicationsPageContent) ───
 
-export const sectionOptions: SelectOption[] = [
-  { value: 'SENT', label: 'SENT' },
-  { value: 'SENDING', label: 'SENDING' },
-  { value: 'DRAFT', label: 'DRAFT' },
-]
+export const sectionOptions: SelectOption[] = MY_APPLICATION_STATE_FILTERS.map((filter) => ({
+  value: filter,
+  label: filter,
+}))
 
-export type ListScenario = 'withItems' | 'empty'
+export type ListScenario = 'withItems' | 'empty' | 'error'
 
 export const listScenarioOptions: SelectOption[] = [
   { value: 'withItems', label: 'With applications' },
   { value: 'empty', label: 'No applications found' },
+  { value: 'error', label: 'Failed to load (e.g. 500 from backend)' },
 ]
 
 type SimpleItemDraft = {
-  state: GetFormResponseDtoStateEnum
+  state: FormState
   error: GetFormResponseDtoErrorEnum
   subject: string
+  // Drafts can have it set too, if a send attempt failed and the form reverted to DRAFT
+  formSentAt?: string
 }
 
 // Representative items per section, covering the states the section can display.
-const sectionItemDrafts: Record<ApplicationsListVariant, SimpleItemDraft[]> = {
+const sectionItemDrafts: Record<MyApplicationState, SimpleItemDraft[]> = {
   SENT: [
     {
-      state: GetFormResponseDtoStateEnum.DeliveredNases,
+      state: FormState.DeliveredNases,
       error: GetFormResponseDtoErrorEnum.None,
       subject: 'Odoslané – doručené do NASES',
     },
     {
-      state: GetFormResponseDtoStateEnum.DeliveredGinis,
+      state: FormState.DeliveredGinis,
       error: GetFormResponseDtoErrorEnum.None,
       subject: 'Odoslané – doručené do GINIS',
     },
     {
-      state: GetFormResponseDtoStateEnum.Processing,
+      state: FormState.Processing,
       error: GetFormResponseDtoErrorEnum.None,
       subject: 'Spracováva sa na úrade',
     },
     {
-      state: GetFormResponseDtoStateEnum.Finished,
+      state: FormState.Finished,
       error: GetFormResponseDtoErrorEnum.None,
       subject: 'Vybavené',
     },
     {
-      state: GetFormResponseDtoStateEnum.Rejected,
+      state: FormState.Rejected,
       error: GetFormResponseDtoErrorEnum.None,
       subject: 'Zamietnuté',
     },
-  ],
-  SENDING: [
     {
-      state: GetFormResponseDtoStateEnum.Queued,
-      error: GetFormResponseDtoErrorEnum.None,
-      subject: 'Prebieha kontrola na vírusy',
-    },
-    {
-      state: GetFormResponseDtoStateEnum.Error,
-      error: GetFormResponseDtoErrorEnum.InfectedFiles,
-      subject: 'Chyba – infikované súbory',
-    },
-    {
-      state: GetFormResponseDtoStateEnum.Error,
+      state: FormState.Error,
       error: GetFormResponseDtoErrorEnum.NasesSendError,
-      subject: 'Chyba – odoslanie zlyhalo',
+      subject: 'Chyba pri spracovaní',
     },
   ],
   DRAFT: [
     {
-      state: GetFormResponseDtoStateEnum.Draft,
+      state: FormState.Draft,
       error: GetFormResponseDtoErrorEnum.None,
       subject: 'Rozpracovaný koncept',
     },
     {
-      state: GetFormResponseDtoStateEnum.Draft,
-      error: GetFormResponseDtoErrorEnum.None,
-      subject: 'Ďalší rozpracovaný koncept',
+      state: FormState.Draft,
+      error: GetFormResponseDtoErrorEnum.InfectedFiles,
+      subject: 'Koncept vrátený po neúspešnom odoslaní',
+      formSentAt: '2024-04-17T09:30:00.000Z',
     },
   ],
 }
 
-const createSimpleItem = (
-  draft: SimpleItemDraft,
-  index: number,
-): GetFormResponseSimpleDto => {
+const createSimpleItem = (draft: SimpleItemDraft, index: number): GetFormsResponseDtoItemsInner => {
   const base = {
     id: `mock-application-${index}`,
     createdAt: '2024-04-15T08:48:15.346Z',
@@ -119,38 +116,65 @@ const createSimpleItem = (
   }
 
   return draft.state === FormState.Draft
-    ? { ...base, state: FormState.Draft, formSentAt: null }
-    : { ...base, state: draft.state, formSentAt: '2024-04-18T10:00:00.000Z' }
+    ? { ...base, state: FormState.Draft, formSentAt: draft.formSentAt ?? null }
+    : {
+        ...base,
+        state: draft.state,
+        formSentAt: draft.formSentAt ?? '2024-04-18T10:00:00.000Z',
+      }
+}
+
+const getSectionItemDrafts = (section: MyApplicationStateFilter): SimpleItemDraft[] =>
+  section === 'ALL'
+    ? MY_APPLICATION_STATES.flatMap((state) => sectionItemDrafts[state])
+    : sectionItemDrafts[section]
+
+// Mirrors `meta.countByState` from the backend, which counts the forms in all the states
+// regardless of the currently selected section.
+const createCountByState = (scenario: ListScenario): Record<string, number> => {
+  if (scenario !== 'withItems') {
+    return {}
+  }
+
+  const countByState: Record<string, number> = {}
+  getSectionItemDrafts('ALL').forEach((draft) => {
+    countByState[draft.state] = (countByState[draft.state] ?? 0) + 1
+  })
+
+  return countByState
 }
 
 export const createMockApplications = (
-  section: ApplicationsListVariant,
+  section: MyApplicationStateFilter,
   scenario: ListScenario,
 ): GetFormsResponseDto => {
   const items =
-    scenario === 'empty'
-      ? []
-      : sectionItemDrafts[section].map((draft, i) => createSimpleItem(draft, i))
+    scenario === 'withItems'
+      ? getSectionItemDrafts(section).map((draft, i) => createSimpleItem(draft, i))
+      : []
 
   return {
     currentPage: 1,
     pagination: 10,
     countPages: 1,
     items,
-    meta: { countByState: {} },
+    meta: { countByState: createCountByState(scenario) },
   }
 }
 
-// QueryClient seeded with the section counts (used by useTotalCount in the tab labels).
+// QueryClient seeded with the list itself and the section counts shown in the tab labels.
 // staleTime: Infinity keeps the seeded data fresh so the real API is never called.
 export const createMockQueryClient = (
   applications: GetFormsResponseDto,
-  section: ApplicationsListVariant,
+  section: MyApplicationStateFilter,
+  scenario: ListScenario,
 ): QueryClient => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         retry: false,
+        // Keeps the seeded error state, otherwise the query would call the real API on mount
+        retryOnMount: false,
         staleTime: Infinity,
         refetchOnMount: false,
         refetchOnWindowFocus: false,
@@ -159,16 +183,38 @@ export const createMockQueryClient = (
     },
   })
 
-  const counts: Record<ApplicationsListVariant, number> = {
-    SENT: 12,
-    SENDING: 2,
-    DRAFT: 3,
-  }
-  // Reflect the currently shown section's real item count.
-  counts[section] = applications.items.length
-  ;(['SENT', 'SENDING', 'DRAFT'] as const).forEach((variant) => {
-    queryClient.setQueryData([`ApplicationsCount_${variant}`, variant], counts[variant])
+  const listQueryKey = getMyApplicationsQueryKey({
+    ...myApplicationsDefaultFilters,
+    myApplicationState: section,
+    page: 1,
   })
+
+  if (scenario === 'error') {
+    // Simulates both requests failing, e.g. backend throwing FORM_SENT_AT_MISSING_ERROR
+    const error = new Error('Request failed with status code 500')
+    ;[listQueryKey, getMyApplicationsCountQueryKey()].forEach((queryKey) => {
+      const query = queryClient.getQueryCache().build(queryClient, { queryKey })
+      query.setState({ ...query.state, status: 'error', error, errorUpdatedAt: Date.now() })
+    })
+
+    return queryClient
+  }
+
+  queryClient.setQueryData(listQueryKey, applications)
+
+  // Derived from the mocked `meta.countByState` the same way `myApplicationsCountFetcher` does it,
+  // so the tab counts always match the mocked items.
+  const { countByState } = applications.meta
+  const counts = Object.fromEntries(
+    MY_APPLICATION_STATE_FILTERS.map((myApplicationState) => [
+      myApplicationState,
+      getFormResponseStatesByMyApplicationState(myApplicationState).reduce(
+        (count, formState) => count + (countByState[formState] ?? 0),
+        0,
+      ),
+    ]),
+  ) as Record<MyApplicationStateFilter, number>
+  queryClient.setQueryData(getMyApplicationsCountQueryKey(), counts)
 
   return queryClient
 }

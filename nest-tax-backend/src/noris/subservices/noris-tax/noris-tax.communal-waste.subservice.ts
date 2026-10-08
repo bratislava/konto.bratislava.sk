@@ -219,7 +219,6 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
 
     // Process new taxes
     await this.processNorisTaxData(norisData, year, {
-      ...userDataFromCityAccount,
       suppressEmail: false,
     })
 

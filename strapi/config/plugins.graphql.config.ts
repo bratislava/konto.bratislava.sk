@@ -1,3 +1,5 @@
+import operationLoggerPlugin from '../src/apollo/operationLoggerPlugin'
+
 const graphqlConfig = {
   generateArtifacts: true,
   artifacts: {
@@ -5,6 +7,9 @@ const graphqlConfig = {
     schema: true,
   },
   defaultLimit: 100,
+  apolloServer: {
+    plugins: [operationLoggerPlugin],
+  },
 }
 
 export default graphqlConfig

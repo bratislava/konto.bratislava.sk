@@ -16,6 +16,7 @@ import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import BaConfigService from '../../../../config/ba-config.service'
 import {
   TaxAdministrator,
+  TaxImportStatus,
   TaxPayer,
   TaxType,
 } from '../../../../generated/prisma/client'
@@ -441,6 +442,42 @@ describe('NorisTaxRealEstateSubservice', () => {
         [],
       )
       expect(result).toEqual({ birthNumbers: [] })
+    })
+
+    it('should create or update READY_TO_IMPORT attempts in prepare mode', async () => {
+      prismaMock.taxPayer.findMany.mockResolvedValue([
+        createTestTaxPayer({ id: 1, birthNumber: '123456/7890' }),
+      ])
+
+      const result = await service.processNorisTaxData(mockNorisData, 2023, {
+        prepareOnly: true,
+        suppressEmail: true,
+      })
+
+      expect(prismaMock.taxImportAttempt.createMany).toHaveBeenCalledWith({
+        data: [
+          {
+            taxPayerId: 1,
+            status: TaxImportStatus.READY_TO_IMPORT,
+            year: 2023,
+            taxType: TaxType.DZN,
+          },
+        ],
+        skipDuplicates: true,
+      })
+      expect(prismaMock.taxImportAttempt.updateMany).toHaveBeenCalledWith({
+        where: {
+          taxPayerId: { in: [1] },
+          year: 2023,
+          taxType: TaxType.DZN,
+          status: {
+            in: [TaxImportStatus.FAILED, TaxImportStatus.NOT_FOUND],
+          },
+        },
+        data: { status: TaxImportStatus.READY_TO_IMPORT },
+      })
+      expect(cityAccountSubservice.getUserDataAdminBatch).not.toHaveBeenCalled()
+      expect(result).toEqual({ birthNumbers: ['123456/7890'] })
     })
   })
 

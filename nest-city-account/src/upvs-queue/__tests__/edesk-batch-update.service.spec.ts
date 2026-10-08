@@ -66,7 +66,12 @@ describe('EdeskBatchUpdateService', () => {
         {
           physicalEntityId: null,
           inputUri: 'rc://sk/ext',
-          data: { status: 'activated', upvs: {} },
+          data: {
+            status: 'activated',
+            type: 'natural_person',
+            natural_person: { given_names: ['Ján'], family_names: [{ value: 'Novák' }] },
+            upvs: {},
+          },
         },
       ],
       failed: [],
@@ -84,7 +89,11 @@ describe('EdeskBatchUpdateService', () => {
     expect(prismaMock.externalEdeskCheck.update).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { uri: 'rc://sk/ext' },
-        data: expectObjectContaining({ queueStatus: QueueItemStatusEnum.COMPLETED }),
+        data: expectObjectContaining({
+          queueStatus: QueueItemStatusEnum.COMPLETED,
+          edeskGivenName: 'Ján',
+          edeskFamilyName: 'Novák',
+        }),
       })
     )
     expect(result).toEqual({ highPriorityProcessed: 1, externalProcessed: 1 })

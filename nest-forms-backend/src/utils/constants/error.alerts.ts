@@ -11,6 +11,7 @@ import { NasesErrorsEnum } from '../../nases/nases.errors.enum'
 import { ScannerClientErrorsEnum } from '../../scanner-client/scanner-client.errors.enum'
 import { SignerErrorsEnum } from '../../signer/signer.errors.enum'
 import { StatusErrorsEnum } from '../../status/errors/status.errors.enum'
+import { StrapiErrorsEnum } from '../../strapi/strapi.errors.enum'
 import { SharepointErrorsEnum } from '../subservices/dtos/sharepoint.errors.enum'
 
 /**
@@ -56,5 +57,6 @@ export default [
   FormsErrorsEnum.FORM_NOT_REGISTERED_IN_SLOVENSKO_SK,
   GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
   CityAccountErrorsEnum.GET_USER_ERROR,
+  StrapiErrorsEnum.FEEDBACK_LINK_FETCH_ERROR,
   ...Object.values(StatusErrorsEnum),
 ] as string[]

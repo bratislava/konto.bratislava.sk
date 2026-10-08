@@ -6,6 +6,7 @@ import Mailgun from 'mailgun.js'
 import { Interfaces, TemplateQuery } from 'mailgun.js/definitions'
 
 import BaConfigService from '../../config/ba-config.service'
+import StrapiService from '../../strapi/strapi.service'
 import {
   SendEmailInputDto,
   SendEmailVariablesDto,
@@ -26,6 +27,7 @@ export default class MailgunHelper {
   constructor(
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService,
+    private readonly strapiService: StrapiService,
   ) {
     const mailgun = new Mailgun(FormData)
     this.mailgunClient = mailgun.client({
@@ -35,46 +37,49 @@ export default class MailgunHelper {
     })
   }
 
-  createEmailVariables(data: SendEmailInputDto): SendEmailVariablesDto {
+  async createEmailVariables(
+    data: SendEmailInputDto,
+  ): Promise<SendEmailVariablesDto> {
     const mailgunConfig = getMailgunConfig(this.baConfigService)
     const response: SendEmailVariablesDto = {}
-    Object.entries(mailgunConfig[data.template].variables).forEach(
-      ([key, val]) => {
-        switch (val.type) {
-          case MailgunConfigVariableType.PARAMETER: {
-            const base =
-              response[key as keyof SendEmailVariablesDto] || val.value
-            let baseStr = String(base)
-            Object.entries(data.data).forEach(([k, v]) => {
-              if (v) {
-                baseStr = baseStr.replace(`{{${k}}}`, v.toString())
-              }
-            })
-            response[key as keyof SendEmailVariablesDto] = baseStr
-            break
-          }
-
-          case MailgunConfigVariableType.SELECT:
-            if (
-              typeof val.value === 'object' &&
-              Object.prototype.hasOwnProperty.call(val.value, data.data.slug)
-            ) {
-              response[key as keyof SendEmailVariablesDto] =
-                val.value?.[data.data.slug as keyof typeof val.value]
+    await Promise.all(
+      Object.entries(mailgunConfig[data.template].variables).map(
+        async ([key, val]) => {
+          switch (val.type) {
+            case MailgunConfigVariableType.PARAMETER: {
+              let baseStr =
+                response[key as keyof SendEmailVariablesDto] || val.value
+              Object.entries(data.data).forEach(([k, v]) => {
+                if (v) {
+                  baseStr = baseStr.replace(`{{${k}}}`, v.toString())
+                }
+              })
+              response[key as keyof SendEmailVariablesDto] = baseStr
+              break
             }
 
-            break
+            case MailgunConfigVariableType.FEEDBACK_LINK: {
+              const feedbackLink = await this.strapiService.getFeedbackLink(
+                data.data.slug,
+              )
+              if (feedbackLink) {
+                response[key as keyof SendEmailVariablesDto] = feedbackLink
+              }
 
-          case MailgunConfigVariableType.STRING:
-            response[key as keyof SendEmailVariablesDto] = val.value
+              break
+            }
 
-            break
+            case MailgunConfigVariableType.STRING:
+              response[key as keyof SendEmailVariablesDto] = val.value
 
-          default:
-            response[key as keyof SendEmailVariablesDto] = undefined
-          // No default
-        }
-      },
+              break
+
+            default:
+              response[key as keyof SendEmailVariablesDto] = undefined
+            // No default
+          }
+        },
+      ),
     )
     return response
   }

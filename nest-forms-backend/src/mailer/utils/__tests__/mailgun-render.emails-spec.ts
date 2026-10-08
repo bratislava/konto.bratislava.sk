@@ -1,7 +1,9 @@
 import { ErrorFactoryService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import BaConfigService from '../../../config/ba-config.service'
+import StrapiService from '../../../strapi/strapi.service'
 import { getMailgunConfig } from '../../mailgun.constants'
 import MailgunHelper from '../mailgun.helper'
 import { testEmailDefinitions } from './utils/emailDefinitions'
@@ -12,7 +14,12 @@ describe('Mailgun Emails', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [MailgunHelper, ErrorFactoryService, BaConfigService],
+      providers: [
+        MailgunHelper,
+        ErrorFactoryService,
+        BaConfigService,
+        { provide: StrapiService, useValue: createMock<StrapiService>() },
+      ],
     }).compile()
 
     mailgunHelper = module.get<MailgunHelper>(MailgunHelper)
@@ -27,7 +34,7 @@ describe('Mailgun Emails', () => {
 
         const rendered = await mailgunHelper.getFilledTemplate(
           mailgunConfig[emailDefinition.template].template,
-          mailgunHelper.createEmailVariables(emailDefinition),
+          await mailgunHelper.createEmailVariables(emailDefinition),
         )
         expect(rendered).toMatchSnapshot()
       })

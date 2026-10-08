@@ -54,7 +54,7 @@ export default class MailgunService implements Mailer {
       const mailgunConfig = getMailgunConfig(this.baConfigService)
       const renderLocally = !!mailgunConfig[data.template].renderLocally
       const { template } = mailgunConfig[data.template]
-      const variables = this.mailgunHelper.createEmailVariables(data)
+      const variables = await this.mailgunHelper.createEmailVariables(data)
 
       const emailContent = renderLocally
         ? {

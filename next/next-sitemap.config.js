@@ -21,6 +21,14 @@ module.exports = {
   generateRobotsTxt: false,
   changefreq: 'weekly',
   sitemapSize: 5000,
+  exclude: [
+    '/get-jwt',
+    '/forms-playground',
+    '/forms-iframe-test',
+    '/oauth',
+    '/nases/login',
+    '/sso',
+  ],
   // generate paths dynamically from Strapi
   additionalPaths: async (config) => {
     const fetchMunicipalServicePaths = async () => {

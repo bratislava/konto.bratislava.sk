@@ -28,6 +28,14 @@ module.exports = {
     '/oauth',
     '/nases/login',
     '/sso',
+    '/styleguide',
+    '/oauth-potvrdenie',
+    '/404',
+    '/odhlasenie',
+    '/moj-profil',
+    '/moje-ziadosti',
+    '/zmena-emailu',
+    '/zmena-hesla',
   ],
   // generate paths dynamically from Strapi
   additionalPaths: async (config) => {

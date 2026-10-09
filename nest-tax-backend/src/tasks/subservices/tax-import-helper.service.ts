@@ -117,7 +117,7 @@ export default class TaxImportHelperService {
 
     // Then get existing users for the remaining capacity.
     // Check TaxImportAttempt table instead of Tax table
-    // In the preparation phase: find users without any attempt record (not yet prepared)
+    // In the preparation phase: find users without an attempt record, or with a NOT_FOUND / FAILED one
     // In the import phase: prioritize users with READY_TO_IMPORT status
     let existingTaxPayers: { birthNumber: string }[]
     if (isImportPhase) {
@@ -160,8 +160,8 @@ export default class TaxImportHelperService {
           WHERE
             -- Exclude newly created users (they're handled separately)
               NOT (tp."createdAt" = tp."updatedAt")
-            -- In prepare phase: only users who weren't attempted yet or weren't found in Noris
-            AND (tia.id IS NULL OR tia.status = 'NOT_FOUND'::"TaxImportStatus")
+            -- In prepare phase: only users who weren't attempted yet, weren't found in Noris, or failed
+            AND (tia.id IS NULL OR tia.status IN ('NOT_FOUND'::"TaxImportStatus", 'FAILED'::"TaxImportStatus"))
           ORDER BY tia."updatedAt" NULLS FIRST,
                    tp."updatedAt"
           LIMIT ${remainingCapacity}

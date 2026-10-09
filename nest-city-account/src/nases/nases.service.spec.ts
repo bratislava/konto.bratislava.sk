@@ -14,7 +14,7 @@ import BaConfigService from '../config/ba-config.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { VerificationErrorsEnum } from '../user-verification/verification.errors.enum'
 import { CustomErrorEnums } from '../utils/guards/dtos/error.dto'
-import { NasesService } from './nases.service'
+import { getUpvsNames, NasesService } from './nases.service'
 
 describe('NasesService', () => {
   let service: NasesService
@@ -404,5 +404,32 @@ describe('NasesService', () => {
 
       expect(prismaMock.identityLookupRejection.upsert).not.toHaveBeenCalled()
     })
+  })
+})
+
+describe('getUpvsNames', () => {
+  it('joins given names and prefixed family names', () => {
+    expect(
+      getUpvsNames({
+        type: 'natural_person',
+        natural_person: {
+          given_names: ['Ján', 'Peter'],
+          family_names: [{ value: 'Novák' }, { prefix: 'von', value: 'Braun' }],
+        },
+      })
+    ).toEqual({ givenName: 'Ján Peter', familyName: 'Novák von Braun' })
+  })
+
+  it('returns nulls when names are missing', () => {
+    expect(
+      getUpvsNames({
+        type: 'natural_person',
+        natural_person: { given_names: [], family_names: [] },
+      })
+    ).toEqual({ givenName: null, familyName: null })
+  })
+
+  it('returns nulls for a corporate body', () => {
+    expect(getUpvsNames({ type: 'legal_entity' })).toEqual({ givenName: null, familyName: null })
   })
 })

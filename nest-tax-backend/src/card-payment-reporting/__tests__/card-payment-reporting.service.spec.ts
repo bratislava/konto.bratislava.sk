@@ -273,6 +273,10 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
   })
 
   describe('generateAndSendPaymentReport', () => {
+    // The service skips files older than 180 days, so the fixtures must be recent
+    const fileDate = dayjs().subtract(10, 'day').format('YYMMDD')
+    const csvFileName = `AH_DATA_1_2_3_${fileDate}1234.csv`
+
     beforeEach(() => {
       mockBaConfigService.cardPaymentReporting = {
         ico: '00603481',
@@ -303,12 +307,12 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
         async (sftpPath: string) => {
           if (sftpPath === '7322226495/oms/cz') {
             return Promise.resolve([
-              { name: 'AH_DATA_1_2_3_2604101234.csv', content: dznCsv },
+              { name: csvFileName, content: dznCsv },
             ])
           }
           if (sftpPath === '7322257895/oms/cz') {
             return Promise.resolve([
-              { name: 'AH_DATA_1_2_3_2604101234.csv', content: pkoCsv },
+              { name: csvFileName, content: pkoCsv },
             ])
           }
           return Promise.resolve([])
@@ -342,9 +346,9 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
       expect(dznCall).toBeDefined()
       expect(pkoCall).toBeDefined()
       expect(dznCall?.[3]).toHaveLength(1)
-      expect(dznCall?.[3]?.[0].filename).toBe('st1pbr24_260410.txt')
+      expect(dznCall?.[3]?.[0].filename).toBe(`st1pbr24_${fileDate}.txt`)
       expect(pkoCall?.[3]).toHaveLength(1)
-      expect(pkoCall?.[3]?.[0].filename).toBe('st1pbr26_260410.txt')
+      expect(pkoCall?.[3]?.[0].filename).toBe(`st1pbr26_${fileDate}.txt`)
     })
 
     it('should generate correct file content with proper header for each report type', async () => {
@@ -356,12 +360,12 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
         async (sftpPath: string) => {
           if (sftpPath === '7322226495/oms/cz') {
             return Promise.resolve([
-              { name: 'AH_DATA_1_2_3_2604101234.csv', content: csv },
+              { name: csvFileName, content: csv },
             ])
           }
           if (sftpPath === '7322257895/oms/cz') {
             return Promise.resolve([
-              { name: 'AH_DATA_1_2_3_2604101234.csv', content: csv },
+              { name: csvFileName, content: csv },
             ])
           }
           return Promise.resolve([])
@@ -393,12 +397,12 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
         async (sftpPath: string) => {
           if (sftpPath === '7322226495/oms/cz') {
             return Promise.resolve([
-              { name: 'AH_DATA_1_2_3_2604101234.csv', content: csv },
+              { name: csvFileName, content: csv },
             ])
           }
           if (sftpPath === '7322257895/oms/cz') {
             return Promise.resolve([
-              { name: 'AH_DATA_1_2_3_2604101234.csv', content: csv },
+              { name: csvFileName, content: csv },
             ])
           }
           return Promise.resolve([])
@@ -430,12 +434,12 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
         async (sftpPath: string) => {
           if (sftpPath === '7322226495/oms/cz') {
             return Promise.resolve([
-              { name: 'dzn_file_2604101234.csv', content: csv },
+              { name: `dzn_file_${fileDate}1234.csv`, content: csv },
             ])
           }
           if (sftpPath === '7322257895/oms/cz') {
             return Promise.resolve([
-              { name: 'pko_file_2604101234.csv', content: csv },
+              { name: `pko_file_${fileDate}1234.csv`, content: csv },
             ])
           }
           return Promise.resolve([])
@@ -446,8 +450,8 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
 
       expect(mockPrismaService.csvFile.createMany).toHaveBeenCalledWith({
         data: expect.arrayContaining([
-          { name: 'dzn_file_2604101234.csv', taxType: 'DZN' },
-          { name: 'pko_file_2604101234.csv', taxType: 'KO' },
+          { name: `dzn_file_${fileDate}1234.csv`, taxType: 'DZN' },
+          { name: `pko_file_${fileDate}1234.csv`, taxType: 'KO' },
         ]) as Prisma.CsvFileCreateManyInput[],
       })
     })
@@ -492,7 +496,7 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
         async (sftpPath: string) => {
           if (sftpPath === '7322257895/oms/cz') {
             return Promise.resolve([
-              { name: 'AH_DATA_1_2_3_2604101234.csv', content: csv },
+              { name: csvFileName, content: csv },
             ])
           }
           return Promise.resolve([])
@@ -511,7 +515,34 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
 
       expect(dznCall?.[3]).toHaveLength(0)
       expect(pkoCall?.[3]).toHaveLength(1)
-      expect(pkoCall?.[3]?.[0].filename).toBe('st1pbr26_260410.txt')
+      expect(pkoCall?.[3]?.[0].filename).toBe(`st1pbr26_${fileDate}.txt`)
+    })
+
+    it('should skip files older than 180 days', async () => {
+      const oldFileDate = dayjs().subtract(181, 'day').format('YYMMDD')
+      const csv = makeCsvFileContent([
+        makePosRow({ orderId: '1111111111111111' }),
+      ])
+
+      mockSftpFileSubservice.getNewFiles.mockResolvedValue([
+        { name: `AH_DATA_1_2_3_${oldFileDate}1234.csv`, content: csv },
+      ])
+
+      await service.generateAndSendPaymentReport(['test@example.com'])
+
+      // The old file is returned for both DZN and KO, so both reports end up empty
+      expect(mockEmailSubservice.send).toHaveBeenCalledWith(
+        ['test@example.com'],
+        'Report platieb kartou - DZN',
+        'Dnes nie je čo reportovať.',
+        [],
+      )
+      expect(mockEmailSubservice.send).toHaveBeenCalledWith(
+        ['test@example.com'],
+        'Report platieb kartou - KO',
+        'Dnes nie je čo reportovať.',
+        [],
+      )
     })
   })
 })

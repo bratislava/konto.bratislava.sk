@@ -84,6 +84,12 @@ export default class BaConfig {
     }
   }
 
+  get cityAccountStrapi() {
+    return {
+      url: this.validatedConfig.CITY_ACCOUNT_STRAPI_URL,
+    }
+  }
+
   get scannerBackend() {
     return {
       url: this.validatedConfig.NEST_CLAMAV_SCANNER,

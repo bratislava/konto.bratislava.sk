@@ -47,7 +47,7 @@ export default class OloMailerService implements Mailer {
       const mailgunConfig = getMailgunConfig(this.baConfigService)
       const mailBody = await this.mailgunHelper.getFilledTemplate(
         mailgunConfig[data.template].template,
-        this.mailgunHelper.createEmailVariables(data),
+        await this.mailgunHelper.createEmailVariables(data),
       )
       await this.oloTransporter.sendMail({
         from: `OLO <${emailFrom}>`,

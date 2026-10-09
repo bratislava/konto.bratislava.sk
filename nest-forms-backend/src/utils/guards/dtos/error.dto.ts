@@ -13,6 +13,7 @@ import { NasesErrorsEnum } from '../../../nases/nases.errors.enum'
 import { ScannerClientErrorsEnum } from '../../../scanner-client/scanner-client.errors.enum'
 import { SignerErrorsEnum } from '../../../signer/signer.errors.enum'
 import { StatusErrorsEnum } from '../../../status/errors/status.errors.enum'
+import { StrapiErrorsEnum } from '../../../strapi/strapi.errors.enum'
 import { MailgunErrorsEnum } from '../../global-enums/mailgun.errors.enum'
 import { SharepointErrorsEnum } from '../../subservices/dtos/sharepoint.errors.enum'
 
@@ -33,6 +34,7 @@ export type CustomErrorEnums =
   | StatusErrorsEnum
   | CityAccountErrorsEnum
   | FormSenderErrorsEnum
+  | StrapiErrorsEnum
 
 // Registers `CustomErrorEnums` as this app's error-enum union, so an injected
 // `ErrorFactoryService` with no explicit generic is typed with it everywhere.

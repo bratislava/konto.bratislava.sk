@@ -106,7 +106,7 @@ jobs:
           minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
 
       - name: Run ESLint
-        uses: docker/bake-action@v7
+        uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
           source: .
           files: ${{ env.BAKE_FILES }}

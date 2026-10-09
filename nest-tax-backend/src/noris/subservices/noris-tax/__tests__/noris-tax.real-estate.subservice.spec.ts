@@ -16,6 +16,7 @@ import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import BaConfigService from '../../../../config/ba-config.service'
 import {
   TaxAdministrator,
+  TaxImportStatus,
   TaxPayer,
   TaxType,
 } from '../../../../generated/prisma/client'
@@ -432,6 +433,43 @@ describe('NorisTaxRealEstateSubservice', () => {
       expect(result).toEqual({ birthNumbers: [] })
     })
 
+    it('should not update attempts when the tax is imported successfully', async () => {
+      await service.processNorisTaxData(mockNorisData, 2023, {
+        suppressEmail: true,
+      })
+
+      // SUCCESS is set in the insert transaction (upsert), not via updateMany
+      expect(prismaMock.taxImportAttempt.updateMany).not.toHaveBeenCalled()
+    })
+
+    it.each([
+      { mode: 'import', prepareOnly: false },
+      { mode: 'prepare', prepareOnly: true },
+    ])(
+      'should mark attempts as SUCCESS when the tax is already in the database ($mode)',
+      async ({ prepareOnly }) => {
+        prismaMock.tax.findMany.mockResolvedValue([
+          createTestTax({ taxPayer: { birthNumber: '123456/7890' } }),
+        ])
+        prismaMock.taxPayer.findMany.mockResolvedValue([])
+
+        await service.processNorisTaxData(mockNorisData, 2023, {
+          prepareOnly,
+          suppressEmail: true,
+        })
+
+        expect(prismaMock.taxImportAttempt.updateMany).toHaveBeenCalledWith({
+          where: {
+            taxPayer: { birthNumber: { in: ['123456/7890'] } },
+            year: 2023,
+            taxType: TaxType.DZN,
+            status: { not: TaxImportStatus.SUCCESS },
+          },
+          data: { status: TaxImportStatus.SUCCESS },
+        })
+      },
+    )
+
     it('should handle empty Noris data', async () => {
       const result = await service.processNorisTaxData([], 2023, {
         suppressEmail: true,
@@ -442,6 +480,148 @@ describe('NorisTaxRealEstateSubservice', () => {
       )
       expect(result).toEqual({ birthNumbers: [] })
     })
+
+    it('should create or update READY_TO_IMPORT attempts in prepare mode', async () => {
+      prismaMock.taxPayer.findMany.mockResolvedValue([
+        createTestTaxPayer({ id: 1, birthNumber: '123456/7890' }),
+      ])
+
+      const result = await service.processNorisTaxData(mockNorisData, 2023, {
+        prepareOnly: true,
+        suppressEmail: true,
+      })
+
+      expect(prismaMock.taxImportAttempt.createMany).toHaveBeenCalledWith({
+        data: [
+          {
+            taxPayerId: 1,
+            status: TaxImportStatus.READY_TO_IMPORT,
+            year: 2023,
+            taxType: TaxType.DZN,
+          },
+        ],
+        skipDuplicates: true,
+      })
+      expect(prismaMock.taxImportAttempt.updateMany).toHaveBeenCalledWith({
+        where: {
+          taxPayerId: { in: [1] },
+          year: 2023,
+          taxType: TaxType.DZN,
+          status: {
+            in: [TaxImportStatus.FAILED, TaxImportStatus.NOT_FOUND],
+          },
+        },
+        data: { status: TaxImportStatus.READY_TO_IMPORT },
+      })
+      expect(cityAccountSubservice.getUserDataAdminBatch).not.toHaveBeenCalled()
+      expect(result).toEqual({ birthNumbers: ['123456/7890'] })
+    })
+  })
+
+  describe('markAlreadyImportedAsSuccess', () => {
+    const makeNorisRecord = (
+      birthNumber: string,
+      variableSymbol: string,
+    ): NorisRealEstateTax => ({
+      ...mockNorisData[0],
+      ICO_RC: birthNumber,
+      variabilny_symbol: variableSymbol,
+    })
+
+    const taxA = makeNorisRecord('111111/1111', 'VS-A')
+    const taxB = makeNorisRecord('222222/2222', 'VS-B')
+    const taxC = makeNorisRecord('333333/3333', 'VS-C')
+    // Same tax payer with multiple taxes (e.g. KO with more variable symbols)
+    const taxD1 = makeNorisRecord('444444/4444', 'VS-D1')
+    const taxD2 = makeNorisRecord('444444/4444', 'VS-D2')
+
+    it.each([
+      {
+        name: 'all taxes from Noris are already in the database',
+        norisData: [taxA, taxB, taxC],
+        norisDataNotInDatabase: [],
+        expectedBirthNumbers: ['111111/1111', '222222/2222', '333333/3333'],
+      },
+      {
+        name: 'some tax payers still have missing taxes',
+        norisData: [taxA, taxB, taxC],
+        norisDataNotInDatabase: [taxB],
+        expectedBirthNumbers: ['111111/1111', '333333/3333'],
+      },
+      {
+        name: 'all but one tax payer still have missing taxes',
+        norisData: [taxA, taxB, taxC],
+        norisDataNotInDatabase: [taxA, taxC],
+        expectedBirthNumbers: ['222222/2222'],
+      },
+      {
+        name: 'tax payer with multiple taxes, all in the database',
+        norisData: [taxA, taxD1, taxD2],
+        norisDataNotInDatabase: [taxA],
+        expectedBirthNumbers: ['444444/4444'],
+      },
+      {
+        name: 'tax payer with multiple taxes, one missing',
+        norisData: [taxA, taxD1, taxD2],
+        norisDataNotInDatabase: [taxD2],
+        expectedBirthNumbers: ['111111/1111'],
+      },
+      {
+        name: 'missing record not present in Noris data',
+        norisData: [taxA, taxB],
+        norisDataNotInDatabase: [taxC],
+        expectedBirthNumbers: ['111111/1111', '222222/2222'],
+      },
+    ])(
+      'should mark as SUCCESS only tax payers without missing taxes when $name',
+      async ({ norisData, norisDataNotInDatabase, expectedBirthNumbers }) => {
+        await service['markAlreadyImportedAsSuccess'](
+          norisData,
+          norisDataNotInDatabase,
+          2023,
+        )
+
+        expect(prismaMock.taxImportAttempt.updateMany).toHaveBeenCalledTimes(1)
+        expect(prismaMock.taxImportAttempt.updateMany).toHaveBeenCalledWith({
+          where: {
+            taxPayer: { birthNumber: { in: expectedBirthNumbers } },
+            year: 2023,
+            taxType: TaxType.DZN,
+            status: { not: TaxImportStatus.SUCCESS },
+          },
+          data: { status: TaxImportStatus.SUCCESS },
+        })
+      },
+    )
+
+    it.each([
+      {
+        name: 'Noris data is empty',
+        norisData: [],
+        norisDataNotInDatabase: [],
+      },
+      {
+        name: 'all taxes are missing in the database',
+        norisData: [taxA, taxB],
+        norisDataNotInDatabase: [taxA, taxB],
+      },
+      {
+        name: 'every tax payer has at least one missing tax',
+        norisData: [taxA, taxD1, taxD2],
+        norisDataNotInDatabase: [taxA, taxD1],
+      },
+    ])(
+      'should not update attempts when $name',
+      async ({ norisData, norisDataNotInDatabase }) => {
+        await service['markAlreadyImportedAsSuccess'](
+          norisData,
+          norisDataNotInDatabase,
+          2023,
+        )
+
+        expect(prismaMock.taxImportAttempt.updateMany).not.toHaveBeenCalled()
+      },
+    )
   })
 
   describe('getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords', () => {

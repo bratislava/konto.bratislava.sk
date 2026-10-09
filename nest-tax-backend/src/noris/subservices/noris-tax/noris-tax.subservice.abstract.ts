@@ -203,6 +203,12 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       year,
     )
 
+    await this.markAlreadyImportedAsSuccess(
+      norisData,
+      norisDataNotInDatabase,
+      year,
+    )
+
     if (prepareOnly) {
       // In prepare mode, just check if taxes exist and return the birth numbers
       // The tracking will be done in the prepareTaxes function via TaxImportAttempt table
@@ -221,6 +227,16 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
           year,
           taxType: taxDefinition.type,
         })),
+        skipDuplicates: true,
+      })
+      await this.prismaService.taxImportAttempt.updateMany({
+        where: {
+          taxPayerId: { in: taxPayers.map((taxPayer) => taxPayer.id) },
+          year,
+          taxType: taxDefinition.type,
+          status: { in: [TaxImportStatus.FAILED, TaxImportStatus.NOT_FOUND] },
+        },
+        data: { status: TaxImportStatus.READY_TO_IMPORT },
       })
       return { birthNumbers }
     }
@@ -280,6 +296,33 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     )
 
     return { birthNumbers: [...birthNumbersResult] }
+  }
+
+  private async markAlreadyImportedAsSuccess(
+    norisData: TaxTypeToNorisData[TTaxType][],
+    norisDataNotInDatabase: TaxTypeToNorisData[TTaxType][],
+    year: number,
+  ): Promise<void> {
+    const birthNumbersWithMissingTaxes = new Set(
+      norisDataNotInDatabase.map((norisItem) => norisItem.ICO_RC),
+    )
+    const alreadyImportedBirthNumbers = [
+      ...new Set(norisData.map((norisItem) => norisItem.ICO_RC)),
+    ].filter((birthNumber) => !birthNumbersWithMissingTaxes.has(birthNumber))
+
+    if (alreadyImportedBirthNumbers.length === 0) {
+      return
+    }
+
+    await this.prismaService.taxImportAttempt.updateMany({
+      where: {
+        taxPayer: { birthNumber: { in: alreadyImportedBirthNumbers } },
+        year,
+        taxType: this.getTaxDefinition().type,
+        status: { not: TaxImportStatus.SUCCESS },
+      },
+      data: { status: TaxImportStatus.SUCCESS },
+    })
   }
 
   /**

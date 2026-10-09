@@ -117,7 +117,7 @@ export default class TaxImportHelperService {
 
     // Then get existing users for the remaining capacity.
     // Check TaxImportAttempt table instead of Tax table
-    // In the preparation phase: find users without any attempt record (not yet prepared)
+    // In the preparation phase: find users without an attempt record, or with a NOT_FOUND / FAILED one
     // In the import phase: prioritize users with READY_TO_IMPORT status
     let existingTaxPayers: { birthNumber: string }[]
     if (isImportPhase) {
@@ -160,9 +160,10 @@ export default class TaxImportHelperService {
           WHERE
             -- Exclude newly created users (they're handled separately)
               NOT (tp."createdAt" = tp."updatedAt")
-            -- In prepare phase: only users who don't have any attempt for this year/type yet
-            AND tia.id IS NULL
-          ORDER BY tp."updatedAt"
+            -- In prepare phase: only users who weren't attempted yet, weren't found in Noris, or failed
+            AND (tia.id IS NULL OR tia.status IN ('NOT_FOUND'::"TaxImportStatus", 'FAILED'::"TaxImportStatus"))
+          ORDER BY tia."updatedAt" NULLS FIRST,
+                   tp."updatedAt"
           LIMIT ${remainingCapacity}
       `
     }
@@ -195,26 +196,12 @@ export default class TaxImportHelperService {
       )
 
     // Move only the birth numbers which are not found in Noris to the end of the queue
-    const foundInNoris = result.foundInNoris || []
-    const notFoundInNoris = birthNumbers.filter(
-      (bn) => !foundInNoris.includes(bn),
+    await this.markNotFoundInNoris(
+      taxType,
+      birthNumbers,
+      year,
+      result.foundInNoris,
     )
-
-    if (notFoundInNoris.length > 0) {
-      await this.prismaService.taxImportAttempt.updateMany({
-        where: {
-          taxPayer: {
-            birthNumber: { in: notFoundInNoris },
-          },
-          year,
-          taxType,
-        },
-        data: {
-          updatedAt: new Date(),
-          status: TaxImportStatus.NOT_FOUND,
-        },
-      })
-    }
 
     this.logger.log(
       `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,
@@ -241,8 +228,45 @@ export default class TaxImportHelperService {
         },
       )
 
+    // Move only the birth numbers which are not found in Noris to the end of the queue
+    await this.markNotFoundInNoris(
+      taxType,
+      birthNumbers,
+      year,
+      result.foundInNoris,
+    )
+
     this.logger.log(
       `${result.birthNumbers.length} birth numbers are prepared and ready to import.`,
     )
+  }
+
+  private async markNotFoundInNoris(
+    taxType: TaxType,
+    birthNumbers: string[],
+    year: number,
+    foundInNoris: string[] = [],
+  ): Promise<void> {
+    const notFoundInNoris = birthNumbers.filter(
+      (birthNumber) => !foundInNoris.includes(birthNumber),
+    )
+
+    if (notFoundInNoris.length === 0) {
+      return
+    }
+
+    await this.prismaService.taxImportAttempt.updateMany({
+      where: {
+        taxPayer: {
+          birthNumber: { in: notFoundInNoris },
+        },
+        year,
+        taxType,
+      },
+      data: {
+        updatedAt: new Date(),
+        status: TaxImportStatus.NOT_FOUND,
+      },
+    })
   }
 }

@@ -680,10 +680,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     email: {
       address: {
-        prod: [
-          // nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityEmailAddress, TODO: implement municipality email extraction by address field
-          'mikromobilita@bratislava.sk',
-        ],
+        prod: ['mikromobilita@bratislava.sk'],
         test: ['inovacie.bratislava@gmail.com'],
       },
       fromAddress: {

@@ -108,20 +108,6 @@ export const nahlaseniePodnetuKElektrickymKolobezkamFiles = {
   ],
 } as const
 
-type ExtractMunicipalityFormData = {
-  podnet: {
-    miestoPodnetu: string
-  }
-}
-
-export const nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityEmailAddress: SchemalessFormDataExtractor<ExtractMunicipalityFormData> =
-  {
-    type: 'schemaless',
-    extractFn: (formData) => {
-      return 'inovacie.bratislava@gmail.com' // TODO implement municipality email extraction by address field
-    },
-  }
-
 type ExtractTypeFormData = {
   podnet: {
     typPodnetu: 'nespravneZaparkovana' | 'neschopnaPrevadzky' | 'ine'

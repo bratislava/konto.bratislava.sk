@@ -4,7 +4,6 @@ import komunitneZahrady, {
   komunitneZahradyFiles,
 } from '../schemas/komunitneZahrady'
 import nahlaseniePodnetuKElektrickymKolobezkam, {
-  nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
   nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
   nahlaseniePodnetuKElektrickymKolobezkamFiles,
 } from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
@@ -681,11 +680,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     email: {
       address: {
-        prod: [
-          nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
-          // nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityEmailAddress, TODO: implement municipality email extraction by address field
-          'mikromobilita@bratislava.sk',
-        ],
+        prod: ['mikromobilita@bratislava.sk'],
         test: ['inovacie.bratislava@gmail.com'],
       },
       fromAddress: {

@@ -108,41 +108,6 @@ export const nahlaseniePodnetuKElektrickymKolobezkamFiles = {
   ],
 } as const
 
-type ExtractProviderFormData = {
-  podnet: {
-    poskytovatel: 'bolt' | 'dott' | 'svist'
-  }
-}
-
-export const nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress: SchemalessFormDataExtractor<ExtractProviderFormData> =
-  {
-    type: 'schemaless',
-    extractFn: (formData) => {
-      switch (formData.podnet.poskytovatel) {
-        case 'bolt':
-          return 'boris.husar@bolt.eu'
-        case 'dott':
-          return 'joanna.kravjar@ridedott.com'
-        case 'svist':
-          return 'bratislava@svist.sk'
-      }
-    },
-  }
-
-type ExtractMunicipalityFormData = {
-  podnet: {
-    miestoPodnetu: string
-  }
-}
-
-export const nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityEmailAddress: SchemalessFormDataExtractor<ExtractMunicipalityFormData> =
-  {
-    type: 'schemaless',
-    extractFn: (formData) => {
-      return 'inovacie.bratislava@gmail.com' // TODO implement municipality email extraction by address field
-    },
-  }
-
 type ExtractTypeFormData = {
   podnet: {
     typPodnetu: 'nespravneZaparkovana' | 'neschopnaPrevadzky' | 'ine'

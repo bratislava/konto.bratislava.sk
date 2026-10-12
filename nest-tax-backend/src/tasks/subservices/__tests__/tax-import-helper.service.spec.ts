@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton'
 import { createTestTaxPayer } from '../../../__tests__/factories/taxPayer.factory'
+import { expectAny } from '../../../__tests__/jest-matchers'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { TaxType } from '../../../generated/prisma/client'
 import { NorisService } from '../../../noris/noris.service'
@@ -380,6 +381,70 @@ describe('TaxImportHelperService', () => {
       expect(queryRawSpy).toHaveBeenCalledTimes(1)
       expect(result.birthNumbers).toEqual(['123456/7890'])
       expect(result.newlyCreated).toEqual(['111111/2222'])
+    })
+
+    describe('batch capacity', () => {
+      // 2026 - 2020 + 1 = 7 years, 2 tax types => 14 Noris calls per new user
+      // take = floor(100 / 14) = 7, remaining capacity = 100 - 7 * 14 = 2
+      const expectedTake = 7
+      const expectedRemainingCapacity = 2
+
+      beforeEach(() => {
+        jest.useFakeTimers()
+        jest.setSystemTime(new Date('2026-06-15T10:00:00.000Z'))
+      })
+
+      afterEach(() => {
+        jest.useRealTimers()
+      })
+
+      it('should take a positive number of newly created users based on years to import', async () => {
+        const findManySpy = jest
+          .spyOn(prismaService.taxPayer, 'findMany')
+          .mockResolvedValueOnce([])
+        jest.spyOn(prismaService, '$queryRaw').mockResolvedValueOnce([])
+
+        await service.getPrioritizedBirthNumbersWithMetadata(
+          TaxType.DZN,
+          2026,
+          firstHistoricalYear,
+        )
+
+        expect(findManySpy).toHaveBeenCalledWith(
+          expect.objectContaining({ take: expectedTake }),
+        )
+      })
+
+      it.each([true, false])(
+        'should limit existing users to the capacity left after newly created users (isImportPhase: %s)',
+        async (isImportPhase) => {
+          const mockNewlyCreated = Array.from(
+            { length: expectedTake },
+            (_unused, i) => createTestTaxPayer({ birthNumber: `00000${i}/0000` }),
+          )
+          jest
+            .spyOn(prismaService.taxPayer, 'findMany')
+            .mockResolvedValueOnce(mockNewlyCreated)
+          const queryRawSpy = jest
+            .spyOn(prismaService, '$queryRaw')
+            .mockResolvedValueOnce([])
+
+          await service.getPrioritizedBirthNumbersWithMetadata(
+            TaxType.DZN,
+            2026,
+            firstHistoricalYear,
+            isImportPhase,
+          )
+
+          // $queryRaw is a tagged template: called with (sqlStrings, year, taxType, limit)
+          expect(queryRawSpy).toHaveBeenCalledWith(
+            expectAny<TemplateStringsArray>(Array),
+            2026,
+            TaxType.DZN,
+            expectedRemainingCapacity,
+          )
+        },
+      )
     })
   })
 

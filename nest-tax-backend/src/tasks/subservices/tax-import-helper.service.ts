@@ -90,7 +90,7 @@ export default class TaxImportHelperService {
   }> {
     const thisYear = new Date().getFullYear()
     // (number of tax types: 2) * (number of years to be imported: delta including initial)
-    const NorisCallsPerNewUser = 2 * (firstHistoricalYear - thisYear + 1)
+    const NorisCallsPerNewUser = 2 * (thisYear - firstHistoricalYear + 1)
 
     // Get users that have no taxes loaded and were never updated as a priority
     // For these users we will load all historical taxes at the same time
@@ -108,7 +108,7 @@ export default class TaxImportHelperService {
       this.UPLOAD_BIRTHNUMBERS_BATCH -
       newlyCreatedTaxPayers.length * NorisCallsPerNewUser
 
-    if (remainingCapacity === 0) {
+    if (remainingCapacity <= 0) {
       return {
         newlyCreated: newlyCreatedTaxPayers.map((u) => u.birthNumber),
         birthNumbers: [],

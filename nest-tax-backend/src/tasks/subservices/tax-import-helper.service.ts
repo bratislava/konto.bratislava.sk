@@ -247,8 +247,9 @@ export default class TaxImportHelperService {
     year: number,
     foundInNoris: string[] = [],
   ): Promise<void> {
+    const foundInNorisSet = new Set(foundInNoris)
     const notFoundInNoris = birthNumbers.filter(
-      (birthNumber) => !foundInNoris.includes(birthNumber),
+      (birthNumber) => !foundInNorisSet.has(birthNumber),
     )
 
     if (notFoundInNoris.length === 0) {
@@ -262,6 +263,9 @@ export default class TaxImportHelperService {
         },
         year,
         taxType,
+        status: {
+          not: TaxImportStatus.SUCCESS,
+        },
       },
       data: {
         updatedAt: new Date(),

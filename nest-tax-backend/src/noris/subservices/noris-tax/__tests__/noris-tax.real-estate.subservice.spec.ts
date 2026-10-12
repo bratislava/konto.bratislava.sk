@@ -481,7 +481,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       expect(result).toEqual({ birthNumbers: [] })
     })
 
-    it('should create or update READY_TO_IMPORT attempts in prepare mode', async () => {
+    it('should update existing attempts to READY_TO_IMPORT in prepare mode', async () => {
       prismaMock.taxPayer.findMany.mockResolvedValue([
         createTestTaxPayer({ id: 1, birthNumber: '123456/7890' }),
       ])
@@ -491,17 +491,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         suppressEmail: true,
       })
 
-      expect(prismaMock.taxImportAttempt.createMany).toHaveBeenCalledWith({
-        data: [
-          {
-            taxPayerId: 1,
-            status: TaxImportStatus.READY_TO_IMPORT,
-            year: 2023,
-            taxType: TaxType.DZN,
-          },
-        ],
-        skipDuplicates: true,
-      })
+      expect(prismaMock.taxImportAttempt.createMany).not.toHaveBeenCalled()
       expect(prismaMock.taxImportAttempt.updateMany).toHaveBeenCalledWith({
         where: {
           taxPayerId: { in: [1] },

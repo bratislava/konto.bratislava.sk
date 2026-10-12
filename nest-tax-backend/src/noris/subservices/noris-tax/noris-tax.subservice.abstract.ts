@@ -220,15 +220,6 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         where: { birthNumber: { in: birthNumbers } },
         select: { birthNumber: true, id: true },
       })
-      await this.prismaService.taxImportAttempt.createMany({
-        data: taxPayers.map((taxPayer) => ({
-          taxPayerId: taxPayer.id,
-          status: TaxImportStatus.READY_TO_IMPORT,
-          year,
-          taxType: taxDefinition.type,
-        })),
-        skipDuplicates: true,
-      })
       await this.prismaService.taxImportAttempt.updateMany({
         where: {
           taxPayerId: { in: taxPayers.map((taxPayer) => taxPayer.id) },

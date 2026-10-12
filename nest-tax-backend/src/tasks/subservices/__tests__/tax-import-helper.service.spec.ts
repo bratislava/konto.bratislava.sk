@@ -427,7 +427,8 @@ describe('TaxImportHelperService', () => {
         async (isImportPhase) => {
           const mockNewlyCreated = Array.from(
             { length: expectedTake },
-            (_unused, i) => createTestTaxPayer({ birthNumber: `00000${i}/0000` }),
+            (_unused, i) =>
+              createTestTaxPayer({ birthNumber: `00000${i}/0000` }),
           )
           jest
             .spyOn(prismaService.taxPayer, 'findMany')
@@ -489,6 +490,9 @@ describe('TaxImportHelperService', () => {
           },
           year,
           taxType,
+          status: {
+            not: TaxImportStatus.SUCCESS,
+          },
         },
         data: {
           updatedAt: expectAny<Date>(Date),
@@ -594,6 +598,9 @@ describe('TaxImportHelperService', () => {
           },
           year,
           taxType,
+          status: {
+            not: TaxImportStatus.SUCCESS,
+          },
         },
         data: {
           updatedAt: expectAny<Date>(Date),
@@ -628,6 +635,9 @@ describe('TaxImportHelperService', () => {
           },
           year,
           taxType,
+          status: {
+            not: TaxImportStatus.SUCCESS,
+          },
         },
         data: {
           updatedAt: expectAny<Date>(Date),
@@ -663,6 +673,9 @@ describe('TaxImportHelperService', () => {
           },
           year,
           taxType,
+          status: {
+            not: TaxImportStatus.SUCCESS,
+          },
         },
         data: {
           updatedAt: expectAny<Date>(Date),
@@ -769,6 +782,9 @@ describe('TaxImportHelperService', () => {
           },
           year,
           taxType,
+          status: {
+            not: TaxImportStatus.SUCCESS,
+          },
         },
         data: {
           updatedAt: expectAny<Date>(Date),
@@ -809,6 +825,9 @@ describe('TaxImportHelperService', () => {
           },
           year,
           taxType,
+          status: {
+            not: TaxImportStatus.SUCCESS,
+          },
         },
         data: {
           updatedAt: expectAny<Date>(Date),
@@ -882,6 +901,9 @@ describe('TaxImportHelperService', () => {
           },
           year,
           taxType,
+          status: {
+            not: TaxImportStatus.SUCCESS,
+          },
         },
         data: {
           updatedAt: expectAny<Date>(Date),
@@ -909,6 +931,9 @@ describe('TaxImportHelperService', () => {
             },
             year,
             taxType,
+            status: {
+              not: TaxImportStatus.SUCCESS,
+            },
           },
         }),
       )

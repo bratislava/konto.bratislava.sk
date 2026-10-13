@@ -124,6 +124,11 @@ export type InputUiOptions = {
   inputType: InputUiOptionsInputType
   inputWidth?: InputWidthType
   placeholder?: string
+  /**
+   * The `autocomplete` attribute of the input, e.g. `postal-code`.
+   * https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete
+   */
+  autoComplete?: string
 } & WidgetUiOptions
 
 export type NumberUiOptions = Omit<InputUiOptions, 'inputType'> & {

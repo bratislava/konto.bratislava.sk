@@ -42124,6 +42124,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                   "baOrder": 2,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "off",
                                       "inputType": "text",
                                       "selfColumn": "1/4",
                                     },
@@ -42136,6 +42137,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                   "baOrder": 1,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "off",
                                       "helptextFooter": "Zadajte ulicu svojho trvalého pobytu.",
                                       "inputType": "text",
                                       "selfColumn": "3/4",
@@ -42193,6 +42195,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                   "baOrder": 2,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "off",
                                       "inputType": "text",
                                       "selfColumn": "1/4",
                                     },
@@ -42205,6 +42208,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                   "baOrder": 1,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "off",
                                       "helptextFooter": "Zadajte ulicu sídla.",
                                       "inputType": "text",
                                       "selfColumn": "3/4",
@@ -42258,6 +42262,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                             "baOrder": 1,
                             "baUiSchema": {
                               "ui:options": {
+                                "autoComplete": "address-level2",
                                 "inputType": "text",
                                 "selfColumn": "3/4",
                               },
@@ -42270,6 +42275,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                             "baOrder": 2,
                             "baUiSchema": {
                               "ui:options": {
+                                "autoComplete": "postal-code",
                                 "inputType": "text",
                                 "selfColumn": "1/4",
                               },
@@ -43774,6 +43780,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                         "baOrder": 2,
                         "baUiSchema": {
                           "ui:options": {
+                            "autoComplete": "off",
                             "inputType": "text",
                             "selfColumn": "1/4",
                           },
@@ -43786,6 +43793,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                         "baOrder": 1,
                         "baUiSchema": {
                           "ui:options": {
+                            "autoComplete": "off",
                             "helptextFooter": "Zadajte ulicu svojho trvalého pobytu.",
                             "inputType": "text",
                             "selfColumn": "3/4",
@@ -44079,6 +44087,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                         "baOrder": 2,
                         "baUiSchema": {
                           "ui:options": {
+                            "autoComplete": "off",
                             "inputType": "text",
                             "selfColumn": "1/4",
                           },
@@ -44091,6 +44100,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                         "baOrder": 1,
                         "baUiSchema": {
                           "ui:options": {
+                            "autoComplete": "off",
                             "helptextFooter": "Zadajte ulicu miesta podnikania podľa živnostenského registra.",
                             "inputType": "text",
                             "selfColumn": "3/4",
@@ -44135,6 +44145,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                         "baOrder": 2,
                         "baUiSchema": {
                           "ui:options": {
+                            "autoComplete": "off",
                             "inputType": "text",
                             "selfColumn": "1/4",
                           },
@@ -44147,6 +44158,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                         "baOrder": 1,
                         "baUiSchema": {
                           "ui:options": {
+                            "autoComplete": "off",
                             "helptextFooter": "Zadajte ulicu sídla.",
                             "inputType": "text",
                             "selfColumn": "3/4",
@@ -44250,6 +44262,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                             "baOrder": 1,
                             "baUiSchema": {
                               "ui:options": {
+                                "autoComplete": "address-level2",
                                 "inputType": "text",
                                 "selfColumn": "3/4",
                               },
@@ -44262,6 +44275,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                             "baOrder": 2,
                             "baUiSchema": {
                               "ui:options": {
+                                "autoComplete": "postal-code",
                                 "inputType": "text",
                                 "selfColumn": "1/4",
                               },
@@ -45619,6 +45633,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                             "baOrder": 2,
                             "baUiSchema": {
                               "ui:options": {
+                                "autoComplete": "off",
                                 "inputType": "text",
                                 "selfColumn": "1/4",
                               },
@@ -45631,6 +45646,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                             "baOrder": 1,
                             "baUiSchema": {
                               "ui:options": {
+                                "autoComplete": "off",
                                 "helptextFooter": "Zadajte ulicu svojho trvalého pobytu.",
                                 "inputType": "text",
                                 "selfColumn": "3/4",
@@ -45702,6 +45718,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                   "baOrder": 1,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "address-level2",
                                       "inputType": "text",
                                       "selfColumn": "3/4",
                                     },
@@ -45714,6 +45731,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                   "baOrder": 2,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "postal-code",
                                       "inputType": "text",
                                       "selfColumn": "1/4",
                                     },
@@ -47016,6 +47034,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                   "baOrder": 2,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "off",
                                       "inputType": "text",
                                       "selfColumn": "1/4",
                                     },
@@ -47028,6 +47047,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                   "baOrder": 1,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "off",
                                       "inputType": "text",
                                       "selfColumn": "3/4",
                                     },
@@ -47129,6 +47149,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                   "baOrder": 1,
                   "baUiSchema": {
                     "ui:options": {
+                      "autoComplete": "address-level2",
                       "inputType": "text",
                       "selfColumn": "3/4",
                     },
@@ -47141,6 +47162,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                   "baOrder": 2,
                   "baUiSchema": {
                     "ui:options": {
+                      "autoComplete": "postal-code",
                       "inputType": "text",
                       "selfColumn": "1/4",
                     },
@@ -55125,6 +55147,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                           "baOrder": 1,
                           "baUiSchema": {
                             "ui:options": {
+                              "autoComplete": "address-level2",
                               "inputType": "text",
                               "selfColumn": "3/4",
                             },
@@ -55137,6 +55160,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                           "baOrder": 2,
                           "baUiSchema": {
                             "ui:options": {
+                              "autoComplete": "postal-code",
                               "inputType": "text",
                               "selfColumn": "1/4",
                             },
@@ -56439,6 +56463,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                           "baOrder": 2,
                           "baUiSchema": {
                             "ui:options": {
+                              "autoComplete": "off",
                               "inputType": "text",
                               "selfColumn": "1/4",
                             },
@@ -56451,6 +56476,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                           "baOrder": 1,
                           "baUiSchema": {
                             "ui:options": {
+                              "autoComplete": "off",
                               "helptextFooter": "Zadajte ulicu trvalého pobytu manžela/manželky.",
                               "inputType": "text",
                               "selfColumn": "3/4",
@@ -56969,6 +56995,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                   "baOrder": 2,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "off",
                                       "inputType": "text",
                                       "selfColumn": "1/4",
                                     },
@@ -56981,6 +57008,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                   "baOrder": 1,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "off",
                                       "helptextFooter": "Zadajte ulicu svojho trvalého pobytu.",
                                       "inputType": "text",
                                       "selfColumn": "3/4",
@@ -57038,6 +57066,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                   "baOrder": 2,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "off",
                                       "inputType": "text",
                                       "selfColumn": "1/4",
                                     },
@@ -57050,6 +57079,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                   "baOrder": 1,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "off",
                                       "helptextFooter": "Zadajte ulicu sídla.",
                                       "inputType": "text",
                                       "selfColumn": "3/4",
@@ -57103,6 +57133,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                             "baOrder": 1,
                             "baUiSchema": {
                               "ui:options": {
+                                "autoComplete": "address-level2",
                                 "inputType": "text",
                                 "selfColumn": "3/4",
                               },
@@ -57115,6 +57146,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                             "baOrder": 2,
                             "baUiSchema": {
                               "ui:options": {
+                                "autoComplete": "postal-code",
                                 "inputType": "text",
                                 "selfColumn": "1/4",
                               },
@@ -58619,6 +58651,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                         "baOrder": 2,
                         "baUiSchema": {
                           "ui:options": {
+                            "autoComplete": "off",
                             "inputType": "text",
                             "selfColumn": "1/4",
                           },
@@ -58631,6 +58664,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                         "baOrder": 1,
                         "baUiSchema": {
                           "ui:options": {
+                            "autoComplete": "off",
                             "helptextFooter": "Zadajte ulicu svojho trvalého pobytu.",
                             "inputType": "text",
                             "selfColumn": "3/4",
@@ -58924,6 +58958,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                         "baOrder": 2,
                         "baUiSchema": {
                           "ui:options": {
+                            "autoComplete": "off",
                             "inputType": "text",
                             "selfColumn": "1/4",
                           },
@@ -58936,6 +58971,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                         "baOrder": 1,
                         "baUiSchema": {
                           "ui:options": {
+                            "autoComplete": "off",
                             "helptextFooter": "Zadajte ulicu miesta podnikania podľa živnostenského registra.",
                             "inputType": "text",
                             "selfColumn": "3/4",
@@ -58980,6 +59016,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                         "baOrder": 2,
                         "baUiSchema": {
                           "ui:options": {
+                            "autoComplete": "off",
                             "inputType": "text",
                             "selfColumn": "1/4",
                           },
@@ -58992,6 +59029,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                         "baOrder": 1,
                         "baUiSchema": {
                           "ui:options": {
+                            "autoComplete": "off",
                             "helptextFooter": "Zadajte ulicu sídla.",
                             "inputType": "text",
                             "selfColumn": "3/4",
@@ -59095,6 +59133,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                             "baOrder": 1,
                             "baUiSchema": {
                               "ui:options": {
+                                "autoComplete": "address-level2",
                                 "inputType": "text",
                                 "selfColumn": "3/4",
                               },
@@ -59107,6 +59146,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                             "baOrder": 2,
                             "baUiSchema": {
                               "ui:options": {
+                                "autoComplete": "postal-code",
                                 "inputType": "text",
                                 "selfColumn": "1/4",
                               },
@@ -60464,6 +60504,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                             "baOrder": 2,
                             "baUiSchema": {
                               "ui:options": {
+                                "autoComplete": "off",
                                 "inputType": "text",
                                 "selfColumn": "1/4",
                               },
@@ -60476,6 +60517,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                             "baOrder": 1,
                             "baUiSchema": {
                               "ui:options": {
+                                "autoComplete": "off",
                                 "helptextFooter": "Zadajte ulicu svojho trvalého pobytu.",
                                 "inputType": "text",
                                 "selfColumn": "3/4",
@@ -60547,6 +60589,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                   "baOrder": 1,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "address-level2",
                                       "inputType": "text",
                                       "selfColumn": "3/4",
                                     },
@@ -60559,6 +60602,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                   "baOrder": 2,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "postal-code",
                                       "inputType": "text",
                                       "selfColumn": "1/4",
                                     },
@@ -61861,6 +61905,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                   "baOrder": 2,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "off",
                                       "inputType": "text",
                                       "selfColumn": "1/4",
                                     },
@@ -61873,6 +61918,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                   "baOrder": 1,
                                   "baUiSchema": {
                                     "ui:options": {
+                                      "autoComplete": "off",
                                       "inputType": "text",
                                       "selfColumn": "3/4",
                                     },
@@ -61974,6 +62020,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                   "baOrder": 1,
                   "baUiSchema": {
                     "ui:options": {
+                      "autoComplete": "address-level2",
                       "inputType": "text",
                       "selfColumn": "3/4",
                     },
@@ -61986,6 +62033,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                   "baOrder": 2,
                   "baUiSchema": {
                     "ui:options": {
+                      "autoComplete": "postal-code",
                       "inputType": "text",
                       "selfColumn": "1/4",
                     },
@@ -69970,6 +70018,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                           "baOrder": 1,
                           "baUiSchema": {
                             "ui:options": {
+                              "autoComplete": "address-level2",
                               "inputType": "text",
                               "selfColumn": "3/4",
                             },
@@ -69982,6 +70031,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                           "baOrder": 2,
                           "baUiSchema": {
                             "ui:options": {
+                              "autoComplete": "postal-code",
                               "inputType": "text",
                               "selfColumn": "1/4",
                             },
@@ -71284,6 +71334,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                           "baOrder": 2,
                           "baUiSchema": {
                             "ui:options": {
+                              "autoComplete": "off",
                               "inputType": "text",
                               "selfColumn": "1/4",
                             },
@@ -71296,6 +71347,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                           "baOrder": 1,
                           "baUiSchema": {
                             "ui:options": {
+                              "autoComplete": "off",
                               "helptextFooter": "Zadajte ulicu trvalého pobytu manžela/manželky.",
                               "inputType": "text",
                               "selfColumn": "3/4",

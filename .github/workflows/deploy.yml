@@ -1,7 +1,3 @@
-# TODO: deploys will fail until a terragrunt deployment module is prepared
-# in bratislava/infrastructure-deployment-configuration under
-# clusters/<cluster>/applications/konto.bratislava.sk/<service> for each
-# service on each target cluster
 name: Monorepo deploy pipelines
 on:
   push:

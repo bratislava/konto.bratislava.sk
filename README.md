@@ -123,7 +123,7 @@ By creating a PR, GitHub actions will run validation pipelines and Dockerized bu
 - `digital.bratislava.sk` – **production**, used only by the `production` cluster.
 - `test.bratislava.sk` – used by the `development` and `staging` clusters.
 
-The services pick the domain from `DEFAULT_MAILGUN_DOMAIN` / `MAILGUN_DOMAIN` in `<service>/.env.deploy.<cluster>`.
+The services pick the domain from `MAILGUN_DOMAIN` in `<service>/.env.deploy.<cluster>`.
 
 The two domains **must stay in sync**. To change a template:
 

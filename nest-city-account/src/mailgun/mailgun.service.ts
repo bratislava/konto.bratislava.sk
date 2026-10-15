@@ -53,7 +53,7 @@ export class MailgunService {
       const messageData = await factoryMethod.call(this.mailgunMessageBuilder, options as any)
 
       const response = await this.mg.messages.create(
-        this.baConfigService.mailgun.defaultDomain,
+        this.baConfigService.mailgun.domain,
         messageData
       )
       this.logger.log('Mailgun response', response)

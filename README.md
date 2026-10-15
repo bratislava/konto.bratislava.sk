@@ -116,6 +116,22 @@ If you don't have Passbolt access, ask around on the konto.bratislava.sk team.
 
 By creating a PR, GitHub actions will run validation pipelines and Dockerized build, lint and test pipelines.
 
+## Email templates (Mailgun)
+
+`nest-city-account` and `nest-forms-backend` send emails from templates stored in Mailgun (EU region). There are two Mailgun domains:
+
+- `digital.bratislava.sk` – **production**, used only by the `production` cluster.
+- `test.bratislava.sk` – used by the `development` and `staging` clusters.
+
+The services pick the domain from `DEFAULT_MAILGUN_DOMAIN` / `MAILGUN_DOMAIN` in `<service>/.env.deploy.<cluster>`.
+
+The two domains **must stay in sync**. To change a template:
+
+1. Make the change in `test.bratislava.sk` and test it on dev/staging.
+2. Once it is approved, apply exactly the same change to `digital.bratislava.sk`.
+
+Do not edit templates directly in `digital.bratislava.sk`. Do not leave a tested change in `test.bratislava.sk` unpublished either: either publish it to `digital.bratislava.sk` or revert it in `test.bratislava.sk`. A template that exists, or differs, in only one domain means dev/staging no longer tests what production sends.
+
 ## Docker
 
 A few things here differ from a typical per-service Docker setup:

@@ -93,7 +93,7 @@ export default class EnvironmentVariables {
   MAILGUN_API_KEY: string
 
   @EnvString()
-  DEFAULT_MAILGUN_DOMAIN: string
+  MAILGUN_DOMAIN: string
 
   @EnvUrl()
   SLOVENSKO_SK_CONTAINER_URI: string

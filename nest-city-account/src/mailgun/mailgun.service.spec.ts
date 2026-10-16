@@ -39,7 +39,7 @@ describe('MailgunService', () => {
         {
           provide: BaConfigService,
           useValue: {
-            mailgun: { apiKey: 'test-mailgun-api-key', defaultDomain: 'test.example.com' },
+            mailgun: { apiKey: 'test-mailgun-api-key', domain: 'test.example.com' },
           },
         },
       ],

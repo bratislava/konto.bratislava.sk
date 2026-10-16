@@ -76,7 +76,7 @@ export default class BaConfig {
   get mailgun() {
     return {
       apiKey: this.validatedConfig.MAILGUN_API_KEY,
-      defaultDomain: this.validatedConfig.DEFAULT_MAILGUN_DOMAIN,
+      domain: this.validatedConfig.MAILGUN_DOMAIN,
     }
   }
 

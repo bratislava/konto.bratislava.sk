@@ -2,7 +2,9 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { baOmitExtraData } from '../../src/form-utils/omitExtraData'
+import { conditionalFields } from '../../src/generator/functions/conditionalFields'
 import { input } from '../../src/generator/functions/input'
+import { createCondition } from '../../src/generator/helpers'
 import { object } from '../../src/generator/object'
 import priznanieKDaniZNehnutelnosti from '../../src/schemas/priznanieKDaniZNehnutelnosti'
 import { filterConsole } from '../../test-utils/filterConsole'
@@ -35,6 +37,29 @@ describe('omitExtraData', () => {
       testValidatorRegistry,
     )
     expect(result).toEqual({ input: 'value' })
+  })
+
+  // `@x0k/json-schema-merge` 1.0.6 attached the `else` of the second condition to the `if` of the first one, so the
+  // stale `ico` was kept. Fixed in 1.1.0, forced by the override in pnpm-workspace.yaml.
+  test('should omit data of an inactive else branch that follows a condition without else', () => {
+    const { schema } = object('wrapper', {}, [
+      input('typ', { type: 'text', title: 'Typ', required: true }, {}),
+      conditionalFields(createCondition([[['typ'], { const: 'existujuci' }]]), [
+        input('cisloZmluvy', { type: 'text', title: 'Číslo zmluvy', required: true }, {}),
+      ]),
+      conditionalFields(
+        createCondition([[['typ'], { const: 'zmena' }]]),
+        [input('noveIco', { type: 'text', title: 'Nové IČO', required: true }, {})],
+        [input('ico', { type: 'text', title: 'IČO', required: true }, {})],
+      ),
+    ])
+
+    const result = baOmitExtraData(
+      schema,
+      { typ: 'zmena', noveIco: '22222222', ico: '11111111' },
+      testValidatorRegistry,
+    )
+    expect(result).toEqual({ typ: 'zmena', noveIco: '22222222' })
   })
 
   // "Údaje o daňovníkovi" step in "Priznanie k dani z nehnuteľnosti" contains a lot of conditional fields, the original

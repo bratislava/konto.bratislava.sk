@@ -4,18 +4,26 @@ import ImageMestskeKontoSituacia from '@/src/assets/images/mestske-konto-situaci
 import AnnouncementBlock from '@/src/components/segments/Announcements/AnnouncementBlock'
 
 type Props = {
-  // This variant prop makes it more readable when we use this component
-  variant: 'no-applications'
+  variant: 'no-applications' | 'no-drafts'
 }
 
 const MyApplicationsBanner = ({ variant }: Props) => {
   const { t } = useTranslation()
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (variant === 'no-applications') {
     return (
       <AnnouncementBlock
-        announcementContent={t('MyApplicationsBanner.content')}
+        announcementContent={t('MyApplicationsBanner.noApplications')}
+        imageSrc={ImageMestskeKontoSituacia}
+      />
+    )
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (variant === 'no-drafts') {
+    return (
+      <AnnouncementBlock
+        announcementContent={t('MyApplicationsBanner.noDrafts')}
         imageSrc={ImageMestskeKontoSituacia}
       />
     )

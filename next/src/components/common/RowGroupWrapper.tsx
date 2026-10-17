@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from 'react'
+import { Fragment, ReactElement, ReactNode } from 'react'
 
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import cn from '@/src/utils/cn'
@@ -15,31 +15,35 @@ type Props = (
   | {
       children: ReactNode
       items?: never
+      asList?: never
     }
   | {
       children?: never
-      items: ReactNode[]
+      items: ReactElement[]
+      asList?: boolean
     }
 ) & {
   className?: string
 }
 
-const RowGroupWrapper = ({ children, items, className }: Props) => {
+const RowGroupWrapper = ({ children, items, asList, className }: Props) => {
   if (items && items.length > 0) {
+    const WrapperElement = asList ? 'ul' : 'div'
+
     return (
-      <div
+      <WrapperElement
         className={cn(
           'flex flex-col rounded-lg border border-border-passive-primary bg-background-passive-base px-4 py-2 lg:px-6',
           className,
         )}
       >
         {items.map((item, index) => (
-          <Fragment key={index}>
-            {index > 0 && <HorizontalDivider />}
-            {item}
+          <Fragment key={item.key ?? index}>
+            {index > 0 && <HorizontalDivider asListItem={asList} />}
+            {asList ? <li>{item}</li> : item}
           </Fragment>
         ))}
-      </div>
+      </WrapperElement>
     )
   }
 

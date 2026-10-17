@@ -7,7 +7,7 @@ import { formatDate } from '@/src/components/formatting/FormatDate'
 import { formatMarkdownLink } from '@/src/components/formatting/formatMarkdownLink'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
-import MyApplicationDetailsHeader from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetailsHeader'
+import MyApplicationDetailsHeader from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails/MyApplicationDetailsHeader'
 
 type Props = {
   formDefinitionTitle: string

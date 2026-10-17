@@ -35,6 +35,8 @@ const menoTitulField = object('menoTitul', {}, [
   input('titul', { type: 'text', title: 'Titul' }, { selfColumn: '1/4' }),
 ])
 
+// Browsers save the street and number as a single value, which they would fill into both inputs,
+// so we set autoComplete='off' on these two fields so prevent this behaviour (better empty than wrong).
 const ulicaCisloFields = (type: UlicaCisloTyp) =>
   object(`ulicaCislo${type}`, {}, [
     input(
@@ -42,6 +44,7 @@ const ulicaCisloFields = (type: UlicaCisloTyp) =>
       { type: 'text', title: 'Ulica', required: true },
       {
         selfColumn: '3/4',
+        autoComplete: 'off',
         helptextFooter: {
           [UlicaCisloTyp.FyzickaOsoba]: 'Zadajte ulicu svojho trvalého pobytu.',
           [UlicaCisloTyp.FyzickaOsobaPodnikatel]:
@@ -53,12 +56,24 @@ const ulicaCisloFields = (type: UlicaCisloTyp) =>
         }[type],
       },
     ),
-    input('cislo', { type: 'text', title: 'Čislo', required: true }, { selfColumn: '1/4' }),
+    input(
+      'cislo',
+      { type: 'text', title: 'Čislo', required: true },
+      { selfColumn: '1/4', autoComplete: 'off' },
+    ),
   ])
 
 const obecPscField = object('obecPsc', {}, [
-  input('obec', { type: 'text', title: 'Obec', required: true }, { selfColumn: '3/4' }),
-  input('psc', { type: 'text', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
+  input(
+    'obec',
+    { type: 'text', title: 'Obec', required: true },
+    { selfColumn: '3/4', autoComplete: 'address-level2' },
+  ),
+  input(
+    'psc',
+    { type: 'text', title: 'PSČ', required: true },
+    { selfColumn: '1/4', autoComplete: 'postal-code' },
+  ),
 ])
 
 const statField = select(

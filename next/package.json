@@ -119,7 +119,7 @@
     "@types/react-dom": "catalog:",
     "app-root-dir": "1.0.2",
     "cross-env": "10.1.0",
-    "eslint": "10.11.0",
+    "eslint": "10.12.0",
     "eslint-plugin-better-tailwindcss": "4.7.0",
     "i18next-cli": "1.74.2",
     "postcss": "8.5.28",

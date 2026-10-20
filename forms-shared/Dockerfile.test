@@ -15,6 +15,35 @@ COPY . .
 ARG TURBO_VERSION
 RUN pnpm dlx turbo@${TURBO_VERSION} prune forms-shared --docker
 
+# Each download has its own stage so it stays cached independently of the
+# layers below, and is verified against a pinned SHA-256.
+FROM node:${NODE_VERSION}-alpine AS downloader
+WORKDIR /download
+
+# Install Apache FOP 1.1. The official URL
+# https://archive.apache.org/dist/xmlgraphics/fop/binaries/fop-1.1-bin.zip
+# serves it at a couple hundred KB/s at best, which slows the build down
+# significantly, so it is fetched from the Huawei Cloud Apache mirror instead.
+FROM downloader AS fop
+RUN wget -O fop.zip https://mirrors.huaweicloud.com/apache/xmlgraphics/fop/binaries/fop-1.1-bin.zip \
+    && echo "eb6e36fab057db1e4302e21998f9cfa0edecda6cbc8d6048285a02e933c1f58a  fop.zip" | sha256sum -c - \
+    && unzip -q fop.zip -d /opt \
+    && rm fop.zip
+
+# Install Saxon.
+FROM downloader AS saxon
+RUN wget -O saxon.zip https://github.com/Saxonica/Saxon-HE/raw/f49da493df35079a04b11f5befeae0920ee30263/12/Java/SaxonHE12-5J.zip \
+    && echo "35a46728792bd4cec2fc262d48777b4c79b5cdeef03d2981e3a64ecb3a19f716  saxon.zip" | sha256sum -c - \
+    && unzip -q saxon.zip -d /opt/saxon \
+    && rm saxon.zip
+
+# Download fop.zip from slovensko.sk.
+FROM downloader AS slovensko-fop
+RUN wget -O fop.zip https://www.slovensko.sk/_img/CMS4/fop.zip \
+    && echo "10c1520141b00f97aaa8e52b6de4e6fa135ab013e94d3a6da626b669f140e7f2  fop.zip" | sha256sum -c - \
+    && unzip -q fop.zip -d /opt/slovensko-fop \
+    && rm fop.zip
+
 FROM base AS test-deps
 # Java and XML tooling for the FOP/Saxon pipeline. python3 and build-essential are
 # required only on ARM, so native Node modules can compile during the
@@ -25,31 +54,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2 \
     libxslt1.1 \
     python3 \
-    unzip \
-    wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Apache FOP 1.1.
-RUN wget https://archive.apache.org/dist/xmlgraphics/fop/binaries/fop-1.1-bin.zip \
-    && unzip fop-1.1-bin.zip \
-    && mv fop-1.1 /opt/fop-1.1 \
-    && rm fop-1.1-bin.zip
-
+COPY --from=fop /opt/fop-1.1 /opt/fop-1.1
 ENV FOP_JAR=/opt/fop-1.1/build/fop.jar
 ENV FOP_LIB=/opt/fop-1.1/lib
 
-# Install Saxon.
-RUN wget https://github.com/Saxonica/Saxon-HE/raw/main/12/Java/SaxonHE12-5J.zip \
-    && unzip SaxonHE12-5J.zip -d /opt/saxon \
-    && rm SaxonHE12-5J.zip
-
+COPY --from=saxon /opt/saxon /opt/saxon
 ENV SAXON_JAR=/opt/saxon/saxon-he-12.5.jar
 
-# Download and setup fop.zip from slovensko.sk.
-RUN wget https://www.slovensko.sk/_img/CMS4/fop.zip \
-    && unzip fop.zip -d /opt/slovensko-fop \
-    && rm fop.zip
-
+COPY --from=slovensko-fop /opt/slovensko-fop /opt/slovensko-fop
 ENV SLOVENSKO_FOP_CONF=/opt/slovensko-fop/fop.xconf
 
 # Install Playwright browsers before package files are copied so this layer only

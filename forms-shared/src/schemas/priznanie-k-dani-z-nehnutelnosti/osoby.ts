@@ -36,7 +36,7 @@ const menoTitulField = object('menoTitul', {}, [
 ])
 
 // Browsers save the street and number as a single value, which they would fill into both inputs,
-// so we set autoComplete='off' on these two fields so prevent this behaviour (better empty than wrong).
+// so we set autoComplete='off' on these two fields to prevent this behaviour (better empty than wrong).
 const ulicaCisloFields = (type: UlicaCisloTyp) =>
   object(`ulicaCislo${type}`, {}, [
     input(

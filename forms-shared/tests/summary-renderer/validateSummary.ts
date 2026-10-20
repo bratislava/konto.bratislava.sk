@@ -1,9 +1,13 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { FileStatusType } from '../../src/form-files/fileStatus'
+import { createCachedValidatorRegistry } from '../../src/form-utils/validatorRegistry'
+import { getBaRjsfValidator } from '../../src/form-utils/validators'
+import { conditionalFields } from '../../src/generator/functions/conditionalFields'
 import { fileUpload } from '../../src/generator/functions/fileUpload'
 import { fileUploadMultiple } from '../../src/generator/functions/fileUploadMultiple'
 import { input } from '../../src/generator/functions/input'
+import { createCondition } from '../../src/generator/helpers'
 import { object } from '../../src/generator/object'
 import { checkPathForErrors } from '../../src/summary-renderer/checkPathForErrors'
 import { validateSummary } from '../../src/summary-renderer/validateSummary'
@@ -173,6 +177,89 @@ describe('validateSummary', () => {
         'e37359e2-2547-42a9-82d6-d40054f17da0',
         'b3d0cd96-d255-4bfb-8b1a-56a185d467f3',
       ])
+    })
+  })
+
+  describe('Conditional file upload validation', () => {
+    const { schema } = object('wrapper', {}, [
+      input('type', { type: 'text', title: 'Type' }, {}),
+      conditionalFields(
+        createCondition([[['type'], { const: 'a' }]]),
+        [fileUpload('fileA', { title: 'File A' }, {})],
+        [fileUpload('fileB', { title: 'File B' }, {})],
+      ),
+    ])
+
+    test('should validate only files in the active branch', () => {
+      const result = validateSummary({
+        schema,
+        formData: {
+          type: 'a',
+          fileA: 'e37359e2-2547-42a9-82d6-d40054f17da0',
+          // Left over from the inactive branch, missing in fileInfos
+          fileB: 'b3d0cd96-d255-4bfb-8b1a-56a185d467f3',
+        },
+        fileInfos: {
+          'e37359e2-2547-42a9-82d6-d40054f17da0': {
+            id: 'e37359e2-2547-42a9-82d6-d40054f17da0',
+            statusType: FileStatusType.ScanDone,
+            fileName: '',
+          },
+        },
+        validatorRegistry: testValidatorRegistry,
+      })
+
+      expect(result.hasErrors).toBe(false)
+      expect(result.filesInFormData.map(({ id }) => id)).toEqual([
+        'e37359e2-2547-42a9-82d6-d40054f17da0',
+      ])
+    })
+  })
+
+  describe('Cached validator', () => {
+    const { schema } = object('wrapper', {}, [fileUpload('file', { title: 'File' }, {})])
+    const formData = { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' }
+
+    test('should use file infos of the current call when the validator is reused', () => {
+      const validatorRegistry = createCachedValidatorRegistry()
+
+      const resultWithError = validateSummary({
+        schema,
+        formData,
+        fileInfos: {},
+        validatorRegistry,
+      })
+      const resultWithoutError = validateSummary({
+        schema,
+        formData,
+        fileInfos: {
+          'e37359e2-2547-42a9-82d6-d40054f17da0': {
+            id: 'e37359e2-2547-42a9-82d6-d40054f17da0',
+            statusType: FileStatusType.ScanDone,
+            fileName: '',
+          },
+        },
+        validatorRegistry,
+      })
+
+      expect(resultWithError.hasErrors).toBe(true)
+      expect(resultWithError.filesInFormData.length).toBe(0)
+      expect(resultWithoutError.hasErrors).toBe(false)
+      expect(resultWithoutError.filesInFormData.length).toBe(1)
+    })
+
+    test('should not validate files outside of validateSummary', () => {
+      const validator = getBaRjsfValidator()
+
+      validateSummary({
+        schema,
+        formData,
+        fileInfos: {},
+        validatorRegistry: { getValidator: () => validator },
+      })
+
+      // The file is missing in fileInfos, but `baFile` is only an annotation outside of `validateSummary`
+      expect(validator.validateFormData(formData, schema).errors).toEqual([])
     })
   })
 })

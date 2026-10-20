@@ -3,9 +3,9 @@ import { SchemaValidateFunction } from 'ajv'
 
 import { FileInfoSummary, isErrorFileStatusType } from '../form-files/fileStatus'
 import { validateBaFileUuid } from '../form-utils/ajvFormats'
+import { withFileValidateFn } from '../form-utils/ajvKeywords'
 import { baGetDefaultFormStateStable } from '../form-utils/defaultFormState'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
-import { getFileValidatorBaRjsf } from '../form-utils/validators'
 
 type ValidateSummaryParams = {
   schema: RJSFSchema
@@ -23,9 +23,9 @@ export type ValidatedSummary = {
 /**
  * Validates the summary and returns error schema and info about files.
  *
- * This uses (or abuses) a possibility to provide a custom validate function for Ajv. This is only one of few ways how
- * to traverse the form data for specific values. In this case, we extract the files we need to give a special attention
- * in summary.
+ * Ajv calls the `baFile` keyword for each file field it validates (see `withFileValidateFn`), which is used to collect
+ * the files we need to give a special attention in summary and to report errors for the ones that are missing in
+ * `fileInfos` or have an error status.
  */
 export const validateSummary = ({
   schema,
@@ -42,7 +42,11 @@ export const validateSummary = ({
   // { property: 'wrapper', message: "must have required property 'wrapper'" }
   // if default data are added it correctly returns:
   // { property: 'wrapper.field1', message: "must have required property 'wrapper.field1'" }
-  const defaultFormData = baGetDefaultFormStateStable(schema, formData, validatorRegistry)
+  const validator = validatorRegistry.getValidator(schema)
+  // Use one validator for both the defaults and the validation. `SingleUseValidatorRegistry` returns a new validator
+  // for every `getValidator` call, its isolation is meant between `validateSummary` calls, not within one.
+  const reuseValidatorRegistry: BaRjsfValidatorRegistry = { getValidator: () => validator }
+  const defaultFormData = baGetDefaultFormStateStable(schema, formData, reuseValidatorRegistry)
 
   const filesInFormData: FileInfoSummary[] = []
   const fileValidateFn: SchemaValidateFunction = (schemaInner, id) => {
@@ -64,8 +68,9 @@ export const validateSummary = ({
     return !isErrorFileStatusType(fileInfo.statusType)
   }
 
-  const fileValidator = getFileValidatorBaRjsf(fileValidateFn)
-  const validationData = fileValidator.validateFormData(defaultFormData, schema)
+  const validationData = withFileValidateFn(fileValidateFn, () =>
+    validator.validateFormData(defaultFormData, schema),
+  )
   const hasErrors = Object.keys(validationData.errorSchema).length > 0
 
   return {

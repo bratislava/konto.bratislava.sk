@@ -45,10 +45,10 @@ export type BaRjsfValidator = ReturnType<typeof getBaRjsfValidator>
  * - SingleUseValidatorRegistry: Creates new validator for each getValidator call
  *   - Used on backend where state isolation is important
  *
- * - WeakMapRegistry: Caches validators by schema reference, falling back to schema content
+ * - CachedValidatorRegistry: Caches validators by schema reference, falling back to schema content
  *   - Used on frontend to prevent repeated schema compilations
  *   - The content fallback covers schemas recreated as new objects with the same content (see
- *     `createWeakMapRegistry`)
+ *     `createCachedValidatorRegistry`)
  *   - Uses WeakMap to allow garbage collection of unused schemas
  */
 export type BaRjsfValidatorRegistry = {
@@ -83,7 +83,7 @@ export const createSingleUseValidatorRegistry = (): BaRjsfValidatorRegistry => {
  * detects the different root schema in `handleSchemaUpdate`. Unlike the WeakMap, the content map keeps its validators
  * alive, so only `maxContentEntries` most recently used contents are kept.
  */
-export const createWeakMapRegistry = (maxContentEntries = 50): BaRjsfValidatorRegistry => {
+export const createCachedValidatorRegistry = (maxContentEntries = 50): BaRjsfValidatorRegistry => {
   const validatorByReference = new WeakMap<BAJSONSchema7, BaRjsfValidator>()
   // Map keeps insertion order, the first entry is the least recently used one
   const validatorByContent = new Map<string, BaRjsfValidator>()

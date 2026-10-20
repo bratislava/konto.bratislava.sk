@@ -4,8 +4,8 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { BAJSONSchema7 } from '../../src/form-utils/ajvKeywords'
 import {
+  createCachedValidatorRegistry,
   createSingleUseValidatorRegistry,
-  createWeakMapRegistry,
 } from '../../src/form-utils/validatorRegistry'
 
 describe('Validator Registry', () => {
@@ -61,9 +61,9 @@ describe('Validator Registry', () => {
     })
   })
 
-  describe('WeakMapRegistry', () => {
+  describe('CachedValidatorRegistry', () => {
     test('should cache validator instances', () => {
-      const registry = createWeakMapRegistry()
+      const registry = createCachedValidatorRegistry()
 
       const validator1 = registry.getValidator(mockSchema1)
       const validator2 = registry.getValidator(mockSchema2)
@@ -74,7 +74,7 @@ describe('Validator Registry', () => {
     })
 
     test('should compile schema only once per unique schema', () => {
-      const registry = createWeakMapRegistry()
+      const registry = createCachedValidatorRegistry()
 
       // First schema validation
       const validator1 = registry.getValidator(mockSchema1)
@@ -94,7 +94,7 @@ describe('Validator Registry', () => {
     })
 
     test('should reuse validator for a different schema object with the same content', () => {
-      const registry = createWeakMapRegistry()
+      const registry = createCachedValidatorRegistry()
 
       const validator1 = registry.getValidator(mockSchema2)
       validator1.isValid(mockSchema2, {}, mockSchema2)
@@ -111,7 +111,7 @@ describe('Validator Registry', () => {
     })
 
     test('should keep only the most recently used schema contents', () => {
-      const registry = createWeakMapRegistry(2)
+      const registry = createCachedValidatorRegistry(2)
       const mockSchema3: BAJSONSchema7 = { type: 'object', properties: { bar: { type: 'number' } } }
 
       const validator1 = registry.getValidator(mockSchema1)

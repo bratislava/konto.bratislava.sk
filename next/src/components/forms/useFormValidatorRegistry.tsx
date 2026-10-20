@@ -1,10 +1,10 @@
-import { createWeakMapRegistry } from 'forms-shared/form-utils/validatorRegistry'
+import { createCachedValidatorRegistry } from 'forms-shared/form-utils/validatorRegistry'
 import { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 const useGetContext = () => {
   // Safe way how to create a validator registry instance, similar to:
   // https://tanstack.com/query/v4/docs/framework/react/guides/ssr#using-hydration
-  const [validator] = useState(() => createWeakMapRegistry())
+  const [validator] = useState(() => createCachedValidatorRegistry())
 
   return { validator }
 }

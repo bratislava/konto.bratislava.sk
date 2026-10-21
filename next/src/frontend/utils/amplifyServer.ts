@@ -12,6 +12,7 @@ import { baRunWithAmplifyServerContext } from '@/src/frontend/utils/amplifyServe
 import { AmplifyServerContextSpec } from '@/src/frontend/utils/amplifyTypes'
 import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
 import { isDefined } from '@/src/frontend/utils/general'
+import logger from '@/src/frontend/utils/logger'
 import {
   authRequestIdQueryParam,
   getRedirectUrl,
@@ -22,8 +23,32 @@ import {
   removeRedirectQueryParamFromUrl,
   shouldRemoveRedirectQueryParam,
 } from '@/src/frontend/utils/queryParamRedirect'
-import type { GlobalAppProps } from '@/src/pages/_app'
 import { ROUTES } from '@/src/utils/routes'
+
+/**
+ * Cognito errors meaning the identity ID stored in the cookie can't be used: it doesn't exist
+ * (`ResourceNotFoundException`), it is linked to a user and used without that user's tokens (`NotAuthorizedException`:
+ * "Access to Identity '…' is forbidden"), or it is malformed (`ValidationException`). Amplify then throws on every
+ * request and never replaces the cookie: https://github.com/aws-amplify/amplify-js/issues/14975
+ */
+const unusableIdentityIdErrorNames = new Set([
+  'ResourceNotFoundException',
+  'NotAuthorizedException',
+  'ValidationException',
+])
+
+/** Marks the `fetchAuthSession` failure of the wrapper itself, so errors from `getServerSidePropsFn` are never retried. */
+class UnusableIdentityIdError extends Error {
+  constructor(readonly authError: AuthError) {
+    super(authError.message)
+    this.name = 'UnusableIdentityIdError'
+  }
+}
+
+const findIdentityIdCookieName = (cookies: Partial<Record<string, string>>) =>
+  Object.keys(cookies).find(
+    (name) => name.startsWith('com.amplify.Cognito.') && name.endsWith('.identityId'),
+  )
 
 /**
  * In Amplify V6, `getServerSideProps` must run in Amplify server context to execute Amplify operations. This is a
@@ -63,7 +88,7 @@ export const amplifyGetServerSideProps = <
     redirectOAuthParams?: boolean
   },
 ) => {
-  const wrappedFn: GetServerSideProps<Props, Params, Preview> = (context) =>
+  const runInAmplifyServerContext = (context: GetServerSidePropsContext<Params, Preview>) =>
     baRunWithAmplifyServerContext({
       nextServerContext: { request: context.req, response: context.res },
       operation: async (contextSpec) => {
@@ -74,18 +99,8 @@ export const amplifyGetServerSideProps = <
           // `fetchAuthSession` must be called in each request, otherwise guests wouldn't receive identity ID
           authSession = await fetchAuthSessionFn()
         } catch (error) {
-          // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
-          if (
-            error instanceof AuthError &&
-            (error.name === 'ResourceNotFoundException' || error.name === 'NotAuthorizedException')
-          ) {
-            return {
-              props: {
-                appProps: {
-                  amplifyResetCookies: true,
-                },
-              } satisfies GlobalAppProps as unknown as Props,
-            }
+          if (error instanceof AuthError && unusableIdentityIdErrorNames.has(error.name)) {
+            throw new UnusableIdentityIdError(error)
           }
           throw error
         }
@@ -218,6 +233,40 @@ export const amplifyGetServerSideProps = <
         return getServerSidePropsResult
       },
     })
+
+  const wrappedFn: GetServerSideProps<Props, Params, Preview> = async (context) => {
+    try {
+      return await runInAmplifyServerContext(context)
+    } catch (error) {
+      if (!(error instanceof UnusableIdentityIdError)) {
+        throw error
+      }
+      const cookieName = findIdentityIdCookieName(context.req.cookies)
+      if (!cookieName) {
+        throw error.authError
+      }
+
+      // Retry once without the cookie, so Amplify gets a new identity ID: a new guest identity, or the signed-in user's
+      // own one. The Amplify server context reads cookies from `context.req.cookies` when it is created, so removing the
+      // cookie there is enough. The deletion makes the browser drop it too; for a guest, the new identity ID set by the
+      // retry comes after it in the response and replaces it.
+      const { [cookieName]: unusableIdentityId, ...otherCookies } = context.req.cookies
+      logger.warn(
+        `[AUTH] Unusable identity ID ${unusableIdentityId} in cookie (${error.authError.name}: ${error.authError.message}), retrying without it`,
+      )
+      context.req.cookies = otherCookies
+      context.res.appendHeader(
+        'Set-Cookie',
+        `${cookieName}=;Path=/;Expires=${new Date(0).toUTCString()}`,
+      )
+
+      try {
+        return await runInAmplifyServerContext(context)
+      } catch (retryError) {
+        throw retryError instanceof UnusableIdentityIdError ? retryError.authError : retryError
+      }
+    }
+  }
 
   return wrappedFn
 }

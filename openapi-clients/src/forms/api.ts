@@ -494,6 +494,7 @@ export type GetFormsResponseDtoItemsInner =
 
 export interface GinisDocumentDetailResponseDto {
   id: string
+  referenceNumber?: string
   dossierId: string
   ownerName: string
   ownerEmail: string

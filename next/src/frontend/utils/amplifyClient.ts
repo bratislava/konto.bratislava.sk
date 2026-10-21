@@ -19,6 +19,20 @@ export const removeAllCookiesAndClearLocalStorage = () => {
   localStorage.clear()
 }
 
+/** The guest identity ID Amplify keeps in a cookie, or `null` if there is none. */
+export const getAmplifyGuestIdentityId = () => {
+  const cookie = document.cookie
+    .split(';')
+    .map((part) => part.trim())
+    .find((part) => {
+      const cookieName = part.split('=')[0]
+
+      return cookieName.startsWith('com.amplify.Cognito.') && cookieName.endsWith('.identityId')
+    })
+
+  return cookie ? decodeURIComponent(cookie.split('=').slice(1).join('=')) : null
+}
+
 export const useSignOut = () => {
   const router = useRouter()
   const queryClient = useQueryClient()

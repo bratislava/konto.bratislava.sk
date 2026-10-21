@@ -6,6 +6,7 @@ import {
   GetIdentitiesByUrisResult,
   getUpvsDeathDate,
   GetUpvsIdentitiesByUrisParam,
+  getUpvsNames,
   NasesService,
 } from '../nases/nases.service'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
@@ -85,6 +86,7 @@ export class EdeskBatchUpdateService {
     await Promise.all(
       successExternal.map(async (item) => {
         const edeskDeathDate = getUpvsDeathDate(item.data)
+        const { givenName, familyName } = getUpvsNames(item.data)
         const updated = await this.prismaService.externalEdeskCheck.update({
           where: { uri: item.inputUri },
           data: {
@@ -93,6 +95,8 @@ export class EdeskBatchUpdateService {
             edeskStatus: item.data.upvs?.edesk_status ?? null,
             edeskNumber: item.data.upvs?.edesk_number ?? null,
             edeskDeathDate,
+            edeskGivenName: givenName,
+            edeskFamilyName: familyName,
             processedAt: new Date(),
             newUri: item.inputUri !== item.data.uri ? item.data.uri : undefined,
           },

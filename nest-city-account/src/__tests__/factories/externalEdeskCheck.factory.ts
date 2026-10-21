@@ -13,6 +13,8 @@ export const externalEdeskCheckFactory = (
   edeskStatus: null,
   edeskNumber: null,
   edeskDeathDate: null,
+  edeskGivenName: null,
+  edeskFamilyName: null,
   norisId: 1,
   processedAt: null,
   failCount: 0,

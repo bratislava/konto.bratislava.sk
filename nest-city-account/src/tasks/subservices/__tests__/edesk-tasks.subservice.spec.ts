@@ -31,6 +31,8 @@ const createMockCompletedItem = (
     edeskStatus: 'active',
     edeskNumber: '12345',
     edeskDeathDate: null,
+    edeskGivenName: null,
+    edeskFamilyName: null,
     failCount: 0,
     newUri: null,
     ...overrides,
@@ -305,6 +307,8 @@ describe('EdeskTasksSubservice', () => {
         edeskStatus: null,
         edeskNumber: null,
         edeskDeathDate: null,
+        edeskGivenName: null,
+        edeskFamilyName: null,
         failCount: 3,
         newUri: null,
       }
@@ -371,6 +375,8 @@ describe('EdeskTasksSubservice', () => {
         id: 'id-1',
         norisId: 1,
         edeskDeathDate: null,
+        edeskGivenName: null,
+        edeskFamilyName: null,
       })
 
       jest.spyOn(upvsQueueService, 'getNumberOfPendingExternalItemsInQueue').mockResolvedValue(0)

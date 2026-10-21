@@ -2,7 +2,7 @@ import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { QueueItemStatusEnum } from '../generated/prisma/enums'
-import { getUpvsDeathDate, NasesService } from '../nases/nases.service'
+import { getUpvsDeathDate, getUpvsNames, NasesService } from '../nases/nases.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { selectUriToUpdateInternal } from './upvs-queue.queries'
 
@@ -77,6 +77,7 @@ export class EdeskUriUpdateService {
     }
 
     const successItem = upvsResult.success[0]
+    const { givenName, familyName } = getUpvsNames(successItem.data)
     await this.prismaService.externalEdeskCheck.update({
       where: { uri: successItem.inputUri },
       data: {
@@ -85,6 +86,8 @@ export class EdeskUriUpdateService {
         edeskStatus: successItem.data.upvs?.edesk_status ?? null,
         edeskNumber: successItem.data.upvs?.edesk_number ?? null,
         edeskDeathDate: getUpvsDeathDate(successItem.data),
+        edeskGivenName: givenName,
+        edeskFamilyName: familyName,
         processedAt: new Date(),
         newUri: successItem.inputUri === successItem.data.uri ? undefined : successItem.data.uri,
       },

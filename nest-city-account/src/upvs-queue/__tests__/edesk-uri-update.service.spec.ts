@@ -129,7 +129,7 @@ describe('EdeskUriUpdateService', () => {
   })
 
   describe('handleUriUpdateExternal', () => {
-    it('marks the row COMPLETED and persists the death date on success', async () => {
+    it('marks the row COMPLETED and persists the death date and names on success', async () => {
       jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
         success: [
           {
@@ -139,7 +139,11 @@ describe('EdeskUriUpdateService', () => {
               status: 'activated',
               upvs: { edesk_status: 'active', edesk_number: '1' },
               type: 'natural_person',
-              natural_person: { death: { date: '2026-06-15' } },
+              natural_person: {
+                death: { date: '2026-06-15' },
+                given_names: ['Ján'],
+                family_names: [{ value: 'Novák' }],
+              },
             },
           },
         ],
@@ -153,6 +157,8 @@ describe('EdeskUriUpdateService', () => {
         data: expectObjectContaining({
           queueStatus: QueueItemStatusEnum.COMPLETED,
           edeskDeathDate: '2026-06-15',
+          edeskGivenName: 'Ján',
+          edeskFamilyName: 'Novák',
         }),
       })
     })

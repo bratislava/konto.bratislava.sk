@@ -9,21 +9,18 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import { appWithTranslation } from 'next-i18next/pages'
 import PlausibleProvider from 'next-plausible'
 import { NuqsAdapter } from 'nuqs/adapters/next/pages'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { I18nProvider } from 'react-aria/I18nProvider'
 
 import { NavMenuContextProvider } from '@/src/components/segments/NavBar/navMenuContext'
 import MLink from '@/src/components/simple-components/MLink'
 import AppToastRegion from '@/src/components/simple-components/Toast/Toast'
 import { environment } from '@/src/environment'
-import { removeAllCookiesAndClearLocalStorage } from '@/src/frontend/utils/amplifyClient'
 import AmplifyClientProvider from '@/src/frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '@/src/frontend/utils/general'
-import logger from '@/src/frontend/utils/logger'
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
@@ -32,57 +29,12 @@ const inter = Inter({
 export type GlobalAppProps = {
   appProps?: {
     externallyEmbedded?: boolean
-    amplifyResetCookies?: true
   }
-}
-
-/**
- * The session storage is used to prevent infinite cycle:
- * server triggers removal -> remove cookies -> reload -> server triggers removal (this won't happen twice)
- */
-const amplifyCookiesRemovedSessionStorageKey = 'amplifyCookiesRemoved'
-
-// Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
-const AmplifyCookiesReset = () => {
-  const router = useRouter()
-
-  useEffect(() => {
-    if (sessionStorage.getItem(amplifyCookiesRemovedSessionStorageKey)) {
-      throw new Error(
-        '[AUTH] Tried to remove Amplify cookies more than once, infinite loop detected.',
-      )
-    } else {
-      logger.info(`[AUTH] Removing all Amplify cookies and clearing local storage`)
-      sessionStorage.setItem(amplifyCookiesRemovedSessionStorageKey, 'true')
-      removeAllCookiesAndClearLocalStorage()
-      logger.info(`[AUTH] Reloading page after cookie cleanup`)
-      router.reload()
-    }
-    // Rewritten from useEffectOnce
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  return null
 }
 
 const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
   const [queryClient] = useState(() => new QueryClient())
   const allowCookies = !pageProps.appProps?.externallyEmbedded
-  const amplifyResetCookies = pageProps.appProps?.amplifyResetCookies
-
-  useEffect(() => {
-    if (!amplifyResetCookies && sessionStorage.getItem(amplifyCookiesRemovedSessionStorageKey)) {
-      logger.info(`[AUTH] Resetting Amplify cookies removal flag in session storage`)
-      sessionStorage.removeItem(amplifyCookiesRemovedSessionStorageKey)
-    }
-
-    // Rewritten from useEffectOnce
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  if (amplifyResetCookies) {
-    return <AmplifyCookiesReset />
-  }
 
   return (
     <>

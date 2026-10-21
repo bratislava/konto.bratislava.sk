@@ -44,6 +44,19 @@ export const openRegistration = async (page: Page) => {
   await page.locator('[data-cy="Registrácia-menu-item"]').click()
 }
 
+/** Leaves the current page for the sign-in form, like `openRegistration` does for the registration form. */
+export const openLogin = async (page: Page) => {
+  const loginButton = page.locator('[data-cy=login-button]')
+  if (await loginButton.isVisible().catch(() => false)) {
+    await loginButton.click()
+
+    return
+  }
+
+  await page.locator('[data-cy=mobile-account-button]').click()
+  await page.locator('[data-cy="Prihlásenie-menu-item"]').click()
+}
+
 /**
  * Waits for Cloudflare Turnstile to produce a token, when the form uses it.
  *

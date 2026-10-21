@@ -73,7 +73,8 @@ and `globalSetup` prints the run id, so one run's leftovers are identifiable.
 ## The Cypress migration
 
 This package replaces the Cypress suite that lived in `../tests`. All fourteen of its specs have a
-counterpart here, in `src/legacy/specs/`, tagged `@legacy`.
+counterpart here, in `src/legacy/specs/`, tagged `@legacy`, except the form registration redirect,
+which `src/forms/form-migration.spec.ts` covers together with signing in.
 
 Every spec header links the Cypress file it replaces, pinned at tag `prod3.30.3` so the original
 stays reachable now that `../tests` is deleted:

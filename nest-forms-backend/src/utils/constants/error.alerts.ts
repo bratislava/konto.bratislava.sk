@@ -53,6 +53,7 @@ export default [
   FormError.NASES_SEND_ERROR,
   FormError.RABBITMQ_MAX_TRIES,
   SignerErrorsEnum.XML_VALIDATION_ERROR,
+  SignerErrorsEnum.SIGNATURE_VERIFICATION_UNAVAILABLE,
   SharepointErrorsEnum.GENERAL_ERROR,
   FormsErrorsEnum.FORM_NOT_REGISTERED_IN_SLOVENSKO_SK,
   GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,

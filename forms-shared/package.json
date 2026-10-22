@@ -90,7 +90,7 @@
     "archiver": "8.0.0",
     "cross-env": "10.1.0",
     "glob": "13.0.6",
-    "inquirer": "14.2.3",
+    "inquirer": "14.2.4",
     "jest-image-snapshot": "6.5.2",
     "pdf-to-img": "7.0.1",
     "playwright": "catalog:",

@@ -2,12 +2,12 @@ import { ErrorFactoryService } from '@bratislava/log-nest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosError, AxiosHeaders } from 'axios'
-import { SignatureRejectionReason } from 'forms-shared/signer/evaluateCepVerification'
 
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import { SignatureVerificationMode } from '../config/environment-variables'
+import { SignatureRejectionReason } from './evaluate-cep-verification'
 import SignatureVerdictCache from './signature-verdict-cache'
 import SignatureVerificationService from './signature-verification.service'
 import { SignerErrorsEnum } from './signer.errors.enum'
@@ -369,47 +369,6 @@ describe('SignatureVerificationService', () => {
       await service.assertSignatureAccepted(SIGNATURE, CONTEXT)
 
       expect(verdictCache.get).not.toHaveBeenCalled()
-    })
-
-    it('is bypassed by the admin passthrough', async () => {
-      respondWith(RESPONSES.valid)
-
-      await service.verifySignaturePassthrough(SIGNATURE)
-
-      expect(verdictCache.get).not.toHaveBeenCalled()
-      expect(verdictCache.set).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('verifySignaturePassthrough', () => {
-    it('returns the raw response regardless of the mode', async () => {
-      config.signatureVerification = SignatureVerificationMode.Off
-      respondWith(RESPONSES.untrustedCertificate)
-
-      await expect(
-        service.verifySignaturePassthrough(SIGNATURE),
-      ).resolves.toEqual({
-        success: true,
-        result: RESPONSES.untrustedCertificate,
-      })
-    })
-
-    it('returns upstream error details instead of throwing', async () => {
-      apiCepVerifyPost.mockRejectedValue(upstreamError())
-
-      await expect(
-        service.verifySignaturePassthrough(SIGNATURE),
-      ).resolves.toEqual({
-        success: false,
-        error: {
-          message: 'Request failed with status code 502',
-          code: 'ERR_BAD_RESPONSE',
-          status: 502,
-          statusText: 'Bad Gateway',
-          data: '<html>502</html>',
-          url: '/api/cep/verify',
-        },
-      })
     })
   })
 })

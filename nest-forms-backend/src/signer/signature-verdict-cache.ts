@@ -3,10 +3,11 @@ import { createHash } from 'node:crypto'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Inject, Injectable, Logger } from '@nestjs/common'
 import type { Cache } from 'cache-manager'
+
 import {
   CepVerificationVerdict,
   SignatureRejectionReason,
-} from 'forms-shared/signer/evaluateCepVerification'
+} from './evaluate-cep-verification'
 
 const KEY_PREFIX = 'signature-verification:v1:'
 

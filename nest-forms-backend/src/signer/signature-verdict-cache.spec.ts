@@ -2,11 +2,11 @@ import { createHash } from 'node:crypto'
 
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Test } from '@nestjs/testing'
+
 import {
   CepVerificationVerdict,
   SignatureRejectionReason,
-} from 'forms-shared/signer/evaluateCepVerification'
-
+} from './evaluate-cep-verification'
 import SignatureVerdictCache, {
   ACCEPTED_VERDICT_TTL_MS,
   REJECTED_VERDICT_TTL_MS,

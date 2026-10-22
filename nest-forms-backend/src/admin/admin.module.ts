@@ -6,7 +6,6 @@ import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
 import { MinioStorageModule } from '../minio-storage/minio-storage.module'
 import NasesModule from '../nases/nases.module'
-import SignerModule from '../signer/signer.module'
 import TaxModule from '../tax/tax.module'
 import AdminController from './admin.controller'
 import AdminService from './admin.service'
@@ -20,7 +19,6 @@ import AdminService from './admin.service'
     UserInfoPipeModule,
     NasesModule,
     MinioStorageModule,
-    SignerModule,
   ],
   providers: [AdminService],
   exports: [],

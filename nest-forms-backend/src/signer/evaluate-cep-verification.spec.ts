@@ -1,29 +1,35 @@
-import { describe, expect, test } from 'vitest'
-
 import {
   CepVerifyResponse,
   evaluateCepVerification,
   SignatureRejectionReason,
-} from '../../src/signer/evaluateCepVerification'
+} from './evaluate-cep-verification'
 
-const ISSUER = 'C=SK,L=Bratislava,2.5.4.97=NTRSK-35975946,O=Disig a.s.,CN=SVK eID ACA2'
+const ISSUER =
+  'C=SK,L=Bratislava,2.5.4.97=NTRSK-35975946,O=Disig a.s.,CN=SVK eID ACA2'
 
 /**
  * Responses mirror the ones returned by FIX in October 2026 (`POST /api/cep/verify`), reduced to the fields the
  * evaluation reads. Personal data (subject, signed content, mandate, verifier texts) is omitted.
  */
 const authorization = (result: number, verifierResult: number) => ({
-  signature: { certificate: { issuer: ISSUER, serial_number: '32727828142961694225201' } },
+  signature: {
+    certificate: { issuer: ISSUER, serial_number: '32727828142961694225201' },
+  },
   verification: { result, verifier: { result: verifierResult } },
 })
 
-const verified = (...authorizations: ReturnType<typeof authorization>[]): CepVerifyResponse => ({
+const verified = (
+  ...authorizations: ReturnType<typeof authorization>[]
+): CepVerifyResponse => ({
   verify_result: 0,
   verify_description: 'OK',
   verified_objects: [{ authorizations }],
 })
 
-const topLevel = (verifyResult: number, description: string): CepVerifyResponse => ({
+const topLevel = (
+  verifyResult: number,
+  description: string,
+): CepVerifyResponse => ({
   verify_result: verifyResult,
   verify_description: description,
 })
@@ -35,12 +41,18 @@ describe('evaluateCepVerification', () => {
     test('valid signature without timestamp ("Predbežne platná", TRY_LATER)', () => {
       expect(evaluate(verified(authorization(3, 17)))).toEqual({
         accepted: true,
-        signature: { issuer: ISSUER, serialNumber: '32727828142961694225201', result: 3 },
+        signature: {
+          issuer: ISSUER,
+          serialNumber: '32727828142961694225201',
+          result: 3,
+        },
       })
     })
 
     test('valid signature ("Platná")', () => {
-      expect(evaluate(verified(authorization(1, 0)))).toMatchObject({ accepted: true })
+      expect(evaluate(verified(authorization(1, 0)))).toMatchObject({
+        accepted: true,
+      })
     })
   })
 
@@ -48,10 +60,17 @@ describe('evaluateCepVerification', () => {
     test.each([
       [
         'wrong certificate (eID PCA/SCA, Windows, self-signed, corporate, test or non-qualified CA)',
-        topLevel(2111217, 'Podpisový certifikát vydaný nepodporovanou certifikačnou autoritou.'),
+        topLevel(
+          2111217,
+          'Podpisový certifikát vydaný nepodporovanou certifikačnou autoritou.',
+        ),
         SignatureRejectionReason.UntrustedCertificate,
       ],
-      ['bare XML', topLevel(2111042, 'Nepodporované dáta.'), SignatureRejectionReason.NotSigned],
+      [
+        'bare XML',
+        topLevel(2111042, 'Nepodporované dáta.'),
+        SignatureRejectionReason.NotSigned,
+      ],
       [
         'unsigned PDF',
         topLevel(2111204, 'Správa neobsahuje žiadny podpísaný dokument.'),
@@ -72,8 +91,16 @@ describe('evaluateCepVerification', () => {
         topLevel(2111001, 'Interná chyba'),
         SignatureRejectionReason.Unexpected,
       ],
-      ['unknown top-level code', topLevel(2999999, '?'), SignatureRejectionReason.Unexpected],
-      ['OK without verified objects', topLevel(0, 'OK'), SignatureRejectionReason.NotSigned],
+      [
+        'unknown top-level code',
+        topLevel(2999999, '?'),
+        SignatureRejectionReason.Unexpected,
+      ],
+      [
+        'OK without verified objects',
+        topLevel(0, 'OK'),
+        SignatureRejectionReason.NotSigned,
+      ],
       [
         'OK with empty authorizations',
         { verify_result: 0, verified_objects: [{ authorizations: [] }] },
@@ -88,8 +115,18 @@ describe('evaluateCepVerification', () => {
     })
 
     test.each([
-      ['revoked certificate', 2, 1, SignatureRejectionReason.CertificateRevoked],
-      ['signed data changed (HASH_FAILURE)', 2, 2, SignatureRejectionReason.SignatureInvalid],
+      [
+        'revoked certificate',
+        2,
+        1,
+        SignatureRejectionReason.CertificateRevoked,
+      ],
+      [
+        'signed data changed (HASH_FAILURE)',
+        2,
+        2,
+        SignatureRejectionReason.SignatureInvalid,
+      ],
       [
         'signature value changed (SIG_CRYPTO_FAILURE)',
         2,
@@ -102,29 +139,45 @@ describe('evaluateCepVerification', () => {
         20,
         SignatureRejectionReason.CertificateExpired,
       ],
-      ['result 6 for another reason', 6, 99, SignatureRejectionReason.Unexpected],
+      [
+        'result 6 for another reason',
+        6,
+        99,
+        SignatureRejectionReason.Unexpected,
+      ],
       ['"Pravdepodobne platná"', 4, 0, SignatureRejectionReason.Unexpected],
       ['"Neoverená"', 5, 0, SignatureRejectionReason.Unexpected],
       ['unknown result', 42, 0, SignatureRejectionReason.Unexpected],
     ])('%s', (_name, result, verifierResult, reason) => {
-      expect(evaluate(verified(authorization(result, verifierResult)))).toEqual({
-        accepted: false,
-        reason,
-        verifyResult: 0,
-        authorizationResult: result,
-        verifierResult,
-      })
+      expect(evaluate(verified(authorization(result, verifierResult)))).toEqual(
+        {
+          accepted: false,
+          reason,
+          verifyResult: 0,
+          authorizationResult: result,
+          verifierResult,
+        },
+      )
     })
 
     test('authorization without verification', () => {
       expect(
-        evaluate({ verify_result: 0, verified_objects: [{ authorizations: [{}] }] }),
-      ).toMatchObject({ accepted: false, reason: SignatureRejectionReason.Unexpected })
+        evaluate({
+          verify_result: 0,
+          verified_objects: [{ authorizations: [{}] }],
+        }),
+      ).toMatchObject({
+        accepted: false,
+        reason: SignatureRejectionReason.Unexpected,
+      })
     })
 
     test.each([
       ['two valid signatures', [authorization(3, 17), authorization(3, 17)]],
-      ['a valid and a revoked signature', [authorization(3, 17), authorization(2, 1)]],
+      [
+        'a valid and a revoked signature',
+        [authorization(3, 17), authorization(2, 1)],
+      ],
     ])('%s', (_name, authorizations) => {
       expect(evaluate(verified(...authorizations))).toEqual({
         accepted: false,
@@ -142,7 +195,10 @@ describe('evaluateCepVerification', () => {
             { authorizations: [authorization(3, 17)] },
           ],
         }),
-      ).toMatchObject({ accepted: false, reason: SignatureRejectionReason.MultipleSignatures })
+      ).toMatchObject({
+        accepted: false,
+        reason: SignatureRejectionReason.MultipleSignatures,
+      })
     })
   })
 })

@@ -1,23 +1,20 @@
 import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable, Logger } from '@nestjs/common'
 import { isAxiosError } from 'axios'
-import {
-  CepVerificationVerdict,
-  CepVerifyResponse,
-  evaluateCepVerification,
-  SignatureRejectionReason,
-} from 'forms-shared/signer/evaluateCepVerification'
 import type { ApiCepVerifyPost200Response } from 'openapi-clients/slovensko-sk'
 
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import { SignatureVerificationMode } from '../config/environment-variables'
-import SignatureVerdictCache from './signature-verdict-cache'
 import {
-  VerifyFormSignatureResponseDto,
-  VerifySignatureResponseDto,
-} from './signer.dto'
+  CepVerificationVerdict,
+  CepVerifyResponse,
+  evaluateCepVerification,
+  SignatureRejectionReason,
+} from './evaluate-cep-verification'
+import SignatureVerdictCache from './signature-verdict-cache'
+import { VerifyFormSignatureResponseDto } from './signer.dto'
 import {
   SignerErrorsEnum,
   SignerErrorsResponseEnum,
@@ -70,8 +67,8 @@ type CheckResult =
   | { status: 'verified'; verdict: CepVerificationVerdict }
 
 /**
- * Verifies signed forms with the Slovensko.sk CEP service (`POST /api/cep/verify`), see `evaluateCepVerification` in
- * forms-shared for how the response is interpreted. Behaviour depends on `FEATURE_TOGGLE_SIGNATURE_VERIFICATION`.
+ * Verifies signed forms with the Slovensko.sk CEP service (`POST /api/cep/verify`), see `evaluateCepVerification` for how the
+ * response is interpreted. Behaviour depends on `FEATURE_TOGGLE_SIGNATURE_VERIFICATION`.
  *
  * The CEP response contains the whole signed form and the signer's personal data, it is never logged. Only the
  * verdict (codes and certificate issuer) is.
@@ -221,41 +218,6 @@ export default class SignatureVerificationService {
         ...rejectionErrors[verdict.reason],
         console: { ...context, verdict },
       })
-    }
-  }
-
-  /**
-   * Admin passthrough to `POST /api/cep/verify`, returns the raw Slovensko.sk response. Ignores the feature toggle.
-   *
-   * Upstream failures are returned with HTTP 200 on purpose: the edge proxy replaces 5xx bodies with a generic outage
-   * page, which would hide the actual Slovensko.sk response from the admin.
-   */
-  async verifySignaturePassthrough(
-    content: string,
-  ): Promise<VerifySignatureResponseDto> {
-    try {
-      return { success: true, result: await this.callCepVerify(content) }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error)
-      this.logger.error(
-        `Failed to verify signature in Slovensko.sk: ${message}`,
-      )
-
-      if (isAxiosError(error)) {
-        return {
-          success: false,
-          error: {
-            message,
-            code: error.code,
-            status: error.response?.status,
-            statusText: error.response?.statusText,
-            data: error.response?.data as unknown,
-            url: error.config?.url,
-          },
-        }
-      }
-
-      return { success: false, error: { message } }
     }
   }
 }

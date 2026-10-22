@@ -60,13 +60,13 @@ export enum CepVerifierResult {
  * objects without `signature` and `verification` (the `allOf` with the base object is not merged), although the API
  * returns them.
  */
-export type CepVerifyResponse = {
+export interface CepVerifyResponse {
   verify_result: number
   verify_description?: string
   verified_objects?: { authorizations?: CepAuthorization[] }[]
 }
 
-type CepAuthorization = {
+interface CepAuthorization {
   signature?: { certificate?: { issuer?: string; serial_number?: string } }
   verification?: { result?: number; verifier?: { result?: number } }
 }
@@ -82,7 +82,7 @@ export enum SignatureRejectionReason {
   Unexpected = 'Unexpected',
 }
 
-export type AcceptedSignature = {
+export interface AcceptedSignature {
   /** Distinguished name of the certificate issuer, contains no personal data. */
   issuer: string | undefined
   serialNumber: string | undefined
@@ -104,12 +104,19 @@ export type CepVerificationVerdict =
       verifierResult?: number
     }
 
-export const evaluateCepVerification = (response: CepVerifyResponse): CepVerificationVerdict => {
+export const evaluateCepVerification = (
+  response: CepVerifyResponse,
+): CepVerificationVerdict => {
   const verifyResult = response.verify_result
   const reject = (
     reason: SignatureRejectionReason,
     codes: { authorizationResult?: number; verifierResult?: number } = {},
-  ): CepVerificationVerdict => ({ accepted: false, reason, verifyResult, ...codes })
+  ): CepVerificationVerdict => ({
+    accepted: false,
+    reason,
+    verifyResult,
+    ...codes,
+  })
 
   if (verifyResult === CEP_VERIFY_RESULT_UNTRUSTED_CA) {
     return reject(SignatureRejectionReason.UntrustedCertificate)

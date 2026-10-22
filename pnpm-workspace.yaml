@@ -14,9 +14,9 @@ catalog:
   '@playwright/test': 1.64.1
   '@react-aria/utils': 3.34.1
   '@react-types/shared': 3.37.0
-  '@rjsf/core': 6.5.2
-  '@rjsf/utils': 6.5.2
-  '@rjsf/validator-ajv8': 6.5.2
+  '@rjsf/core': 6.11.0
+  '@rjsf/utils': 6.11.0
+  '@rjsf/validator-ajv8': 6.11.0
   '@types/node': 24.19.2
   '@types/react': 19.3.0
   '@types/react-dom': 19.3.0
@@ -70,6 +70,14 @@ allowBuilds:
 
 minimumReleaseAgeExclude:
   - '@bratislava/*'
+
+# `@x0k/json-schema-merge` (used by @rjsf/utils to merge `allOf`) before 1.1.0
+# attached the `else` of a later `allOf` condition to an earlier `if` that has
+# none, so RJSF's `omitExtraData` kept data from inactive branches. @rjsf/utils
+# 6.11.0 still allows ^1.0.6, so this forces the fixed release.
+# TODO: Drop this override once @rjsf/utils requires ^1.1.0 itself.
+overrides:
+  '@x0k/json-schema-merge': 1.1.0
 
 # These packages import `typescript` without declaring it as a dependency or peer, so instead of
 # the TypeScript of the project that uses them, they get whichever version pnpm happens to hoist,

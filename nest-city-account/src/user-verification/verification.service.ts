@@ -50,6 +50,9 @@ import {
   VerificationErrorsResponseEnum,
 } from './verification.errors.enum'
 
+const NAME_NOT_SET = 'not-set'
+const decryptName = (value: string): string => (value === NAME_NOT_SET ? value : decryptData(value))
+
 @Injectable()
 export class VerificationService {
   constructor(
@@ -766,6 +769,8 @@ export class VerificationService {
       ...record,
       idCard: decryptData(record.idCard),
       birthNumber: decryptData(record.birthNumber),
+      givenName: decryptName(record.givenName),
+      familyName: decryptName(record.familyName),
     }))
 
     return {
@@ -791,6 +796,8 @@ export class VerificationService {
       idCard: decryptData(record.idCard),
       birthNumber: decryptData(record.birthNumber),
       ico: decryptData(record.ico),
+      givenName: decryptName(record.givenName),
+      familyName: decryptName(record.familyName),
       userId: record.legalPersonId,
       legalPersonId: undefined,
     }))

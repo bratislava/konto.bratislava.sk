@@ -48,6 +48,20 @@ export class VerificationDataForUser {
   ico?: string
 
   @ApiProperty({
+    description: 'Given name of the user at the time of verification.',
+    example: 'Jozef',
+  })
+  @IsString()
+  givenName!: string
+
+  @ApiProperty({
+    description: 'Family name of the user at the time of verification.',
+    example: 'Mrkvička',
+  })
+  @IsString()
+  familyName!: string
+
+  @ApiProperty({
     description: 'Created timestamp',
     default: '2023-02-10T10:31:49.247Z',
   })

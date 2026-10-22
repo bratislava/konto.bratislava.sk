@@ -1,5 +1,5 @@
 import { GenericObjectType } from '@rjsf/utils'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import {
   createFormSignature,
@@ -8,8 +8,19 @@ import {
 } from 'forms-shared/signer/signature'
 import isEqual from 'lodash/isEqual'
 import { useTranslation } from 'next-i18next/pages'
-import { SignerDataResponseDto } from 'openapi-clients/forms'
-import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
+import {
+  SignatureRejectionReason,
+  SignerDataResponseDto,
+  VerifyFormSignatureResponseDto,
+} from 'openapi-clients/forms'
+import React, {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react'
 import { useIsMounted } from 'usehooks-ts'
 
 import { formsClient } from '@/src/clients/forms'
@@ -21,6 +32,26 @@ import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormLeaveProtection } from '@/src/components/forms/useFormLeaveProtection'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import useToast from '@/src/components/simple-components/Toast/useToast'
+
+/**
+ * Result of verifying the signature with Slovensko.sk (via forms backend), see `SignatureVerificationService` in
+ * nest-forms-backend.
+ * - `none`: there is no signature to verify.
+ * - `pending`: the verification is running (the first one for a certificate can take ~20 s).
+ * - `accepted`: the signature can be sent.
+ * - `unverified`: the verification could not run (e.g. Slovensko.sk unavailable), the backend verifies it again when
+ *   the form is sent.
+ * - `rejected`: the signature will not be accepted, the user has to sign again.
+ */
+export type SignatureVerification =
+  | { status: 'none' | 'pending' | 'accepted' | 'unverified' }
+  | { status: 'rejected'; reason: SignatureRejectionReason }
+
+const getSignatureVerificationQueryKey = (formId: string, signatureBase64: string | undefined) => [
+  'formSignatureVerification',
+  formId,
+  signatureBase64,
+]
 
 const useGetContext = () => {
   const { t } = useTranslation()
@@ -52,6 +83,65 @@ const useGetContext = () => {
   })
   const [signature, setSignature] = useState<FormSignature | null>(initialSignature ?? null)
   const isMounted = useIsMounted()
+  const queryClient = useQueryClient()
+
+  // Runs for every signature: right after signing and for a signature restored from the server (signed earlier,
+  // possibly with a wrong certificate), so the user learns about a rejection before going through the eID login.
+  const signatureBase64 = signature?.signatureBase64
+  const signatureVerificationQueryKey = getSignatureVerificationQueryKey(formId, signatureBase64)
+  const signatureVerificationQuery = useQuery({
+    queryKey: ['formSignatureVerification', formId, signatureBase64],
+    queryFn: async () => {
+      if (!signatureBase64) {
+        throw new Error('Signature verification requested without a signature.')
+      }
+      const response = await formsClient.signerControllerVerifyFormSignature(
+        formId,
+        { signatureBase64 },
+        { authStrategy: 'authOrGuestWithToken' },
+      )
+
+      return response.data
+    },
+    enabled: isSigned && !!signatureBase64,
+    // The verdict for a given signature does not change while the user is on the page.
+    staleTime: Infinity,
+    retry: 1,
+    networkMode: 'always',
+  })
+
+  const signatureVerification = useMemo((): SignatureVerification => {
+    if (!isSigned || !signature) {
+      return { status: 'none' }
+    }
+    if (signatureVerificationQuery.isPending) {
+      return { status: 'pending' }
+    }
+    if (signatureVerificationQuery.isError) {
+      return { status: 'unverified' }
+    }
+    const { accepted, verified, reason } = signatureVerificationQuery.data
+    if (!accepted) {
+      return { status: 'rejected', reason: reason ?? SignatureRejectionReason.Unexpected }
+    }
+
+    return { status: verified ? 'accepted' : 'unverified' }
+  }, [
+    isSigned,
+    signature,
+    signatureVerificationQuery.isPending,
+    signatureVerificationQuery.isError,
+    signatureVerificationQuery.data,
+  ])
+
+  /** Used when the backend rejects the signature while sending, so the summary shows why. */
+  const setSignatureRejected = (reason: SignatureRejectionReason) => {
+    queryClient.setQueryData<VerifyFormSignatureResponseDto>(signatureVerificationQueryKey, {
+      accepted: false,
+      verified: true,
+      reason,
+    })
+  }
 
   const handleSignatureChange = (newSignature: FormSignature | null) => {
     setSignature(newSignature)
@@ -129,7 +219,8 @@ const useGetContext = () => {
 
   // This is an expensive calculation, therefore it's exposed as useCallback (not useMemo), therefore it's called only
   // when needed. useMemo would be recalculated on each formData change as this provider is global for the page.
-  const isValidSignature = useCallback(() => {
+  /** Whether the signature was created for the current form data and form definition version. */
+  const isSignatureUpToDate = useCallback(() => {
     if (!isSigned) {
       return true
     }
@@ -151,7 +242,29 @@ const useGetContext = () => {
     }
   }, [isSigned, signature, formDefinition, formData])
 
-  return { signature, sign, remove, isValidSignature, getSingerDataIsPending }
+  /**
+   * Whether the form can be sent with the current signature: it is up to date and not rejected by the verification.
+   * While the verification is running the form cannot be sent yet. If it could not run, sending is allowed, the
+   * backend verifies the signature again.
+   */
+  const isValidSignature = useCallback(
+    () =>
+      isSignatureUpToDate() &&
+      signatureVerification.status !== 'pending' &&
+      signatureVerification.status !== 'rejected',
+    [isSignatureUpToDate, signatureVerification.status],
+  )
+
+  return {
+    signature,
+    sign,
+    remove,
+    isValidSignature,
+    isSignatureUpToDate,
+    signatureVerification,
+    setSignatureRejected,
+    getSingerDataIsPending,
+  }
 }
 
 const FormSignatureContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)

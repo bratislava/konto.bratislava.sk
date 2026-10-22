@@ -8,6 +8,7 @@ import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import { SignatureVerificationMode } from '../config/environment-variables'
+import SignatureVerdictCache from './signature-verdict-cache'
 import SignatureVerificationService from './signature-verification.service'
 import { SignerErrorsEnum } from './signer.errors.enum'
 
@@ -83,11 +84,17 @@ describe('SignatureVerificationService', () => {
   let apiCepVerifyPost: jest.Mock
   let config: { signatureVerification: SignatureVerificationMode }
   let loggedMessages: string[]
+  let verdictCache: { get: jest.Mock; set: jest.Mock }
 
   beforeEach(async () => {
     apiCepVerifyPost = jest.fn()
     config = { signatureVerification: SignatureVerificationMode.Enforce }
     loggedMessages = []
+    // Always a miss unless a test says otherwise.
+    verdictCache = {
+      get: jest.fn().mockResolvedValue(undefined),
+      set: jest.fn().mockResolvedValue(undefined),
+    }
 
     const app: TestingModule = await Test.createTestingModule({
       providers: [
@@ -115,6 +122,7 @@ describe('SignatureVerificationService', () => {
             },
           },
         },
+        { provide: SignatureVerdictCache, useValue: verdictCache },
       ],
     }).compile()
 
@@ -312,6 +320,64 @@ describe('SignatureVerificationService', () => {
       expect(error.getResponse()).toMatchObject({
         errorName: SignerErrorsEnum.SIGNATURE_VERIFICATION_UNAVAILABLE,
       })
+    })
+  })
+
+  describe('verdict cache', () => {
+    it('uses a cached verdict without calling Slovensko.sk', async () => {
+      verdictCache.get.mockResolvedValue({
+        accepted: false,
+        reason: SignatureRejectionReason.UntrustedCertificate,
+        verifyResult: 2_111_217,
+      })
+
+      await expect(
+        service.verifyFormSignature(`${SIGNATURE}\n`, CONTEXT),
+      ).resolves.toEqual({
+        accepted: false,
+        verified: true,
+        reason: SignatureRejectionReason.UntrustedCertificate,
+      })
+      expect(verdictCache.get).toHaveBeenCalledWith(SIGNATURE)
+      expect(apiCepVerifyPost).not.toHaveBeenCalled()
+      expect(loggedMessages.join('\n')).toContain('"cached":true')
+    })
+
+    it('stores the verdict after calling Slovensko.sk', async () => {
+      respondWith(RESPONSES.valid)
+
+      await service.assertSignatureAccepted(SIGNATURE, CONTEXT)
+
+      expect(apiCepVerifyPost).toHaveBeenCalledTimes(1)
+      expect(verdictCache.set).toHaveBeenCalledWith(
+        SIGNATURE,
+        expect.objectContaining({ accepted: true }),
+      )
+    })
+
+    it('stores nothing when Slovensko.sk is unavailable', async () => {
+      apiCepVerifyPost.mockRejectedValue(upstreamError())
+
+      await service.verifyFormSignature(SIGNATURE, CONTEXT)
+
+      expect(verdictCache.set).not.toHaveBeenCalled()
+    })
+
+    it(`is not used in mode ${SignatureVerificationMode.Off}`, async () => {
+      config.signatureVerification = SignatureVerificationMode.Off
+
+      await service.assertSignatureAccepted(SIGNATURE, CONTEXT)
+
+      expect(verdictCache.get).not.toHaveBeenCalled()
+    })
+
+    it('is bypassed by the admin passthrough', async () => {
+      respondWith(RESPONSES.valid)
+
+      await service.verifySignaturePassthrough(SIGNATURE)
+
+      expect(verdictCache.get).not.toHaveBeenCalled()
+      expect(verdictCache.set).not.toHaveBeenCalled()
     })
   })
 

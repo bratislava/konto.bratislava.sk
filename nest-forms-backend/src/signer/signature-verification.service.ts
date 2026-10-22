@@ -13,6 +13,7 @@ import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import { SignatureVerificationMode } from '../config/environment-variables'
+import SignatureVerdictCache from './signature-verdict-cache'
 import {
   VerifyFormSignatureResponseDto,
   VerifySignatureResponseDto,
@@ -84,6 +85,7 @@ export default class SignatureVerificationService {
     private readonly clientsService: ClientsService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly baConfigService: BaConfigService,
+    private readonly verdictCache: SignatureVerdictCache,
   ) {}
 
   private get mode(): SignatureVerificationMode {
@@ -119,10 +121,25 @@ export default class SignatureVerificationService {
     }
 
     const startedAt = Date.now()
+    // Signers may wrap the base64 output, Slovensko.sk cannot handle whitespace.
+    const content = signatureBase64.replaceAll(/\s/g, '')
+
+    const cachedVerdict = await this.verdictCache.get(content)
+    if (cachedVerdict) {
+      this.logger.log(
+        `Signature verification: ${JSON.stringify({
+          ...context,
+          mode,
+          cached: true,
+          verdict: cachedVerdict,
+        })}`,
+      )
+      return { status: 'verified', verdict: cachedVerdict }
+    }
+
     let response: ApiCepVerifyPost200Response
     try {
-      // Signers may wrap the base64 output, Slovensko.sk cannot handle whitespace.
-      response = await this.callCepVerify(signatureBase64.replaceAll(/\s/g, ''))
+      response = await this.callCepVerify(content)
     } catch (error) {
       // The error is not passed to the logger on purpose, its request config contains the signed form.
       this.logger.error(
@@ -144,10 +161,12 @@ export default class SignatureVerificationService {
       `Signature verification: ${JSON.stringify({
         ...context,
         mode,
+        cached: false,
         durationMs: Date.now() - startedAt,
         verdict,
       })}`,
     )
+    await this.verdictCache.set(content, verdict)
     return { status: 'verified', verdict }
   }
 

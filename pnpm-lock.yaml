@@ -872,9 +872,15 @@ importers:
       '@golevelup/nestjs-rabbitmq':
         specifier: 9.1.0
         version: 9.1.0(@nestjs/common@12.1.0(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@keyv/redis':
+        specifier: 5.1.6
+        version: 5.1.6(@opentelemetry/api@1.9.1)(keyv@5.6.0)
       '@nestjs/bull':
         specifier: 12.0.0
         version: 12.0.0(@nestjs/common@12.1.0(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(bull@4.16.5(supports-color@10.2.2))
+      '@nestjs/cache-manager':
+        specifier: 12.0.1
+        version: 12.0.1(@nestjs/common@12.1.0(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(cache-manager@7.2.9)(keyv@5.6.0)(rxjs@7.8.2)
       '@nestjs/common':
         specifier: 12.1.0
         version: 12.1.0(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
@@ -917,6 +923,9 @@ importers:
       bull:
         specifier: 4.16.5
         version: 4.16.5(supports-color@10.2.2)
+      cache-manager:
+        specifier: 7.2.9
+        version: 7.2.9
       class-transformer:
         specifier: 0.5.1
         version: 0.5.1
@@ -944,6 +953,9 @@ importers:
       jsonwebtoken:
         specifier: 9.0.3
         version: 9.0.3
+      keyv:
+        specifier: 5.6.0
+        version: 5.6.0
       lodash:
         specifier: 4.17.23
         version: 4.17.23
@@ -5165,6 +5177,16 @@ packages:
 
   '@nestjs/cache-manager@12.0.0':
     resolution: {integrity: sha512-kYn5rgDZXZ6aIS7MxSfx0AwjRtJpq++Uac4ceWNckkYIkvnflv8hWgorhPXoVmLpTGiwrQ6G2gJh6MzsmoTqHg==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
+    peerDependencies:
+      '@nestjs/common': ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0
+      '@nestjs/core': ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0
+      cache-manager: '>=6'
+      keyv: '>=5'
+      rxjs: ^7.8.1
+
+  '@nestjs/cache-manager@12.0.1':
+    resolution: {integrity: sha512-w7Xlt5OrxBxYB7UY7Ffpej+vLVDLXb/hWrab3sCdtHhGjO8JI1FDCMybl5FHf9T3272L2QBoS5L60lgWpZAF6A==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
     peerDependencies:
       '@nestjs/common': ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0
@@ -9891,6 +9913,9 @@ packages:
 
   cache-manager@7.2.8:
     resolution: {integrity: sha512-0HDaDLBBY/maa/LmUVAr70XUOwsiQD+jyzCBjmUErYZUKdMS9dT59PqW59PpVqfGM7ve6H0J6307JTpkCYefHQ==}
+
+  cache-manager@7.2.9:
+    resolution: {integrity: sha512-d4vceEyYe95gPxEyQchlEOH9vJlkNRW8G6gzFzzMTxJK9PahYMhC9chrEqgZN0HulROjgw3IzmWVNk7Q7ytiGw==}
 
   cacheable@2.5.0:
     resolution: {integrity: sha512-60cyAOytib/OzBw1JNSoSV/boK1AtHryDIjvVBk7XbN4ugfkM3+Sry7fEjNgPMGgOjuaZPAp8ruZ0Cxafwyq9g==}
@@ -23077,6 +23102,14 @@ snapshots:
       keyv: 5.6.0
       rxjs: 7.8.2
 
+  '@nestjs/cache-manager@12.0.1(@nestjs/common@12.1.0(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.1.0)(cache-manager@7.2.9)(keyv@5.6.0)(rxjs@7.8.2)':
+    dependencies:
+      '@nestjs/common': 12.1.0(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
+      '@nestjs/core': 12.1.0(@nestjs/common@12.1.0(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/platform-express@12.1.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      cache-manager: 7.2.9
+      keyv: 5.6.0
+      rxjs: 7.8.2
+
   '@nestjs/cli@12.0.6(@swc/core@1.16.18(@swc/helpers@0.5.23))(@types/node@24.19.2)(fork-ts-checker-webpack-plugin@9.1.0(typescript@6.0.3)(webpack@5.109.2(@swc/core@1.16.18(@swc/helpers@0.5.23))(clean-css@5.3.3)(csso@5.0.5)(esbuild@0.28.1)(html-minifier-terser@6.1.0)(lightningcss@1.32.0)(postcss@8.5.31)(sharp@0.35.5(@types/node@24.19.2))(svgo@3.3.3)(uglify-js@3.19.3)))(prettier@3.6.2)(tsconfig-paths-webpack-plugin@4.2.0)(webpack-node-externals@3.0.0)(webpack@5.109.2(@swc/core@1.16.18(@swc/helpers@0.5.23))(clean-css@5.3.3)(csso@5.0.5)(esbuild@0.28.1)(html-minifier-terser@6.1.0)(lightningcss@1.32.0)(postcss@8.5.31)(sharp@0.35.5(@types/node@24.19.2))(svgo@3.3.3)(uglify-js@3.19.3))':
     dependencies:
       '@angular-devkit/core': 22.2.0(chokidar@5.0.0)
@@ -28925,6 +28958,11 @@ snapshots:
       ylru: 1.4.0
 
   cache-manager@7.2.8:
+    dependencies:
+      '@cacheable/utils': 2.5.0
+      keyv: 5.6.0
+
+  cache-manager@7.2.9:
     dependencies:
       '@cacheable/utils': 2.5.0
       keyv: 5.6.0

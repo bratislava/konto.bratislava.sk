@@ -5,7 +5,16 @@ import {
   ErrorFactoryService,
   LogAllowList,
 } from '@bratislava/log-nest'
-import { Controller, Get, Headers, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common'
 import {
   ApiOkResponse,
   ApiOperation,
@@ -16,6 +25,11 @@ import {
 import AdminGuard from '../auth/guards/admin.guard'
 import { ValidateFormRegistrationsResultDto } from '../nases/dtos/responses.dto'
 import NasesCronService from '../nases/services/nases.cron.service'
+import SignatureVerificationService from '../signer/signature-verification.service'
+import {
+  VerifySignatureRequestDto,
+  VerifySignatureResponseDto,
+} from '../signer/signer.dto'
 import AdminService from './admin.service'
 
 @ApiTags('ADMIN')
@@ -26,6 +40,7 @@ export default class AdminController {
     private readonly adminService: AdminService,
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly nasesCronService: NasesCronService,
+    private readonly signatureVerificationService: SignatureVerificationService,
   ) {}
 
   // Endpoints only for testing
@@ -92,5 +107,25 @@ export default class AdminController {
   @Get('check-form-registrations-in-nases')
   async checkFormsRegistrationsInNases(): Promise<ValidateFormRegistrationsResultDto> {
     return this.nasesCronService.validateFormRegistrations()
+  }
+
+  @ApiOperation({
+    summary: 'Informatively verify the signatures on a signed object',
+    description:
+      'Passthrough to the Slovensko.sk `POST /api/cep/verify` endpoint. Returns the raw response, or the details of the failed call with HTTP 200. Ignores FEATURE_TOGGLE_SIGNATURE_VERIFICATION. The response contains the signed content and personal data of the signer.',
+  })
+  @ApiOkResponse({
+    description: 'Result of the signature verification',
+    type: VerifySignatureResponseDto,
+  })
+  @UseGuards(AdminGuard)
+  @HttpCode(HttpStatus.OK)
+  @Post('verify-signature')
+  async verifySignature(
+    @Body() data: VerifySignatureRequestDto,
+  ): Promise<VerifySignatureResponseDto> {
+    return this.signatureVerificationService.verifySignaturePassthrough(
+      data.content,
+    )
   }
 }

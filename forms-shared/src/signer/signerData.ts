@@ -26,6 +26,12 @@ export type GetSignerDataParams<
   jsonVersion: string
   validatorRegistry: BaRjsfValidatorRegistry
   serverFiles?: FormsBackendFile[]
+  /**
+   * Submission time written into tax form XML (`DatumZadaniaPodania`), defaults to the current time. When comparing
+   * a signed XML with the stored form data, pass the value read from the signed XML (see `parseSignedXdc`).
+   * Ignored for generic forms, their XML does not contain the current time.
+   */
+  submittedAt?: Date
 }
 
 /**
@@ -72,10 +78,10 @@ const getCommonSignerData = (formDefinition: FormDefinitionSlovenskoSk, formData
 }
 
 const getSlovenskoSkTaxXmls = (params: GetSignerDataParams<FormDefinitionSlovenskoSkTax>) => {
-  const { formData, formDefinition } = params
+  const { formData, formDefinition, submittedAt } = params
 
   const commonData = getCommonSignerData(formDefinition, formData)
-  const xdcXMLData = generateTaxXml(formData, false, formDefinition)
+  const xdcXMLData = generateTaxXml(formData, false, formDefinition, submittedAt)
   const xdcUsedXSD = getTaxXsd(formDefinition)
   const xdcUsedXSLT = getTaxXslt(formDefinition)
 

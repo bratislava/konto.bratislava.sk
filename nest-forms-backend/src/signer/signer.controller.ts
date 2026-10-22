@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  HttpCode,
+  HttpStatus,
   Logger,
   Param,
   Post,
@@ -19,7 +21,13 @@ import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
 import { User, UserType } from '../auth-v2/types/user'
 import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
-import { SignerDataRequestDto, SignerDataResponseDto } from './signer.dto'
+import SignatureVerificationService from './signature-verification.service'
+import {
+  SignerDataRequestDto,
+  SignerDataResponseDto,
+  VerifyFormSignatureRequestDto,
+  VerifyFormSignatureResponseDto,
+} from './signer.dto'
 import SignerService from './signer.service'
 
 @ApiTags('Signer')
@@ -28,8 +36,36 @@ import SignerService from './signer.service'
 export default class SignerController {
   private readonly logger: Logger
 
-  constructor(private readonly signerService: SignerService) {
+  constructor(
+    private readonly signerService: SignerService,
+    private readonly signatureVerificationService: SignatureVerificationService,
+  ) {
     this.logger = new Logger('SignerController')
+  }
+
+  @ApiOperation({
+    summary: 'Verify form signature',
+    description:
+      'Verifies a signature created for the form with the Slovensko.sk CEP service, so the user can be told right after signing that the signature will be rejected (e.g. signed with a wrong certificate). The signature is verified again when the form is sent.',
+  })
+  @ApiOkResponse({
+    description: 'Verification verdict',
+    type: VerifyFormSignatureResponseDto,
+  })
+  @ApiCognitoGuestIdentityIdAuth()
+  @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
+  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @HttpCode(HttpStatus.OK)
+  @Post('verify-signature/:formId')
+  async verifyFormSignature(
+    @Body() data: VerifyFormSignatureRequestDto,
+    @Param('formId') formId: string,
+  ): Promise<VerifyFormSignatureResponseDto> {
+    return this.signatureVerificationService.verifyFormSignature(
+      data.signatureBase64,
+      { formId },
+    )
   }
 
   @ApiOperation({

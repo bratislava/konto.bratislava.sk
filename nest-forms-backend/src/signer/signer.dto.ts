@@ -1,11 +1,19 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
+  IsBase64,
   IsBoolean,
   IsNotEmpty,
+  IsNumber,
   IsObject,
   IsOptional,
   IsString,
 } from 'class-validator'
+import { SignatureRejectionReason } from 'forms-shared/signer/evaluateCepVerification'
+import type {
+  ApiCepVerifyPost200Response,
+  ApiCepVerifyPost200ResponseVerifiedObjectsInner,
+  ApiCepVerifyPostRequest,
+} from 'openapi-clients/slovensko-sk'
 
 import { JSON_FORM_EXAMPLE } from '../utils/constants'
 
@@ -99,4 +107,124 @@ export class SignerDataResponseDto {
   })
   @IsString()
   xdcNamespaceURI!: string
+}
+
+export class VerifyFormSignatureRequestDto {
+  @ApiProperty({
+    description:
+      'Base64 encoded signed ASiC-E container, as returned by the signer.',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsBase64()
+  signatureBase64!: string
+}
+
+export class VerifyFormSignatureResponseDto {
+  @ApiProperty({
+    description:
+      'Whether the signature can be used to send the form. `true` also when the signature was not verified (verification disabled, or only logged).',
+  })
+  @IsBoolean()
+  accepted!: boolean
+
+  @ApiProperty({
+    description:
+      'Whether the signature was actually verified by Slovensko.sk. `false` when verification is disabled.',
+  })
+  @IsBoolean()
+  verified!: boolean
+
+  @ApiPropertyOptional({
+    description:
+      'Why the signature was rejected, present when `accepted` is false.',
+    enum: SignatureRejectionReason,
+    enumName: 'SignatureRejectionReason',
+  })
+  @IsOptional()
+  reason?: SignatureRejectionReason
+}
+
+export class VerifySignatureRequestDto implements ApiCepVerifyPostRequest {
+  @ApiProperty({
+    description:
+      'Base64 encoded content of the object to verify. Can be an ASiC-E CAdES, ASiC-E XAdES, CAdES, PAdES, XAdES or MessageContainer object.',
+  })
+  @IsString()
+  @IsNotEmpty()
+  content!: string
+}
+
+/**
+ * Passthrough response of the Slovensko.sk `POST /api/cep/verify` endpoint. The properties intentionally keep the
+ * upstream snake_case naming.
+ */
+export class VerifySignatureResultDto implements ApiCepVerifyPost200Response {
+  @ApiProperty({ description: 'Verification result code.', example: 0 })
+  @IsNumber()
+  verify_result!: number
+
+  @ApiProperty({
+    description: 'Verification result description.',
+    example: 'OK',
+  })
+  @IsString()
+  verify_description!: string
+
+  @ApiPropertyOptional({
+    description:
+      'Verified objects. The shape differs per signature type (ASiC-E CAdES, ASiC-E XAdES, CAdES, PAdES, XAdES).',
+    type: 'array',
+    items: { type: 'object', additionalProperties: true },
+  })
+  @IsOptional()
+  @IsObject({ each: true })
+  verified_objects?: ApiCepVerifyPost200ResponseVerifiedObjectsInner[]
+}
+
+/**
+ * Details of a failed call to Slovensko.sk. Returned with HTTP 200 on purpose: the edge proxy replaces 5xx bodies
+ * with a generic outage page, which would hide the upstream response from the admin.
+ */
+export class VerifySignatureUpstreamErrorDto {
+  @ApiProperty({ description: 'Error message.' })
+  message!: string
+
+  @ApiPropertyOptional({ description: 'Axios error code, e.g. ECONNREFUSED.' })
+  code?: string
+
+  @ApiPropertyOptional({ description: 'HTTP status returned by Slovensko.sk.' })
+  status?: number
+
+  @ApiPropertyOptional({
+    description: 'HTTP status text returned by Slovensko.sk.',
+  })
+  statusText?: string
+
+  @ApiPropertyOptional({
+    description: 'Response body returned by Slovensko.sk, if any.',
+    type: 'object',
+    additionalProperties: true,
+  })
+  data?: unknown
+
+  @ApiPropertyOptional({ description: 'URL that was called.' })
+  url?: string
+}
+
+export class VerifySignatureResponseDto {
+  @ApiProperty({ description: 'Whether the Slovensko.sk call succeeded.' })
+  success!: boolean
+
+  @ApiPropertyOptional({
+    description: 'Verification result, present when `success` is true.',
+    type: VerifySignatureResultDto,
+  })
+  result?: VerifySignatureResultDto
+
+  @ApiPropertyOptional({
+    description: 'Upstream error details, present when `success` is false.',
+    type: VerifySignatureUpstreamErrorDto,
+  })
+  error?: VerifySignatureUpstreamErrorDto
 }

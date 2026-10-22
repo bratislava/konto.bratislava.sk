@@ -12,10 +12,15 @@ import { prilohyXml } from './mapping/xml/prilohy'
 import { udajeODanovnikoviXml } from './mapping/xml/udajeODanovnikovi'
 import { TaxFormData } from './types'
 
+/**
+ * @param submittedAt Value of `DatumZadaniaPodania`. Defaults to the current time. Pass the value from an already
+ * signed XML to regenerate exactly the same XML later (e.g. to compare signed content with the stored form data).
+ */
 export const generateTaxXml = (
   data: TaxFormData,
   pretty = false,
   formDefinition: FormDefinitionSlovenskoSkTax,
+  submittedAt: Date = new Date(),
 ) => {
   const jsonObj = {
     'E-form': {
@@ -38,7 +43,7 @@ export const generateTaxXml = (
         ...oddiel4Xml(data),
         ...oslobodenieXml(data),
         ...prilohyXml(data),
-        DatumZadaniaPodania: formatXsDateTimeXml(new Date()),
+        DatumZadaniaPodania: formatXsDateTimeXml(submittedAt),
         ZakladneVyhlasenie: {
           SpravnostUdajovText:
             'Všeobecné informácie o poskytnutí, spracovaní a ochrane osobných údajov nájdete na https://esluzby.bratislava.sk/page/ochrana-osobnych-udajov',

@@ -10,6 +10,7 @@ import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
 import NasesModule from '../nases/nases.module'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
+import SignerModule from '../signer/signer.module'
 import FormSenderController from './form-sender.controller'
 import { FormSenderService } from './form-sender.service'
 
@@ -25,6 +26,7 @@ import { FormSenderService } from './form-sender.service'
     ConvertPdfModule,
     FormValidatorRegistryModule,
     RabbitmqClientModule,
+    SignerModule,
   ],
   providers: [FormSenderService],
   controllers: [FormSenderController],

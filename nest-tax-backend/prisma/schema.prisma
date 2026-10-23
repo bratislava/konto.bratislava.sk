@@ -28,6 +28,8 @@ model TaxPayer {
   lastUpdatedAtDZN DateTime @default(now())
   lastUpdatedAtKO  DateTime @default(now())
 
+  cityAccountUserMissingSince DateTime?
+
   taxes             Tax[]
   taxAdministrators TaxPayerTaxAdministrator[]
   taxImportAttempts TaxImportAttempt[]

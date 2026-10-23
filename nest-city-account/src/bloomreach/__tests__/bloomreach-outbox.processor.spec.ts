@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import axios from 'axios'
@@ -18,6 +18,7 @@ import {
   BloomreachOutboxStatus,
 } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
+import alertReporting from '../../utils/constants/error.alerts'
 import {
   BLOOMREACH_WIRE_COMMAND_NAME,
   BloomreachBatchCommand,
@@ -35,7 +36,6 @@ const mockedAxios = axios as Mocked<typeof axios>
 describe('BloomreachOutboxProcessor', () => {
   let processor: BloomreachOutboxProcessor
   let mergeConsentService: Mocked<BloomreachMergeConsentService>
-  let errorFactoryService: Mocked<ErrorFactoryService>
 
   const now = new Date('2026-03-26T12:00:00Z')
 
@@ -78,10 +78,7 @@ describe('BloomreachOutboxProcessor', () => {
         LineLoggerService,
         BloomreachOutboxProcessor,
         { provide: PrismaService, useValue: prismaMock },
-        {
-          provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>(),
-        },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
         {
           provide: BloomreachMergeConsentService,
           useValue: createMock<BloomreachMergeConsentService>(),
@@ -99,7 +96,6 @@ describe('BloomreachOutboxProcessor', () => {
 
     processor = module.get<BloomreachOutboxProcessor>(BloomreachOutboxProcessor)
     mergeConsentService = module.get(BloomreachMergeConsentService)
-    errorFactoryService = module.get(ErrorFactoryService)
     // Default: no stale PROCESSING entries to recover
     prismaMock.bloomreachOutbox.findMany.mockResolvedValue([])
     prismaMock.$transaction.mockImplementation(async (fn) => fn(prismaMock))
@@ -172,7 +168,8 @@ describe('BloomreachOutboxProcessor', () => {
       const entry = makeEntry({ attempts: 1 })
       mockClaimedEntries([entry])
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
-      mockedAxios.post.mockRejectedValue(new Error('Request failed with status code 500'))
+      const sendError = new Error('Request failed with status code 500')
+      mockedAxios.post.mockRejectedValue(sendError)
 
       await processor.processOutbox()
 
@@ -181,7 +178,7 @@ describe('BloomreachOutboxProcessor', () => {
         data: {
           status: BloomreachOutboxStatus.PENDING,
           attempts: 2,
-          lastError: expectStringContaining('500'),
+          lastError: sendError.message,
         },
       })
     })
@@ -417,13 +414,11 @@ describe('BloomreachOutboxProcessor', () => {
       // SUPERSEDED status update, so this only ever rejects that first call.
       prismaMock.bloomreachOutbox.update.mockRejectedValueOnce(downgradeError)
 
-      await expect(processor.processOutbox()).rejects.toBeDefined()
-      expect(errorFactoryService.InternalServerErrorException).toHaveBeenCalledWith(
-        expectObjectContaining({
-          message: expectStringContaining('downgrade a terminal outbox entry'),
-          error: downgradeError,
-        })
-      )
+      await expect(processor.processOutbox()).rejects.toThrowLogNestError({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: expectStringContaining('while merging a superseded entry'),
+        error: downgradeError,
+      })
     })
 
     it('should mark reverted event entry as SUPERSEDED without merge when newer PENDING exists', async () => {

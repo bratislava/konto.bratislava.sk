@@ -8,8 +8,10 @@ import { Test, TestingModule } from '@nestjs/testing'
 import mssql, { MSSQLError } from 'mssql'
 import type { Mock, Mocked } from 'vitest'
 
+import { expectStringContaining } from '../../../__tests__/matchers'
 import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import alertReporting from '../../../utils/constants/error.alerts'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 
@@ -32,7 +34,8 @@ describe('NorisConnectionSubservice', () => {
   let module: TestingModule
   let service: NorisConnectionSubservice
   let baConfigService: BaConfigService
-  let errorFactoryService: ErrorFactoryService
+  const errorFactoryService = new ErrorFactoryService({ alertReporting })
+  let logger: LineLoggerService
   let prismaService: Mocked<PrismaService>
 
   let mockMssqlConnect: Mock
@@ -58,16 +61,19 @@ describe('NorisConnectionSubservice', () => {
 
     module = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         NorisConnectionSubservice,
         { provide: BaConfigService, useValue: baConfigService },
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: errorFactoryService },
         { provide: PrismaService, useValue: prismaService },
       ],
     }).compile()
 
     service = module.get<NorisConnectionSubservice>(NorisConnectionSubservice)
-    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
+    logger = module.get(LineLoggerService)
   })
 
   afterEach(async () => {
@@ -84,11 +90,17 @@ describe('NorisConnectionSubservice', () => {
     })
 
     it('should not throw when connect() fails during shutdown', async () => {
-      mockMssqlConnect.mockRejectedValue(new Error('MSSQL unreachable'))
-      const warnSpy = vi.spyOn(service['logger'], 'warn')
+      const connectError = new Error('MSSQL unreachable')
+      mockMssqlConnect.mockRejectedValue(connectError)
 
       await expect(module.close()).resolves.not.toThrow()
-      expect(warnSpy).toHaveBeenCalled()
+      expect(vi.mocked(logger.warn)).toHaveBeenCalledWith(
+        expect.toMatchLogNestError({
+          errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+          message: expectStringContaining('Failed to close MSSQL connection'),
+          error: connectError,
+        }),
+      )
     })
   })
 
@@ -115,20 +127,14 @@ describe('NorisConnectionSubservice', () => {
 
     it('should throw getNorisUrgentError when error is not an MSSQLError', async () => {
       const genericError = new Error('Generic failure')
-      const errorFactoryServiceSpy = vi.spyOn(
-        errorFactoryService,
-        'InternalServerErrorException',
-      )
 
       await expect(
         service.withConnection(async () => {
           return Promise.reject(genericError)
         }, errorMessage),
-      ).rejects.toThrow(errorMessage)
-
-      expect(errorFactoryServiceSpy).toHaveBeenCalledWith({
+      ).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: errorMessage,
+        message: expectStringContaining(errorMessage),
         error: genericError,
       })
       expect(prismaService.$transaction).not.toHaveBeenCalled()
@@ -139,19 +145,13 @@ describe('NorisConnectionSubservice', () => {
         'Query failed',
         'ESOMEOTHER' as mssql.MSSQL_ERROR_CODE,
       )
-      const errorFactoryServiceSpy = vi.spyOn(
-        errorFactoryService,
-        'InternalServerErrorException',
-      )
       await expect(
         service.withConnection(async () => {
           return Promise.reject(mssqlError)
         }, errorMessage),
-      ).rejects.toThrow(errorMessage)
-
-      expect(errorFactoryServiceSpy).toHaveBeenCalledWith({
+      ).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expect.stringContaining(errorMessage) as string,
+        message: expectStringContaining(`"code":"${mssqlError.code}"`),
         error: mssqlError,
       })
       expect(prismaService.$transaction).not.toHaveBeenCalled()
@@ -167,54 +167,34 @@ describe('NorisConnectionSubservice', () => {
       'should log, increment config value, then throw when MSSQLError has code %s',
       async (code) => {
         const mssqlError = new MSSQLError('Connection problem', code)
-        const badRequestSpy = vi.spyOn(
-          errorFactoryService,
-          'BadRequestException',
-        )
-        const internalErrorSpy = vi.spyOn(
-          errorFactoryService,
-          'InternalServerErrorException',
-        )
 
         await expect(
           service.withConnection(async () => {
             return Promise.reject(mssqlError)
           }, errorMessage),
-        ).rejects.toThrow(errorMessage)
-
-        expect(badRequestSpy).toHaveBeenCalledWith({
+        ).rejects.toThrowLogNestError({
           errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
-          message: expect.stringContaining(errorMessage) as string,
+          message: expectStringContaining(`"code":"${code}"`),
           error: mssqlError,
         })
 
         expect(prismaService.$executeRaw).toHaveBeenCalledTimes(1)
-
-        expect(internalErrorSpy).not.toHaveBeenCalled()
       },
     )
 
     it('should run increment SQL when config row may not exist', async () => {
       const mssqlError = new MSSQLError('Timeout', 'ETIMEOUT')
-      const badRequestSpy = vi.spyOn(errorFactoryService, 'BadRequestException')
-      const internalErrorSpy = vi.spyOn(
-        errorFactoryService,
-        'InternalServerErrorException',
-      )
 
       await expect(
         service.withConnection(async () => {
           return Promise.reject(mssqlError)
         }, errorMessage),
-      ).rejects.toThrow()
-
-      expect(prismaService.$executeRaw).toHaveBeenCalledTimes(1)
-      expect(badRequestSpy).toHaveBeenCalledWith({
+      ).rejects.toThrowLogNestError({
         errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
-        message: expect.stringContaining(errorMessage) as string,
         error: mssqlError,
       })
-      expect(internalErrorSpy).not.toHaveBeenCalled()
+
+      expect(prismaService.$executeRaw).toHaveBeenCalledTimes(1)
     })
   })
 })

@@ -1,5 +1,6 @@
 import { ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import type { Mock } from 'vitest'
 
@@ -17,6 +18,7 @@ import { PrismaService } from '../../prisma/prisma.service'
 import { QrCodeGeneratorDto } from '../../qrcode/dtos/qrcode.dto'
 import { QrCodeService } from '../../qrcode/qrcode.service'
 import type { GetTaxDetailPureResponse } from '../../tax-definitions/taxDefinitionsTypes'
+import alertReporting from '../../utils/constants/error.alerts'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -89,6 +91,7 @@ const createMockTaxPayer = (
 }
 
 describe('TaxService', () => {
+  const errorFactoryService = new ErrorFactoryService({ alertReporting })
   let service: TaxService
 
   beforeEach(async () => {
@@ -96,7 +99,7 @@ describe('TaxService', () => {
       providers: [
         TaxService,
         { provide: PrismaService, useValue: prismaMock },
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: errorFactoryService },
         { provide: QrCodeService, useValue: createMock<QrCodeService>() },
         { provide: PaymentService, useValue: createMock<PaymentService>() },
       ],
@@ -125,16 +128,10 @@ describe('TaxService', () => {
     })
 
     it('should throw ForbiddenException when birth number is empty', async () => {
-      const forbiddenExceptionSpy = vi.spyOn(
-        service['errorFactoryService'],
-        'ForbiddenException',
-      )
-
       await expect(
         service.getListOfTaxesByBirthnumberAndType('', TaxType.DZN),
-      ).rejects.toThrow()
-
-      expect(forbiddenExceptionSpy).toHaveBeenCalledWith({
+      ).rejects.toThrowLogNestError({
+        status: HttpStatus.FORBIDDEN,
         errorEnum: CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
         message: CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
       })
@@ -254,16 +251,10 @@ describe('TaxService', () => {
     )
 
     it('should throw ForbiddenException when birth number is empty for KO tax type', async () => {
-      const forbiddenExceptionSpy = vi.spyOn(
-        service['errorFactoryService'],
-        'ForbiddenException',
-      )
-
       await expect(
         service.getListOfTaxesByBirthnumberAndType('', TaxType.KO),
-      ).rejects.toThrow()
-
-      expect(forbiddenExceptionSpy).toHaveBeenCalledWith({
+      ).rejects.toThrowLogNestError({
+        status: HttpStatus.FORBIDDEN,
         errorEnum: CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
         message: CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
       })
@@ -1442,10 +1433,6 @@ describe('TaxService', () => {
 
       it('should throw error when tax payer not found', async () => {
         prismaMock.taxPayer.findUnique.mockResolvedValue(null)
-        const notFoundExceptionSpy = vi.spyOn(
-          service['errorFactoryService'],
-          'NotFoundException',
-        )
 
         await expect(
           service['fetchTaxData'](
@@ -1455,11 +1442,8 @@ describe('TaxService', () => {
             TaxType.DZN,
             1,
           ),
-        ).rejects.toThrow()
-
-        expect(notFoundExceptionSpy).toHaveBeenCalledWith({
+        ).rejects.toThrowLogNestError({
           errorEnum: CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
-          message: CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
         })
       })
 
@@ -1468,10 +1452,6 @@ describe('TaxService', () => {
           createTestTaxPayer({ id: 1 }),
         )
         prismaMock.tax.findUnique.mockResolvedValue(null)
-        const notFoundExceptionSpy = vi.spyOn(
-          service['errorFactoryService'],
-          'NotFoundException',
-        )
 
         await expect(
           service['fetchTaxData'](
@@ -1481,9 +1461,7 @@ describe('TaxService', () => {
             TaxType.DZN,
             1,
           ),
-        ).rejects.toThrow()
-
-        expect(notFoundExceptionSpy).toHaveBeenCalledWith({
+        ).rejects.toThrowLogNestError({
           errorEnum: CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
           message: CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
         })

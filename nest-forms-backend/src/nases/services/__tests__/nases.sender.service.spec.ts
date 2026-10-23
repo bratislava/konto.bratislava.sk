@@ -42,7 +42,10 @@ describe('NasesSenderService', () => {
     vi.resetAllMocks()
     const app: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         NasesSenderService,
         ConvertService,
         ErrorFactoryService,
@@ -61,11 +64,6 @@ describe('NasesSenderService', () => {
     }).compile()
 
     service = app.get<NasesSenderService>(NasesSenderService)
-
-    // Suppress console output from logger
-    Object.defineProperty(service, 'logger', {
-      value: { error: vi.fn(), debug: vi.fn(), log: vi.fn() },
-    })
   })
 
   describe('should be defined', () => {

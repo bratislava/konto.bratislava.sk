@@ -1,5 +1,6 @@
 import { ErrorFactoryService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import Handlebars from 'handlebars'
@@ -8,11 +9,9 @@ import type { Mock } from 'vitest'
 import { expectStringContaining } from '../../../__tests__/matchers'
 import BaConfigService from '../../../config/ba-config.service'
 import StrapiService from '../../../strapi/strapi.service'
+import alertReporting from '../../../utils/constants/error.alerts'
 import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
-import {
-  MailgunErrorsEnum,
-  MailgunErrorsResponseEnum,
-} from '../../../utils/global-enums/mailgun.errors.enum'
+import { MailgunErrorsEnum } from '../../../utils/global-enums/mailgun.errors.enum'
 import MailgunHelper from '../mailgun.helper'
 
 // Mock for IMailgunClient
@@ -39,6 +38,7 @@ vi.mock('mailgun.js', () => ({
 describe('MailgunHelper', () => {
   let mailgunHelper: MailgunHelper
   let strapiService: StrapiService
+  const errorFactory = new ErrorFactoryService({ alertReporting })
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -61,24 +61,7 @@ describe('MailgunHelper', () => {
           provide: StrapiService,
           useValue: createMock<StrapiService>(),
         },
-        {
-          provide: ErrorFactoryService,
-          useValue: {
-            NotFoundException: vi
-              .fn()
-              .mockImplementation(
-                ({
-                  errorEnum,
-                  message,
-                }: {
-                  errorEnum: string
-                  message: string
-                }) => {
-                  throw new Error(`NotFound: ${errorEnum} - ${message}`)
-                },
-              ),
-          },
-        },
+        { provide: ErrorFactoryService, useValue: errorFactory },
       ],
     }).compile()
 
@@ -116,9 +99,7 @@ describe('MailgunHelper', () => {
 
     it('should process FEEDBACK_LINK type variables correctly', async () => {
       const feedbackLink = 'https://test.feedback.com/bratislava/'
-      jest
-        .spyOn(strapiService, 'getFeedbackLink')
-        .mockResolvedValue(feedbackLink)
+      vi.mocked(strapiService.getFeedbackLink).mockResolvedValue(feedbackLink)
       const input: SendEmailInputDto = {
         to: 'user@example.com',
         template: MailgunTemplateEnum.GINIS_SUCCESS,
@@ -140,7 +121,7 @@ describe('MailgunHelper', () => {
     })
 
     it('should not set FEEDBACK_LINK type variables if the form has no feedback link', async () => {
-      jest.spyOn(strapiService, 'getFeedbackLink').mockResolvedValue(null)
+      vi.mocked(strapiService.getFeedbackLink).mockResolvedValue(null)
       const input: SendEmailInputDto = {
         to: 'user@example.com',
         template: MailgunTemplateEnum.GINIS_SUCCESS,
@@ -160,7 +141,7 @@ describe('MailgunHelper', () => {
 
     it('should throw if fetching the feedback link fails', async () => {
       const error = new Error('Strapi is down')
-      jest.spyOn(strapiService, 'getFeedbackLink').mockRejectedValue(error)
+      vi.mocked(strapiService.getFeedbackLink).mockRejectedValue(error)
       const input: SendEmailInputDto = {
         to: 'user@example.com',
         template: MailgunTemplateEnum.GINIS_SUCCESS,
@@ -179,7 +160,7 @@ describe('MailgunHelper', () => {
     })
 
     it('should not fetch the feedback link if the template has no FEEDBACK_LINK variable', async () => {
-      const getFeedbackLinkSpy = jest.spyOn(strapiService, 'getFeedbackLink')
+      const getFeedbackLinkSpy = vi.mocked(strapiService.getFeedbackLink)
       const input: SendEmailInputDto = {
         to: 'user@example.com',
         template: MailgunTemplateEnum.GINIS_IN_PROGRESS,
@@ -293,11 +274,14 @@ describe('MailgunHelper', () => {
         version: null,
       })
 
+      const templateName = 'missing-template'
+
       await expect(
-        mailgunHelper.getFilledTemplate('missing-template', {}),
-      ).rejects.toThrow(
-        `NotFound: ${MailgunErrorsEnum.TEMPLATE_NOT_FOUND} - ${MailgunErrorsResponseEnum.TEMPLATE_NOT_FOUND}: missing-template`,
-      )
+        mailgunHelper.getFilledTemplate(templateName, {}),
+      ).rejects.toThrowLogNestError({
+        status: HttpStatus.NOT_FOUND,
+        errorEnum: MailgunErrorsEnum.TEMPLATE_NOT_FOUND,
+      })
     })
   })
 })

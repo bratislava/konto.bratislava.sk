@@ -7,7 +7,7 @@ export default defineConfig({
     globals: true,
     root: './',
     include: ['**/*.spec.ts'],
-    setupFiles: ['./test/singleton.ts'],
+    setupFiles: ['./test/singleton.ts', './test/log-nest-matchers.ts'],
     alias: {
       '@golevelup/nestjs-rabbitmq': path.resolve(
         'test/rabbitmq-client-mock.js',

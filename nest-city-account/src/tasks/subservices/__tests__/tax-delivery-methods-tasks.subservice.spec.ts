@@ -26,6 +26,7 @@ import { NorisDeliveryMethodService } from '../../../noris/services/noris-delive
 import { DeliveryMethod } from '../../../noris/types/noris.enums'
 import { PdfGeneratorService } from '../../../pdf-generator/pdf-generator.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import alertReporting from '../../../utils/constants/error.alerts'
 import { TaxDeliveryMethodsTasksSubservice } from '../tax-delivery-methods-tasks.subservice'
 
 vi.mock('../../../config/ba-config.instance')
@@ -65,7 +66,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         TaxDeliveryMethodsTasksSubservice,
         { provide: PrismaService, useValue: prismaMock },
         { provide: NorisDeliveryMethodService, useValue: createMock<NorisDeliveryMethodService>() },
-        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
         { provide: MailgunService, useValue: createMock<MailgunService>() },
         {
           provide: PdfGeneratorService,
@@ -97,7 +98,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         .mockResolvedValue({
           birthNumbers: ['123456/2020', '123456/4848', '123456/4649', '123456/4521'],
         })
-      const internalErrorSpy = vi.mocked(errorFactoryService.InternalServerErrorException)
+      const internalErrorSpy = vi.spyOn(errorFactoryService, 'InternalServerErrorException')
 
       prismaMock.user.updateMany.mockResolvedValue({ count: 1 })
       const prismaUserUpdateSpy = vi.spyOn(prismaMock.user, 'updateMany')
@@ -223,7 +224,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       const updateDeliveryMethodsSpy = vi.mocked(
         service['norisDeliveryMethodService'].updateDeliveryMethods
       )
-      const internalErrorSpy = vi.mocked(errorFactoryService.InternalServerErrorException)
+      const internalErrorSpy = vi.spyOn(errorFactoryService, 'InternalServerErrorException')
       const prismaUserUpdateSpy = vi
         .spyOn(prismaMock.user, 'updateMany')
         .mockResolvedValue({ count: 1 })

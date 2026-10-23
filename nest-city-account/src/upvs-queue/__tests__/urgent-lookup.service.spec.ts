@@ -21,6 +21,7 @@ const urgentEntity = (overrides: Record<string, string> = {}) => ({
 
 describe('UrgentLookupService', () => {
   let service: UrgentLookupService
+  let logger: LineLoggerService
   let physicalEntityService: PhysicalEntityService
   let nasesService: NasesService
   let cognitoSubservice: CognitoSubservice
@@ -28,7 +29,7 @@ describe('UrgentLookupService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        { provide: LineLoggerService, useValue: createMock<LineLoggerService>() },
         UrgentLookupService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: PhysicalEntityService, useValue: createMock<PhysicalEntityService>() },
@@ -38,6 +39,7 @@ describe('UrgentLookupService', () => {
     }).compile()
 
     service = module.get(UrgentLookupService)
+    logger = module.get(LineLoggerService)
     physicalEntityService = module.get(PhysicalEntityService)
     nasesService = module.get(NasesService)
     cognitoSubservice = module.get(CognitoSubservice)
@@ -135,7 +137,7 @@ describe('UrgentLookupService', () => {
     vi.mocked(nasesService.lookupIdentityFO).mockRejectedValue(
       new HttpException('Too many requests', HttpStatus.TOO_MANY_REQUESTS)
     )
-    const errorSpy = vi.spyOn(service['logger'], 'error').mockImplementation(vi.fn())
+    const errorSpy = vi.mocked(logger.error)
 
     const result = await service.processUrgentItems()
 

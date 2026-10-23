@@ -140,11 +140,10 @@ describe('OAuth2Controller', () => {
     })
 
     it('should propagate service exceptions from storeAuthorizationRequest', async () => {
+      const dbError = new Error('DB down')
       // CUSTOM PROXY DETAIL: Service errors (e.g., DB failure) propagate to the exception filter
-      vi.mocked(oauth2Service.storeAuthorizationRequest).mockRejectedValue(new Error('DB down'))
-      await expect(controller.authorize(validAuthRequestData, mockResponse())).rejects.toThrow(
-        'DB down'
-      )
+      vi.mocked(oauth2Service.storeAuthorizationRequest).mockRejectedValue(dbError)
+      await expect(controller.authorize(validAuthRequestData, mockResponse())).rejects.toBe(dbError)
     })
   })
 

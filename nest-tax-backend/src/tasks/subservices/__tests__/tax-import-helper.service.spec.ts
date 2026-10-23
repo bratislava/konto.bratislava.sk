@@ -1,12 +1,10 @@
 import { LineLoggerService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton'
 import { createTestTaxPayer } from '../../../__tests__/factories/taxPayer.factory'
-import {
-  expectAny,
-  expectObjectContaining,
-} from '../../../__tests__/jest-matchers'
+import { expectAny, expectObjectContaining } from '../../../__tests__/matchers'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import {
   Prisma,
@@ -29,7 +27,10 @@ describe('TaxImportHelperService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         TaxImportHelperService,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -51,8 +52,6 @@ describe('TaxImportHelperService', () => {
     prismaService = module.get<PrismaService>(PrismaService)
     databaseSubservice = module.get<DatabaseSubservice>(DatabaseSubservice)
     norisService = module.get<NorisService>(NorisService)
-
-    vi.spyOn(LineLoggerService.prototype, 'log').mockImplementation(vi.fn())
   })
 
   describe('isWithinImportWindow', () => {
@@ -391,19 +390,19 @@ describe('TaxImportHelperService', () => {
       const expectedRemainingCapacity = 2
 
       beforeEach(() => {
-        jest.useFakeTimers()
-        jest.setSystemTime(new Date('2026-06-15T10:00:00.000Z'))
+        vi.useFakeTimers()
+        vi.setSystemTime(new Date('2026-06-15T10:00:00.000Z'))
       })
 
       afterEach(() => {
-        jest.useRealTimers()
+        vi.useRealTimers()
       })
 
       it('should take a positive number of newly created users based on years to import', async () => {
-        const findManySpy = jest
+        const findManySpy = vi
           .spyOn(prismaService.taxPayer, 'findMany')
           .mockResolvedValueOnce([])
-        jest.spyOn(prismaService, '$queryRaw').mockResolvedValueOnce([])
+        vi.spyOn(prismaService, '$queryRaw').mockResolvedValueOnce([])
 
         await service.getPrioritizedBirthNumbersWithMetadata(
           TaxType.DZN,
@@ -424,10 +423,10 @@ describe('TaxImportHelperService', () => {
             (_unused, i) =>
               createTestTaxPayer({ birthNumber: `00000${i}/0000` }),
           )
-          jest
-            .spyOn(prismaService.taxPayer, 'findMany')
-            .mockResolvedValueOnce(mockNewlyCreated)
-          const queryRawSpy = jest
+          vi.spyOn(prismaService.taxPayer, 'findMany').mockResolvedValueOnce(
+            mockNewlyCreated,
+          )
+          const queryRawSpy = vi
             .spyOn(prismaService, '$queryRaw')
             .mockResolvedValueOnce([])
 
@@ -769,11 +768,12 @@ describe('TaxImportHelperService', () => {
         foundInNoris: ['123456/7890'],
       }
 
-      jest
-        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
-        .mockResolvedValue(mockResult)
+      vi.spyOn(
+        norisService,
+        'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      ).mockResolvedValue(mockResult)
 
-      const updateManySpy = jest
+      const updateManySpy = vi
         .spyOn(prismaService.taxImportAttempt, 'updateMany')
         .mockResolvedValue({ count: 1 })
 
@@ -811,11 +811,12 @@ describe('TaxImportHelperService', () => {
         foundInNoris: ['123456/7890', '987654/3210', '111111/2222'],
       }
 
-      jest
-        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
-        .mockResolvedValue(mockResult)
+      vi.spyOn(
+        norisService,
+        'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      ).mockResolvedValue(mockResult)
 
-      const updateManySpy = jest
+      const updateManySpy = vi
         .spyOn(prismaService.taxImportAttempt, 'updateMany')
         .mockResolvedValue({ count: 1 })
 
@@ -849,11 +850,12 @@ describe('TaxImportHelperService', () => {
         foundInNoris: birthNumbers,
       }
 
-      jest
-        .spyOn(norisService, 'getAndProcessNewNorisTaxDataByBirthNumberAndYear')
-        .mockResolvedValue(mockResult)
+      vi.spyOn(
+        norisService,
+        'getAndProcessNewNorisTaxDataByBirthNumberAndYear',
+      ).mockResolvedValue(mockResult)
 
-      const updateManySpy = jest.spyOn(
+      const updateManySpy = vi.spyOn(
         prismaService.taxImportAttempt,
         'updateMany',
       )
@@ -887,7 +889,7 @@ describe('TaxImportHelperService', () => {
     const year = 2024
 
     it('should mark only birth numbers missing from foundInNoris as NOT_FOUND', async () => {
-      const updateManySpy = jest
+      const updateManySpy = vi
         .spyOn(prismaService.taxImportAttempt, 'updateMany')
         .mockResolvedValue({ count: 2 })
 
@@ -918,7 +920,7 @@ describe('TaxImportHelperService', () => {
     })
 
     it('should mark all birth numbers as NOT_FOUND when foundInNoris is omitted', async () => {
-      const updateManySpy = jest
+      const updateManySpy = vi
         .spyOn(prismaService.taxImportAttempt, 'updateMany')
         .mockResolvedValue({ count: 2 })
 
@@ -945,7 +947,7 @@ describe('TaxImportHelperService', () => {
     })
 
     it('should ignore foundInNoris entries that were not requested', async () => {
-      const updateManySpy = jest
+      const updateManySpy = vi
         .spyOn(prismaService.taxImportAttempt, 'updateMany')
         .mockResolvedValue({ count: 1 })
 
@@ -963,7 +965,7 @@ describe('TaxImportHelperService', () => {
     })
 
     it('should not update when all birth numbers were found in Noris', async () => {
-      const updateManySpy = jest.spyOn(
+      const updateManySpy = vi.spyOn(
         prismaService.taxImportAttempt,
         'updateMany',
       )
@@ -979,7 +981,7 @@ describe('TaxImportHelperService', () => {
     })
 
     it('should not update when birth numbers are empty', async () => {
-      const updateManySpy = jest.spyOn(
+      const updateManySpy = vi.spyOn(
         prismaService.taxImportAttempt,
         'updateMany',
       )
@@ -991,9 +993,9 @@ describe('TaxImportHelperService', () => {
 
     it('should propagate database errors', async () => {
       const error = new Error('Database update failed')
-      jest
-        .spyOn(prismaService.taxImportAttempt, 'updateMany')
-        .mockRejectedValue(error)
+      vi.spyOn(prismaService.taxImportAttempt, 'updateMany').mockRejectedValue(
+        error,
+      )
 
       await expect(
         service['markNotFoundInNoris'](taxType, ['123456/7890'], year, []),

@@ -33,11 +33,12 @@ describe('PhysicalEntityService', () => {
   let service: PhysicalEntityService
   const MagproxyServiceMock = createMock<MagproxyService>()
   let consoleSpy: MockInstance
+  let logger: LineLoggerService
   beforeEach(async () => {
     vi.clearAllTimers()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        { provide: LineLoggerService, useValue: createMock<LineLoggerService>() },
         PhysicalEntityService,
         ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },
@@ -46,6 +47,7 @@ describe('PhysicalEntityService', () => {
       ],
     }).compile()
     service = module.get<PhysicalEntityService>(PhysicalEntityService)
+    logger = module.get(LineLoggerService)
     consoleSpy = vi.spyOn(console, 'log')
     consoleSpy.mockImplementation(vi.fn())
   })
@@ -79,14 +81,13 @@ describe('PhysicalEntityService', () => {
         mockPhysicalEntity,
         { ...mockPhysicalEntity, id: 'another-id' },
       ])
-      const loggerSpy = vi.spyOn(LineLoggerService.prototype, 'error')
 
       await service.linkToUserIdByBirthnumber(mockUserId, mockBirthNumber)
 
       expect(prismaMock.physicalEntity.findMany).toHaveBeenCalledWith({
         where: { birthNumber: mockBirthNumber },
       })
-      expect(loggerSpy).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
         `Multiple physical entities in database with birthnumber: ${mockBirthNumber}.`
       )
     })
@@ -94,14 +95,13 @@ describe('PhysicalEntityService', () => {
     it('should fail if no entity is found for the given birthNumber', async () => {
       const mockUserId = 'user123'
       vi.mocked(prismaMock.physicalEntity.findMany).mockResolvedValue([])
-      const loggerSpy = vi.spyOn(LineLoggerService.prototype, 'error')
 
       await service.linkToUserIdByBirthnumber(mockUserId, mockBirthNumber)
 
       expect(prismaMock.physicalEntity.findMany).toHaveBeenCalledWith({
         where: { birthNumber: mockBirthNumber },
       })
-      expect(loggerSpy).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
         `Entity with birth number ${mockBirthNumber} does not exist.`
       )
     })

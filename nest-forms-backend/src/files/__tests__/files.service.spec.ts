@@ -20,7 +20,10 @@ describe('FilesService', () => {
   beforeEach(async () => {
     const app = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         FilesService,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -42,9 +45,6 @@ describe('FilesService', () => {
     }).compile()
 
     service = app.get<FilesService>(FilesService)
-    Object.defineProperty(service, 'logger', {
-      value: { error: vi.fn(), warn: vi.fn(), debug: vi.fn() },
-    })
   })
 
   it('should be defined', () => {

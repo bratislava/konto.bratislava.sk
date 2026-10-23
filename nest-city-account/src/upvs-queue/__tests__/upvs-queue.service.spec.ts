@@ -12,6 +12,7 @@ import { UrgentLookupService } from '../urgent-lookup.service'
 
 describe('UpvsQueueService', () => {
   let service: UpvsQueueService
+  let logger: LineLoggerService
   let urgentLookupService: UrgentLookupService
   let edeskUriUpdateService: EdeskUriUpdateService
   let edeskBatchUpdateService: EdeskBatchUpdateService
@@ -19,7 +20,7 @@ describe('UpvsQueueService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        { provide: LineLoggerService, useValue: createMock<LineLoggerService>() },
         UpvsQueueService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: UrgentLookupService, useValue: createMock<UrgentLookupService>() },
@@ -29,6 +30,7 @@ describe('UpvsQueueService', () => {
     }).compile()
 
     service = module.get(UpvsQueueService)
+    logger = module.get(LineLoggerService)
     urgentLookupService = module.get(UrgentLookupService)
     edeskUriUpdateService = module.get(EdeskUriUpdateService)
     edeskBatchUpdateService = module.get(EdeskBatchUpdateService)
@@ -143,7 +145,7 @@ describe('UpvsQueueService', () => {
         highPriorityProcessed: 3,
         externalProcessed: 1,
       })
-      const logSpy = vi.spyOn(service['logger'], 'log').mockImplementation(vi.fn())
+      const logSpy = vi.mocked(logger.log)
 
       await service.processBatch()
 
@@ -163,7 +165,7 @@ describe('UpvsQueueService', () => {
         rateLimited: false,
         failures: [{ entityId: 'e1', reason: 'Lookup failed' }],
       })
-      const logSpy = vi.spyOn(service['logger'], 'log').mockImplementation(vi.fn())
+      const logSpy = vi.mocked(logger.log)
 
       await service.processBatch()
 

@@ -1,4 +1,3 @@
-import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -115,10 +114,6 @@ describe('CardPaymentReportingService', () => {
         CardPaymentReportingService,
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: BaConfigService, useValue: mockBaConfigService },
-        {
-          provide: ErrorFactoryService,
-          useValue: { InternalServerErrorException: vi.fn() },
-        },
         { provide: EmailSubservice, useValue: mockEmailSubservice },
         { provide: SftpFileSubservice, useValue: mockSftpFileSubservice },
         { provide: DatabaseSubservice, useValue: mockDatabaseSubservice },
@@ -311,14 +306,10 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
       mockSftpFileSubservice.getNewFiles.mockImplementation(
         async (sftpPath: string) => {
           if (sftpPath === '7322226495/oms/cz') {
-            return Promise.resolve([
-              { name: csvFileName, content: dznCsv },
-            ])
+            return Promise.resolve([{ name: csvFileName, content: dznCsv }])
           }
           if (sftpPath === '7322257895/oms/cz') {
-            return Promise.resolve([
-              { name: csvFileName, content: pkoCsv },
-            ])
+            return Promise.resolve([{ name: csvFileName, content: pkoCsv }])
           }
           return Promise.resolve([])
         },
@@ -364,14 +355,10 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
       mockSftpFileSubservice.getNewFiles.mockImplementation(
         async (sftpPath: string) => {
           if (sftpPath === '7322226495/oms/cz') {
-            return Promise.resolve([
-              { name: csvFileName, content: csv },
-            ])
+            return Promise.resolve([{ name: csvFileName, content: csv }])
           }
           if (sftpPath === '7322257895/oms/cz') {
-            return Promise.resolve([
-              { name: csvFileName, content: csv },
-            ])
+            return Promise.resolve([{ name: csvFileName, content: csv }])
           }
           return Promise.resolve([])
         },
@@ -401,14 +388,10 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
       mockSftpFileSubservice.getNewFiles.mockImplementation(
         async (sftpPath: string) => {
           if (sftpPath === '7322226495/oms/cz') {
-            return Promise.resolve([
-              { name: csvFileName, content: csv },
-            ])
+            return Promise.resolve([{ name: csvFileName, content: csv }])
           }
           if (sftpPath === '7322257895/oms/cz') {
-            return Promise.resolve([
-              { name: csvFileName, content: csv },
-            ])
+            return Promise.resolve([{ name: csvFileName, content: csv }])
           }
           return Promise.resolve([])
         },
@@ -500,9 +483,7 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
       mockSftpFileSubservice.getNewFiles.mockImplementation(
         async (sftpPath: string) => {
           if (sftpPath === '7322257895/oms/cz') {
-            return Promise.resolve([
-              { name: csvFileName, content: csv },
-            ])
+            return Promise.resolve([{ name: csvFileName, content: csv }])
           }
           return Promise.resolve([])
         },

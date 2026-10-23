@@ -17,15 +17,16 @@ describe('TasksConfigSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         TasksConfigSubservice,
         { provide: PrismaService, useValue: prismaMock },
       ],
     }).compile()
 
     service = module.get<TasksConfigSubservice>(TasksConfigSubservice)
-
-    vi.spyOn(LineLoggerService.prototype, 'log').mockImplementation(vi.fn())
   })
 
   describe('resetOverpaymentsLookbackDays', () => {
@@ -53,7 +54,7 @@ describe('TasksConfigSubservice', () => {
         .mockRejectedValue(error)
 
       await expect(service.resetOverpaymentsLookbackDays()).rejects.toThrow(
-        'Database connection failed',
+        error,
       )
 
       expect(updateManyMock).toHaveBeenCalledWith({
@@ -150,7 +151,7 @@ describe('TasksConfigSubservice', () => {
       vi.mocked(service['prismaService'].$transaction).mockRejectedValue(error)
 
       await expect(service.incrementOverpaymentsLookbackDays()).rejects.toThrow(
-        'Database error',
+        error,
       )
     })
 
@@ -172,7 +173,9 @@ describe('TasksConfigSubservice', () => {
       )
 
       await expect(service.incrementOverpaymentsLookbackDays()).rejects.toThrow(
-        'Invalid OVERPAYMENTS_LOOKBACK_DAYS configuration: invalid, type number expected, got string.',
+        new TypeError(
+          `Invalid OVERPAYMENTS_LOOKBACK_DAYS configuration: ${mockConfig.value}, type number expected, got ${typeof mockConfig.value}.`,
+        ),
       )
     })
   })

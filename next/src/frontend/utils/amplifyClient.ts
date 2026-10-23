@@ -19,22 +19,18 @@ export const removeAllCookiesAndClearLocalStorage = () => {
   localStorage.clear()
 }
 
-/**
- * Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
- *
- * Removes guest identity cookie, Amplify should remove it after successful sign in but does not.
- */
-export const removeAmplifyGuestIdentityIdCookies = () => {
-  const cookies = document.cookie.split(';').map((cookie) => cookie.trim())
-  cookies.forEach((cookie) => {
-    const cookieName = cookie.split('=')[0]
+/** The guest identity ID Amplify keeps in a cookie, or `null` if there is none. */
+export const getAmplifyGuestIdentityId = () => {
+  const cookie = document.cookie
+    .split(';')
+    .map((part) => part.trim())
+    .find((part) => {
+      const cookieName = part.split('=')[0]
 
-    if (cookieName.startsWith('com.amplify.Cognito.') && cookieName.endsWith('.identityId')) {
-      // https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript
-      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
-      logger.info(`[AUTH] Removed Cognito identity cookie: ${cookieName}`)
-    }
-  })
+      return cookieName.startsWith('com.amplify.Cognito.') && cookieName.endsWith('.identityId')
+    })
+
+  return cookie ? decodeURIComponent(cookie.split('=').slice(1).join('=')) : null
 }
 
 export const useSignOut = () => {

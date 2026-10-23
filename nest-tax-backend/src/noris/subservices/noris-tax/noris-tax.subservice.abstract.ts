@@ -265,6 +265,11 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         recordsToProcess.map((norisRecord) => norisRecord.ICO_RC),
       )
 
+    await this.markCityAccountUserMissing(
+      recordsToProcess,
+      userDataFromCityAccount,
+    )
+
     await Promise.all(
       recordsToProcess.map(async (norisItem) =>
         this.concurrencyLimit(async () => {
@@ -287,6 +292,29 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     )
 
     return { birthNumbers: [...birthNumbersResult] }
+  }
+
+  private async markCityAccountUserMissing(
+    recordsToProcess: TaxTypeToNorisData[TTaxType][],
+    userDataFromCityAccount: Partial<
+      Record<string, ResponseUserByBirthNumberDto>
+    >,
+  ): Promise<void> {
+    const birthNumbersWithoutUser = [
+      ...new Set(recordsToProcess.map((norisItem) => norisItem.ICO_RC)),
+    ].filter((birthNumber) => !userDataFromCityAccount[birthNumber])
+
+    if (birthNumbersWithoutUser.length === 0) {
+      return
+    }
+
+    await this.prismaService.taxPayer.updateMany({
+      where: {
+        birthNumber: { in: birthNumbersWithoutUser },
+        cityAccountUserMissingSince: null,
+      },
+      data: { cityAccountUserMissingSince: new Date() },
+    })
   }
 
   private async markAlreadyImportedAsSuccess(

@@ -39,6 +39,14 @@ export default class CityAccountIngestionTasksService {
       skipDuplicates: true,
     })
 
+    await this.prismaService.taxPayer.updateMany({
+      where: {
+        birthNumber: { in: data.birthNumbers },
+        cityAccountUserMissingSince: { not: null },
+      },
+      data: { cityAccountUserMissingSince: null },
+    })
+
     const latestRecord = await this.prismaService.config.findFirst({
       where: {
         key: 'LOADING_NEW_USERS_FROM_CITY_ACCOUNT',

@@ -14,6 +14,8 @@ import prismaMock from '../../../../../test/singleton'
 import { createTestTax } from '../../../../__tests__/factories/tax.factory'
 import { createTestTaxAdministratorEntry } from '../../../../__tests__/factories/taxAdministrator.factory'
 import { createTestTaxPayer } from '../../../../__tests__/factories/taxPayer.factory'
+import { createTestUserDataFromCityAccount } from '../../../../__tests__/factories/userDataFromCityAccount.factory'
+import { expectAny } from '../../../../__tests__/jest-matchers'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import BaConfigService from '../../../../config/ba-config.service'
 import {
@@ -155,6 +157,15 @@ describe('NorisTaxRealEstateSubservice', () => {
       forma_uhrady: 'P',
     },
   ]
+
+  const makeNorisRecord = (
+    birthNumber: string,
+    variableSymbol: string,
+  ): NorisRealEstateTax => ({
+    ...mockNorisData[0],
+    ICO_RC: birthNumber,
+    variabilny_symbol: variableSymbol,
+  })
 
   const mockTaxDefinition = {
     type: TaxType.DZN,
@@ -465,6 +476,44 @@ describe('NorisTaxRealEstateSubservice', () => {
       },
     )
 
+    it('should mark tax payers without an active user in city account', async () => {
+      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({})
+
+      const result = await service.processNorisTaxData(mockNorisData, 2023, {
+        suppressEmail: true,
+      })
+
+      expect(prismaMock.taxPayer.updateMany).toHaveBeenCalledWith({
+        where: {
+          birthNumber: { in: ['123456/7890'] },
+          cityAccountUserMissingSince: null,
+        },
+        data: { cityAccountUserMissingSince: expectAny<Date>(Date) },
+      })
+      expect(prismaMock.tax.upsert).not.toHaveBeenCalled()
+      expect(result).toEqual({ birthNumbers: [] })
+    })
+
+    it('should not mark tax payers with an active user in city account', async () => {
+      await service.processNorisTaxData(mockNorisData, 2023, {
+        suppressEmail: true,
+      })
+
+      expect(prismaMock.taxPayer.updateMany).not.toHaveBeenCalled()
+    })
+
+    it('should not mark tax payers in prepare mode', async () => {
+      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({})
+      prismaMock.taxPayer.findMany.mockResolvedValue([])
+
+      await service.processNorisTaxData(mockNorisData, 2023, {
+        prepareOnly: true,
+        suppressEmail: true,
+      })
+
+      expect(prismaMock.taxPayer.updateMany).not.toHaveBeenCalled()
+    })
+
     it('should handle empty Noris data', async () => {
       const result = await service.processNorisTaxData([], 2023, {
         suppressEmail: true,
@@ -504,15 +553,6 @@ describe('NorisTaxRealEstateSubservice', () => {
   })
 
   describe('markAlreadyImportedAsSuccess', () => {
-    const makeNorisRecord = (
-      birthNumber: string,
-      variableSymbol: string,
-    ): NorisRealEstateTax => ({
-      ...mockNorisData[0],
-      ICO_RC: birthNumber,
-      variabilny_symbol: variableSymbol,
-    })
-
     const taxA = makeNorisRecord('111111/1111', 'VS-A')
     const taxB = makeNorisRecord('222222/2222', 'VS-B')
     const taxC = makeNorisRecord('333333/3333', 'VS-C')
@@ -605,6 +645,100 @@ describe('NorisTaxRealEstateSubservice', () => {
         )
 
         expect(prismaMock.taxImportAttempt.updateMany).not.toHaveBeenCalled()
+      },
+    )
+  })
+
+  describe('markCityAccountUserMissing', () => {
+    const now = new Date('2027-01-15T10:00:00.000Z')
+
+    const taxA = makeNorisRecord('111111/1111', 'VS-A')
+    const taxB = makeNorisRecord('222222/2222', 'VS-B')
+    const taxC = makeNorisRecord('333333/3333', 'VS-C')
+    // Same tax payer with multiple taxes (e.g. KO with more variable symbols)
+    const taxD1 = makeNorisRecord('444444/4444', 'VS-D1')
+    const taxD2 = makeNorisRecord('444444/4444', 'VS-D2')
+
+    beforeEach(() => {
+      jest.useFakeTimers({ now })
+    })
+
+    afterEach(() => {
+      jest.useRealTimers()
+    })
+
+    it.each([
+      {
+        name: 'no tax payer has a user in city account',
+        records: [taxA, taxB],
+        usersFor: [],
+        expectedBirthNumbers: ['111111/1111', '222222/2222'],
+      },
+      {
+        name: 'some tax payers have a user in city account',
+        records: [taxA, taxB, taxC],
+        usersFor: ['222222/2222'],
+        expectedBirthNumbers: ['111111/1111', '333333/3333'],
+      },
+      {
+        name: 'tax payer without a user has one tax',
+        records: [taxA, taxD1, taxD2],
+        usersFor: ['444444/4444'],
+        expectedBirthNumbers: ['111111/1111'],
+      },
+      {
+        name: 'tax payer without a user has multiple taxes',
+        records: [taxA, taxD1, taxD2],
+        usersFor: ['111111/1111'],
+        expectedBirthNumbers: ['444444/4444'],
+      },
+    ])(
+      'should mark only tax payers without a user when $name',
+      async ({ records, usersFor, expectedBirthNumbers }) => {
+        const userData = Object.fromEntries(
+          usersFor.map((birthNumber) => [
+            birthNumber,
+            createTestUserDataFromCityAccount({ birthNumber }),
+          ]),
+        )
+
+        await service['markCityAccountUserMissing'](records, userData)
+
+        expect(prismaMock.taxPayer.updateMany).toHaveBeenCalledTimes(1)
+        expect(prismaMock.taxPayer.updateMany).toHaveBeenCalledWith({
+          where: {
+            birthNumber: { in: expectedBirthNumbers },
+            cityAccountUserMissingSince: null,
+          },
+          data: { cityAccountUserMissingSince: now },
+        })
+      },
+    )
+
+    it.each([
+      {
+        name: 'records are empty',
+        records: [],
+        usersFor: [],
+      },
+      {
+        name: 'all tax payers have a user in city account',
+        records: [taxA, taxD1, taxD2],
+        usersFor: ['111111/1111', '444444/4444'],
+      },
+    ])(
+      'should not update tax payers when $name',
+      async ({ records, usersFor }) => {
+        const userData = Object.fromEntries(
+          usersFor.map((birthNumber) => [
+            birthNumber,
+            createTestUserDataFromCityAccount({ birthNumber }),
+          ]),
+        )
+
+        await service['markCityAccountUserMissing'](records, userData)
+
+        expect(prismaMock.taxPayer.updateMany).not.toHaveBeenCalled()
       },
     )
   })

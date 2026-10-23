@@ -2,12 +2,12 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 
 import MyApplicationsPageContent from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsPageContent'
-import { ApplicationsListVariant } from '@/src/pages/moje-ziadosti'
+import { FormDefinitionSlugTitleMapProvider } from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionSlugTitleMap'
+import { useMyApplicationsFilters } from '@/src/components/page-contents/MyApplicationsPageContent/useMyApplicationsFilters'
 
 import {
   createMockApplications,
   createMockQueryClient,
-  emailFormSlugs,
   formDefinitionSlugTitleMap,
   ListScenario,
   listScenarioOptions,
@@ -16,13 +16,17 @@ import {
 import { ShowcaseLayout, ShowcaseSelectField } from './shared'
 
 const MyApplicationsListShowCase = () => {
-  const [section, setSection] = useState<ApplicationsListVariant>('SENT')
+  const { selectedMyApplicationState: myApplicationState, setSelectedMyApplicationState } =
+    useMyApplicationsFilters()
   const [scenario, setScenario] = useState<ListScenario>('withItems')
 
-  const applications = useMemo(() => createMockApplications(section, scenario), [section, scenario])
+  const applications = useMemo(
+    () => createMockApplications(myApplicationState, scenario),
+    [myApplicationState, scenario],
+  )
   const queryClient = useMemo(
-    () => createMockQueryClient(applications, section),
-    [applications, section],
+    () => createMockQueryClient(applications, myApplicationState, scenario),
+    [applications, myApplicationState, scenario],
   )
 
   return (
@@ -30,10 +34,10 @@ const MyApplicationsListShowCase = () => {
       controls={
         <>
           <ShowcaseSelectField
-            label="Section (selectedSection)"
+            label="Status"
             options={sectionOptions}
-            value={section}
-            onChange={setSection}
+            value={myApplicationState}
+            onChange={setSelectedMyApplicationState}
           />
           <ShowcaseSelectField
             label="List content"
@@ -46,13 +50,12 @@ const MyApplicationsListShowCase = () => {
     >
       {/* key forces a remount so the freshly seeded QueryClient is picked up */}
       <QueryClientProvider client={queryClient}>
-        <div className="bg-background-passive-base" key={`${section}-${scenario}`}>
-          <MyApplicationsPageContent
-            selectedSection={section}
-            applications={applications}
+        <div className="bg-background-passive-base" key={`${myApplicationState}-${scenario}`}>
+          <FormDefinitionSlugTitleMapProvider
             formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-            emailFormSlugs={emailFormSlugs}
-          />
+          >
+            <MyApplicationsPageContent />
+          </FormDefinitionSlugTitleMapProvider>
         </div>
       </QueryClientProvider>
     </ShowcaseLayout>

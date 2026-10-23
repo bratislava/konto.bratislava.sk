@@ -133,7 +133,8 @@ export default class TaxImportHelperService {
                                  AND tia."taxType" = ${taxType}::"TaxType"
           WHERE
             -- Exclude newly created users (they're handled separately)
-              NOT (tp."createdAt" = tp."updatedAt")
+              NOT (tp."createdAt" = tp."updatedAt"
+                  AND NOT EXISTS (SELECT 1 FROM "TaxImportAttempt" any_tia WHERE any_tia."taxPayerId" = tp.id))
 
             -- Include all users who do not have a tax successfully loaded 
             AND (tia.id IS NULL OR tia.status != 'SUCCESS'::"TaxImportStatus")
@@ -159,7 +160,8 @@ export default class TaxImportHelperService {
                                  AND tia."taxType" = ${taxType}::"TaxType"
           WHERE
             -- Exclude newly created users (they're handled separately)
-              NOT (tp."createdAt" = tp."updatedAt")
+              NOT (tp."createdAt" = tp."updatedAt"
+                  AND NOT EXISTS (SELECT 1 FROM "TaxImportAttempt" any_tia WHERE any_tia."taxPayerId" = tp.id))
             -- In prepare phase: only users who weren't attempted yet, weren't found in Noris, or failed
             AND (tia.id IS NULL OR tia.status IN ('NOT_FOUND'::"TaxImportStatus", 'FAILED'::"TaxImportStatus"))
           ORDER BY tia."updatedAt" NULLS FIRST,

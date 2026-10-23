@@ -220,7 +220,8 @@ export default class TaxImportTasksService {
           -- Newly created users (createdAt = updatedAt, no attempts yet) are handled
           -- by loadTaxesForUsers which imports all years at once; exclude them here
           -- to avoid racing with that cron when both fire at the same time
-          AND tp."createdAt" != tp."updatedAt"
+          AND NOT (tp."createdAt" = tp."updatedAt"
+              AND NOT EXISTS (SELECT 1 FROM "TaxImportAttempt" any_tia WHERE any_tia."taxPayerId" = tp.id))
         ORDER BY tp."updatedAt", tp.id
         LIMIT ${LOAD_HISTORICAL_TAXES_BATCH};
     `

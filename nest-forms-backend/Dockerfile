@@ -40,6 +40,9 @@ RUN pnpm turbo run build --filter=nest-forms-backend
 FROM builder-deps AS test
 RUN pnpm turbo run test --filter=nest-forms-backend
 
+FROM builder-deps AS typecheck
+RUN pnpm turbo run typecheck --filter=nest-forms-backend
+
 FROM builder-deps AS test-e2e
 ARG CI_E2E_DATABASE_URL
 ENV CI_E2E_DATABASE_URL=${CI_E2E_DATABASE_URL}

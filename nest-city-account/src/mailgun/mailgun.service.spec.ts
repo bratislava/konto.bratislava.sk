@@ -1,10 +1,10 @@
 import { LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Interfaces } from 'mailgun.js/definitions'
 
 import { cognitoUserDataFactory } from '../__tests__/factories/cognitoUserData.factory'
-import { expectAny, expectObjectContaining } from '../__tests__/jest-matchers'
+import { expectAny, expectObjectContaining } from '../__tests__/matchers'
 import BaConfigService from '../config/ba-config.service'
 import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
@@ -16,18 +16,17 @@ describe('MailgunService', () => {
   let cognitoSubservice: CognitoSubservice
   let pdfGeneratorService: PdfGeneratorService
 
-  const mockCreate = jest.fn()
+  const mockCreate = vi.fn()
 
   beforeAll(() => {
-    jest.spyOn(console, 'log').mockImplementation(jest.fn())
-    jest.spyOn(console, 'error').mockImplementation(jest.fn())
+    vi.spyOn(console, 'log').mockImplementation(vi.fn())
+    vi.spyOn(console, 'error').mockImplementation(vi.fn())
   })
 
   beforeEach(async () => {
-    jest.clearAllMocks()
     mockCreate.mockResolvedValue({ id: 'mock-message-id', message: 'Queued' })
 
-    jest.spyOn(console, 'log').mockImplementation(jest.fn())
+    vi.spyOn(console, 'log').mockImplementation(vi.fn())
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -59,11 +58,11 @@ describe('MailgunService', () => {
   })
 
   afterAll(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   afterEach(() => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
   })
 
   it('should be defined', () => {
@@ -165,7 +164,7 @@ describe('MailgunService', () => {
 
   describe('sendEmail with 2025-delivery-method-changed-from-user-data template', () => {
     it('should send eDesk delivery method message without attachment', async () => {
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue(
+      vi.mocked(cognitoSubservice.getDataFromCognito).mockResolvedValue(
         cognitoUserDataFactory({
           given_name: 'John',
           family_name: 'Doe',
@@ -195,7 +194,7 @@ describe('MailgunService', () => {
     })
 
     it('should send postal delivery method message without attachment', async () => {
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue(
+      vi.mocked(cognitoSubservice.getDataFromCognito).mockResolvedValue(
         cognitoUserDataFactory({
           given_name: 'Jane',
           family_name: 'Smith',
@@ -224,7 +223,7 @@ describe('MailgunService', () => {
     })
 
     it('should send email delivery method message with PDF attachment', async () => {
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue(
+      vi.mocked(cognitoSubservice.getDataFromCognito).mockResolvedValue(
         cognitoUserDataFactory({
           given_name: 'Alice',
           family_name: 'Johnson',
@@ -237,7 +236,7 @@ describe('MailgunService', () => {
         contentType: 'application/pdf',
       }
 
-      jest.spyOn(pdfGeneratorService, 'generateFromTemplate').mockResolvedValue(mockPdf)
+      vi.mocked(pdfGeneratorService.generateFromTemplate).mockResolvedValue(mockPdf)
 
       await service.sendEmail('2025-delivery-method-changed-from-user-data', {
         userEmail: 'alice@example.com',
@@ -273,7 +272,7 @@ describe('MailgunService', () => {
     })
 
     it('should send email delivery method message without PDF when birthNumber is missing', async () => {
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue(
+      vi.mocked(cognitoSubservice.getDataFromCognito).mockResolvedValue(
         cognitoUserDataFactory({
           given_name: 'Bob',
           family_name: 'Brown',
@@ -302,7 +301,7 @@ describe('MailgunService', () => {
     })
 
     it('should handle null firstName from Cognito', async () => {
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue(
+      vi.mocked(cognitoSubservice.getDataFromCognito).mockResolvedValue(
         cognitoUserDataFactory({
           given_name: undefined,
           family_name: 'Doe',

@@ -1,17 +1,19 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { Mock, Mocked } from 'vitest'
 
 import prismaMock from '../../../../../test/singleton'
 import { BloomreachOutboxService } from '../../../../bloomreach/bloomreach-outbox.service'
 import { ConsentEnum, DeliveryMethodUserPreferenceEnum } from '../../../../generated/prisma/enums'
 import { PrismaService } from '../../../../prisma/prisma.service'
+import alertReporting from '../../../../utils/constants/error.alerts'
 import { UserIdentitySubservice } from '../../../../utils/subservices/user-identity.subservice'
 import { UserDataSubservice } from '../user-data.subservice'
 
 describe('UserDataSubservice', () => {
   let service: UserDataSubservice
-  let bloomreach: jest.Mocked<BloomreachOutboxService>
+  let bloomreach: Mocked<BloomreachOutboxService>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,7 +25,7 @@ describe('UserDataSubservice', () => {
           provide: BloomreachOutboxService,
           useValue: createMock<BloomreachOutboxService>(),
         },
-        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
         {
           provide: UserIdentitySubservice,
           useValue: createMock<UserIdentitySubservice>(),
@@ -36,16 +38,12 @@ describe('UserDataSubservice', () => {
 
     // Make $transaction execute its callback with the prisma mock so the upsert
     // calls below are routed through the same mocked client we assert against.
-    ;(prismaMock.$transaction as jest.Mock).mockImplementation(async (fn: unknown) => {
+    ;(prismaMock.$transaction as Mock).mockImplementation(async (fn: unknown) => {
       if (typeof fn === 'function') {
         return (fn as (tx: typeof prismaMock) => unknown)(prismaMock)
       }
       return Promise.all(fn as Promise<unknown>[])
     })
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
   })
 
   describe('setUserConsents', () => {
@@ -91,13 +89,14 @@ describe('UserDataSubservice', () => {
     })
 
     it('should not call Bloomreach if the transaction throws', async () => {
-      ;(prismaMock.$transaction as jest.Mock).mockRejectedValueOnce(new Error('db down'))
+      const dbError = new Error('db down')
+      ;(prismaMock.$transaction as Mock).mockRejectedValueOnce(dbError)
 
       await expect(
         service.setUserConsents('user-id', 'external-id', [
           { consentType: ConsentEnum.MARKETING, isGranted: true },
         ])
-      ).rejects.toThrow('db down')
+      ).rejects.toBe(dbError)
 
       expect(bloomreach.trackConsents).not.toHaveBeenCalled()
     })
@@ -160,13 +159,14 @@ describe('UserDataSubservice', () => {
     })
 
     it('should not call Bloomreach if the transaction throws', async () => {
-      ;(prismaMock.$transaction as jest.Mock).mockRejectedValueOnce(new Error('db down'))
+      const dbError = new Error('db down')
+      ;(prismaMock.$transaction as Mock).mockRejectedValueOnce(dbError)
 
       await expect(
         service.setLegalPersonConsents('legal-person-id', 'external-id', [
           { consentType: ConsentEnum.MARKETING, isGranted: true },
         ])
-      ).rejects.toThrow('db down')
+      ).rejects.toBe(dbError)
 
       expect(bloomreach.trackConsents).not.toHaveBeenCalled()
     })
@@ -187,14 +187,15 @@ describe('UserDataSubservice', () => {
     })
 
     it('should not call Bloomreach if the prisma update throws', async () => {
-      ;(prismaMock.user.update as jest.Mock).mockRejectedValueOnce(new Error('db down'))
+      const dbError = new Error('db down')
+      ;(prismaMock.user.update as Mock).mockRejectedValueOnce(dbError)
 
       await expect(
         service.setDeliveryMethodPreference(
           'cognito-sub-id',
           DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT
         )
-      ).rejects.toThrow('db down')
+      ).rejects.toBe(dbError)
 
       expect(bloomreach.trackCustomer).not.toHaveBeenCalled()
     })

@@ -1,5 +1,5 @@
 import { LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
@@ -12,6 +12,7 @@ import { UrgentLookupService } from '../urgent-lookup.service'
 
 describe('UpvsQueueService', () => {
   let service: UpvsQueueService
+  let logger: LineLoggerService
   let urgentLookupService: UrgentLookupService
   let edeskUriUpdateService: EdeskUriUpdateService
   let edeskBatchUpdateService: EdeskBatchUpdateService
@@ -19,7 +20,7 @@ describe('UpvsQueueService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        { provide: LineLoggerService, useValue: createMock<LineLoggerService>() },
         UpvsQueueService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: UrgentLookupService, useValue: createMock<UrgentLookupService>() },
@@ -29,23 +30,23 @@ describe('UpvsQueueService', () => {
     }).compile()
 
     service = module.get(UpvsQueueService)
+    logger = module.get(LineLoggerService)
     urgentLookupService = module.get(UrgentLookupService)
     edeskUriUpdateService = module.get(EdeskUriUpdateService)
     edeskBatchUpdateService = module.get(EdeskBatchUpdateService)
 
     // Quiet, no-work defaults; individual tests override what they exercise.
-    jest
-      .spyOn(urgentLookupService, 'processUrgentItems')
-      .mockResolvedValue({ attempted: 0, rateLimited: false, failures: [] })
-    jest.spyOn(edeskUriUpdateService, 'getUriToUpdateInternal').mockResolvedValue(null)
-    jest.spyOn(edeskUriUpdateService, 'getUriToUpdateExternal').mockResolvedValue(null)
-    jest
-      .spyOn(edeskBatchUpdateService, 'updateEdeskStatusBatch')
-      .mockResolvedValue({ highPriorityProcessed: 0, externalProcessed: 0 })
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
+    vi.mocked(urgentLookupService.processUrgentItems).mockResolvedValue({
+      attempted: 0,
+      rateLimited: false,
+      failures: [],
+    })
+    vi.mocked(edeskUriUpdateService.getUriToUpdateInternal).mockResolvedValue(null)
+    vi.mocked(edeskUriUpdateService.getUriToUpdateExternal).mockResolvedValue(null)
+    vi.mocked(edeskBatchUpdateService.updateEdeskStatusBatch).mockResolvedValue({
+      highPriorityProcessed: 0,
+      externalProcessed: 0,
+    })
   })
 
   describe('public queue API', () => {
@@ -94,9 +95,11 @@ describe('UpvsQueueService', () => {
     })
 
     it('short-circuits the whole tick when urgent is rate-limited', async () => {
-      jest
-        .spyOn(urgentLookupService, 'processUrgentItems')
-        .mockResolvedValue({ attempted: 3, rateLimited: true, failures: [] })
+      vi.mocked(urgentLookupService.processUrgentItems).mockResolvedValue({
+        attempted: 3,
+        rateLimited: true,
+        failures: [],
+      })
 
       await service.processBatch()
 
@@ -106,9 +109,10 @@ describe('UpvsQueueService', () => {
     })
 
     it('repairs one internal URI and skips the batched search', async () => {
-      jest
-        .spyOn(edeskUriUpdateService, 'getUriToUpdateInternal')
-        .mockResolvedValue({ uri: 'rc://sk/old', id: 'id-1' })
+      vi.mocked(edeskUriUpdateService.getUriToUpdateInternal).mockResolvedValue({
+        uri: 'rc://sk/old',
+        id: 'id-1',
+      })
 
       await service.processBatch()
 
@@ -121,9 +125,9 @@ describe('UpvsQueueService', () => {
     })
 
     it('repairs one external URI (when no internal is due) and skips the batched search', async () => {
-      jest
-        .spyOn(edeskUriUpdateService, 'getUriToUpdateExternal')
-        .mockResolvedValue({ uri: 'rc://sk/ext' })
+      vi.mocked(edeskUriUpdateService.getUriToUpdateExternal).mockResolvedValue({
+        uri: 'rc://sk/ext',
+      })
 
       await service.processBatch()
 
@@ -132,13 +136,16 @@ describe('UpvsQueueService', () => {
     })
 
     it('reports the combined counts from the tiers', async () => {
-      jest
-        .spyOn(urgentLookupService, 'processUrgentItems')
-        .mockResolvedValue({ attempted: 2, rateLimited: false, failures: [] })
-      jest
-        .spyOn(edeskBatchUpdateService, 'updateEdeskStatusBatch')
-        .mockResolvedValue({ highPriorityProcessed: 3, externalProcessed: 1 })
-      const logSpy = jest.spyOn(service['logger'], 'log').mockImplementation(jest.fn())
+      vi.mocked(urgentLookupService.processUrgentItems).mockResolvedValue({
+        attempted: 2,
+        rateLimited: false,
+        failures: [],
+      })
+      vi.mocked(edeskBatchUpdateService.updateEdeskStatusBatch).mockResolvedValue({
+        highPriorityProcessed: 3,
+        externalProcessed: 1,
+      })
+      const logSpy = vi.mocked(logger.log)
 
       await service.processBatch()
 
@@ -153,12 +160,12 @@ describe('UpvsQueueService', () => {
     })
 
     it('folds urgent per-entity failures into the batch report', async () => {
-      jest.spyOn(urgentLookupService, 'processUrgentItems').mockResolvedValue({
+      vi.mocked(urgentLookupService.processUrgentItems).mockResolvedValue({
         attempted: 1,
         rateLimited: false,
         failures: [{ entityId: 'e1', reason: 'Lookup failed' }],
       })
-      const logSpy = jest.spyOn(service['logger'], 'log').mockImplementation(jest.fn())
+      const logSpy = vi.mocked(logger.log)
 
       await service.processBatch()
 

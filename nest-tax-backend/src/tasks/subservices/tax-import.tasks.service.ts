@@ -217,6 +217,8 @@ export default class TaxImportTasksService {
                             -- We want to exclude only resolved attempts
                             AND (tia.status = 'SUCCESS'::"TaxImportStatus" OR
                                  tia.status = 'NOT_FOUND'::"TaxImportStatus"))
+          -- Exclude users without an active user in city account (reset when the user verifies again)
+          AND tp."cityAccountUserMissingSince" IS NULL
           -- Newly created users (createdAt = updatedAt, no attempts yet) are handled
           -- by loadTaxesForUsers which imports all years at once; exclude them here
           -- to avoid racing with that cron when both fire at the same time

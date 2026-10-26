@@ -6,6 +6,7 @@ import type { Cache } from 'cache-manager'
 
 import {
   CepVerificationVerdict,
+  cepVerificationVerdictSchema,
   SignatureRejectionReason,
 } from './evaluate-cep-verification'
 
@@ -23,11 +24,6 @@ const NOT_CACHED_REASONS = new Set([SignatureRejectionReason.Unexpected])
 
 /** The cache must never slow down signing or sending, a slow Redis is treated as a miss. */
 const OPERATION_TIMEOUT_MS = 1000
-
-const isVerdict = (value: unknown): value is CepVerificationVerdict =>
-  typeof value === 'object' &&
-  value !== null &&
-  typeof (value as { accepted?: unknown }).accepted === 'boolean'
 
 /**
  * Caches CEP verification verdicts in Redis, keyed by a hash of the signature. The verdict contains only codes and
@@ -67,7 +63,18 @@ export default class SignatureVerdictCache {
       const value = await this.withTimeout(
         this.cache.get<unknown>(SignatureVerdictCache.key(signatureBase64)),
       )
-      return isVerdict(value) ? value : undefined
+      if (value === undefined) {
+        return undefined
+      }
+
+      const parsed = cepVerificationVerdictSchema.safeParse(value)
+      if (!parsed.success) {
+        this.logger.warn(
+          `Ignoring cached signature verdict with unexpected shape: ${parsed.error.message}`,
+        )
+        return undefined
+      }
+      return parsed.data
     } catch (error) {
       this.logger.warn(
         `Reading cached signature verdict failed: ${error instanceof Error ? error.message : String(error)}`,

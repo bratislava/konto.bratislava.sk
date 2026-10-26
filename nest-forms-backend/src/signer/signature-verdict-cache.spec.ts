@@ -63,10 +63,41 @@ describe('SignatureVerdictCache', () => {
       await expect(verdictCache.get(SIGNATURE)).resolves.toBeUndefined()
     })
 
-    it('ignores a value that is not a verdict', async () => {
-      cache.get.mockResolvedValue({ unexpected: true })
+    it('returns a cached rejection', async () => {
+      const verdict = rejected(SignatureRejectionReason.UntrustedCertificate)
+      cache.get.mockResolvedValue(verdict)
+
+      await expect(verdictCache.get(SIGNATURE)).resolves.toEqual(verdict)
+    })
+
+    it('accepts an accepted verdict without issuer and serial number (dropped by JSON as undefined)', async () => {
+      cache.get.mockResolvedValue({ accepted: true, signature: { result: 3 } })
+
+      await expect(verdictCache.get(SIGNATURE)).resolves.toEqual({
+        accepted: true,
+        signature: { result: 3 },
+      })
+    })
+
+    it.each([
+      ['not a verdict', { unexpected: true }],
+      ['accepted without signature', { accepted: true }],
+      [
+        'rejection with an unknown reason',
+        { ...rejected(SignatureRejectionReason.NotSigned), reason: 'Gone' },
+      ],
+      [
+        'rejection without verify result',
+        { accepted: false, reason: SignatureRejectionReason.NotSigned },
+      ],
+      ['a string', 'accepted'],
+    ])('ignores %s', async (_name, value) => {
+      cache.get.mockResolvedValue(value)
 
       await expect(verdictCache.get(SIGNATURE)).resolves.toBeUndefined()
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining('unexpected shape'),
+      )
     })
 
     it('treats a Redis error as a miss', async () => {

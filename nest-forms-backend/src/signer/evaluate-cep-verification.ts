@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 /**
  * Interprets the response of the slovensko.sk API `POST /api/cep/verify` (informative signature verification).
  *
@@ -82,27 +84,36 @@ export enum SignatureRejectionReason {
   Unexpected = 'Unexpected',
 }
 
-export interface AcceptedSignature {
+const acceptedSignatureSchema = z.object({
   /** Distinguished name of the certificate issuer, contains no personal data. */
-  issuer: string | undefined
-  serialNumber: string | undefined
-  result: number
-}
+  issuer: z.string().optional(),
+  serialNumber: z.string().optional(),
+  result: z.number(),
+})
 
 /**
  * The verdict intentionally contains no personal data. The raw response contains the whole signed form, the
  * signer's subject (incl. birth number) and for revoked certificates also in `verifier.description`, so it must not be
- * logged.
+ * logged. The schema validates verdicts read back from the cache.
  */
-export type CepVerificationVerdict =
-  | { accepted: true; signature: AcceptedSignature }
-  | {
-      accepted: false
-      reason: SignatureRejectionReason
-      verifyResult: number
-      authorizationResult?: number
-      verifierResult?: number
-    }
+export const cepVerificationVerdictSchema = z.discriminatedUnion('accepted', [
+  z.object({
+    accepted: z.literal(true),
+    signature: acceptedSignatureSchema,
+  }),
+  z.object({
+    accepted: z.literal(false),
+    reason: z.enum(SignatureRejectionReason),
+    verifyResult: z.number(),
+    authorizationResult: z.number().optional(),
+    verifierResult: z.number().optional(),
+  }),
+])
+
+export type AcceptedSignature = z.infer<typeof acceptedSignatureSchema>
+export type CepVerificationVerdict = z.infer<
+  typeof cepVerificationVerdictSchema
+>
 
 export const evaluateCepVerification = (
   response: CepVerifyResponse,

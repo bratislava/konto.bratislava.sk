@@ -5,7 +5,14 @@ import NextLink from 'next/link'
 import { DropdownMenuItemProps } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import cn from '@/src/utils/cn'
 
-const HeaderMenuItem = ({ title, icon, url, onPress, itemClassName }: DropdownMenuItemProps) => {
+const HeaderMenuItem = ({
+  title,
+  icon,
+  url,
+  onPress,
+  itemClassName,
+  isDisabled,
+}: DropdownMenuItemProps) => {
   return url ? (
     <NextLink
       className="flex items-center gap-3"
@@ -13,6 +20,7 @@ const HeaderMenuItem = ({ title, icon, url, onPress, itemClassName }: DropdownMe
       data-cy={`${url.replaceAll('/', '')}-menu-item`}
     >
       <DropdownMenu.Item
+        disabled={isDisabled}
         className={cn(
           'flex cursor-pointer items-center gap-3 rounded-sm px-5 py-2 font-sans',
           itemClassName,
@@ -26,7 +34,8 @@ const HeaderMenuItem = ({ title, icon, url, onPress, itemClassName }: DropdownMe
     </NextLink>
   ) : (
     <DropdownMenu.Item
-      onClick={onPress}
+      onClick={isDisabled ? undefined : onPress}
+      disabled={isDisabled}
       className={cn('flex cursor-pointer items-center gap-3 rounded-sm px-5 py-2', itemClassName)}
       data-cy="logout-button"
     >

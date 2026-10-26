@@ -24,12 +24,16 @@ import {
 } from '../__tests__/factories/form.factory'
 import { createTestFormDefinitionSlovenskoSkGeneric } from '../__tests__/factories/formDefinition.factory'
 import { createMockGinisDocumentData } from '../__tests__/factories/ginisDocument.factory'
-import { expectObjectContaining } from '../__tests__/matchers'
+import {
+  expectObjectContaining,
+  expectStringContaining,
+} from '../__tests__/matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import { NodeEnv } from '../config/environment-variables'
 import ConvertService from '../convert/convert.service'
+import { FormsErrorsEnum } from '../forms/forms.errors.enum'
 import {
   Files,
   FormError,
@@ -41,6 +45,7 @@ import MailgunService from '../mailer/mailgun.service'
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import NasesContactsService from '../nases/services/nases.contacts.service'
 import PrismaService from '../prisma/prisma.service'
+import alertReporting from '../utils/constants/error.alerts'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckDeliveryPayloadDto } from './dtos/ginis.response.dto'
 import GinisService from './ginis.service'
@@ -67,13 +72,17 @@ vi.mock('forms-shared/slovensko-sk/xmlBuilder', () => ({
 
 describe('GinisService', () => {
   let service: GinisService
+  const errorFactory = new ErrorFactoryService({ alertReporting })
 
   beforeEach(async () => {
     vi.resetAllMocks()
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         GinisService,
         GinisAPIService,
         GinisHelper,
@@ -86,7 +95,7 @@ describe('GinisService', () => {
             download: vi.fn(),
           },
         },
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: errorFactory },
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: ApiJwtTokensService,
@@ -132,10 +141,6 @@ describe('GinisService', () => {
     }).compile()
 
     service = module.get<GinisService>(GinisService)
-
-    Object.defineProperty(service, 'logger', {
-      value: { error: vi.fn(), debug: vi.fn(), log: vi.fn() },
-    })
 
     // Create a real NasesContactsService instance for extraction methods
     // The extraction methods are pure functions that don't need dependencies
@@ -196,9 +201,11 @@ describe('GinisService', () => {
         ...formBase,
       })
 
-      await expect(service.onQueueConsumption(messageBase)).rejects.toThrow(
-        'Form definition was not found for given slug. slug',
-      )
+      await expect(
+        service.onQueueConsumption(messageBase),
+      ).rejects.toThrowLogNestError({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+      })
     })
 
     it('should error when form definition is not of a SlovenskoSkGeneric type', async () => {
@@ -210,9 +217,15 @@ describe('GinisService', () => {
         ...formBase,
       })
 
-      await expect(service.onQueueConsumption(messageBase)).rejects.toThrow(
-        'onQueueConsumption: Got unsupported type of FormDefinition.',
-      )
+      await expect(
+        service.onQueueConsumption(messageBase),
+      ).rejects.toThrowLogNestError({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        console: {
+          formDefinitionType: FormDefinitionType.SlovenskoSkTax,
+          formId: formBase.id,
+        },
+      })
     })
 
     it('should run register if not yet registered', async () => {
@@ -875,7 +888,9 @@ describe('GinisService', () => {
 
       await expect(
         service.createDocument(form, formDefinitionBase),
-      ).rejects.toThrow('Form data is empty.')
+      ).rejects.toThrowLogNestError({
+        errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+      })
     })
 
     it('should create document with userExternalId only', async () => {
@@ -1142,9 +1157,12 @@ describe('GinisService', () => {
         mainUri: null,
       } as Forms
 
-      await expect(service.extractContactParamsFromUri(form)).rejects.toThrow(
-        'Form uri not found in form',
-      )
+      await expect(
+        service.extractContactParamsFromUri(form),
+      ).rejects.toThrowLogNestError({
+        errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: expectStringContaining('Form uri not found in form'),
+      })
     })
 
     it('should throw error when userExternalId is missing in extractContactParamsFromExternalId', async () => {
@@ -1155,7 +1173,10 @@ describe('GinisService', () => {
 
       await expect(
         service.extractContactParamsFromExternalId(form),
-      ).rejects.toThrow('External id not found in form')
+      ).rejects.toThrowLogNestError({
+        errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: expectStringContaining('External id not found in form'),
+      })
     })
 
     it('should throw error when contact not found in nases', async () => {
@@ -1171,7 +1192,10 @@ describe('GinisService', () => {
 
       await expect(
         service.createDocument(form, formDefinitionBase),
-      ).rejects.toThrow('Form uri not found in nases')
+      ).rejects.toThrowLogNestError({
+        errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: expectStringContaining('Form uri not found in nases'),
+      })
     })
 
     it('should throw error when multiple contacts found in nases', async () => {
@@ -1192,13 +1216,17 @@ describe('GinisService', () => {
 
       await expect(
         service.createDocument(form, formDefinitionBase),
-      ).rejects.toThrow('Multiple results found for form uri')
+      ).rejects.toThrowLogNestError({
+        errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: expectStringContaining('Multiple results found for form uri'),
+      })
     })
 
     it('should throw error when contact info not found in city account', async () => {
+      const userExternalId = 'extId1'
       const form = {
         ...formBase,
-        userExternalId: 'extId1',
+        userExternalId,
         mainUri: null,
       } as Forms
 
@@ -1209,7 +1237,9 @@ describe('GinisService', () => {
 
       await expect(
         service.createDocument(form, formDefinitionBase),
-      ).rejects.toThrow('Contact info not found in city account')
+      ).rejects.toThrowLogNestError({
+        errorEnum: FormsErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
+      })
     })
 
     it('should handle legal entity from userExternalId', async () => {

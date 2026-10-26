@@ -4,6 +4,7 @@ import { FileInfo } from 'ssh2-sftp-client'
 
 import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import alertReporting from '../../constants/error.alerts'
 import SftpFileSubservice from '../sftp-file.subservice'
 
 // Mock SFTPClient
@@ -27,10 +28,6 @@ const mockBaConfigService = {
   },
 }
 
-const mockErrorFactoryService = {
-  InternalServerErrorException: vi.fn(),
-}
-
 describe('SftpFileSubservice', () => {
   let service: SftpFileSubservice
 
@@ -40,7 +37,10 @@ describe('SftpFileSubservice', () => {
         SftpFileSubservice,
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: BaConfigService, useValue: mockBaConfigService },
-        { provide: ErrorFactoryService, useValue: mockErrorFactoryService },
+        {
+          provide: ErrorFactoryService,
+          useValue: new ErrorFactoryService({ alertReporting }),
+        },
       ],
     }).compile()
 

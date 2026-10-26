@@ -7,6 +7,7 @@ import prismaMock from '../../../../../test/singleton'
 import { BloomreachOutboxService } from '../../../../bloomreach/bloomreach-outbox.service'
 import { ConsentEnum, DeliveryMethodUserPreferenceEnum } from '../../../../generated/prisma/enums'
 import { PrismaService } from '../../../../prisma/prisma.service'
+import alertReporting from '../../../../utils/constants/error.alerts'
 import { UserIdentitySubservice } from '../../../../utils/subservices/user-identity.subservice'
 import { UserDataSubservice } from '../user-data.subservice'
 
@@ -24,7 +25,7 @@ describe('UserDataSubservice', () => {
           provide: BloomreachOutboxService,
           useValue: createMock<BloomreachOutboxService>(),
         },
-        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
         {
           provide: UserIdentitySubservice,
           useValue: createMock<UserIdentitySubservice>(),
@@ -88,13 +89,14 @@ describe('UserDataSubservice', () => {
     })
 
     it('should not call Bloomreach if the transaction throws', async () => {
-      ;(prismaMock.$transaction as Mock).mockRejectedValueOnce(new Error('db down'))
+      const dbError = new Error('db down')
+      ;(prismaMock.$transaction as Mock).mockRejectedValueOnce(dbError)
 
       await expect(
         service.setUserConsents('user-id', 'external-id', [
           { consentType: ConsentEnum.MARKETING, isGranted: true },
         ])
-      ).rejects.toThrow('db down')
+      ).rejects.toBe(dbError)
 
       expect(bloomreach.trackConsents).not.toHaveBeenCalled()
     })
@@ -157,13 +159,14 @@ describe('UserDataSubservice', () => {
     })
 
     it('should not call Bloomreach if the transaction throws', async () => {
-      ;(prismaMock.$transaction as Mock).mockRejectedValueOnce(new Error('db down'))
+      const dbError = new Error('db down')
+      ;(prismaMock.$transaction as Mock).mockRejectedValueOnce(dbError)
 
       await expect(
         service.setLegalPersonConsents('legal-person-id', 'external-id', [
           { consentType: ConsentEnum.MARKETING, isGranted: true },
         ])
-      ).rejects.toThrow('db down')
+      ).rejects.toBe(dbError)
 
       expect(bloomreach.trackConsents).not.toHaveBeenCalled()
     })
@@ -184,14 +187,15 @@ describe('UserDataSubservice', () => {
     })
 
     it('should not call Bloomreach if the prisma update throws', async () => {
-      ;(prismaMock.user.update as Mock).mockRejectedValueOnce(new Error('db down'))
+      const dbError = new Error('db down')
+      ;(prismaMock.user.update as Mock).mockRejectedValueOnce(dbError)
 
       await expect(
         service.setDeliveryMethodPreference(
           'cognito-sub-id',
           DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT
         )
-      ).rejects.toThrow('db down')
+      ).rejects.toBe(dbError)
 
       expect(bloomreach.trackCustomer).not.toHaveBeenCalled()
     })

@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import type { Mocked } from 'vitest'
@@ -8,6 +8,7 @@ import { bloomreachOutboxFactory } from '../../__tests__/factories/bloomreachOut
 import { expectObjectContaining, expectStringContaining } from '../../__tests__/matchers'
 import { BloomreachCommandName } from '../../generated/prisma/enums'
 import { PrismaService } from '../../prisma/prisma.service'
+import alertReporting from '../../utils/constants/error.alerts'
 import {
   BloomreachCommandDataKind,
   BloomreachCommandNameEnum,
@@ -20,7 +21,7 @@ import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
 describe('BloomreachOutboxWriterService', () => {
   let service: BloomreachOutboxWriterService
   let payloadBuilder: Mocked<BloomreachPayloadBuilder>
-  let errorFactoryService: Mocked<ErrorFactoryService>
+  let errorFactoryService: ErrorFactoryService
 
   const externalId = 'external-id'
   // Newer/older relative to each other - what actually matters to the merge
@@ -61,13 +62,14 @@ describe('BloomreachOutboxWriterService', () => {
         { provide: PrismaService, useValue: prismaMock },
         { provide: BloomreachPayloadBuilder, useValue: createMock<BloomreachPayloadBuilder>() },
         LineLoggerService,
-        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
       ],
     }).compile()
 
     service = module.get<BloomreachOutboxWriterService>(BloomreachOutboxWriterService)
     payloadBuilder = module.get(BloomreachPayloadBuilder)
     errorFactoryService = module.get(ErrorFactoryService)
+    vi.spyOn(errorFactoryService, 'InternalServerErrorException')
 
     prismaMock.$transaction.mockImplementation(async (fn) => fn(prismaMock))
   })
@@ -139,16 +141,11 @@ describe('BloomreachOutboxWriterService', () => {
       })
       prismaMock.bloomreachOutbox.create.mockRejectedValue(duplicatePendingError)
 
-      // What matters here is that the failure was routed through
-      // errorFactoryService with the right context, not what that guard's
-      // (auto-mocked) return value happens to be.
-      await expect(service.queueCustomerCommand(externalId)).rejects.toBeDefined()
-      expect(errorFactoryService.InternalServerErrorException).toHaveBeenCalledWith(
-        expectObjectContaining({
-          message: expectStringContaining('bloomreach_outbox_customers_pending_key'),
-          error: duplicatePendingError,
-        })
-      )
+      await expect(service.queueCustomerCommand(externalId)).rejects.toThrowLogNestError({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: expectStringContaining('bloomreach_outbox_customers_pending_key'),
+        error: duplicatePendingError,
+      })
     })
 
     it('should log and swallow a terminal-override rejection instead of alerting', async () => {
@@ -175,21 +172,20 @@ describe('BloomreachOutboxWriterService', () => {
       })
       prismaMock.bloomreachOutbox.update.mockRejectedValue(downgradeError)
 
-      await expect(service.queueCustomerCommand(externalId)).rejects.toBeDefined()
-      expect(errorFactoryService.InternalServerErrorException).toHaveBeenCalledWith(
-        expectObjectContaining({
-          message: expectStringContaining('downgrade a terminal outbox entry'),
-          error: downgradeError,
-        })
-      )
+      await expect(service.queueCustomerCommand(externalId)).rejects.toThrowLogNestError({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: expectStringContaining('downgrade a terminal outbox entry'),
+        error: downgradeError,
+      })
     })
 
     it('should let an unrelated create failure propagate as-is', async () => {
       payloadBuilder.buildCustomerCommand.mockResolvedValue(customerCommand)
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
-      prismaMock.bloomreachOutbox.create.mockRejectedValue(new Error('connection reset'))
+      const unrelatedError = new Error('connection reset')
+      prismaMock.bloomreachOutbox.create.mockRejectedValue(unrelatedError)
 
-      await expect(service.queueCustomerCommand(externalId)).rejects.toThrow('connection reset')
+      await expect(service.queueCustomerCommand(externalId)).rejects.toBe(unrelatedError)
       expect(errorFactoryService.InternalServerErrorException).not.toHaveBeenCalled()
     })
   })
@@ -328,13 +324,11 @@ describe('BloomreachOutboxWriterService', () => {
       })
       prismaMock.bloomreachOutbox.create.mockRejectedValue(duplicatePendingError)
 
-      await expect(service.queueConsentEvents([], externalId)).rejects.toBeDefined()
-      expect(errorFactoryService.InternalServerErrorException).toHaveBeenCalledWith(
-        expectObjectContaining({
-          message: expectStringContaining('bloomreach_outbox_events_pending_key'),
-          error: duplicatePendingError,
-        })
-      )
+      await expect(service.queueConsentEvents([], externalId)).rejects.toThrowLogNestError({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: expectStringContaining('bloomreach_outbox_events_pending_key'),
+        error: duplicatePendingError,
+      })
     })
 
     it('should wrap a terminal-downgrade update failure instead of letting it propagate raw', async () => {
@@ -362,13 +356,11 @@ describe('BloomreachOutboxWriterService', () => {
       })
       prismaMock.bloomreachOutbox.update.mockRejectedValue(downgradeError)
 
-      await expect(service.queueConsentEvents([], externalId)).rejects.toBeDefined()
-      expect(errorFactoryService.InternalServerErrorException).toHaveBeenCalledWith(
-        expectObjectContaining({
-          message: expectStringContaining('downgrade a terminal outbox entry'),
-          error: downgradeError,
-        })
-      )
+      await expect(service.queueConsentEvents([], externalId)).rejects.toThrowLogNestError({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: expectStringContaining('downgrade a terminal outbox entry'),
+        error: downgradeError,
+      })
     })
   })
 })

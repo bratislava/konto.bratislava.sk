@@ -64,15 +64,16 @@ describe('RetryService', () => {
     it('should throw error if all retries fail', async () => {
       vi.useRealTimers()
 
+      const lastError = new Error('Third attempt failed')
       const mockFn = vi
         .fn()
         .mockRejectedValue(new Error('First attempt failed'))
         .mockRejectedValue(new Error('Second attempt failed'))
-        .mockRejectedValue(new Error('Third attempt failed'))
+        .mockRejectedValue(lastError)
 
       await expect(
         service['retryWithDelay'](mockFn, 'test', 3, 10),
-      ).rejects.toThrow('Third attempt failed')
+      ).rejects.toThrow(lastError)
     })
 
     it('should use default retry count and delay when not specified', async () => {
@@ -93,7 +94,7 @@ describe('RetryService', () => {
 
       await expect(
         service['retryWithDelay'](mockFn, 'test', 0, 1000),
-      ).rejects.toThrow('Immediate failure')
+      ).rejects.toThrow(error)
 
       expect(mockFn).toHaveBeenCalledTimes(1)
       expect(logMock).not.toHaveBeenCalled()
@@ -119,6 +120,7 @@ describe('RetryService', () => {
     })
 
     it('should handle very small delay values', async () => {
+      const functionName = 'test'
       const mockFn = vi
         .fn()
         .mockRejectedValueOnce(new Error('First attempt failed'))
@@ -128,7 +130,12 @@ describe('RetryService', () => {
         .spyOn(service['logger'], 'warn')
         .mockImplementation(vi.fn())
 
-      const resultPromise = service['retryWithDelay'](mockFn, 'test', 2, 100)
+      const resultPromise = service['retryWithDelay'](
+        mockFn,
+        functionName,
+        2,
+        100,
+      )
 
       // Fast-forward through the delay
       await vi.advanceTimersByTimeAsync(100)
@@ -138,7 +145,7 @@ describe('RetryService', () => {
       expect(result).toBe('success')
       expect(mockFn).toHaveBeenCalledTimes(2)
       expect(logMock).toHaveBeenCalledWith(
-        'Retry attempt failed for function test. Retrying in 0.10 seconds. Remaining retries: 1',
+        `Retry attempt failed for function ${functionName}. Retrying in 0.10 seconds. Remaining retries: 1`,
         expect.any(String),
       )
     })

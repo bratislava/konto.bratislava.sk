@@ -51,7 +51,7 @@ packages:
 allowBuilds:
   '@apollo/protobufjs': true
   '@openapitools/openapi-generator-cli': true
-  # Pulled in by jest-haste-map 30.5. Its install script only compiles when a
+  # Pulled in by @graphql-codegen/cli. Its install script only compiles when a
   # source build is forced; the prebuilt binary comes from a per-platform
   # optional dependency.
   '@parcel/watcher': false

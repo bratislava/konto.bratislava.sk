@@ -13,6 +13,7 @@ import prismaMock from '../../../../../test/singleton'
 import { createTestTax } from '../../../../__tests__/factories/tax.factory'
 import { createTestTaxAdministratorEntry } from '../../../../__tests__/factories/taxAdministrator.factory'
 import { createTestTaxPayer } from '../../../../__tests__/factories/taxPayer.factory'
+import { expectStringContaining } from '../../../../__tests__/matchers'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import BaConfigService from '../../../../config/ba-config.service'
 import {
@@ -27,6 +28,7 @@ import { generateItemizedRealEstateTaxDetail } from '../../../../tax/utils/helpe
 import { createTestingRealEstateTaxMock } from '../../../../tax/utils/testing-tax-mock'
 import { getTaxDefinitionByType } from '../../../../tax-definitions/getTaxDefinitionByType'
 import { TaxDefinition } from '../../../../tax-definitions/taxDefinitionsTypes'
+import alertReporting from '../../../../utils/constants/error.alerts'
 import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../../utils/subservices/database.subservice'
 import { TaxWithTaxPayer } from '../../../../utils/types/types.prisma'
@@ -63,7 +65,8 @@ describe('NorisTaxRealEstateSubservice', () => {
   let connectionService: Mocked<NorisConnectionSubservice>
   let cityAccountSubservice: Mocked<CityAccountSubservice>
   let paymentSubservice: Mocked<NorisPaymentSubservice>
-  let errorFactoryService: Mocked<ErrorFactoryService>
+  const errorFactoryService = new ErrorFactoryService({ alertReporting })
+  let logger: LineLoggerService
 
   const mockNorisData: NorisRealEstateTax[] = [
     {
@@ -175,7 +178,10 @@ describe('NorisTaxRealEstateSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         NorisTaxRealEstateSubservice,
         {
           provide: NorisConnectionSubservice,
@@ -189,10 +195,7 @@ describe('NorisTaxRealEstateSubservice', () => {
           provide: NorisPaymentSubservice,
           useValue: createMock<NorisPaymentSubservice>(),
         },
-        {
-          provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>(),
-        },
+        { provide: ErrorFactoryService, useValue: errorFactoryService },
         {
           provide: BloomreachService,
           useValue: createMock<BloomreachService>(),
@@ -220,17 +223,8 @@ describe('NorisTaxRealEstateSubservice', () => {
     connectionService = module.get(NorisConnectionSubservice)
     cityAccountSubservice = module.get(CityAccountSubservice)
     paymentSubservice = module.get(NorisPaymentSubservice)
-    errorFactoryService = module.get(ErrorFactoryService)
+    logger = module.get(LineLoggerService)
     ;(getTaxDefinitionByType as Mock).mockReturnValue(mockTaxDefinition)
-
-    Object.defineProperty(service, 'logger', {
-      value: {
-        log: vi.fn(),
-        error: vi.fn(),
-        warn: vi.fn(),
-      },
-      writable: true,
-    })
 
     vi.mocked(
       service['norisValidatorSubservice'].validateNorisData,
@@ -285,7 +279,7 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       await expect(
         service['getTaxDataByYearAndBirthNumber'](2023, ['123456/7890']),
-      ).rejects.toThrow('Database connection failed')
+      ).rejects.toThrow(mockError)
     })
 
     it('should handle multiple birth numbers correctly', async () => {
@@ -718,24 +712,13 @@ describe('NorisTaxRealEstateSubservice', () => {
       const mockError = new Error('Noris connection failed')
       connectionService.withConnection.mockRejectedValue(mockError)
 
-      errorFactoryService.InternalServerErrorException.mockImplementation(
-        () => {
-          throw mockError
-        },
-      )
-
       await expect(
         service.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
           2023,
           ['123456/7890'],
         ),
-      ).rejects.toThrow()
-
-      expect(
-        errorFactoryService.InternalServerErrorException,
-      ).toHaveBeenCalledWith({
+      ).rejects.toThrowLogNestError({
         errorEnum: CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
-        message: 'Failed to get taxes from Noris',
         error: mockError,
       })
     })
@@ -762,7 +745,6 @@ describe('NorisTaxRealEstateSubservice', () => {
     })
 
     it('should handle database transaction errors gracefully', async () => {
-      const mockLogger = vi.spyOn(service['logger'], 'error')
       const mockError = new Error('Transaction failed')
 
       prismaMock.$transaction.mockRejectedValue(mockError)
@@ -782,7 +764,13 @@ describe('NorisTaxRealEstateSubservice', () => {
           ['123456/7890'],
         )
 
-      expect(mockLogger).toHaveBeenCalled()
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        expect.toMatchLogNestError({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: expectStringContaining('Failed to update tax'),
+          error: mockError,
+        }),
+      )
       expect(result).toEqual({ updated: 0 })
     })
   })
@@ -797,7 +785,7 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       await expect(
         service['getTaxDataByYearAndBirthNumber'](2023, ['123456/7890']),
-      ).rejects.toThrow('Connection failed')
+      ).rejects.toThrow(mockError)
     })
 
     it('should handle non-Error objects in connection failures', async () => {
@@ -807,7 +795,7 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       await expect(
         service['getTaxDataByYearAndBirthNumber'](2023, ['123456/7890']),
-      ).rejects.toThrow('String error')
+      ).rejects.toThrow(mockError)
     })
   })
 
@@ -1170,10 +1158,12 @@ describe('NorisTaxRealEstateSubservice', () => {
                 upsert: vi.fn().mockResolvedValue({}),
               },
               tax: {
+                findFirst: vi.fn().mockResolvedValue(null),
                 upsert: vi.fn().mockResolvedValue({
                   id: 1,
                   order: 1,
                   taxPayer: { id: 1 },
+                  isCancelled: false,
                 }),
               },
               taxInstallment: {
@@ -1182,6 +1172,9 @@ describe('NorisTaxRealEstateSubservice', () => {
               },
               taxDetail: {
                 createMany: vi.fn().mockResolvedValue({}),
+              },
+              taxImportAttempt: {
+                upsert: vi.fn().mockResolvedValue({}),
               },
             }
             const runTransaction = callback as (
@@ -1283,6 +1276,8 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       it('should handle bloomreach tracking failure', async () => {
         const birthNumbersResult = new Set<string>()
+        const year = 2023
+        const taxPayerId = 1
 
         prismaMock.$transaction.mockImplementation(
           async (callback: unknown) => {
@@ -1307,7 +1302,7 @@ describe('NorisTaxRealEstateSubservice', () => {
                 upsert: vi.fn().mockResolvedValue({
                   id: 1,
                   order: 1,
-                  taxPayer: { id: 1 },
+                  taxPayer: { id: taxPayerId },
                   isCancelled: false,
                 }),
               },
@@ -1336,23 +1331,27 @@ describe('NorisTaxRealEstateSubservice', () => {
           birthNumbersResult,
           mockNorisData[0],
           mockUserData,
-          2023,
+          year,
           false,
         )
 
         expect(birthNumbersResult.has('123456/7890')).toBe(false)
-        expect(
-          errorFactoryService.InternalServerErrorException,
-        ).toHaveBeenCalledWith({
-          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-          message:
-            'Error in send Tax data to Bloomreach for tax payer with ID 1 and year 2023',
-        })
+        expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+          expect.toMatchLogNestError({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: expectStringContaining('Failed to insert tax'),
+            error: expect.toMatchLogNestError({
+              errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+              message: expectStringContaining(
+                'Error in send Tax data to Bloomreach',
+              ),
+            }),
+          }),
+        )
       })
 
       it('should handle database transaction errors', async () => {
         const birthNumbersResult = new Set<string>()
-        const mockLogger = vi.spyOn(service['logger'], 'error')
         const mockError = new Error('Database error')
 
         prismaMock.$transaction.mockRejectedValue(mockError)
@@ -1367,12 +1366,17 @@ describe('NorisTaxRealEstateSubservice', () => {
         )
 
         expect(birthNumbersResult.has('123456/7890')).toBe(false)
-        expect(mockLogger).toHaveBeenCalled()
+        expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+          expect.toMatchLogNestError({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: expectStringContaining('Failed to insert tax'),
+            error: mockError,
+          }),
+        )
       })
 
       it('should handle bloomreach tracking errors', async () => {
         const birthNumbersResult = new Set<string>()
-        const mockLogger = vi.spyOn(service['logger'], 'error')
         const mockError = new Error('Bloomreach error')
 
         bloomreachService.trackEventTax = vi.fn().mockRejectedValue(mockError)
@@ -1387,7 +1391,13 @@ describe('NorisTaxRealEstateSubservice', () => {
         )
 
         expect(birthNumbersResult.has('123456/7890')).toBe(false)
-        expect(mockLogger).toHaveBeenCalled()
+        expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+          expect.toMatchLogNestError({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: expectStringContaining('Failed to insert tax'),
+            error: mockError,
+          }),
+        )
       })
     })
   })

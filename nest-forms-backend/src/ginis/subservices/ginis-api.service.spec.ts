@@ -2,6 +2,7 @@ import { Readable } from 'node:stream'
 
 import { GinNajdiEsuNajdiEsuItem } from '@bratislava/ginis-sdk'
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import {
@@ -46,7 +47,10 @@ describe('GinisAPIService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         GinisAPIService,
         ErrorFactoryService,
         {
@@ -67,10 +71,6 @@ describe('GinisAPIService', () => {
     }).compile()
 
     service = module.get<GinisAPIService>(GinisAPIService)
-
-    Object.defineProperty(service, 'logger', {
-      value: { error: vi.fn(), log: vi.fn() },
-    })
   })
 
   it('should be defined', () => {
@@ -206,13 +206,12 @@ describe('GinisAPIService', () => {
     })
 
     it('should throw error if Ginis throws error', async () => {
+      const ginisError = new Error('Ginis find failed')
       vi.spyOn(service['ginis'].ssl, 'prehledDokumentu').mockRejectedValueOnce(
-        new Error('Ginis find failed'),
+        ginisError,
       )
 
-      await expect(service.findDocumentId('formId')).rejects.toThrow(
-        'Ginis find failed',
-      )
+      await expect(service.findDocumentId('formId')).rejects.toThrow(ginisError)
     })
 
     it('should return null if document is not found', async () => {
@@ -221,6 +220,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should throw error if more than 1 document is found', async () => {
+      const formId = 'formId'
       vi.spyOn(service['ginis'].ssl, 'prehledDokumentu').mockResolvedValueOnce(
         createTestPrehledDokumentuResponse([
           createTestPrehledDokumentuItem({ 'Id-dokumentu': 'docId1' }),
@@ -228,7 +228,7 @@ describe('GinisAPIService', () => {
         ]),
       )
 
-      await expect(service.findDocumentId('formId')).rejects.toThrow()
+      await expect(service.findDocumentId(formId)).rejects.toThrow(formId)
     })
 
     it('should return document ID if exactly 1 is found', async () => {
@@ -290,12 +290,13 @@ describe('GinisAPIService', () => {
     })
 
     it('should throw error if Ginis throws error', async () => {
+      const ginisError = new Error('Ginis find failed')
       vi.spyOn(service['ginis'].ssl, 'prideleni').mockRejectedValueOnce(
-        new Error('Ginis find failed'),
+        ginisError,
       )
 
       await expect(service.assignDocument('docId', 'nodeId')).rejects.toThrow(
-        'Ginis find failed',
+        ginisError,
       )
     })
 

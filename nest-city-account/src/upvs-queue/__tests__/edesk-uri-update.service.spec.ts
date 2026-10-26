@@ -1,20 +1,19 @@
-import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
-import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
-import { expectObjectContaining } from '../../__tests__/matchers'
+import { expectObjectContaining, expectStringContaining } from '../../__tests__/matchers'
 import { ExternalEdeskCheck } from '../../generated/prisma/client'
 import { QueueItemStatusEnum } from '../../generated/prisma/enums'
 import { GetIdentitiesByUrisResult, NasesService } from '../../nases/nases.service'
 import { PrismaService } from '../../prisma/prisma.service'
+import alertReporting from '../../utils/constants/error.alerts'
 import { EdeskUriUpdateService } from '../edesk-uri-update.service'
 
 describe('EdeskUriUpdateService', () => {
   let service: EdeskUriUpdateService
   let nasesService: NasesService
-  let errorFactoryService: ErrorFactoryService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,13 +22,12 @@ describe('EdeskUriUpdateService', () => {
         EdeskUriUpdateService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: NasesService, useValue: createMock<NasesService>() },
-        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
       ],
     }).compile()
 
     service = module.get(EdeskUriUpdateService)
     nasesService = module.get(NasesService)
-    errorFactoryService = module.get(ErrorFactoryService)
   })
 
   describe('getUriToUpdateInternal', () => {
@@ -84,16 +82,16 @@ describe('EdeskUriUpdateService', () => {
         success: [],
         failed: [{ inputUri: 'rc://sk/old', possibleUriChange: false }],
       } satisfies GetIdentitiesByUrisResult)
-      vi.mocked(errorFactoryService.InternalServerErrorException).mockReturnValue(
-        new HttpException('failed to update', HttpStatus.INTERNAL_SERVER_ERROR)
-      )
 
-      await expect(
-        service.handleUriUpdateInternal({ uri: 'rc://sk/old', id: 'id-1' })
-      ).rejects.toThrow('failed to update')
+      const input = { uri: 'rc://sk/old', id: 'id-1' }
+
+      await expect(service.handleUriUpdateInternal(input)).rejects.toThrowLogNestError({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: expectStringContaining(`physical entity id ${input.id}`),
+      })
 
       expect(prismaMock.physicalEntity.update).toHaveBeenCalledWith({
-        where: { id: 'id-1' },
+        where: { id: input.id },
         data: expectObjectContaining({
           uriPossiblyOutdated: false,
           activeEdeskUpdateFailCount: { increment: 1 },
@@ -106,16 +104,16 @@ describe('EdeskUriUpdateService', () => {
         success: [],
         failed: [{ inputUri: 'rc://sk/old', possibleUriChange: true }],
       } satisfies GetIdentitiesByUrisResult)
-      vi.mocked(errorFactoryService.InternalServerErrorException).mockReturnValue(
-        new HttpException('failed to update', HttpStatus.INTERNAL_SERVER_ERROR)
-      )
 
-      await expect(
-        service.handleUriUpdateInternal({ uri: 'rc://sk/old', id: 'id-1' })
-      ).rejects.toThrow('failed to update')
+      const input = { uri: 'rc://sk/old', id: 'id-1' }
+
+      await expect(service.handleUriUpdateInternal(input)).rejects.toThrowLogNestError({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: expectStringContaining(`physical entity id ${input.id}`),
+      })
 
       expect(prismaMock.physicalEntity.update).toHaveBeenCalledWith({
-        where: { id: 'id-1' },
+        where: { id: input.id },
         data: expectObjectContaining({
           uriPossiblyOutdated: true,
           activeEdeskUpdateFailCount: { increment: 1 },

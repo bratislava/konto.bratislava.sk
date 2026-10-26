@@ -9,6 +9,7 @@ import BaConfigService from '../../../../config/ba-config.service'
 import { TaxType } from '../../../../generated/prisma/client'
 import { PrismaService } from '../../../../prisma/prisma.service'
 import { QrCodeService } from '../../../../qrcode/qrcode.service'
+import alertReporting from '../../../../utils/constants/error.alerts'
 import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../../utils/subservices/database.subservice'
 import { NorisCommunalWasteTax } from '../../../types/noris.types'
@@ -60,7 +61,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         },
         {
           provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>(),
+          useValue: new ErrorFactoryService({ alertReporting }),
         },
         {
           provide: PrismaService,
@@ -356,7 +357,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [
           '123456/7890',
         ]),
-      ).rejects.toThrow('Database connection failed')
+      ).rejects.toThrow(mockError)
     })
 
     it('should handle non-Error objects in connection failures', async () => {
@@ -368,7 +369,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [
           '123456/7890',
         ]),
-      ).rejects.toThrow('String error')
+      ).rejects.toThrow(mockError)
     })
   })
 

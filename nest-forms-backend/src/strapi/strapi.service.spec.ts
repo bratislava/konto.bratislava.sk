@@ -1,14 +1,16 @@
 import { ErrorFactoryService } from '@bratislava/log-nest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosError } from 'axios'
+import type { MockInstance } from 'vitest'
 
 import BaConfigService from '../config/ba-config.service'
-import { StrapiErrorsResponseEnum } from './strapi.errors.enum'
+import { StrapiErrorsEnum } from './strapi.errors.enum'
 import StrapiService from './strapi.service'
 
 describe('StrapiService', () => {
   let service: StrapiService
-  let getSpy: jest.SpyInstance
+  let getSpy: MockInstance
 
   const formDefinitionSlug = 'priznanie-k-dani-z-nehnutelnosti'
   const feedbackLink = 'https://test.feedback.com/bratislava/'
@@ -31,11 +33,11 @@ describe('StrapiService', () => {
 
     service = app.get<StrapiService>(StrapiService)
 
-    getSpy = jest.spyOn(service['strapiClient'], 'get')
+    getSpy = vi.spyOn(service['strapiClient'], 'get')
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   describe('getFeedbackLink', () => {
@@ -90,16 +92,24 @@ describe('StrapiService', () => {
 
         await expect(
           service.getFeedbackLink(formDefinitionSlug),
-        ).rejects.toThrow(StrapiErrorsResponseEnum.FEEDBACK_LINK_FETCH_ERROR)
+        ).rejects.toThrowLogNestError({
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          errorEnum: StrapiErrorsEnum.FEEDBACK_LINK_FETCH_ERROR,
+        })
       },
     )
 
     it('should throw if the request fails', async () => {
-      getSpy.mockRejectedValue(new AxiosError('Network Error'))
+      const axiosError = new AxiosError('Network Error')
+      getSpy.mockRejectedValue(axiosError)
 
-      await expect(service.getFeedbackLink(formDefinitionSlug)).rejects.toThrow(
-        StrapiErrorsResponseEnum.FEEDBACK_LINK_FETCH_ERROR,
-      )
+      await expect(
+        service.getFeedbackLink(formDefinitionSlug),
+      ).rejects.toThrowLogNestError({
+        status: HttpStatus.BAD_GATEWAY,
+        errorEnum: StrapiErrorsEnum.FEEDBACK_LINK_FETCH_ERROR,
+        error: axiosError,
+      })
     })
   })
 })

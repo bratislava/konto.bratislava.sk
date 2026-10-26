@@ -1,4 +1,8 @@
-import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerService,
+} from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import {
@@ -6,7 +10,10 @@ import {
   UpvsNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
 
+import { expectStringContaining } from '../../../__tests__/matchers'
 import ClientsService from '../../../clients/clients.service'
+import alertReporting from '../../../utils/constants/error.alerts'
+import { NasesErrorsEnum } from '../../nases.errors.enum'
 import {
   isUpvsCorporateBody,
   isUpvsNaturalPerson,
@@ -15,14 +22,25 @@ import NasesContactsService from '../nases.contacts.service'
 
 describe('NasesContactsService', () => {
   let service: NasesContactsService
+  let logger: LineLoggerService
+  const errorFactory = new ErrorFactoryService({ alertReporting })
+  const icoNotFoundError: unknown = expect.toMatchLogNestError({
+    errorEnum: NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
+    message: expectStringContaining(
+      'ICO not found in contact returned by nases',
+    ),
+  })
 
   beforeEach(async () => {
     vi.resetAllMocks()
     const app: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         NasesContactsService,
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: errorFactory },
         {
           provide: ClientsService,
           useValue: createMock<ClientsService>(),
@@ -31,6 +49,7 @@ describe('NasesContactsService', () => {
     }).compile()
 
     service = app.get<NasesContactsService>(NasesContactsService)
+    logger = app.get(LineLoggerService)
   })
 
   it('should be defined', () => {
@@ -352,13 +371,11 @@ describe('NasesContactsService', () => {
         ],
       }
 
-      const loggerSpy = vi.spyOn(service['logger'], 'error')
-
       const result = service.extractCorporateBodyData(contact)
 
       expect(result.name).toBe('Test Company')
       expect(result.ico).toBe('87654321')
-      expect(loggerSpy).toHaveBeenCalled()
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(icoNotFoundError)
     })
 
     it('should log error when ico not found in corporate_body or various_ids', () => {
@@ -376,13 +393,11 @@ describe('NasesContactsService', () => {
         ],
       }
 
-      const loggerSpy = vi.spyOn(service['logger'], 'error')
-
       const result = service.extractCorporateBodyData(contact)
 
       expect(result.name).toBe('Test Company')
       expect(result.ico).toBeUndefined()
-      expect(loggerSpy).toHaveBeenCalled()
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(icoNotFoundError)
     })
   })
 
@@ -399,13 +414,21 @@ describe('NasesContactsService', () => {
     })
 
     it('should return null if request fails', async () => {
+      const requestError = new Error('Request failed')
       service['clientsService'].slovenskoSkApi.apiUpvsIdentityGet = vi
         .fn()
-        .mockRejectedValue(new Error('Request failed'))
+        .mockRejectedValue(requestError)
 
       const result = await service.getUpvsIdentity('test-token')
 
       expect(result).toBeNull()
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        expect.toMatchLogNestError({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          console: expectStringContaining('Failed to get nases identity'),
+          error: requestError,
+        }),
+      )
     })
   })
 })

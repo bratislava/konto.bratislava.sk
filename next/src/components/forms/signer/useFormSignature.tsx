@@ -82,9 +82,8 @@ const useGetContext = () => {
   // Runs for every signature: right after signing and for a signature restored from the server (signed earlier,
   // possibly with a wrong certificate), so the user learns about a rejection before going through the eID login.
   const signatureBase64 = signature?.signatureBase64
-  const signatureVerificationQueryKey = getSignatureVerificationQueryKey(formId, signatureBase64)
   const signatureVerificationQuery = useQuery({
-    queryKey: ['formSignatureVerification', formId, signatureBase64],
+    queryKey: getSignatureVerificationQueryKey(formId, signatureBase64),
     queryFn: async () => {
       if (!signatureBase64) {
         throw new Error('Signature verification requested without a signature.')
@@ -108,11 +107,14 @@ const useGetContext = () => {
 
   /** Used when the backend rejects the signature while sending, so the summary shows why. */
   const setSignatureRejected = (reason: SignatureRejectionReason) => {
-    queryClient.setQueryData<VerifyFormSignatureResponseDto>(signatureVerificationQueryKey, {
-      accepted: false,
-      verified: true,
-      reason,
-    })
+    queryClient.setQueryData<VerifyFormSignatureResponseDto>(
+      getSignatureVerificationQueryKey(formId, signatureBase64),
+      {
+        accepted: false,
+        verified: true,
+        reason,
+      },
+    )
   }
 
   const handleSignatureChange = (newSignature: FormSignature | null) => {

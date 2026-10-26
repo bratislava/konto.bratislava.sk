@@ -38,5 +38,8 @@ yarn-error.log*
 # Copied by CopyWebpackPlugin in next.config.ts
 public/scripts/iframe-resizer-child-*.js
 
+# Copied from @bratislava/email-templates in next.config.ts
+public/email-assets/
+
 #sitemap
 sitemap*.xml

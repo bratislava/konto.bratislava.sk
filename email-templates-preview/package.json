@@ -1,0 +1,23 @@
+{
+  "name": "email-templates-preview",
+  "version": "1.0.0",
+  "description": "React Email preview of @bratislava/email-templates. Its own package, so the preview app (Next.js) is not installed with the packages that use the emails.",
+  "license": "EUPL-1.2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx generate-preview.ts && email dev --dir emails --port 3030"
+  },
+  "devDependencies": {
+    "@bratislava/email-templates": "workspace:*",
+    "@react-email/ui": "6.11.3",
+    "@types/node": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-email": "6.11.3",
+    "tsx": "4.23.15"
+  },
+  "volta": {
+    "extends": "../package.json"
+  }
+}

@@ -39,5 +39,5 @@ export default defineConfig({
   expect: {
     toHaveScreenshot: { maxDiffPixels: 0, animations: 'disabled', caret: 'hide' },
   },
-  projects: [{ name: 'markup', testMatch: 'markup.spec.ts' }, ...screenshotProjects],
+  projects: [{ name: 'markup', testIgnore: 'screenshots.spec.ts' }, ...screenshotProjects],
 })

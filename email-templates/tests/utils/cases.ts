@@ -3,6 +3,7 @@ import { createSingleUseValidatorRegistry } from 'forms-shared/form-utils/valida
 import { getFormSummary } from 'forms-shared/summary/summary'
 
 import { renderSummaryEmail } from '../../src/forms/summary-email'
+import { registry } from '../../src/registry'
 
 /**
  * One rendered example of an email. Test files only list cases while Playwright collects tests;
@@ -17,6 +18,8 @@ export type EmailCase = {
   renderTextSnapshots: () => Promise<Record<string, string>>
   /** Screenshot projects this case runs in; all of them when omitted. */
   isScreenshotProject?: (projectName: string) => boolean
+  /** Emails built from this package's layout: checked for email-safe markup and loaded fonts. */
+  usesLayout: boolean
 }
 
 /** `priznanieKDaniZNehnutelnostiExample5` → `priznanie-k-dani-z-nehnutelnosti-example-5` */
@@ -30,6 +33,19 @@ const toSlug = (value: string) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
+
+const registryCases = (): EmailCase[] =>
+  registry.flatMap((email) =>
+    email.examples.map((example) => ({
+      path: [email.product, email.id, example.name],
+      renderDocument: async () => (await example.render()).html,
+      renderTextSnapshots: async () => {
+        const { subject, html, text } = await example.render()
+        return { 'email.html': html, 'email.txt': `Subject: ${subject}\n\n${text}\n` }
+      },
+      usesLayout: true,
+    })),
+  )
 
 /**
  * The summary fragment pasted into the Mailgun "new submission" templates, for every forms-shared
@@ -64,8 +80,9 @@ const summaryEmailCases = (): EmailCase[] => {
       renderTextSnapshots: async () => ({ 'fragment.html': await render(false) }),
       isScreenshotProject: (projectName) =>
         projectName.startsWith('chromium-') && projectName.endsWith('-light'),
+      usesLayout: false,
     }
   })
 }
 
-export const emailCases: EmailCase[] = [...summaryEmailCases()]
+export const emailCases: EmailCase[] = [...registryCases(), ...summaryEmailCases()]

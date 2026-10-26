@@ -4,5 +4,10 @@
     "rootDir": "./src"
   },
   "include": ["./src/**/*"],
-  "exclude": ["./src/**/*.examples.ts", "./src/**/*.examples.tsx", "./src/registry.ts"]
+  "exclude": [
+    "./src/**/*.examples.ts",
+    "./src/**/*.examples.tsx",
+    "./src/registry.ts",
+    "./src/emails/_internal/**"
+  ]
 }

@@ -14,10 +14,21 @@
     "test:ci:update": "cross-env CI=true playwright test --update-snapshots",
     "docker:test": "node scripts/run-docker-test.ts test-local",
     "docker:test:update": "node scripts/run-docker-test.ts test-local-update",
+    "preview": "pnpm --filter email-templates-preview run dev",
+    "export-html": "tsx scripts/export-html.ts",
+    "update-assets-manifest": "node scripts/update-assets-manifest.ts",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check ."
   },
   "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./city-account": {
+      "types": "./dist/city-account.d.ts",
+      "default": "./dist/city-account.js"
+    },
     "./forms/summary-email": {
       "types": "./dist/forms/summary-email.d.ts",
       "default": "./dist/forms/summary-email.js"
@@ -26,6 +37,12 @@
   },
   "typesVersions": {
     "*": {
+      ".": [
+        "dist/index.d.ts"
+      ],
+      "city-account": [
+        "dist/city-account.d.ts"
+      ],
       "forms/summary-email": [
         "dist/forms/summary-email.d.ts"
       ]

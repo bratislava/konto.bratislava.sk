@@ -4,6 +4,7 @@ updates:
     directories:
       - '/'
       - '/email-templates'
+      - '/email-templates-preview'
       - '/forms-shared'
       - '/nest-city-account'
       - '/nest-clamav-scanner'

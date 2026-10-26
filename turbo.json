@@ -82,7 +82,8 @@
         "!.next/cache/**",
         "!.next/dev/**",
         "public/sitemap*.xml",
-        "public/scripts/iframe-resizer-child-*.js"
+        "public/scripts/iframe-resizer-child-*.js",
+        "public/email-assets/**"
       ]
     },
     "city-account-strapi#build": {

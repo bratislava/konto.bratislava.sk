@@ -90,6 +90,12 @@ export class TasksService {
     await this.cityAccountIngestionTasksService.loadNewUsersFromCityAccount()
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_3AM)
+  @HandleErrors('Cron Error')
+  async recheckCityAccountUserMissing() {
+    await this.cityAccountIngestionTasksService.recheckCityAccountUserMissing()
+  }
+
   @Cron('*/3 * * * *')
   @HandleErrors('Cron Error')
   async loadTaxesForUsers() {

@@ -1,4 +1,8 @@
-import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerService,
+} from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../prisma/prisma.service'
@@ -9,11 +13,14 @@ import DatabaseSubservice from '../../utils/subservices/database.subservice'
 export default class CityAccountIngestionTasksService {
   private readonly LOAD_USER_BIRTHNUMBERS_BATCH = 100
 
+  private readonly RECHECK_USER_MISSING_BATCH = 100
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly databaseSubservice: DatabaseSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   async loadNewUsersFromCityAccount() {
@@ -72,5 +79,52 @@ export default class CityAccountIngestionTasksService {
         console: `New \`nextSince\` was supposed to be set: ${data.nextSince.toISOString()}`,
       })
     }
+  }
+
+  async recheckCityAccountUserMissing() {
+    let lastTaxPayerId = 0
+    let unmarkedCount = 0
+    let taxPayers: { id: number; birthNumber: string }[]
+
+    do {
+      // eslint-disable-next-line no-await-in-loop -- batches are processed sequentially to keep the load on city account steady
+      taxPayers = await this.prismaService.taxPayer.findMany({
+        where: {
+          cityAccountUserMissingSince: { not: null },
+          id: { gt: lastTaxPayerId },
+        },
+        select: { id: true, birthNumber: true },
+        orderBy: { id: 'asc' },
+        take: this.RECHECK_USER_MISSING_BATCH,
+      })
+      if (taxPayers.length === 0) {
+        break
+      }
+      lastTaxPayerId = taxPayers[taxPayers.length - 1].id
+
+      const birthNumbers = taxPayers.map((taxPayer) => taxPayer.birthNumber)
+      const userData =
+        // eslint-disable-next-line no-await-in-loop -- batches are processed sequentially to keep the load on city account steady
+        await this.cityAccountSubservice.getUserDataAdminBatch(birthNumbers)
+      const birthNumbersBackInCityAccount = birthNumbers.filter(
+        (birthNumber) => userData[birthNumber],
+      )
+
+      if (birthNumbersBackInCityAccount.length > 0) {
+        // eslint-disable-next-line no-await-in-loop -- batches are processed sequentially to keep the load on city account steady
+        const { count } = await this.prismaService.taxPayer.updateMany({
+          where: {
+            birthNumber: { in: birthNumbersBackInCityAccount },
+            cityAccountUserMissingSince: { not: null },
+          },
+          data: { cityAccountUserMissingSince: null },
+        })
+        unmarkedCount += count
+      }
+    } while (taxPayers.length === this.RECHECK_USER_MISSING_BATCH)
+
+    this.logger.log(
+      `Unmarked ${unmarkedCount} tax payers whose user is back in city account.`,
+    )
   }
 }

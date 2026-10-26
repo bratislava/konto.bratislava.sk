@@ -85,6 +85,25 @@ export function getUpvsDeathDate(contact: UpvsNaturalPerson | UpvsCorporateBody)
   return contact.natural_person?.death?.date ?? null
 }
 
+export function getUpvsNames(contact: UpvsNaturalPerson | UpvsCorporateBody): {
+  givenName: string | null
+  familyName: string | null
+} {
+  if (!isUpvsNaturalPerson(contact)) {
+    return { givenName: null, familyName: null }
+  }
+  const givenNames = (contact.natural_person?.given_names ?? []).filter(Boolean)
+  const familyNames = (contact.natural_person?.family_names ?? [])
+    .filter((familyName) => familyName.value)
+    .map((familyName) =>
+      familyName.prefix ? `${familyName.prefix} ${familyName.value}` : familyName.value
+    )
+  return {
+    givenName: givenNames.length > 0 ? givenNames.join(' ') : null,
+    familyName: familyNames.length > 0 ? familyNames.join(' ') : null,
+  }
+}
+
 /**
  * The `fault` object the slovensko-sk container attaches to a 400 body when the error
  * originated in UPVS.

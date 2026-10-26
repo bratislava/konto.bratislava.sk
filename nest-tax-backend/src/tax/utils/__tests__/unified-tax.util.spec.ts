@@ -1,6 +1,5 @@
 import type { Mock } from 'vitest'
 
-import { expectStringContaining } from '../../../__tests__/matchers'
 import {
   DeliveryMethodNamed,
   PaymentStatus,
@@ -1752,7 +1751,7 @@ describe('UnifiedTaxUtil', () => {
 
       expect(() => getTaxDetailPure(input)).toThrowLogNestError({
         errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-        message: expectStringContaining('No installments found'),
+        message: 'No installments found for the tax.',
       })
     })
 
@@ -2015,7 +2014,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       getTaxDetailPureForInstallmentGenerator(options),
     ).toThrowLogNestError({
       errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-      message: expectStringContaining('No installments found'),
+      message: 'No installments found for the tax.',
     })
   })
 

@@ -3,7 +3,6 @@ import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 
-import { expectStringContaining } from '../../../__tests__/matchers'
 import alertReporting from '../../../utils/constants/error.alerts'
 import { DeliveryMethod, IsInCityAccount } from '../../types/noris.enums'
 import { NorisConnectionService } from '../noris-connection.service'
@@ -157,7 +156,7 @@ describe('NorisDeliveryMethodService', () => {
         service.updateDeliveryMethods({ data: invalidCityAccountData })
       ).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining('Date must be provided'),
+        message: 'Date must be provided when delivery method is CITY_ACCOUNT',
       })
     })
 

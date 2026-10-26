@@ -5,7 +5,7 @@ import type { Mocked } from 'vitest'
 
 import prismaMock from '../../../test/singleton'
 import { bloomreachOutboxFactory } from '../../__tests__/factories/bloomreachOutbox.factory'
-import { expectObjectContaining, expectStringContaining } from '../../__tests__/matchers'
+import { expectObjectContaining } from '../../__tests__/matchers'
 import { BloomreachCommandName } from '../../generated/prisma/enums'
 import { PrismaService } from '../../prisma/prisma.service'
 import alertReporting from '../../utils/constants/error.alerts'
@@ -143,7 +143,8 @@ describe('BloomreachOutboxWriterService', () => {
 
       await expect(service.queueCustomerCommand(externalId)).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining('bloomreach_outbox_customers_pending_key'),
+        message:
+          'bloomreach_outbox_customers_pending_key violated - lockTransactionWithKey should have prevented this, investigate a locking bug',
         error: duplicatePendingError,
       })
     })
@@ -174,7 +175,8 @@ describe('BloomreachOutboxWriterService', () => {
 
       await expect(service.queueCustomerCommand(externalId)).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining('downgrade a terminal outbox entry'),
+        message:
+          'Attempted to downgrade a terminal outbox entry - mergeCustomerCommandData should have prevented this, investigate',
         error: downgradeError,
       })
     })
@@ -326,7 +328,8 @@ describe('BloomreachOutboxWriterService', () => {
 
       await expect(service.queueConsentEvents([], externalId)).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining('bloomreach_outbox_events_pending_key'),
+        message:
+          'bloomreach_outbox_events_pending_key violated - lockTransactionWithKey should have prevented this, investigate a locking bug',
         error: duplicatePendingError,
       })
     })
@@ -358,7 +361,8 @@ describe('BloomreachOutboxWriterService', () => {
 
       await expect(service.queueConsentEvents([], externalId)).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining('downgrade a terminal outbox entry'),
+        message:
+          'Attempted to downgrade a terminal outbox entry - isExistingHigherPriorityEventCommand should have prevented this, investigate',
         error: downgradeError,
       })
     })

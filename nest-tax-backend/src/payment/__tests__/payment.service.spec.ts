@@ -290,9 +290,7 @@ describe('PaymentService', () => {
         service.trackPaymentInBloomreach(mockTaxPayment, externalId),
       ).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining(
-          'Failed to track payment in Bloomreach',
-        ),
+        message: 'Failed to track payment in Bloomreach.',
       })
 
       expect(bloomreachService.trackEventTaxPayment).toHaveBeenCalled()
@@ -360,7 +358,7 @@ describe('PaymentService', () => {
         service.trackPaymentInBloomreach(mockTaxPayment, externalId),
       ).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.NOT_FOUND_ERROR,
-        message: expectStringContaining(`Tax with id ${mockTaxPayment.taxId}`),
+        message: `Tax with id ${mockTaxPayment.taxId} not found.`,
       })
 
       expect(bloomreachService.trackEventTaxPayment).not.toHaveBeenCalled()

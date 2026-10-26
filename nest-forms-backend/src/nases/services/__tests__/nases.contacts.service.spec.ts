@@ -13,7 +13,10 @@ import {
 import { expectStringContaining } from '../../../__tests__/matchers'
 import ClientsService from '../../../clients/clients.service'
 import alertReporting from '../../../utils/constants/error.alerts'
-import { NasesErrorsEnum } from '../../nases.errors.enum'
+import {
+  NasesErrorsEnum,
+  NasesErrorsResponseEnum,
+} from '../../nases.errors.enum'
 import {
   isUpvsCorporateBody,
   isUpvsNaturalPerson,
@@ -26,9 +29,7 @@ describe('NasesContactsService', () => {
   const errorFactory = new ErrorFactoryService({ alertReporting })
   const icoNotFoundError: unknown = expect.toMatchLogNestError({
     errorEnum: NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
-    message: expectStringContaining(
-      'ICO not found in contact returned by nases',
-    ),
+    message: `extractCorporateBodyData: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: ICO not found in contact returned by nases.`,
   })
 
   beforeEach(async () => {

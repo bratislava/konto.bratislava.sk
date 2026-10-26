@@ -6,7 +6,6 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosError, AxiosResponse } from 'axios'
 
 import { createMockGinisDocumentData } from '../__tests__/factories/ginisDocument.factory'
-import { expectStringContaining } from '../__tests__/matchers'
 import ClientsService from '../clients/clients.service'
 import { FormsErrorsEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
@@ -72,7 +71,7 @@ describe('GinisController', () => {
         controller.getGinisDocumentByFormId(formId),
       ).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.NOT_FOUND_ERROR,
-        message: expectStringContaining('does not have a ginisDocumentId'),
+        message: `Form with id ${formId} does not have a ginisDocumentId`,
       })
     })
 
@@ -96,9 +95,8 @@ describe('GinisController', () => {
       ).rejects.toThrowLogNestError({
         status: HttpStatus.NOT_FOUND,
         errorEnum: ErrorEnum.NOT_FOUND_ERROR,
-        message: expectStringContaining(
-          'Document or document owner not found in GINIS',
-        ),
+        message:
+          'Document or document owner not found in GINIS - document id, if available: unavailable - document not found or invalid',
       })
 
       // GinisError without an underlying AxiosError -> generic internal server error
@@ -114,9 +112,7 @@ describe('GinisController', () => {
       ).rejects.toThrowLogNestError({
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining(
-          'Error while getting document or owner from GINIS',
-        ),
+        message: 'Error while getting document or owner from GINIS:',
         error: ownerGinisError,
       })
 
@@ -127,9 +123,7 @@ describe('GinisController', () => {
       ).rejects.toThrowLogNestError({
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining(
-          'Error while getting document or owner from GINIS',
-        ),
+        message: 'Error while getting document or owner from GINIS:',
       })
     })
 

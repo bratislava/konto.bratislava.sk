@@ -9,7 +9,6 @@ import dayjs from 'dayjs'
 import type { MockInstance } from 'vitest'
 
 import prismaMock from '../../../../test/singleton'
-import { expectStringContaining } from '../../../__tests__/matchers'
 import { TaxType } from '../../../generated/prisma/client'
 import { CustomErrorNorisTypesEnum } from '../../../noris/noris.errors'
 import { NorisService } from '../../../noris/noris.service'
@@ -557,9 +556,7 @@ describe('TaxImportTasksService', () => {
         service.loadOverpaymentsFromNoris(),
       ).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining(
-          'Invalid OVERPAYMENTS_LOOKBACK_DAYS configuration',
-        ),
+        message: `Invalid OVERPAYMENTS_LOOKBACK_DAYS configuration: ${invalidLookbackDays}. Must be a positive integer.`,
       })
 
       expect(

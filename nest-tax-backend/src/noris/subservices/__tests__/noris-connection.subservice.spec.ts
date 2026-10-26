@@ -8,7 +8,6 @@ import { Test, TestingModule } from '@nestjs/testing'
 import mssql, { MSSQLError } from 'mssql'
 import type { Mock, Mocked } from 'vitest'
 
-import { expectStringContaining } from '../../../__tests__/matchers'
 import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import alertReporting from '../../../utils/constants/error.alerts'
@@ -97,7 +96,7 @@ describe('NorisConnectionSubservice', () => {
       expect(vi.mocked(logger.warn)).toHaveBeenCalledWith(
         expect.toMatchLogNestError({
           errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
-          message: expectStringContaining('Failed to close MSSQL connection'),
+          message: 'Failed to close MSSQL connection on shutdown',
           error: connectError,
         }),
       )
@@ -134,7 +133,7 @@ describe('NorisConnectionSubservice', () => {
         }, errorMessage),
       ).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining(errorMessage),
+        message: errorMessage,
         error: genericError,
       })
       expect(prismaService.$transaction).not.toHaveBeenCalled()
@@ -151,7 +150,7 @@ describe('NorisConnectionSubservice', () => {
         }, errorMessage),
       ).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining(`"code":"${mssqlError.code}"`),
+        message: `${errorMessage}: ${JSON.stringify({ code: mssqlError.code, name: mssqlError.name })}`,
         error: mssqlError,
       })
       expect(prismaService.$transaction).not.toHaveBeenCalled()
@@ -174,7 +173,7 @@ describe('NorisConnectionSubservice', () => {
           }, errorMessage),
         ).rejects.toThrowLogNestError({
           errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
-          message: expectStringContaining(`"code":"${code}"`),
+          message: `${errorMessage}: ${JSON.stringify({ code, name: mssqlError.name })}`,
           error: mssqlError,
         })
 

@@ -3,7 +3,6 @@ import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import type { Mocked } from 'vitest'
 
-import { expectStringContaining } from '../../../__tests__/matchers'
 import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto'
 import { TaxType } from '../../../generated/prisma/client'
 import alertReporting from '../../../utils/constants/error.alerts'
@@ -173,7 +172,7 @@ describe('NorisTaxSubservice', () => {
         }),
       ).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining('Unknown tax type'),
+        message: `Unknown tax type: ${unknownTaxType}`,
       })
     })
   })

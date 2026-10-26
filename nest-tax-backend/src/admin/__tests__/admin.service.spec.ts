@@ -9,7 +9,6 @@ import { Test, TestingModule } from '@nestjs/testing'
 import prismaMock from '../../../test/singleton'
 import { createTestTax } from '../../__tests__/factories/tax.factory'
 import { createTestTaxPayer } from '../../__tests__/factories/taxPayer.factory'
-import { expectStringContaining } from '../../__tests__/matchers'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { TaxType } from '../../generated/prisma/client'
 import { NorisService } from '../../noris/noris.service'
@@ -279,7 +278,7 @@ describe('AdminService', () => {
         ),
       ).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining('No tax administrator found'),
+        message: 'No tax administrator found in the database',
       })
 
       expect(prismaMock.taxAdministrator.findFirst).toHaveBeenCalledWith({})
@@ -303,7 +302,7 @@ describe('AdminService', () => {
         ),
       ).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining('variable symbol already exists'),
+        message: 'Tax with this variable symbol already exists',
       })
 
       expect(prismaMock.tax.findFirst).toHaveBeenCalledWith({
@@ -418,7 +417,7 @@ describe('AdminService', () => {
         }),
       ).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining('Tax payer not found'),
+        message: 'Tax payer not found',
       })
 
       expect(prismaMock.taxPayer.findUnique).toHaveBeenCalledWith({
@@ -444,7 +443,7 @@ describe('AdminService', () => {
         }),
       ).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining('Tax not found'),
+        message: 'Tax not found',
       })
 
       expect(prismaMock.taxPayer.findUnique).toHaveBeenCalledWith({
@@ -516,9 +515,7 @@ describe('AdminService', () => {
       expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
         expect.toMatchLogNestError({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-          message: expectStringContaining(
-            'Error in send Tax data to Bloomreach',
-          ),
+          message: `Error in send Tax data to Bloomreach for tax payer with ID ${mockTaxPayer.id} and year ${mockYear}`,
         }),
       )
     })

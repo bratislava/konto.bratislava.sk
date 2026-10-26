@@ -416,7 +416,8 @@ describe('BloomreachOutboxProcessor', () => {
 
       await expect(processor.processOutbox()).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining('while merging a superseded entry'),
+        message:
+          'Attempted to downgrade a terminal outbox entry while merging a superseded entry - mergeCustomerCommandData should have prevented this, investigate',
         error: downgradeError,
       })
     })

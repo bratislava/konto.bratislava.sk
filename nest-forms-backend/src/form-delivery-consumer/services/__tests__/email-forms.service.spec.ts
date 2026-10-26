@@ -24,7 +24,6 @@ import { createTestFormDefinitionSlovenskoSkGeneric } from '../../../__tests__/f
 import {
   expectArrayContaining,
   expectObjectContaining,
-  expectStringContaining,
 } from '../../../__tests__/matchers'
 import BaConfigService from '../../../config/ba-config.service'
 import { ClusterEnv } from '../../../config/environment-variables'
@@ -549,7 +548,7 @@ describe('EmailFormsService', () => {
       expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
         expect.toMatchLogNestError({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-          message: expectStringContaining('sending confirmation email'),
+          message: 'Error while sending confirmation email.',
           console: { formId, hasEmail: true },
           error: sendError,
         }),
@@ -575,7 +574,7 @@ describe('EmailFormsService', () => {
       expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
         expect.toMatchLogNestError({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-          message: expectStringContaining('sending confirmation email'),
+          message: 'Error while sending confirmation email.',
           console: { formId: mockFormWithOloDefinition.id, hasEmail: true },
           error: sendError,
         }),
@@ -651,7 +650,7 @@ describe('EmailFormsService', () => {
       expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
         expect.toMatchLogNestError({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-          message: expectStringContaining('Setting form state to FINISHED'),
+          message: 'Setting form state to FINISHED failed.',
           console: { formId },
           error: updateError,
         }),

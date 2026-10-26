@@ -7,7 +7,6 @@ import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
-import { expectStringContaining } from '../../__tests__/matchers'
 import { PrismaService } from '../../prisma/prisma.service'
 import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../utils/constants'
 import alertReporting from '../../utils/constants/error.alerts'
@@ -135,9 +134,7 @@ describe('TasksService', () => {
       expect(loggerErrorSpy).toHaveBeenCalledWith(
         expect.toMatchLogNestError({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-          message: expectStringContaining(
-            `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value`,
-          ),
+          message: `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value: ${invalidValue}. Must be a number.`,
         }),
         { methodName: 'alertSilentNorisConnectionErrors' },
       )
@@ -170,9 +167,7 @@ describe('TasksService', () => {
       expect(loggerErrorSpy).toHaveBeenCalledWith(
         expect.toMatchLogNestError({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-          message: expectStringContaining(
-            'Number of silenced Noris connection errors',
-          ),
+          message: `Number of silenced Noris connection errors in last 24 hours is ${numberOfErrors}.`,
         }),
         { methodName: 'alertSilentNorisConnectionErrors' },
       )

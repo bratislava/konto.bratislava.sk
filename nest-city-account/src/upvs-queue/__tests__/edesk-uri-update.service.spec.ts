@@ -3,7 +3,7 @@ import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
-import { expectObjectContaining, expectStringContaining } from '../../__tests__/matchers'
+import { expectObjectContaining } from '../../__tests__/matchers'
 import { ExternalEdeskCheck } from '../../generated/prisma/client'
 import { QueueItemStatusEnum } from '../../generated/prisma/enums'
 import { GetIdentitiesByUrisResult, NasesService } from '../../nases/nases.service'
@@ -87,7 +87,7 @@ describe('EdeskUriUpdateService', () => {
 
       await expect(service.handleUriUpdateInternal(input)).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining(`physical entity id ${input.id}`),
+        message: `Failed to update URI for physical entity id ${input.id}`,
       })
 
       expect(prismaMock.physicalEntity.update).toHaveBeenCalledWith({
@@ -109,7 +109,7 @@ describe('EdeskUriUpdateService', () => {
 
       await expect(service.handleUriUpdateInternal(input)).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining(`physical entity id ${input.id}`),
+        message: `Failed to update URI for physical entity id ${input.id}`,
       })
 
       expect(prismaMock.physicalEntity.update).toHaveBeenCalledWith({

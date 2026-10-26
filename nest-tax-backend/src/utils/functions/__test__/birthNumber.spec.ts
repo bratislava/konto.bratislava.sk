@@ -31,7 +31,7 @@ describe('addSlashToBirthNumber', () => {
         addSlashToBirthNumber(invalidBirthNumber),
       ).toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining('Invalid birth number'),
+        message: 'Invalid birth number passed to addSlashToBirthNumber',
         console: expectStringContaining(`'${anonymizedBirthNumber}'`),
       })
     },

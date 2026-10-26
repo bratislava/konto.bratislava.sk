@@ -22,14 +22,14 @@ import {
 } from '../../test/fixtures/auth/user-fixture-factory'
 import { createTestForm } from '../__tests__/factories/form.factory'
 import { createTestFormDefinitionEmail } from '../__tests__/factories/formDefinition.factory'
-import {
-  expectObjectContaining,
-  expectStringContaining,
-} from '../__tests__/matchers'
+import { expectObjectContaining } from '../__tests__/matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
-import { FilesErrorsEnum } from '../files/files.errors.enum'
+import {
+  FilesErrorsEnum,
+  FilesErrorsResponseEnum,
+} from '../files/files.errors.enum'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
@@ -691,7 +691,7 @@ describe('FormSenderService', () => {
         service.updateAndSendForm('1', {}, authUser.user),
       ).rejects.toThrowLogNestError({
         errorEnum: FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
-        message: expectStringContaining('It is already being sent'),
+        message: `${FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR} It is already being sent.`,
       })
 
       expect(
@@ -772,9 +772,7 @@ describe('FormSenderService', () => {
           service.updateAndSendForm(mockForm.id, {}, authUser.user),
         ).rejects.toThrowLogNestError({
           errorEnum: FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
-          message: expectStringContaining(
-            `Total: ${totalFileSize}, limit: ${maxTotalFileSize}`,
-          ),
+          message: `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Total: ${totalFileSize}, limit: ${maxTotalFileSize}`,
         })
       })
 
@@ -812,9 +810,7 @@ describe('FormSenderService', () => {
           service.updateAndSendForm(mockForm.id, {}, authUser.user),
         ).rejects.toThrowLogNestError({
           errorEnum: FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
-          message: expectStringContaining(
-            `Total: ${totalFileSize}, limit: ${maxCumulativeSizeGlobal}`,
-          ),
+          message: `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Total: ${totalFileSize}, limit: ${maxCumulativeSizeGlobal}`,
         })
       })
 

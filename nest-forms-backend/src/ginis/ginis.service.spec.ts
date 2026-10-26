@@ -24,16 +24,16 @@ import {
 } from '../__tests__/factories/form.factory'
 import { createTestFormDefinitionSlovenskoSkGeneric } from '../__tests__/factories/formDefinition.factory'
 import { createMockGinisDocumentData } from '../__tests__/factories/ginisDocument.factory'
-import {
-  expectObjectContaining,
-  expectStringContaining,
-} from '../__tests__/matchers'
+import { expectObjectContaining } from '../__tests__/matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import { NodeEnv } from '../config/environment-variables'
 import ConvertService from '../convert/convert.service'
-import { FormsErrorsEnum } from '../forms/forms.errors.enum'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../forms/forms.errors.enum'
 import {
   Files,
   FormError,
@@ -1161,7 +1161,7 @@ describe('GinisService', () => {
         service.extractContactParamsFromUri(form),
       ).rejects.toThrowLogNestError({
         errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
-        message: expectStringContaining('Form uri not found in form'),
+        message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in form. Form id: ${form.id}`,
       })
     })
 
@@ -1175,7 +1175,7 @@ describe('GinisService', () => {
         service.extractContactParamsFromExternalId(form),
       ).rejects.toThrowLogNestError({
         errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
-        message: expectStringContaining('External id not found in form'),
+        message: `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: External id not found in form. Form id: ${form.id}`,
       })
     })
 
@@ -1194,7 +1194,7 @@ describe('GinisService', () => {
         service.createDocument(form, formDefinitionBase),
       ).rejects.toThrowLogNestError({
         errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
-        message: expectStringContaining('Form uri not found in nases'),
+        message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in nases.`,
       })
     })
 
@@ -1218,7 +1218,7 @@ describe('GinisService', () => {
         service.createDocument(form, formDefinitionBase),
       ).rejects.toThrowLogNestError({
         errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
-        message: expectStringContaining('Multiple results found for form uri'),
+        message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Multiple results found for form uri.`,
       })
     })
 

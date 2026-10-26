@@ -13,7 +13,6 @@ import prismaMock from '../../../../../test/singleton'
 import { createTestTax } from '../../../../__tests__/factories/tax.factory'
 import { createTestTaxAdministratorEntry } from '../../../../__tests__/factories/taxAdministrator.factory'
 import { createTestTaxPayer } from '../../../../__tests__/factories/taxPayer.factory'
-import { expectStringContaining } from '../../../../__tests__/matchers'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import BaConfigService from '../../../../config/ba-config.service'
 import {
@@ -767,7 +766,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
         expect.toMatchLogNestError({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-          message: expectStringContaining('Failed to update tax'),
+          message: 'Failed to update tax in database.',
           error: mockError,
         }),
       )
@@ -1339,12 +1338,10 @@ describe('NorisTaxRealEstateSubservice', () => {
         expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
           expect.toMatchLogNestError({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-            message: expectStringContaining('Failed to insert tax'),
+            message: 'Failed to insert tax to database.',
             error: expect.toMatchLogNestError({
               errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-              message: expectStringContaining(
-                'Error in send Tax data to Bloomreach',
-              ),
+              message: `Error in send Tax data to Bloomreach for tax payer with ID ${taxPayerId} and year ${year}`,
             }),
           }),
         )
@@ -1369,7 +1366,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
           expect.toMatchLogNestError({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-            message: expectStringContaining('Failed to insert tax'),
+            message: 'Failed to insert tax to database.',
             error: mockError,
           }),
         )
@@ -1394,7 +1391,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
           expect.toMatchLogNestError({
             errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-            message: expectStringContaining('Failed to insert tax'),
+            message: 'Failed to insert tax to database.',
             error: mockError,
           }),
         )

@@ -7,7 +7,6 @@ import { ConnectionPool } from 'mssql'
 import type { Mock } from 'vitest'
 
 import prismaMock from '../../../../test/singleton'
-import { expectStringContaining } from '../../../__tests__/matchers'
 import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import alertReporting from '../../../utils/constants/error.alerts'
@@ -139,7 +138,7 @@ describe('NorisConnectionService', () => {
 
       await expect(service.withConnection(operation, errorMessage)).rejects.toThrowLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: expectStringContaining(errorMessage),
+        message: errorMessage,
         error: opError,
       })
     })

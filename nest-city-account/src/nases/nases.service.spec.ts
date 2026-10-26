@@ -8,11 +8,7 @@ import { AxiosError, AxiosResponse } from 'axios'
 import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 
 import prismaMock from '../../test/singleton'
-import {
-  expectArrayContaining,
-  expectObjectContaining,
-  expectStringContaining,
-} from '../__tests__/matchers'
+import { expectArrayContaining, expectObjectContaining } from '../__tests__/matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
@@ -219,7 +215,7 @@ describe('NasesService', () => {
     it('should throw error for invalid input size', async () => {
       const expectedError = {
         errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
-        message: expectStringContaining('between 1 and 10 URIs'),
+        message: 'Must provide between 1 and 10 URIs to validate',
       }
 
       await expect(service.getIdentitiesByUris([])).rejects.toThrowLogNestError(expectedError)

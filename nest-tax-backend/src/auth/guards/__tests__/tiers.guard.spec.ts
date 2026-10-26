@@ -6,7 +6,6 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { CognitoUserAttributesTierEnum } from 'openapi-clients/city-account'
 import type { Mocked } from 'vitest'
 
-import { expectStringContaining } from '../../../__tests__/matchers'
 import alertReporting from '../../../utils/constants/error.alerts'
 import { TIERS_KEY } from '../../../utils/decorators/tier.decorator'
 import { CognitoSubservice } from '../../../utils/subservices/cognito.subservice'
@@ -29,7 +28,7 @@ describe('TiersGuard', () => {
   const forbiddenTierError = {
     status: HttpStatus.FORBIDDEN,
     errorEnum: ErrorEnum.FORBIDDEN_ERROR,
-    message: expectStringContaining('Forbidden tier'),
+    message: 'Forbidden tier',
   }
 
   beforeEach(async () => {

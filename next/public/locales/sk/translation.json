@@ -466,6 +466,7 @@
   "SummaryFormLegalText.title": "Ochrana osobných údajov",
   "SummaryFormSignature.aria.menu": "Menu",
   "SummaryFormSignature.description": "Podpíšte dokument pred odoslaním pomocou svojho občianskeho preukazu s čipom (eID) a vašim zaručeným elektronickým podpisom (KEP).",
+  "SummaryFormSignature.devUploadSignature": "Nahrať podpis zo súboru (.asice)",
   "SummaryFormSignature.loaderError": "Podpisovač sa nepodarilo načítať.",
   "SummaryFormSignature.menu.remove": "Odstrániť podpis",
   "SummaryFormSignature.menu.signAgain": "Podpísať znova",

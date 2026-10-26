@@ -13,7 +13,15 @@ import {
   SignerDataResponseDto,
   VerifyFormSignatureResponseDto,
 } from 'openapi-clients/forms'
-import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
+import React, {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
+import { useIsSSR } from 'react-aria/SSRProvider'
 import { useIsMounted } from 'usehooks-ts'
 
 import { formsClient } from '@/src/clients/forms'
@@ -25,6 +33,12 @@ import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormLeaveProtection } from '@/src/components/forms/useFormLeaveProtection'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import useToast from '@/src/components/simple-components/Toast/useToast'
+
+declare global {
+  interface Window {
+    __DEV_ALLOW_SIGNATURE_UPLOAD?: () => void
+  }
+}
 
 /**
  * State of the form signature, the single source for the summary and for whether the form can be sent.
@@ -80,6 +94,16 @@ const useGetContext = () => {
   const [signature, setSignature] = useState<FormSignature | null>(initialSignature ?? null)
   const isMounted = useIsMounted()
   const queryClient = useQueryClient()
+  const isSSR = useIsSSR()
+  const [signatureUploadAllowed, setSignatureUploadAllowed] = useState(false)
+
+  useEffect(() => {
+    // Dev only debugging feature, allows testing the signature verification without the signer.
+    if (!isSSR) {
+      // eslint-disable-next-line no-underscore-dangle
+      window.__DEV_ALLOW_SIGNATURE_UPLOAD = () => setSignatureUploadAllowed(true)
+    }
+  }, [isSSR])
 
   // Runs for every signature: right after signing and for a signature restored from the server (signed earlier,
   // possibly with a wrong certificate), so the user learns about a rejection before going through the eID login.
@@ -194,6 +218,21 @@ const useGetContext = () => {
     getSingerDataMutate(formData)
   }
 
+  /** Dev only: uses an uploaded .asice file as the signature of the current form data, instead of the signer. */
+  const signWithFile = async (files: FileList | null) => {
+    const file = files?.[0]
+    if (!file) {
+      return
+    }
+    if (!isClientSlovenskoSkFormDefinition(formDefinition)) {
+      throw new Error('Unsupported form definition')
+    }
+
+    const bytes = new Uint8Array(await file.arrayBuffer())
+    const base64 = btoa(Array.from(bytes, (byte) => String.fromCharCode(byte)).join(''))
+    handleSignatureChange(createFormSignature(formDefinition, base64, formDataRef.current))
+  }
+
   const remove = () => {
     handleSignatureChange(null)
   }
@@ -252,6 +291,8 @@ const useGetContext = () => {
   return {
     signature,
     sign,
+    signWithFile,
+    signatureUploadAllowed,
     remove,
     isValidSignature,
     getSignatureState,

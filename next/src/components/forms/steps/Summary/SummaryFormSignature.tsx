@@ -1,6 +1,7 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
+import { FileTrigger } from 'react-aria-components/FileTrigger'
 
 import { useFormSignature } from '@/src/components/forms/signer/useFormSignature'
 import { useFormSignerLoader } from '@/src/components/forms/signer/useFormSignerLoader'
@@ -64,8 +65,14 @@ const SummaryFormSignature = () => {
     isNotSupported: signerIsNotSupported,
     retry: retrySignerLoading,
   } = useFormSignerLoader()
-  const { sign, getSignatureState, retrySignatureVerification, getSingerDataIsPending } =
-    useFormSignature()
+  const {
+    sign,
+    signWithFile,
+    signatureUploadAllowed,
+    getSignatureState,
+    retrySignatureVerification,
+    getSingerDataIsPending,
+  } = useFormSignature()
   const { getValidatedSummary } = useFormSummary()
   const getSignatureRejectionMessage = useSignatureRejectionMessage()
 
@@ -184,6 +191,13 @@ const SummaryFormSignature = () => {
         />
       )}
       {renderSignatureState()}
+      {signatureUploadAllowed && (
+        <FileTrigger onSelect={signWithFile} acceptedFileTypes={['.asice']} allowsMultiple={false}>
+          <Button variant="outline" isDisabled={isReadonly}>
+            {t('SummaryFormSignature.devUploadSignature')}
+          </Button>
+        </FileTrigger>
+      )}
     </div>
   )
 }

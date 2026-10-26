@@ -1,6 +1,6 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import { PropsWithChildren, useMemo } from 'react'
+import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
 import { useFormSignature } from '@/src/components/forms/signer/useFormSignature'
 import { useFormSignerLoader } from '@/src/components/forms/signer/useFormSignerLoader'
@@ -8,7 +8,7 @@ import { useSignatureRejectionMessage } from '@/src/components/forms/signer/useS
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import Icon from '@/src/components/icon-components/Icon'
-import Alert from '@/src/components/simple-components/Alert'
+import Alert, { AlertProps } from '@/src/components/simple-components/Alert'
 import DropdownMenu from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
 
@@ -57,12 +57,11 @@ const SummaryFormSignature = () => {
 
   const { isReadonly } = useFormContext()
   const { isLoading, isReady, isError, isNotSupported, retry } = useFormSignerLoader()
-  const { signature, sign, isSignatureUpToDate, signatureVerification, getSingerDataIsPending } =
-    useFormSignature()
+  const { sign, getSignatureState, getSingerDataIsPending } = useFormSignature()
   const { getValidatedSummary } = useFormSummary()
   const getSignatureRejectionMessage = useSignatureRejectionMessage()
 
-  const signatureUpToDate = useMemo(() => isSignatureUpToDate(), [isSignatureUpToDate])
+  const signatureState = useMemo(() => getSignatureState(), [getSignatureState])
   const signerButtonDisabled =
     isReadonly || !isReady || getSingerDataIsPending || isFormSigningDisabled(getValidatedSummary())
 
@@ -76,6 +75,52 @@ const SummaryFormSignature = () => {
       {t('SummaryFormSignature.signAgain')}
     </Button>
   )
+
+  const signatureAlert = (type: AlertProps['type'], message: ReactNode) => (
+    <Alert
+      type={type}
+      message={<SignatureAlertContent>{message}</SignatureAlertContent>}
+      className="min-w-full"
+    />
+  )
+
+  const renderSignatureState = () => {
+    switch (signatureState.kind) {
+      case 'notRequired':
+        // The component is rendered only for signed forms.
+        return null
+      case 'missing':
+        return (
+          <Button
+            variant="outline"
+            isLoading={isLoading}
+            isDisabled={signerButtonDisabled}
+            onPress={() => sign()}
+          >
+            {t('SummaryFormSignature.signDocument')}
+          </Button>
+        )
+      case 'outdated':
+        return signatureAlert(
+          'warning',
+          <>
+            {t('SummaryFormSignature.outdated')} {signAgainButton}
+          </>,
+        )
+      case 'verifying':
+        return signatureAlert('info', t('SummaryFormSignature.verificationPending'))
+      case 'rejected':
+        return signatureAlert(
+          'error',
+          <>
+            {getSignatureRejectionMessage(signatureState.reason)} {signAgainButton}
+          </>,
+        )
+      case 'valid':
+      default:
+        return signatureAlert('success', t('SummaryFormSignature.success'))
+    }
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -111,61 +156,7 @@ const SummaryFormSignature = () => {
           className="min-w-full"
         />
       )}
-      {signature && !signatureUpToDate && (
-        <Alert
-          message={
-            <SignatureAlertContent>
-              {t('SummaryFormSignature.outdated')} {signAgainButton}
-            </SignatureAlertContent>
-          }
-          type="warning"
-          className="min-w-full"
-        />
-      )}
-      {signature && signatureUpToDate && signatureVerification.status === 'pending' && (
-        <Alert
-          message={
-            <SignatureAlertContent>
-              {t('SummaryFormSignature.verificationPending')}
-            </SignatureAlertContent>
-          }
-          type="info"
-          className="min-w-full"
-        />
-      )}
-      {signature && signatureUpToDate && signatureVerification.status === 'rejected' && (
-        <Alert
-          message={
-            <SignatureAlertContent>
-              {getSignatureRejectionMessage(signatureVerification.reason)} {signAgainButton}
-            </SignatureAlertContent>
-          }
-          type="error"
-          className="min-w-full"
-        />
-      )}
-      {signature &&
-        signatureUpToDate &&
-        (signatureVerification.status === 'accepted' ||
-          signatureVerification.status === 'unverified') && (
-          <Alert
-            message={
-              <SignatureAlertContent>{t('SummaryFormSignature.success')}</SignatureAlertContent>
-            }
-            type="success"
-            className="min-w-full"
-          />
-        )}
-      {!signature && (
-        <Button
-          variant="outline"
-          isLoading={isLoading}
-          isDisabled={signerButtonDisabled}
-          onPress={() => sign()}
-        >
-          {t('SummaryFormSignature.signDocument')}
-        </Button>
-      )}
+      {renderSignatureState()}
     </div>
   )
 }

@@ -13,14 +13,7 @@ import {
   SignerDataResponseDto,
   VerifyFormSignatureResponseDto,
 } from 'openapi-clients/forms'
-import React, {
-  createContext,
-  PropsWithChildren,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react'
+import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
 import { useIsMounted } from 'usehooks-ts'
 
 import { formsClient } from '@/src/clients/forms'
@@ -34,18 +27,19 @@ import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 
 /**
- * Result of verifying the signature with Slovensko.sk (via forms backend), see `SignatureVerificationService` in
- * nest-forms-backend.
- * - `none`: there is no signature to verify.
- * - `pending`: the verification is running (the first one for a certificate can take ~20 s).
- * - `accepted`: the signature can be sent.
- * - `unverified`: the verification could not run (e.g. Slovensko.sk unavailable), the backend verifies it again when
- *   the form is sent.
+ * State of the form signature, the single source for the summary and for whether the form can be sent.
+ * - `notRequired`: the form is not signed.
+ * - `missing`: the form has to be signed, but is not yet.
+ * - `outdated`: the signature was created for different form data or a different form version.
+ * - `verifying`: the signature is being verified with Slovensko.sk (via forms backend, see
+ *   `SignatureVerificationService` in nest-forms-backend). The first verification of a certificate can take ~20 s.
  * - `rejected`: the signature will not be accepted, the user has to sign again.
+ * - `valid`: the signature can be sent. Also when the verification could not run (e.g. Slovensko.sk unavailable), the
+ *   backend verifies the signature again when the form is sent.
  */
-export type SignatureVerification =
-  | { status: 'none' | 'pending' | 'accepted' | 'unverified' }
-  | { status: 'rejected'; reason: SignatureRejectionReason }
+export type SignatureState =
+  | { kind: 'notRequired' | 'missing' | 'outdated' | 'verifying' | 'valid' }
+  | { kind: 'rejected'; reason: SignatureRejectionReason }
 
 const getSignatureVerificationQueryKey = (formId: string, signatureBase64: string | undefined) => [
   'formSignatureVerification',
@@ -110,29 +104,7 @@ const useGetContext = () => {
     networkMode: 'always',
   })
 
-  const signatureVerification = useMemo((): SignatureVerification => {
-    if (!isSigned || !signature) {
-      return { status: 'none' }
-    }
-    if (signatureVerificationQuery.isPending) {
-      return { status: 'pending' }
-    }
-    if (signatureVerificationQuery.isError) {
-      return { status: 'unverified' }
-    }
-    const { accepted, verified, reason } = signatureVerificationQuery.data
-    if (!accepted) {
-      return { status: 'rejected', reason: reason ?? SignatureRejectionReason.Unexpected }
-    }
-
-    return { status: verified ? 'accepted' : 'unverified' }
-  }, [
-    isSigned,
-    signature,
-    signatureVerificationQuery.isPending,
-    signatureVerificationQuery.isError,
-    signatureVerificationQuery.data,
-  ])
+  const { status: verificationStatus, data: verificationData } = signatureVerificationQuery
 
   /** Used when the backend rejects the signature while sending, so the summary shows why. */
   const setSignatureRejected = (reason: SignatureRejectionReason) => {
@@ -217,51 +189,51 @@ const useGetContext = () => {
     handleSignatureChange(null)
   }
 
-  // This is an expensive calculation, therefore it's exposed as useCallback (not useMemo), therefore it's called only
-  // when needed. useMemo would be recalculated on each formData change as this provider is global for the page.
-  /** Whether the signature was created for the current form data and form definition version. */
-  const isSignatureUpToDate = useCallback(() => {
+  // Checking the signature against the current form data is expensive, therefore this is exposed as useCallback (not
+  // useMemo) and called only when needed. useMemo would be recalculated on each formData change as this provider is
+  // global for the page.
+  const getSignatureState = useCallback((): SignatureState => {
     if (!isSigned) {
-      return true
+      return { kind: 'notRequired' }
     }
-
     if (!signature) {
-      return false
+      return { kind: 'missing' }
     }
-
     if (!isClientSlovenskoSkFormDefinition(formDefinition)) {
       throw new Error('Unsupported form definition')
     }
-
     try {
       verifyFormSignature(formDefinition, formData, signature)
-
-      return true
-    } catch (error) {
-      return false
+    } catch {
+      return { kind: 'outdated' }
     }
-  }, [isSigned, signature, formDefinition, formData])
 
-  /**
-   * Whether the form can be sent with the current signature: it is up to date and not rejected by the verification.
-   * While the verification is running the form cannot be sent yet. If it could not run, sending is allowed, the
-   * backend verifies the signature again.
-   */
-  const isValidSignature = useCallback(
-    () =>
-      isSignatureUpToDate() &&
-      signatureVerification.status !== 'pending' &&
-      signatureVerification.status !== 'rejected',
-    [isSignatureUpToDate, signatureVerification.status],
-  )
+    if (verificationStatus === 'pending') {
+      return { kind: 'verifying' }
+    }
+    if (verificationStatus === 'error' || verificationData.accepted) {
+      return { kind: 'valid' }
+    }
+
+    return {
+      kind: 'rejected',
+      reason: verificationData.reason ?? SignatureRejectionReason.Unexpected,
+    }
+  }, [isSigned, signature, formDefinition, formData, verificationStatus, verificationData])
+
+  /** Whether the form can be sent with the current signature (or without one, if the form is not signed). */
+  const isValidSignature = useCallback(() => {
+    const { kind } = getSignatureState()
+
+    return kind === 'valid' || kind === 'notRequired'
+  }, [getSignatureState])
 
   return {
     signature,
     sign,
     remove,
     isValidSignature,
-    isSignatureUpToDate,
-    signatureVerification,
+    getSignatureState,
     setSignatureRejected,
     getSingerDataIsPending,
   }

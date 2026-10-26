@@ -1,6 +1,6 @@
 import { Greeting } from '../../components/Greeting'
 import { StatusIcon } from '../../components/StatusIcon'
-import { Heading, Paragraph, TextLink } from '../../components/Typography'
+import { Heading, MailtoLink, Paragraph } from '../../components/Typography'
 import { defineEmail } from '../../render/define-email'
 
 export type CityAccountRegistrationSuccessfulEmailProps = {
@@ -25,8 +25,7 @@ export const cityAccountRegistrationSuccessfulEmail =
           digitálnymi službami spokojní.
         </Paragraph>
         <Paragraph>
-          V prípade nejasností sa obráťte na{' '}
-          <TextLink href="mailto:info@bratislava.sk">info@bratislava.sk</TextLink>.
+          V prípade nejasností sa obráťte na <MailtoLink email="info@bratislava.sk" />.
         </Paragraph>
       </>
     ),

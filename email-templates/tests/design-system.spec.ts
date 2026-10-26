@@ -44,13 +44,17 @@ test('button colours meet WCAG AA contrast', () => {
 })
 
 test('every email file is in the registry', () => {
+  // Emails are the `.tsx` files directly in a product folder; shared parts live in subfolders.
   const emailsRoot = path.join(import.meta.dirname, '..', 'src', 'emails')
-  const emailFiles = readdirSync(emailsRoot, { withFileTypes: true, recursive: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith('.tsx'))
-    .map((entry) => `${path.basename(entry.parentPath)}/${entry.name.replace(/\.tsx$/, '')}`)
+  const emailFiles = readdirSync(emailsRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .flatMap((product) =>
+      readdirSync(path.join(emailsRoot, product.name), { withFileTypes: true })
+        .filter((entry) => entry.isFile() && entry.name.endsWith('.tsx'))
+        .map((entry) => `${product.name}/${entry.name.replace(/\.tsx$/, '')}`),
+    )
   const registered = new Set(registry.map((email) => `${email.product}/${email.id}`))
 
-  // The internal showcase file defines two emails (citizen and staff layout).
   expect(emailFiles.filter((file) => !registered.has(file))).toEqual([])
 })
 

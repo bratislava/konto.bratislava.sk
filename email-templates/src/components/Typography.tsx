@@ -56,6 +56,10 @@ export const TextLink = ({ href, children }: { href: string; children: ReactNode
   </Link>
 )
 
+export const MailtoLink = ({ email }: { email: string }) => (
+  <TextLink href={`mailto:${email}`}>{email}</TextLink>
+)
+
 export const Strong = ({ children }: { children: ReactNode }) => (
   <strong className="font-semibold">{children}</strong>
 )

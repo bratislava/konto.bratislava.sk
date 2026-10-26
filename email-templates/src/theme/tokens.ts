@@ -15,6 +15,8 @@ export const colors = {
     // grey-200, the web app's border-passive-primary
     divider: '#D6D6D6',
     codeBackground: '#F5F5F5',
+    // The web app's --color-error
+    error: '#D00000',
   },
   dark: {
     page: '#121212',
@@ -23,6 +25,7 @@ export const colors = {
     textSecondary: '#ADADAD',
     divider: '#474747',
     codeBackground: '#333333',
+    error: '#FF6B6B',
   },
 } as const
 

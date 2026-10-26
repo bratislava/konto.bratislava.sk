@@ -27,10 +27,11 @@ const contrast = (first: string, second: string) => {
 
 test('text colours meet WCAG AA contrast on the card', () => {
   for (const scheme of ['light', 'dark'] as const) {
-    const { surface, text, textSecondary, codeBackground } = colors[scheme]
+    const { surface, text, textSecondary, codeBackground, error } = colors[scheme]
     expect(contrast(text, surface), `${scheme} text`).toBeGreaterThanOrEqual(4.5)
     expect(contrast(textSecondary, surface), `${scheme} secondary text`).toBeGreaterThanOrEqual(4.5)
     expect(contrast(text, codeBackground), `${scheme} code`).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(error, surface), `${scheme} error`).toBeGreaterThanOrEqual(4.5)
   }
 })
 

@@ -17,6 +17,7 @@
     "preview": "pnpm --filter email-templates-preview run dev",
     "export-html": "tsx scripts/export-html.ts",
     "update-assets-manifest": "node scripts/update-assets-manifest.ts",
+    "generate-form-summary-fixtures": "tsx scripts/generate-form-summary-fixtures.ts",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check ."
   },
@@ -28,6 +29,10 @@
     "./city-account": {
       "types": "./dist/city-account.d.ts",
       "default": "./dist/city-account.js"
+    },
+    "./forms": {
+      "types": "./dist/forms.d.ts",
+      "default": "./dist/forms.js"
     },
     "./forms/summary-email": {
       "types": "./dist/forms/summary-email.d.ts",
@@ -42,6 +47,9 @@
       ],
       "city-account": [
         "dist/city-account.d.ts"
+      ],
+      "forms": [
+        "dist/forms.d.ts"
       ],
       "forms/summary-email": [
         "dist/forms/summary-email.d.ts"

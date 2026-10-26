@@ -19,6 +19,7 @@ export const tailwindConfig = {
         'ink-secondary': colors.light.textSecondary,
         divider: colors.light.divider,
         code: colors.light.codeBackground,
+        error: colors.light.error,
       },
       fontFamily: {
         sans: [...fontFamily],

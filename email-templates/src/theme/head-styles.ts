@@ -56,6 +56,7 @@ const darkRules = ({ background, text }: { background: string; text: string }) =
     `${background}.ba-code{background-color:${colors.dark.codeBackground} !important}`,
     `${text}.ba-text{color:${colors.dark.text} !important}`,
     `${text}.ba-text-secondary{color:${colors.dark.textSecondary} !important}`,
+    `${text}.ba-error{color:${colors.dark.error} !important}`,
     `${text}.ba-divider{border-color:${colors.dark.divider} !important}`,
     `${text}.ba-light-only{display:none !important}`,
     `${text}.ba-dark-only{display:block !important;max-height:none !important;overflow:visible !important}`,

@@ -1,12 +1,13 @@
 import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 
+import { exampleFixturesBaseUrl } from '../email-templates/src/render/examples'
 import { registry } from '../email-templates/src/registry'
 
 /**
  * Writes one preview file per email example into `emails/`, for `email dev`, and copies the assets
- * to `emails/static/`, which the preview serves at `/static/`. The examples are the ones the tests
- * snapshot, so the preview shows exactly what the snapshots contain.
+ * and the example fixtures to `emails/static/`, which the preview serves at `/static/`. The
+ * examples are the ones the tests snapshot, so the preview shows exactly what the snapshots contain.
  *
  * `email dev` renders the default export with React Email's plain `render()`, which would skip this
  * package's post-processing (Outlook conditional comments, the font CSS). So each preview renders
@@ -42,14 +43,17 @@ for (const email of registry) {
         `const rendered = example?.render({ assetsBaseUrl: 'http://localhost:${port}/static' })`,
         '',
         'export default function Preview() {',
-        "  const html = rendered ? use(rendered).html : ''",
+        '  const html = (rendered ? use(rendered).html : "").replaceAll(',
+        `    '${exampleFixturesBaseUrl}/',`,
+        `    'http://localhost:${port}/static/fixtures/',`,
+        '  )',
         '  const lang = /<html[^>]*\\blang="([^"]*)"/.exec(html)?.[1]',
         '  const inner = /<html[^>]*>([\\s\\S]*)<\\/html>/.exec(html)?.[1] ?? html',
         '',
         '  return <html lang={lang} dangerouslySetInnerHTML={{ __html: inner }} />',
         '}',
         '',
-      ].join('\n'),
+      ].join('\n')
     )
   }
 }
@@ -64,11 +68,9 @@ for (const entry of existsSync(emailsRoot)
   }
 }
 
-cpSync(
-  path.join(import.meta.dirname, '..', 'email-templates', 'assets'),
-  path.join(emailsRoot, 'static'),
-  {
-    recursive: true,
-  },
-)
+const packageRoot = path.join(import.meta.dirname, '..', 'email-templates')
+cpSync(path.join(packageRoot, 'assets'), path.join(emailsRoot, 'static'), { recursive: true })
+cpSync(path.join(packageRoot, 'fixtures'), path.join(emailsRoot, 'static', 'fixtures'), {
+  recursive: true,
+})
 console.log(`Preview files written to ${path.relative(process.cwd(), emailsRoot)}`)

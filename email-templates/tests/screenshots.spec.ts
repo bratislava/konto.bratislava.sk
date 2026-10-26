@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { getAssetFilePath, getContentType } from './utils/assets'
+import { getLocalFilePath, getContentType } from './utils/assets'
 import { emailCases } from './utils/cases'
 
 for (const emailCase of emailCases) {
@@ -10,11 +10,11 @@ for (const emailCase of emailCases) {
       'Not screenshotted in this project',
     )
 
-    // Assets come from the package's `assets/` folder; nothing else may be loaded.
+    // Assets and example fixtures come from the package's folders; nothing else may be loaded.
     const unexpectedRequests: string[] = []
     await page.route('**/*', async (route) => {
       const url = route.request().url()
-      const filePath = getAssetFilePath(url)
+      const filePath = getLocalFilePath(url)
       if (!filePath) {
         unexpectedRequests.push(url)
         await route.abort()

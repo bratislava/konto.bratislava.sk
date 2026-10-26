@@ -1,0 +1,12 @@
+Subject: PAAS: Spätná väzba z aplikácie
+
+Spätná väzba z aplikácie
+
+Používateľ poslal túto spätnú väzbu:
+
+Typ                Nápad na zlepšenie
+Správa             Bolo by fajn vidieť históriu parkovania za celý rok.
+                   Ďakujem!
+E-mail             jana.novakova@example.com
+ID používateľa     7d1c3b9e-4f2a-4c8b-9e6d-1a2b3c4d5e6f
+Verzia aplikácie   2.14.0 (iOS)

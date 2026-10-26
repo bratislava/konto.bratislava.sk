@@ -2,21 +2,28 @@ import { existsSync } from 'node:fs'
 import path from 'node:path'
 
 import { defaultAssetsBaseUrl } from '../../src/render/define-email'
+import { exampleFixturesBaseUrl } from '../../src/render/examples'
 
-export const assetsRoot = path.join(import.meta.dirname, '..', '..', 'assets')
+const packageRoot = path.join(import.meta.dirname, '..', '..')
+export const assetsRoot = path.join(packageRoot, 'assets')
+const fixturesRoot = path.join(packageRoot, 'fixtures')
 
 /**
- * The local file for an asset URL the emails reference (they always use the default base URL in
- * tests), or null for any other URL.
+ * The local file for a URL the emails load in tests: an asset (examples use the default assets
+ * base URL) or an example fixture. Null for any other URL, or when the file doesn't exist.
  */
-export const getAssetFilePath = (url: string) => {
-  const prefix = `${defaultAssetsBaseUrl}/`
-  if (!url.startsWith(prefix)) {
-    return null
+export const getLocalFilePath = (url: string) => {
+  for (const [baseUrl, root] of [
+    [defaultAssetsBaseUrl, assetsRoot],
+    [exampleFixturesBaseUrl, fixturesRoot],
+  ] as const) {
+    if (url.startsWith(`${baseUrl}/`)) {
+      const filePath = path.join(root, ...url.slice(baseUrl.length + 1).split('/'))
+      return existsSync(filePath) ? filePath : null
+    }
   }
-  const filePath = path.join(assetsRoot, ...url.slice(prefix.length).split('/'))
 
-  return existsSync(filePath) ? filePath : null
+  return null
 }
 
 const contentTypes: Record<string, string> = {

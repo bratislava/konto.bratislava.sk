@@ -39,11 +39,23 @@ type EmailDefinition<Props extends object> = {
   Content: (props: Props) => ReactNode
 }
 
-const plainTextSelectors = [
-  // html-to-text upper-cases headings by default.
-  { selector: 'h1', options: { uppercase: false } },
-  { selector: 'h2', options: { uppercase: false } },
-]
+// The options are html-to-text's, whose types aren't installed, so the formatter is typed by hand.
+const plainTextOptions = {
+  selectors: [
+    // html-to-text upper-cases headings by default.
+    { selector: 'h1', options: { uppercase: false } },
+    { selector: 'h2', options: { uppercase: false } },
+    // Images are skipped, so a linked image would leave a bare URL; these keep their alt text.
+    { selector: 'img[data-alt-in-text]', format: 'altText' },
+  ],
+  formatters: {
+    altText: (
+      element: { attribs: Record<string, string | undefined> },
+      _walk: unknown,
+      builder: { addInline: (text: string) => void },
+    ) => builder.addInline(element.attribs.alt ?? ''),
+  },
+}
 
 export const defineEmail = <Props extends object>(definition: EmailDefinition<Props>) => {
   const getBrand = (props: Props) =>
@@ -86,7 +98,7 @@ export const defineEmail = <Props extends object>(definition: EmailDefinition<Pr
     return {
       subject: getSubject(props),
       html,
-      text: toPlainText(html, { selectors: plainTextSelectors }),
+      text: toPlainText(html, plainTextOptions),
     }
   }
 

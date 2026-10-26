@@ -5,7 +5,8 @@ import { expect, test } from '@playwright/test'
 import { pretty } from 'react-email'
 
 import { defaultAssetsBaseUrl } from '../src/render/define-email'
-import { getAssetFilePath } from './utils/assets'
+import { exampleFixturesBaseUrl } from '../src/render/examples'
+import { getLocalFilePath } from './utils/assets'
 import { emailCases } from './utils/cases'
 
 for (const emailCase of emailCases) {
@@ -41,8 +42,10 @@ for (const emailCase of emailCases) {
         /^(https:\/\/|mailto:)/,
       )
     }
-    for (const [url] of html.matchAll(new RegExp(`${defaultAssetsBaseUrl}/[^'")\\s]+`, 'g'))) {
-      expect(getAssetFilePath(url), `${url} is not in assets/`).not.toBeNull()
+    for (const baseUrl of [defaultAssetsBaseUrl, exampleFixturesBaseUrl]) {
+      for (const [url] of html.matchAll(new RegExp(`${baseUrl}/[^'")\\s]+`, 'g'))) {
+        expect(getLocalFilePath(url), `${url} is not in assets/ or fixtures/`).not.toBeNull()
+      }
     }
   })
 }

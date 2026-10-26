@@ -38,6 +38,14 @@
       "types": "./dist/forms/summary-email.d.ts",
       "default": "./dist/forms/summary-email.js"
     },
+    "./kupaliska": {
+      "types": "./dist/kupaliska.d.ts",
+      "default": "./dist/kupaliska.js"
+    },
+    "./parking": {
+      "types": "./dist/parking.d.ts",
+      "default": "./dist/parking.js"
+    },
     "./package.json": "./package.json"
   },
   "typesVersions": {
@@ -53,6 +61,12 @@
       ],
       "forms/summary-email": [
         "dist/forms/summary-email.d.ts"
+      ],
+      "kupaliska": [
+        "dist/kupaliska.d.ts"
+      ],
+      "parking": [
+        "dist/parking.d.ts"
       ]
     }
   },

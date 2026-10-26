@@ -5,6 +5,12 @@ import type { EmailDefinitionResult, RenderedEmail, RenderOptions } from './defi
 /** Examples render at a fixed time, so the copyright year in snapshots doesn't change. */
 export const exampleNow = new Date('2026-01-15T10:00:00+01:00')
 
+/**
+ * Images that senders host themselves (Kúpaliská QR codes) come from this host in examples. Tests
+ * and the preview serve it from the package's `fixtures/` folder, which is never published.
+ */
+export const exampleFixturesBaseUrl = 'https://fixtures.email-templates.test'
+
 export type RegisteredExample = {
   name: string
   render: (options?: RenderOptions) => Promise<RenderedEmail>

@@ -22,6 +22,13 @@ import formsConfirmationTsb from './emails/forms/confirmation-tsb.examples'
 import formsNewSubmissionBratislava from './emails/forms/new-submission-bratislava.examples'
 import formsNewSubmissionOlo from './emails/forms/new-submission-olo.examples'
 import formsNewSubmissionTsb from './emails/forms/new-submission-tsb.examples'
+import kupaliskaPurchasedTickets from './emails/kupaliska/purchased-tickets.examples'
+import kupaliskaResetPassword from './emails/kupaliska/reset-password.examples'
+import kupaliskaSetPassword from './emails/kupaliska/set-password.examples'
+import parkingEmailVerification from './emails/parking/email-verification.examples'
+import parkingFeedback from './emails/parking/feedback.examples'
+import parkingTicketAboutToEnd from './emails/parking/ticket-about-to-end.examples'
+import parkingTicketEnded from './emails/parking/ticket-ended.examples'
 import type { RegisteredEmail } from './render/examples'
 
 /**
@@ -54,4 +61,13 @@ export const registry: RegisteredEmail[] = [
   formsNewSubmissionBratislava,
   formsNewSubmissionOlo,
   formsNewSubmissionTsb,
+  // parking
+  parkingTicketAboutToEnd,
+  parkingTicketEnded,
+  parkingEmailVerification,
+  parkingFeedback,
+  // kupaliska
+  kupaliskaPurchasedTickets,
+  kupaliskaResetPassword,
+  kupaliskaSetPassword,
 ]

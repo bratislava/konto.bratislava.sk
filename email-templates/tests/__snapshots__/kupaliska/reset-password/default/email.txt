@@ -1,0 +1,18 @@
+Subject: Kúpaliská: Obnovenie hesla
+
+Zabudli ste heslo?
+
+Dobrý deň,
+
+nové heslo si nastavíte po kliknutí na tlačidlo nižšie. Ak ste o zmenu hesla nežiadali, tento e-mail ignorujte.
+
+Zmeniť heslo https://kupaliska.bratislava.sk/reset-hesla?token=example
+
+V prípade akýchkoľvek otázok nás kontaktujte na adrese kupaliska@bratislava.sk.
+
+Ďakujeme, že využívate naše služby.
+Váš STARZ & Hlavné mesto SR Bratislava
+
+Informácie o spracúvaní osobných údajov nájdete na stránke Ochrana osobných údajov https://bratislava.sk/ochrana-osobnych-udajov.
+
+© 2026 Hlavné mesto SR Bratislava

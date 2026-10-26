@@ -66,10 +66,15 @@ into the Mailgun "new submission" templates, moved here from forms-shared with u
 
 ## Assets
 
-Fonts, logos and icons are in `assets/v1/` and are served by the web app at `/email-assets/v1/`:
-`next.config.ts` copies them into `next/public/email-assets/` at build time. Sent emails link to these
-files for years, so a published file never changes: add a new file (or a `v2` folder) instead, then run
-`pnpm update-assets-manifest`. The tests compare the files with `assets/manifest.json`.
+Fonts, logos, icons and wallet badges are in `assets/v1/` and are served by the web app at
+`/email-assets/v1/`: `next.config.ts` copies them into `next/public/email-assets/` at build time. Sent
+emails link to these files for years, so a published file never changes: add a new file (or a `v2`
+folder) instead, then run `pnpm update-assets-manifest`. The tests compare the files with
+`assets/manifest.json`.
+
+Images the sender hosts, such as Kúpaliská QR codes, are props. Their examples point at
+`exampleFixturesBaseUrl` with a file from `fixtures/`, which the tests and the preview serve; it is
+not published.
 
 ## Preview
 

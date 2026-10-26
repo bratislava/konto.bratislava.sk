@@ -25,6 +25,19 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
+    "@bratislava/email-templates#build": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "src/**",
+        "assets/**",
+        "scripts/verify-dist.ts",
+        "package.json",
+        "tsconfig.json",
+        "tsconfig.build.json",
+        "tsdown.config.ts"
+      ],
+      "outputs": ["dist/**"]
+    },
     "openapi-clients#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]

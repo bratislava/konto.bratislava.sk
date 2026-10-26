@@ -20,6 +20,13 @@ jobs:
     with:
       image: harbor.bratislava.sk/standalone/forms-shared
 
+  test-email-templates:
+    name: Email Templates Test
+    uses: ./.github/workflows/test-email-templates.yml
+    secrets: inherit
+    with:
+      image: harbor.bratislava.sk/standalone/email-templates
+
   build-next:
     name: Next Build
     uses: ./.github/workflows/build-next.yml

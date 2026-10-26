@@ -3,6 +3,7 @@ updates:
   - package-ecosystem: 'npm'
     directories:
       - '/'
+      - '/email-templates'
       - '/forms-shared'
       - '/nest-city-account'
       - '/nest-clamav-scanner'

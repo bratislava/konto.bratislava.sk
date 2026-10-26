@@ -279,6 +279,52 @@ importers:
         specifier: 8.72.0
         version: 8.72.0(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
 
+  email-templates:
+    dependencies:
+      classnames:
+        specifier: 2.5.1
+        version: 2.5.1
+      react:
+        specifier: 'catalog:'
+        version: 19.3.1
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.3.1(react@19.3.1)
+      react-email:
+        specifier: 6.11.3
+        version: 6.11.3(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)
+    devDependencies:
+      '@playwright/test':
+        specifier: 'catalog:'
+        version: 1.64.1
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.19.2
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.3.0(@types/react@19.3.0)
+      cross-env:
+        specifier: 10.1.0
+        version: 10.1.0
+      forms-shared:
+        specifier: workspace:*
+        version: link:../forms-shared
+      prettier:
+        specifier: 3.9.10
+        version: 3.9.10
+      tsdown:
+        specifier: 0.23.1
+        version: 0.23.1(tsx@4.23.15)(typescript@7.0.2)
+      tsx:
+        specifier: 4.23.15
+        version: 4.23.15
+      typescript:
+        specifier: 7.0.2
+        version: 7.0.2
+
   forms-shared:
     dependencies:
       '@internationalized/date':
@@ -353,9 +399,6 @@ importers:
       react-dom:
         specifier: 'catalog:'
         version: 19.3.1(react@19.3.1)
-      react-email:
-        specifier: 6.11.3
-        version: 6.11.3(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)
       react-markdown:
         specifier: 10.1.0
         version: 10.1.0(@types/react@19.3.0)(react@19.3.1)(supports-color@10.2.2)
@@ -848,6 +891,9 @@ importers:
       '@aws-sdk/client-sts':
         specifier: 3.1147.0
         version: 3.1147.0
+      '@bratislava/email-templates':
+        specifier: workspace:*
+        version: link:../email-templates
       '@bratislava/ginis-sdk':
         specifier: 2.4.0
         version: 2.4.0(axios@1.18.1(debug@4.4.3(supports-color@10.2.2))(supports-color@10.2.2))

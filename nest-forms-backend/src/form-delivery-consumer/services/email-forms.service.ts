@@ -1,4 +1,8 @@
 import {
+  FileIdInfoMap,
+  renderSummaryEmail,
+} from '@bratislava/email-templates/forms/summary-email'
+import {
   ErrorEnum,
   ErrorFactoryService,
   LineLoggerService,
@@ -21,10 +25,6 @@ import {
   extractFormSubjectTechnical,
 } from 'forms-shared/form-utils/formDataExtractors'
 import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
-import {
-  FileIdInfoMap,
-  renderSummaryEmail,
-} from 'forms-shared/summary-email/renderSummaryEmail'
 
 import BaConfigService from '../../config/ba-config.service'
 import { ClusterEnv } from '../../config/environment-variables'

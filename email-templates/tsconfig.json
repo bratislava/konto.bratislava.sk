@@ -1,0 +1,24 @@
+{
+  // The sources are bundled by tsdown, the tests run through Playwright's loader and the scripts
+  // through `node` (type stripping, only for scripts without relative imports) or `tsx`, so `tsc`
+  // only type-checks. `erasableSyntaxOnly` keeps every file within what Node can strip.
+  "compilerOptions": {
+    "lib": ["es2023", "dom"],
+    "module": "esnext",
+    "target": "es2022",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "jsx": "react-jsx",
+    "declaration": true,
+    "outDir": "./dist",
+    "types": ["node"]
+  },
+  "include": ["./src/**/*", "./tests/**/*", "./scripts/**/*", "./playwright.config.ts"]
+}

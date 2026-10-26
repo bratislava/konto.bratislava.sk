@@ -10,6 +10,7 @@ import { useFormContext } from '@/src/components/forms/useFormContext'
 import Icon from '@/src/components/icon-components/Icon'
 import Alert, { AlertProps } from '@/src/components/simple-components/Alert'
 import DropdownMenu from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
+import Spinner from '@/src/components/simple-components/Spinner'
 import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
 
 /**
@@ -63,7 +64,8 @@ const SummaryFormSignature = () => {
     isNotSupported: signerIsNotSupported,
     retry: retrySignerLoading,
   } = useFormSignerLoader()
-  const { sign, getSignatureState, getSingerDataIsPending } = useFormSignature()
+  const { sign, getSignatureState, retrySignatureVerification, getSingerDataIsPending } =
+    useFormSignature()
   const { getValidatedSummary } = useFormSummary()
   const getSignatureRejectionMessage = useSignatureRejectionMessage()
 
@@ -117,7 +119,23 @@ const SummaryFormSignature = () => {
           </>,
         )
       case 'verifying':
-        return signatureAlert('info', t('SummaryFormSignature.verificationPending'))
+        return signatureAlert(
+          'info',
+          <span className="flex items-center gap-2">
+            <Spinner size="sm" className="shrink-0" />
+            {t('SummaryFormSignature.verificationPending')}
+          </span>,
+        )
+      case 'verificationFailed':
+        return signatureAlert(
+          'error',
+          <>
+            {t('SummaryFormSignature.verificationFailed')}{' '}
+            <Button variant="link" onPress={() => retrySignatureVerification()}>
+              {t('SummaryFormSignature.retry')}
+            </Button>
+          </>,
+        )
       case 'rejected':
         return signatureAlert(
           'error',

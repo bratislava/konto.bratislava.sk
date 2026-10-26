@@ -477,6 +477,7 @@
   "SummaryFormSignature.signDocument": "Podpísať dokument",
   "SummaryFormSignature.success": "Dokument bol úspešne podpísaný.",
   "SummaryFormSignature.title": "Podpis dokumentu",
+  "SummaryFormSignature.verificationFailed": "Platnosť podpisu sa nepodarilo overiť. Bez overenia nie je možné žiadosť odoslať.",
   "SummaryFormSignature.verificationPending": "Overujeme platnosť podpisu. Môže to trvať niekoľko sekúnd.",
   "SummaryHeader.formHasErrors": "Pre odoslanie opravte vyznačené chyby.",
   "SummaryHeader.formHasErrorsSigned": "Pre podpísanie a odoslanie opravte vyznačené chyby.",

@@ -33,12 +33,14 @@ import useToast from '@/src/components/simple-components/Toast/useToast'
  * - `outdated`: the signature was created for different form data or a different form version.
  * - `verifying`: the signature is being verified with Slovensko.sk (via forms backend, see
  *   `SignatureVerificationService` in nest-forms-backend). The first verification of a certificate can take ~20 s.
+ * - `verificationFailed`: the verification request failed (e.g. network error). The form cannot be sent until the
+ *   verification succeeds, the user can retry it.
  * - `rejected`: the signature will not be accepted, the user has to sign again.
- * - `valid`: the signature can be sent. Also when the verification could not run (e.g. Slovensko.sk unavailable), the
- *   backend verifies the signature again when the form is sent.
+ * - `valid`: the signature can be sent. Also when the backend accepted it without verifying (verification disabled or
+ *   Slovensko.sk unavailable), the backend then verifies it again when the form is sent.
  */
 export type SignatureState =
-  | { kind: 'notRequired' | 'missing' | 'outdated' | 'verifying' | 'valid' }
+  | { kind: 'notRequired' | 'missing' | 'outdated' | 'verifying' | 'verificationFailed' | 'valid' }
   | { kind: 'rejected'; reason: SignatureRejectionReason }
 
 const getSignatureVerificationQueryKey = (formId: string, signatureBase64: string | undefined) => [
@@ -103,7 +105,12 @@ const useGetContext = () => {
     networkMode: 'always',
   })
 
-  const { status: verificationStatus, data: verificationData } = signatureVerificationQuery
+  const {
+    status: verificationStatus,
+    fetchStatus: verificationFetchStatus,
+    data: verificationData,
+    refetch: retrySignatureVerification,
+  } = signatureVerificationQuery
 
   /** Used when the backend rejects the signature while sending, so the summary shows why. */
   const setSignatureRejected = (reason: SignatureRejectionReason) => {
@@ -210,10 +217,14 @@ const useGetContext = () => {
       return { kind: 'outdated' }
     }
 
-    if (verificationStatus === 'pending') {
+    // `fetching` also covers a retry after a failed verification.
+    if (verificationStatus === 'pending' || verificationFetchStatus === 'fetching') {
       return { kind: 'verifying' }
     }
-    if (verificationStatus === 'error' || verificationData.accepted) {
+    if (verificationStatus === 'error') {
+      return { kind: 'verificationFailed' }
+    }
+    if (verificationData.accepted) {
       return { kind: 'valid' }
     }
 
@@ -221,7 +232,15 @@ const useGetContext = () => {
       kind: 'rejected',
       reason: verificationData.reason ?? SignatureRejectionReason.Unexpected,
     }
-  }, [isSigned, signature, formDefinition, formData, verificationStatus, verificationData])
+  }, [
+    isSigned,
+    signature,
+    formDefinition,
+    formData,
+    verificationStatus,
+    verificationFetchStatus,
+    verificationData,
+  ])
 
   /** Whether the form can be sent with the current signature (or without one, if the form is not signed). */
   const isValidSignature = useCallback(() => {
@@ -236,6 +255,7 @@ const useGetContext = () => {
     remove,
     isValidSignature,
     getSignatureState,
+    retrySignatureVerification,
     setSignatureRejected,
     getSingerDataIsPending,
   }

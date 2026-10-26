@@ -56,19 +56,28 @@ const SummaryFormSignature = () => {
   const { t } = useTranslation()
 
   const { isReadonly } = useFormContext()
-  const { isLoading, isReady, isError, isNotSupported, retry } = useFormSignerLoader()
+  const {
+    isLoading: signerIsLoading,
+    isReady: signerIsReady,
+    isError: signerLoadingFailed,
+    isNotSupported: signerIsNotSupported,
+    retry: retrySignerLoading,
+  } = useFormSignerLoader()
   const { sign, getSignatureState, getSingerDataIsPending } = useFormSignature()
   const { getValidatedSummary } = useFormSummary()
   const getSignatureRejectionMessage = useSignatureRejectionMessage()
 
   const signatureState = useMemo(() => getSignatureState(), [getSignatureState])
   const signerButtonDisabled =
-    isReadonly || !isReady || getSingerDataIsPending || isFormSigningDisabled(getValidatedSummary())
+    isReadonly ||
+    !signerIsReady ||
+    getSingerDataIsPending ||
+    isFormSigningDisabled(getValidatedSummary())
 
   const signAgainButton = (
     <Button
       variant="link"
-      isLoading={isLoading}
+      isLoading={signerIsLoading}
       isDisabled={signerButtonDisabled}
       onPress={() => sign()}
     >
@@ -93,7 +102,7 @@ const SummaryFormSignature = () => {
         return (
           <Button
             variant="outline"
-            isLoading={isLoading}
+            isLoading={signerIsLoading}
             isDisabled={signerButtonDisabled}
             onPress={() => sign()}
           >
@@ -128,7 +137,7 @@ const SummaryFormSignature = () => {
         <Typography variant="h3">{t('SummaryFormSignature.title')}</Typography>
         <Typography variant="p-small">{t('SummaryFormSignature.description')}</Typography>
       </div>
-      {isNotSupported && (
+      {signerIsNotSupported && (
         <Alert
           type="error"
           message={
@@ -142,13 +151,13 @@ const SummaryFormSignature = () => {
           className="min-w-full"
         />
       )}
-      {isError && (
+      {signerLoadingFailed && (
         <Alert
           type="error"
           message={
             <>
               {t('SummaryFormSignature.loaderError')}{' '}
-              <Button variant="link" onPress={() => retry()}>
+              <Button variant="link" onPress={() => retrySignerLoading()}>
                 {t('SummaryFormSignature.retry')}
               </Button>
             </>

@@ -107,7 +107,7 @@
     "@typescript-eslint/parser": "8.68.0",
     "@vitest/coverage-v8": "5.0.5",
     "dotenv": "17.4.2",
-    "eslint": "9.39.4",
+    "eslint": "10.13.0",
     "nock": "14.0.16",
     "prettier": "3.8.1",
     "prisma-json-types-generator": "5.1.1",

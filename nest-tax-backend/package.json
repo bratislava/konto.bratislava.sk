@@ -81,7 +81,7 @@
     "@vitest/coverage-v8": "5.0.5",
     "clear": "0.1.0",
     "dotenv": "17.4.2",
-    "eslint": "9.39.3",
+    "eslint": "10.13.0",
     "path": "0.12.7",
     "prettier": "3.8.1",
     "prisma-json-types-generator": "5.1.1",

@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 
-import { ErrorFactoryService } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { HttpStatus } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
@@ -39,8 +40,7 @@ const rejected = (
 describe('SignatureVerdictCacheService', () => {
   let verdictCache: SignatureVerdictCacheService
   let cache: { get: Mock; set: Mock }
-  let warn: Mock
-  let error: Mock
+  let logger: LineLoggerService
 
   beforeEach(async () => {
     cache = { get: vi.fn(), set: vi.fn().mockResolvedValue(undefined) }
@@ -51,13 +51,15 @@ describe('SignatureVerdictCacheService', () => {
           provide: ErrorFactoryService,
           useValue: new ErrorFactoryService({ alertReporting }),
         },
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         { provide: CACHE_MANAGER, useValue: cache },
       ],
     }).compile()
     verdictCache = app.get(SignatureVerdictCacheService)
-    warn = vi.fn()
-    error = vi.fn()
-    Object.defineProperty(verdictCache, 'logger', { value: { warn, error } })
+    logger = app.get(LineLoggerService)
   })
 
   afterEach(() => {
@@ -110,7 +112,7 @@ describe('SignatureVerdictCacheService', () => {
       cache.get.mockResolvedValue(value)
 
       await expect(verdictCache.get(SIGNATURE)).resolves.toBeUndefined()
-      expect(error).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
         expect.toEqualLogNestError({
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           errorEnum: SignerErrorsEnum.SIGNATURE_VERDICT_CACHE_UNEXPECTED_SHAPE,
@@ -126,7 +128,7 @@ describe('SignatureVerdictCacheService', () => {
       cache.get.mockRejectedValue(new Error('connection refused'))
 
       await expect(verdictCache.get(SIGNATURE)).resolves.toBeUndefined()
-      expect(warn).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.warn)).toHaveBeenCalledWith(
         expectStringContaining('connection refused'),
       )
     })
@@ -141,7 +143,9 @@ describe('SignatureVerdictCacheService', () => {
       await vi.advanceTimersByTimeAsync(1000)
 
       await expect(result).resolves.toBeUndefined()
-      expect(warn).toHaveBeenCalledWith(expectStringContaining('Timed out'))
+      expect(vi.mocked(logger.warn)).toHaveBeenCalledWith(
+        expectStringContaining('Timed out'),
+      )
     })
   })
 
@@ -190,7 +194,7 @@ describe('SignatureVerdictCacheService', () => {
       await expect(
         verdictCache.set(SIGNATURE, accepted),
       ).resolves.toBeUndefined()
-      expect(warn).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.warn)).toHaveBeenCalledWith(
         expectStringContaining('connection refused'),
       )
     })

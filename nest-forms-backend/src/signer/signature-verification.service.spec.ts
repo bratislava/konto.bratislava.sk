@@ -1,4 +1,5 @@
-import { ErrorFactoryService } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
 import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosError, AxiosHeaders } from 'axios'
@@ -20,6 +21,7 @@ import {
 
 const SIGNATURE = 'UEsDBAoAAAgAANurNFqKIflF'
 const CONTEXT = { formId: 'form-1' }
+const SERIAL_NUMBER = '1122334455667788'
 const ISSUER =
   'C=SK,L=Bratislava,2.5.4.97=NTRSK-35975946,O=Disig a.s.,CN=SVK eID ACA2'
 
@@ -37,7 +39,7 @@ const verified = (result: number, verifierResult: number) => ({
             format: 'XadesBPLevelB',
             certificate: {
               issuer: ISSUER,
-              serial_number: '1',
+              serial_number: SERIAL_NUMBER,
               subject: 'CN=<redacted>',
             },
           },
@@ -89,15 +91,12 @@ describe('SignatureVerificationService', () => {
   let service: SignatureVerificationService
   let apiCepVerifyPost: Mock
   let config: { signatureVerification: SignatureVerificationMode }
-  let loggedMessages: string[]
-  let loggedErrors: unknown[]
+  let logger: LineLoggerService
   let verdictCache: { get: Mock; set: Mock }
 
   beforeEach(async () => {
     apiCepVerifyPost = vi.fn()
     config = { signatureVerification: SignatureVerificationMode.Enforce }
-    loggedMessages = []
-    loggedErrors = []
     // Always a miss unless a test says otherwise.
     verdictCache = {
       get: vi.fn().mockResolvedValue(undefined),
@@ -110,6 +109,10 @@ describe('SignatureVerificationService', () => {
         {
           provide: ErrorFactoryService,
           useValue: new ErrorFactoryService({ alertReporting }),
+        },
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
         },
         {
           provide: ClientsService,
@@ -138,23 +141,15 @@ describe('SignatureVerificationService', () => {
     }).compile()
 
     service = app.get(SignatureVerificationService)
-
-    const collect = (message: unknown) => {
-      loggedMessages.push(String(message))
-    }
-    Object.defineProperty(service, 'logger', {
-      value: {
-        log: collect,
-        error: (message: unknown) => {
-          loggedErrors.push(message)
-          collect(message)
-        },
-      },
-    })
-    Object.defineProperty(app.get(ErrorFactoryService), 'logger', {
-      value: { error: collect, log: collect, debug: collect, warn: collect },
-    })
+    logger = app.get(LineLoggerService)
   })
+
+  /** Everything the service logged, serialized, to assert what is (not) in the logs. */
+  const loggedText = () =>
+    [vi.mocked(logger.log), vi.mocked(logger.error)]
+      .flatMap((method) => method.mock.calls)
+      .map((args) => JSON.stringify(args))
+      .join('\n')
 
   const respondWith = (data: unknown) =>
     apiCepVerifyPost.mockResolvedValue({ data })
@@ -177,7 +172,7 @@ describe('SignatureVerificationService', () => {
       )
     })
 
-    it('logs the verdict but never the signature or the response content', async () => {
+    it('logs the verdict but never the signature, the certificate or the response content', async () => {
       respondWith(RESPONSES.valid)
       await service.verifyFormSignature(SIGNATURE, CONTEXT)
       apiCepVerifyPost.mockRejectedValue(upstreamError())
@@ -185,9 +180,11 @@ describe('SignatureVerificationService', () => {
         service.assertSignatureAccepted(SIGNATURE, CONTEXT),
       ).rejects.toThrowLogNestError()
 
-      const logs = loggedMessages.join('\n')
+      const logs = loggedText()
       expect(logs).toContain('form-1')
-      expect(logs).toContain(ISSUER)
+      expect(logs).toContain('"result":3')
+      expect(logs).not.toContain(ISSUER)
+      expect(logs).not.toContain(SERIAL_NUMBER)
       expect(logs).not.toContain(SIGNATURE)
       expect(logs).not.toContain('PII')
       expect(logs).not.toContain('<redacted>')
@@ -231,7 +228,7 @@ describe('SignatureVerificationService', () => {
         service.assertSignatureAccepted(SIGNATURE, CONTEXT),
       ).resolves.toBeUndefined()
       expect(apiCepVerifyPost).toHaveBeenCalledTimes(2)
-      expect(loggedMessages.join('\n')).toContain(
+      expect(loggedText()).toContain(
         SignatureRejectionReason.UntrustedCertificate,
       )
     })
@@ -352,7 +349,7 @@ describe('SignatureVerificationService', () => {
 
       await service.verifyFormSignature(SIGNATURE, CONTEXT)
 
-      expect(loggedErrors).toContainEqual(
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
         expect.toEqualLogNestError({
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           errorEnum: SignerErrorsEnum.SIGNATURE_VERIFICATION_UNKNOWN_RESPONSE,
@@ -372,7 +369,9 @@ describe('SignatureVerificationService', () => {
 
       await service.verifyFormSignature(SIGNATURE, CONTEXT)
 
-      expect(loggedErrors).not.toContainEqual(expect.toBeLogNestError())
+      expect(vi.mocked(logger.error)).not.toHaveBeenCalledWith(
+        expect.toBeLogNestError(),
+      )
     })
   })
 
@@ -393,7 +392,7 @@ describe('SignatureVerificationService', () => {
       })
       expect(verdictCache.get).toHaveBeenCalledWith(SIGNATURE)
       expect(apiCepVerifyPost).not.toHaveBeenCalled()
-      expect(loggedMessages.join('\n')).toContain('"cached":true')
+      expect(loggedText()).toContain('"cached":true')
     })
 
     it('stores the verdict after calling Slovensko.sk', async () => {

@@ -1,3 +1,4 @@
+import { LogAllowList } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -56,6 +57,7 @@ export default class SignerController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard)
+  @LogAllowList({ accepted: true, verified: true, reason: true })
   @HttpCode(HttpStatus.OK)
   @Post('verify-signature/:formId')
   async verifyFormSignature(

@@ -17,7 +17,10 @@ import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
  * TODO: MenuDropdown position fix
  */
 
-const SignatureAlertContent = ({ children }: PropsWithChildren) => {
+const SignatureAlertContent = ({
+  signAgainDisabled,
+  children,
+}: PropsWithChildren<{ signAgainDisabled: boolean }>) => {
   const { t } = useTranslation()
   const { sign, remove } = useFormSignature()
 
@@ -39,6 +42,7 @@ const SignatureAlertContent = ({ children }: PropsWithChildren) => {
               title: t('SummaryFormSignature.menu.signAgain'),
               icon: <Icon name="edit" className="size-6" />,
               onPress: () => sign(),
+              isDisabled: signAgainDisabled,
             },
             {
               title: t('SummaryFormSignature.menu.remove'),
@@ -96,7 +100,11 @@ const SummaryFormSignature = () => {
   const signatureAlert = (type: AlertProps['type'], message: ReactNode) => (
     <Alert
       type={type}
-      message={<SignatureAlertContent>{message}</SignatureAlertContent>}
+      message={
+        <SignatureAlertContent signAgainDisabled={signerButtonDisabled}>
+          {message}
+        </SignatureAlertContent>
+      }
       className="min-w-full"
     />
   )

@@ -1,8 +1,13 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { HttpException } from '@nestjs/common'
+import type { LogNestErrorEqualExpectation } from '@bratislava/log-nest/testing'
+import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import noop from 'lodash/noop'
+import z from 'zod'
 
+import { expectAny, expectStringContaining } from '../../../__tests__/matchers'
+import alertReporting from '../../../utils/constants/error.alerts'
+import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import { EdeskRecordSchema } from '../../types/noris.types'
 import { NorisValidatorService } from '../noris-validator.service'
 import {
@@ -20,14 +25,28 @@ import {
   validEdeskRecords,
 } from './data/test.edesk-record'
 
+// The message is zod's own issue dump, so only a distinctive part of it is asserted.
+const expectValidationError = (messagePart?: string): LogNestErrorEqualExpectation => ({
+  status: HttpStatus.BAD_REQUEST,
+  errorEnum: CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
+  message: messagePart ? expectStringContaining(messagePart) : expectAny<string>(String),
+  error: expectAny<z.ZodError>(z.ZodError),
+})
+
 describe('NorisValidatorService', () => {
   let service: NorisValidatorService
+  let logger: LineLoggerService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [LineLoggerService, NorisValidatorService, ErrorFactoryService],
+      providers: [
+        { provide: LineLoggerService, useValue: createMock<LineLoggerService>() },
+        NorisValidatorService,
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
+      ],
     }).compile()
     service = module.get<NorisValidatorService>(NorisValidatorService)
+    logger = module.get(LineLoggerService)
   })
 
   it('should be defined', () => {
@@ -51,56 +70,36 @@ describe('NorisValidatorService', () => {
       })
 
       describe('invalid', () => {
-        it('should throw HttpException for invalid record', () => {
+        it('should throw validation error for invalid record', () => {
           invalidEdeskRecords.forEach((record) => {
             expect(() => {
               service.validateNorisData(EdeskRecordSchema, record)
-            }).toThrow(HttpException)
+            }).toThrowEqualLogNestError(expectValidationError())
           })
         })
 
         it('should throw error containing id_noris when missing', () => {
           expect(() => {
             service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordMissingIdNoris)
-          }).toThrow(HttpException)
-
-          try {
-            service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordMissingIdNoris)
-          } catch (error) {
-            const response = (error as HttpException).getResponse() as Record<
-              symbol | string,
-              unknown
-            >
-            expect(response.message).toContain('id_noris')
-          }
+          }).toThrowEqualLogNestError(expectValidationError('id_noris'))
         })
 
         it('should throw error containing uri_generated when missing', () => {
           expect(() => {
             service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordMissingUriGenerated)
-          }).toThrow(HttpException)
-
-          try {
-            service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordMissingUriGenerated)
-          } catch (error) {
-            const response = (error as HttpException).getResponse() as Record<
-              symbol | string,
-              unknown
-            >
-            expect(response.message).toContain('uri_generated')
-          }
+          }).toThrowEqualLogNestError(expectValidationError('uri_generated'))
         })
 
         it('should throw for wrong type of id_noris', () => {
           expect(() => {
             service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordWrongIdNorisType)
-          }).toThrow(HttpException)
+          }).toThrowEqualLogNestError(expectValidationError('id_noris'))
         })
 
         it('should throw for wrong type of uri_generated', () => {
           expect(() => {
             service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordWrongUriGeneratedType)
-          }).toThrow(HttpException)
+          }).toThrowEqualLogNestError(expectValidationError('uri_generated'))
         })
       })
     })
@@ -132,26 +131,29 @@ describe('NorisValidatorService', () => {
 
     describe('validateNorisData with array', () => {
       it('should return only valid records and error log the rest', () => {
-        const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(noop)
         const result = service.validateNorisData(EdeskRecordSchema, allEdeskRecords)
         expect(result).toHaveLength(validEdeskRecords.length)
         expect(result).toContainEqual(testEdeskRecord1)
         expect(result).toContainEqual(testEdeskRecord2)
-        expect(errorLogSpy).toHaveBeenCalledTimes(invalidEdeskRecords.length)
+        expect(vi.mocked(logger.error)).toHaveBeenCalledTimes(invalidEdeskRecords.length)
+        expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+          expect.toMatchLogNestError(expectValidationError())
+        )
       })
 
       it('should return empty array when all records are invalid', () => {
-        const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(noop)
         const result = service.validateNorisData(EdeskRecordSchema, invalidEdeskRecords)
         expect(result).toHaveLength(0)
-        expect(errorLogSpy).toHaveBeenCalledTimes(invalidEdeskRecords.length)
+        expect(vi.mocked(logger.error)).toHaveBeenCalledTimes(invalidEdeskRecords.length)
+        expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+          expect.toMatchLogNestError(expectValidationError())
+        )
       })
 
       it('should return all records when all are valid', () => {
-        const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(noop)
         const result = service.validateNorisData(EdeskRecordSchema, validEdeskRecords)
         expect(result).toEqual(validEdeskRecords)
-        expect(errorLogSpy).not.toHaveBeenCalled()
+        expect(vi.mocked(logger.error)).not.toHaveBeenCalled()
       })
     })
   })

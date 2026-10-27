@@ -1,28 +1,41 @@
-import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
-import { HttpException, HttpStatus } from '@nestjs/common'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerService,
+} from '@bratislava/log-nest'
+import type { LogNestErrorEqualExpectation } from '@bratislava/log-nest/testing'
+import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosError, AxiosResponse } from 'axios'
 import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 
 import prismaMock from '../../test/singleton'
-import { expectArrayContaining, expectObjectContaining } from '../__tests__/jest-matchers'
+import {
+  expectArrayContaining,
+  expectObjectContaining,
+  expectStringContaining,
+} from '../__tests__/matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { VerificationErrorsEnum } from '../user-verification/verification.errors.enum'
+import {
+  VerificationErrorsEnum,
+  VerificationErrorsResponseEnum,
+} from '../user-verification/verification.errors.enum'
+import alertReporting from '../utils/constants/error.alerts'
 import { CustomErrorEnums } from '../utils/guards/dtos/error.dto'
 import { NasesService } from './nases.service'
 
 describe('NasesService', () => {
   let service: NasesService
-  let errorFactoryService: ErrorFactoryService
   let clientsService: ClientsService
 
   const mockSearchResults = (results: ApiIamIdentitiesIdGet200Response[]) =>
-    jest
+    vi
       .mocked(clientsService.slovenskoSkApi.apiIamIdentitiesSearchPost)
       .mockResolvedValue(
         createMock<AxiosResponse<ApiIamIdentitiesIdGet200Response[]>>({ data: results })
@@ -33,7 +46,7 @@ describe('NasesService', () => {
       providers: [
         LineLoggerService,
         NasesService,
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
         { provide: ClientsService, useValue: createMock<ClientsService>() },
         { provide: ApiJwtTokensService, useValue: createMock<ApiJwtTokensService>() },
         {
@@ -51,12 +64,7 @@ describe('NasesService', () => {
     }).compile()
 
     service = module.get<NasesService>(NasesService)
-    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
     clientsService = module.get<ClientsService>(ClientsService)
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
   })
 
   it('should be defined', () => {
@@ -214,13 +222,18 @@ describe('NasesService', () => {
     })
 
     it('should throw error for invalid input size', async () => {
-      const throwerSpy = jest.spyOn(errorFactoryService, 'BadRequestException')
+      const expectedError: LogNestErrorEqualExpectation = {
+        status: HttpStatus.BAD_REQUEST,
+        errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
+        message: 'Must provide between 1 and 10 URIs to validate',
+      }
 
-      await expect(service.getIdentitiesByUris([])).rejects.toThrow()
-      expect(throwerSpy).toHaveBeenCalled()
+      await expect(service.getIdentitiesByUris([])).rejects.toThrowEqualLogNestError(expectedError)
 
       const tooManyInputs = Array.from({ length: 11 }, (_, i) => ({ uri: `uri-${i}` }))
-      await expect(service.getIdentitiesByUris(tooManyInputs)).rejects.toThrow()
+      await expect(service.getIdentitiesByUris(tooManyInputs)).rejects.toThrowEqualLogNestError(
+        expectedError
+      )
     })
 
     it('should deduplicate inputs by URI', async () => {
@@ -249,18 +262,26 @@ describe('NasesService', () => {
         { uri: 'rc://sk/same_uri', physicalEntityId: 'entity-2' },
       ]
 
-      const searchSpy = jest
+      const upvsError = new Error('UPVS server is down')
+      const searchSpy = vi
         .mocked(clientsService.slovenskoSkApi.apiIamIdentitiesSearchPost)
-        .mockRejectedValue(new Error('UPVS server is down'))
+        .mockRejectedValue(upvsError)
 
-      await expect(service.getIdentitiesByUris(inputs)).rejects.toThrow()
+      await expect(service.getIdentitiesByUris(inputs)).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+        console: expectStringContaining('not an instance of AxiosError'),
+        alert: true,
+        error: upvsError,
+      })
       expect(searchSpy).toHaveBeenCalledTimes(1)
     })
   })
 
   describe('lookupIdentityFO', () => {
     const apiIamIdentitiesLookupGetSpy = () =>
-      jest.spyOn(clientsService.slovenskoSkApi, 'apiIamIdentitiesLookupGet')
+      vi.mocked(clientsService.slovenskoSkApi.apiIamIdentitiesLookupGet)
 
     const axiosErrorWithStatus = (status: number, data: object = {}, headers: object = {}) =>
       new AxiosError('Request failed', String(status), undefined, undefined, {
@@ -273,6 +294,17 @@ describe('NasesService', () => {
 
     const thrownBy = async (): Promise<unknown> =>
       service.lookupIdentityFO('1234567890', 'John', 'Doe', 'entity-1').catch((e: unknown) => e)
+
+    const iamFault = { code: '00074421', reason: 'Nastala chyba: IDENTITY_ID_FAULT' }
+    const iamFaultRejection = axiosErrorWithStatus(400, {
+      message: 'Invalid query',
+      fault: iamFault,
+    })
+    const rejection503WithRetryAfter = axiosErrorWithStatus(503, {}, { 'retry-after': '60' })
+    const rejection503 = axiosErrorWithStatus(503)
+    const rejection401 = axiosErrorWithStatus(401)
+    const networkRejection = new AxiosError('Network Error')
+    const nonAxiosRejection = new Error('boom')
 
     // One table for the whole error mapping documented on lookupIdentityFO.
     // Notes per row:
@@ -287,16 +319,18 @@ describe('NasesService', () => {
         rejection: axiosErrorWithStatus(429),
         status: HttpStatus.TOO_MANY_REQUESTS,
         errorName: ErrorEnum.TOO_MANY_REQUESTS_ERROR,
+        expected: { message: ErrorResponseEnum.TOO_MANY_REQUESTS_ERROR },
         persistsRejection: false,
       },
       {
         upstreamCase: '400 with fault (UPVS IAM rejection)',
-        rejection: axiosErrorWithStatus(400, {
-          message: 'Invalid query',
-          fault: { code: '00074421', reason: 'Nastala chyba: IDENTITY_ID_FAULT' },
-        }),
+        rejection: iamFaultRejection,
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorName: VerificationErrorsEnum.IDENTITY_LOOKUP_REJECTED,
+        expected: {
+          message: VerificationErrorsResponseEnum.IDENTITY_LOOKUP_REJECTED,
+          console: expectStringContaining(`code=${iamFault.code} reason=${iamFault.reason}`),
+        },
         persistsRejection: true,
       },
       {
@@ -304,41 +338,64 @@ describe('NasesService', () => {
         rejection: axiosErrorWithStatus(400, { message: 'Invalid query' }),
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorName: ErrorEnum.INTERNAL_SERVER_ERROR,
+        expected: {
+          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+          console: expectStringContaining('failed slovensko-sk container validation'),
+          alert: true,
+        },
         persistsRejection: false,
       },
       {
         upstreamCase: '503 with Retry-After',
-        rejection: axiosErrorWithStatus(503, {}, { 'retry-after': '60' }),
+        rejection: rejection503WithRetryAfter,
         status: HttpStatus.SERVICE_UNAVAILABLE,
         errorName: ErrorEnum.SERVICE_UNAVAILABLE_ERROR,
+        expected: {
+          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+        },
         persistsRejection: false,
       },
       {
         upstreamCase: '503 without Retry-After',
-        rejection: axiosErrorWithStatus(503),
+        rejection: rejection503,
         status: HttpStatus.BAD_GATEWAY,
         errorName: ErrorEnum.BAD_GATEWAY_ERROR,
+        expected: {
+          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+        },
         persistsRejection: false,
       },
       {
         upstreamCase: '401 (broken credentials)',
-        rejection: axiosErrorWithStatus(401),
+        rejection: rejection401,
         status: HttpStatus.BAD_GATEWAY,
         errorName: ErrorEnum.BAD_GATEWAY_AUTH_ERROR,
+        expected: {
+          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          alert: true,
+        },
         persistsRejection: false,
       },
       {
         upstreamCase: 'network error with no response',
-        rejection: new AxiosError('Network Error'),
+        rejection: networkRejection,
         status: HttpStatus.BAD_GATEWAY,
         errorName: ErrorEnum.BAD_GATEWAY_ERROR,
+        expected: {
+          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+        },
         persistsRejection: false,
       },
       {
         upstreamCase: 'non-axios error',
-        rejection: new Error('boom'),
+        rejection: nonAxiosRejection,
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorName: ErrorEnum.INTERNAL_SERVER_ERROR,
+        expected: {
+          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+          console: expectStringContaining('not an instance of AxiosError'),
+          alert: true,
+        },
         persistsRejection: false,
       },
     ])(
@@ -347,20 +404,25 @@ describe('NasesService', () => {
         rejection,
         status,
         errorName,
+        expected,
         persistsRejection,
       }: {
         rejection: Error
         status: HttpStatus
         errorName: CustomErrorEnums
+        expected: Omit<LogNestErrorEqualExpectation, 'status' | 'errorEnum' | 'error'>
         persistsRejection: boolean
       }) => {
         apiIamIdentitiesLookupGetSpy().mockRejectedValue(rejection)
 
-        const error = await thrownBy()
-
-        expect(error).toBeInstanceOf(HttpException)
-        expect((error as HttpException).getStatus()).toBe(status)
-        expect((error as HttpException).getResponse()).toMatchObject({ errorName })
+        await expect(
+          service.lookupIdentityFO('1234567890', 'John', 'Doe', 'entity-1')
+        ).rejects.toThrowEqualLogNestError({
+          status,
+          errorEnum: errorName,
+          error: rejection,
+          ...expected,
+        })
         if (persistsRejection) {
           expect(prismaMock.identityLookupRejection.upsert).toHaveBeenCalled()
         } else {
@@ -372,12 +434,7 @@ describe('NasesService', () => {
     // Rejections are persisted right here in the service - the row's existence
     // excludes the entity from further urgent lookups.
     it('persists the rejection with its fault when UPVS IAM rejects the lookup', async () => {
-      apiIamIdentitiesLookupGetSpy().mockRejectedValue(
-        axiosErrorWithStatus(400, {
-          message: 'Invalid query',
-          fault: { code: '00074421', reason: 'Nastala chyba: IDENTITY_ID_FAULT' },
-        })
-      )
+      apiIamIdentitiesLookupGetSpy().mockRejectedValue(iamFaultRejection)
 
       await thrownBy()
 

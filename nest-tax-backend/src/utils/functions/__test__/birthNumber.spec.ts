@@ -1,3 +1,7 @@
+import { ErrorEnum } from '@bratislava/log-nest'
+import { HttpStatus } from '@nestjs/common'
+
+import { expectStringContaining } from '../../../__tests__/matchers'
 import { addSlashToBirthNumber } from '../birthNumber'
 
 describe('addSlashToBirthNumber', () => {
@@ -13,13 +17,26 @@ describe('addSlashToBirthNumber', () => {
     expect(addSlashToBirthNumber('123456789')).toBe('123456/789')
   })
 
-  it('should throw if the format is wrong', () => {
-    expect(() => addSlashToBirthNumber('12345678901')).toThrow()
-    expect(() => addSlashToBirthNumber('abcdef')).toThrow()
-    expect(() => addSlashToBirthNumber('123456/11a')).toThrow()
-    expect(() => addSlashToBirthNumber('12345611a')).toThrow()
-    expect(() => addSlashToBirthNumber('123456/11')).toThrow()
-    expect(() => addSlashToBirthNumber('12456/1155')).toThrow()
-    expect(() => addSlashToBirthNumber('12345611')).toThrow()
-  })
+  it.each([
+    ['12345678901', 'XXXXXXXXXXX'],
+    ['abcdef', 'abcdef'],
+    ['123456/11a', 'XXXXXX/XXa'],
+    ['12345611a', 'XXXXXXXXa'],
+    ['123456/11', 'XXXXXX/XX'],
+    ['12456/1155', 'XXXXX/XXXX'],
+    ['12345611', 'XXXXXXXX'],
+  ])(
+    'should throw if the format is wrong (%s), logging only the anonymized birth number',
+    (invalidBirthNumber, anonymizedBirthNumber) => {
+      expect(() =>
+        addSlashToBirthNumber(invalidBirthNumber),
+      ).toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: 'Invalid birth number passed to addSlashToBirthNumber',
+        console: expectStringContaining(`'${anonymizedBirthNumber}'`),
+        alert: true,
+      })
+    },
+  )
 })

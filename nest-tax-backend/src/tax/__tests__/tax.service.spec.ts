@@ -1,6 +1,8 @@
 import { ErrorFactoryService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { Mock } from 'vitest'
 
 import prismaMock from '../../../test/singleton'
 import { createTestTax } from '../../__tests__/factories/tax.factory'
@@ -16,6 +18,7 @@ import { PrismaService } from '../../prisma/prisma.service'
 import { QrCodeGeneratorDto } from '../../qrcode/dtos/qrcode.dto'
 import { QrCodeService } from '../../qrcode/qrcode.service'
 import type { GetTaxDetailPureResponse } from '../../tax-definitions/taxDefinitionsTypes'
+import alertReporting from '../../utils/constants/error.alerts'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -24,19 +27,20 @@ import { TaxAvailabilityStatus, TaxStatusEnum } from '../dtos/response.tax.dto'
 import { TaxService } from '../tax.service'
 import * as unifiedTaxUtil from '../utils/unified-tax.util'
 
-jest.mock('../utils/helpers/tax.helper', () => {
-  const actual: typeof import('../utils/helpers/tax.helper') =
-    jest.requireActual('../utils/helpers/tax.helper')
+vi.mock('../utils/helpers/tax.helper', async () => {
+  const actual = await vi.importActual<
+    typeof import('../utils/helpers/tax.helper')
+  >('../utils/helpers/tax.helper')
   return {
     ...actual,
-    getTaxStatus: jest.fn(),
+    getTaxStatus: vi.fn(),
   }
 })
 
-jest.mock('../utils/unified-tax.util', () => ({
-  getTaxDetailPure: jest.fn(),
-  getTaxDetailPureForOneTimeGenerator: jest.fn(),
-  getTaxDetailPureForInstallmentGenerator: jest.fn(),
+vi.mock('../utils/unified-tax.util', () => ({
+  getTaxDetailPure: vi.fn(),
+  getTaxDetailPureForOneTimeGenerator: vi.fn(),
+  getTaxDetailPureForInstallmentGenerator: vi.fn(),
 }))
 
 const koTaxDetailsEmpty: CommunalWasteTaxDetail = {
@@ -87,6 +91,7 @@ const createMockTaxPayer = (
 }
 
 describe('TaxService', () => {
+  const errorFactoryService = new ErrorFactoryService({ alertReporting })
   let service: TaxService
 
   beforeEach(async () => {
@@ -94,17 +99,13 @@ describe('TaxService', () => {
       providers: [
         TaxService,
         { provide: PrismaService, useValue: prismaMock },
-        ErrorFactoryService,
+        { provide: ErrorFactoryService, useValue: errorFactoryService },
         { provide: QrCodeService, useValue: createMock<QrCodeService>() },
         { provide: PaymentService, useValue: createMock<PaymentService>() },
       ],
     }).compile()
 
     service = module.get<TaxService>(TaxService)
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
   })
 
   it('should be defined', () => {
@@ -115,30 +116,25 @@ describe('TaxService', () => {
     const DEFAULT_TEST_NOW = new Date('2025-01-01T12:00:00.000Z')
 
     beforeAll(() => {
-      jest.useFakeTimers()
+      vi.useFakeTimers()
     })
 
     beforeEach(() => {
-      jest.setSystemTime(DEFAULT_TEST_NOW)
+      vi.setSystemTime(DEFAULT_TEST_NOW)
     })
 
     afterAll(() => {
-      jest.useRealTimers()
+      vi.useRealTimers()
     })
 
     it('should throw ForbiddenException when birth number is empty', async () => {
-      const forbiddenExceptionSpy = jest.spyOn(
-        service['errorFactoryService'],
-        'ForbiddenException',
-      )
-
       await expect(
         service.getListOfTaxesByBirthnumberAndType('', TaxType.DZN),
-      ).rejects.toThrow()
-
-      expect(forbiddenExceptionSpy).toHaveBeenCalledWith({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.FORBIDDEN,
         errorEnum: CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
         message: CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+        alert: true,
       })
     })
 
@@ -237,7 +233,7 @@ describe('TaxService', () => {
     ])(
       'should return $expected when no taxes exist and $scenario',
       async ({ now, updatedAt, expected }) => {
-        jest.setSystemTime(new Date(now))
+        vi.setSystemTime(new Date(now))
 
         const mockTaxPayer = createMockTaxPayer({
           createdAt: new Date('2025-01-01T10:00:00.000Z'),
@@ -256,18 +252,13 @@ describe('TaxService', () => {
     )
 
     it('should throw ForbiddenException when birth number is empty for KO tax type', async () => {
-      const forbiddenExceptionSpy = jest.spyOn(
-        service['errorFactoryService'],
-        'ForbiddenException',
-      )
-
       await expect(
         service.getListOfTaxesByBirthnumberAndType('', TaxType.KO),
-      ).rejects.toThrow()
-
-      expect(forbiddenExceptionSpy).toHaveBeenCalledWith({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.FORBIDDEN,
         errorEnum: CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
         message: CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+        alert: true,
       })
     })
 
@@ -361,7 +352,7 @@ describe('TaxService', () => {
     ])(
       'should return $expected when no KO taxes exist and $scenario',
       async ({ now, updatedAt, expected }) => {
-        jest.setSystemTime(new Date(now))
+        vi.setSystemTime(new Date(now))
 
         const mockTaxPayer = createMockTaxPayer({
           createdAt: new Date('2025-01-01T10:00:00.000Z'),
@@ -381,7 +372,7 @@ describe('TaxService', () => {
 
     it('should process existing taxes and return AVAILABLE status when taxes exist', async () => {
       // Set outside inclusion period to prevent current year tax addition
-      jest.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
 
       const mockTaxes = [
         createTestTax({
@@ -409,7 +400,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
+      ;(prismaMock.taxPayment.groupBy as Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 200 } },
       ])
 
@@ -443,7 +434,7 @@ describe('TaxService', () => {
 
     it('should add current year tax when no current year tax exists and shouldAddCurrentYear is true', async () => {
       // Set within inclusion period (March)
-      jest.setSystemTime(new Date('2025-03-01T12:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-03-01T12:00:00.000Z'))
 
       const mockTaxes = [
         createTestTax({
@@ -464,7 +455,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([])
+      ;(prismaMock.taxPayment.groupBy as Mock).mockResolvedValue([])
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -491,7 +482,7 @@ describe('TaxService', () => {
 
     it('should return CANCELLED status when tax is cancelled', async () => {
       // Set outside inclusion period to prevent current year tax addition
-      jest.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
 
       const mockTaxes = [
         createTestTax({
@@ -520,7 +511,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
+      ;(prismaMock.taxPayment.groupBy as Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 200 } },
       ])
 
@@ -541,7 +532,7 @@ describe('TaxService', () => {
 
     it('should return undefined amountToBePaid when tax is cancelled, regardless of amount and paid values', async () => {
       // Set outside inclusion period to prevent current year tax addition
-      jest.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
 
       const mockTaxes = [
         createTestTax({
@@ -571,7 +562,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
+      ;(prismaMock.taxPayment.groupBy as Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 300 } },
         { taxId: 2, _sum: { amount: 500 } },
       ])
@@ -600,7 +591,7 @@ describe('TaxService', () => {
     })
 
     it('should not add current year tax when current year tax already exists', async () => {
-      jest.setSystemTime(new Date('2025-03-01T12:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-03-01T12:00:00.000Z'))
 
       const mockTaxes = [
         createTestTax({
@@ -630,7 +621,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([])
+      ;(prismaMock.taxPayment.groupBy as Mock).mockResolvedValue([])
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -645,7 +636,7 @@ describe('TaxService', () => {
 
     it('should not add current year tax when outside inclusion period and taxPayerWasUpdated is true', async () => {
       // Outside inclusion period (December)
-      jest.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
 
       const mockTaxes = [
         createTestTax({
@@ -665,7 +656,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([])
+      ;(prismaMock.taxPayment.groupBy as Mock).mockResolvedValue([])
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -679,7 +670,7 @@ describe('TaxService', () => {
 
     it('should add current year tax when outside inclusion period but taxPayerWasUpdated is false', async () => {
       // Outside inclusion period (December)
-      jest.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
 
       const mockTaxes = [
         createTestTax({
@@ -700,7 +691,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([])
+      ;(prismaMock.taxPayment.groupBy as Mock).mockResolvedValue([])
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -720,7 +711,7 @@ describe('TaxService', () => {
 
     it('should process KO taxes correctly when taxes exist', async () => {
       // Set outside inclusion period to prevent current year tax addition
-      jest.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
 
       const mockKoTaxes = [
         createTestTax({
@@ -740,7 +731,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockKoTaxes)
-      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
+      ;(prismaMock.taxPayment.groupBy as Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 500 } },
       ])
 
@@ -766,7 +757,7 @@ describe('TaxService', () => {
 
     it('should process multiple KO taxes for the same year with different orders', async () => {
       // Set outside inclusion period to prevent current year tax addition
-      jest.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
 
       const mockKoTaxes = [
         createTestTax({
@@ -802,7 +793,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockKoTaxes)
-      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
+      ;(prismaMock.taxPayment.groupBy as Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 500 } },
         { taxId: 2, _sum: { amount: 2000 } },
       ])
@@ -852,7 +843,7 @@ describe('TaxService', () => {
 
     it('should process multiple KO taxes across different years with different orders', async () => {
       // Set outside inclusion period to prevent current year tax addition
-      jest.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
+      vi.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
 
       const mockKoTaxes = [
         createTestTax({
@@ -898,7 +889,7 @@ describe('TaxService', () => {
       prismaMock.tax.findMany.mockResolvedValue(mockKoTaxes)
 
       // Mock different payment amounts for each tax
-      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
+      ;(prismaMock.taxPayment.groupBy as Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 1200 } },
         { taxId: 2, _sum: { amount: 400 } },
         { taxId: 4, _sum: { amount: 2000 } },
@@ -967,7 +958,7 @@ describe('TaxService', () => {
         createTestTaxPayer({ id: 1 }),
       )
       prismaMock.tax.findUnique.mockResolvedValue(createTestTax())
-      jest.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue(
+      vi.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue(
         createMock<GetTaxDetailPureResponse<TaxType>>({
           overallPaid: 0,
           overallBalance: 1000,
@@ -977,9 +968,9 @@ describe('TaxService', () => {
           itemizedDetail: {},
         }),
       )
-      jest
-        .spyOn(service['qrCodeService'], 'createQrCode')
-        .mockResolvedValue('qr-code-url')
+      vi.mocked(service['qrCodeService'].createQrCode).mockResolvedValue(
+        'qr-code-url',
+      )
 
       const result = await service.getTaxDetail(
         '123456/789',
@@ -1013,7 +1004,7 @@ describe('TaxService', () => {
           },
         }),
       )
-      jest.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue(
+      vi.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue(
         createMock<GetTaxDetailPureResponse<TaxType>>({
           overallPaid: 0,
           overallBalance: 1500,
@@ -1023,9 +1014,9 @@ describe('TaxService', () => {
           itemizedDetail: {},
         }),
       )
-      jest
-        .spyOn(service['qrCodeService'], 'createQrCode')
-        .mockResolvedValue('qr-code-url-ko')
+      vi.mocked(service['qrCodeService'].createQrCode).mockResolvedValue(
+        'qr-code-url-ko',
+      )
 
       const result = await service.getTaxDetail(
         '987654/321',
@@ -1071,7 +1062,7 @@ describe('TaxService', () => {
           },
         }),
       )
-      jest.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue(
+      vi.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue(
         createMock<GetTaxDetailPureResponse<TaxType>>({
           overallPaid: 0,
           overallBalance: 2000,
@@ -1086,8 +1077,7 @@ describe('TaxService', () => {
           itemizedDetail: {},
         }),
       )
-      jest
-        .spyOn(service['qrCodeService'], 'createQrCode')
+      vi.mocked(service['qrCodeService'].createQrCode)
         .mockResolvedValueOnce('qr-code-url-ko-one-time')
         .mockResolvedValueOnce('qr-code-url-ko-installment')
 
@@ -1139,7 +1129,7 @@ describe('TaxService', () => {
           },
         }),
       )
-      jest.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue(
+      vi.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue(
         createMock<GetTaxDetailPureResponse<TaxType>>({
           overallPaid: 1500,
           overallBalance: 1500,
@@ -1149,9 +1139,9 @@ describe('TaxService', () => {
           itemizedDetail: {},
         }),
       )
-      jest
-        .spyOn(service['qrCodeService'], 'createQrCode')
-        .mockResolvedValue('qr-code-url-ko-payments')
+      vi.mocked(service['qrCodeService'].createQrCode).mockResolvedValue(
+        'qr-code-url-ko-payments',
+      )
 
       const result = await service.getTaxDetail(
         '987654/321',
@@ -1185,7 +1175,7 @@ describe('TaxService', () => {
           },
         }),
       )
-      jest.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue(
+      vi.spyOn(unifiedTaxUtil, 'getTaxDetailPure').mockReturnValue(
         createMock<GetTaxDetailPureResponse<TaxType>>({
           overallPaid: 0,
           overallBalance: 1200,
@@ -1195,9 +1185,9 @@ describe('TaxService', () => {
           itemizedDetail: {},
         }),
       )
-      jest
-        .spyOn(service['qrCodeService'], 'createQrCode')
-        .mockResolvedValue('qr-code-url-ko-order2')
+      vi.mocked(service['qrCodeService'].createQrCode).mockResolvedValue(
+        'qr-code-url-ko-order2',
+      )
 
       const result = await service.getTaxDetail(
         '987654/321',
@@ -1232,9 +1222,10 @@ describe('TaxService', () => {
         createTestTaxPayer({ id: 1 }),
       )
       prismaMock.tax.findUnique.mockResolvedValue(mockOneTimeTaxData)
-      jest
-        .spyOn(unifiedTaxUtil, 'getTaxDetailPureForOneTimeGenerator')
-        .mockReturnValue(mockPaymentGeneratorDto)
+      vi.spyOn(
+        unifiedTaxUtil,
+        'getTaxDetailPureForOneTimeGenerator',
+      ).mockReturnValue(mockPaymentGeneratorDto)
 
       const result = await service.getOneTimePaymentGenerator(
         mockTaxPayerWhereUniqueInput,
@@ -1290,12 +1281,12 @@ describe('TaxService', () => {
     } as PaymentGateURLGeneratorDto
 
     beforeEach(() => {
-      jest.useFakeTimers()
-      jest.setSystemTime(new Date('2023-06-01T12:00:00.000Z'))
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date('2023-06-01T12:00:00.000Z'))
     })
 
     afterEach(() => {
-      jest.useRealTimers()
+      vi.useRealTimers()
     })
 
     it('should return installment payment generator for valid tax type', async () => {
@@ -1303,9 +1294,10 @@ describe('TaxService', () => {
         createTestTaxPayer({ id: 1 }),
       )
       prismaMock.tax.findUnique.mockResolvedValue(mockInstallmentTaxData)
-      jest
-        .spyOn(unifiedTaxUtil, 'getTaxDetailPureForInstallmentGenerator')
-        .mockReturnValue(mockPaymentGeneratorDto)
+      vi.spyOn(
+        unifiedTaxUtil,
+        'getTaxDetailPureForInstallmentGenerator',
+      ).mockReturnValue(mockPaymentGeneratorDto)
 
       // Note: getTaxDefinitionByType is not mocked, so it will use the real implementation
 
@@ -1336,15 +1328,16 @@ describe('TaxService', () => {
 
     it('should use current date for today parameter', async () => {
       const fixedDate = new Date('2023-06-15T14:30:00.000Z')
-      jest.setSystemTime(fixedDate)
+      vi.setSystemTime(fixedDate)
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(
         createTestTaxPayer({ id: 1 }),
       )
       prismaMock.tax.findUnique.mockResolvedValue(mockInstallmentTaxData)
-      jest
-        .spyOn(unifiedTaxUtil, 'getTaxDetailPureForInstallmentGenerator')
-        .mockReturnValue(mockPaymentGeneratorDto)
+      vi.spyOn(
+        unifiedTaxUtil,
+        'getTaxDetailPureForInstallmentGenerator',
+      ).mockReturnValue(mockPaymentGeneratorDto)
 
       await service.getInstallmentPaymentGenerator(
         mockTaxPayerWhereUniqueInput,
@@ -1442,10 +1435,6 @@ describe('TaxService', () => {
 
       it('should throw error when tax payer not found', async () => {
         prismaMock.taxPayer.findUnique.mockResolvedValue(null)
-        const notFoundExceptionSpy = jest.spyOn(
-          service['errorFactoryService'],
-          'NotFoundException',
-        )
 
         await expect(
           service['fetchTaxData'](
@@ -1455,9 +1444,8 @@ describe('TaxService', () => {
             TaxType.DZN,
             1,
           ),
-        ).rejects.toThrow()
-
-        expect(notFoundExceptionSpy).toHaveBeenCalledWith({
+        ).rejects.toThrowEqualLogNestError({
+          status: HttpStatus.NOT_FOUND,
           errorEnum: CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
           message: CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
         })
@@ -1468,10 +1456,6 @@ describe('TaxService', () => {
           createTestTaxPayer({ id: 1 }),
         )
         prismaMock.tax.findUnique.mockResolvedValue(null)
-        const notFoundExceptionSpy = jest.spyOn(
-          service['errorFactoryService'],
-          'NotFoundException',
-        )
 
         await expect(
           service['fetchTaxData'](
@@ -1481,9 +1465,8 @@ describe('TaxService', () => {
             TaxType.DZN,
             1,
           ),
-        ).rejects.toThrow()
-
-        expect(notFoundExceptionSpy).toHaveBeenCalledWith({
+        ).rejects.toThrowEqualLogNestError({
+          status: HttpStatus.NOT_FOUND,
           errorEnum: CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
           message: CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
         })
@@ -1531,9 +1514,7 @@ describe('TaxService', () => {
           { taxId: 2, _sum: { amount: 1000 } },
           { taxId: 3, _sum: { amount: null } },
         ]
-        ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
-          groupByRows,
-        )
+        ;(prismaMock.taxPayment.groupBy as Mock).mockResolvedValue(groupByRows)
 
         const result = await service['getAmountsAlreadyPaidByTaxIds']([
           1, 2, 3, 4,
@@ -1564,9 +1545,7 @@ describe('TaxService', () => {
 
       it('should return 0 for taxes with no payments', async () => {
         const groupByRows = [{ taxId: 1, _sum: { amount: 200 } }]
-        ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
-          groupByRows,
-        )
+        ;(prismaMock.taxPayment.groupBy as Mock).mockResolvedValue(groupByRows)
 
         const result = await service['getAmountsAlreadyPaidByTaxIds']([1, 2, 3])
 
@@ -1580,9 +1559,7 @@ describe('TaxService', () => {
           { taxId: 1, _sum: { amount: null } },
           { taxId: 2, _sum: { amount: 0 } },
         ]
-        ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
-          groupByRows,
-        )
+        ;(prismaMock.taxPayment.groupBy as Mock).mockResolvedValue(groupByRows)
 
         const result = await service['getAmountsAlreadyPaidByTaxIds']([1, 2])
 

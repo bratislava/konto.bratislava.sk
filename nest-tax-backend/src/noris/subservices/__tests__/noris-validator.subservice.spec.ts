@@ -1,8 +1,13 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { HttpException } from '@nestjs/common'
+import type { LogNestErrorEqualExpectation } from '@bratislava/log-nest/testing'
+import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import { ZodError } from 'zod'
 
+import { expectAny, expectStringContaining } from '../../../__tests__/matchers'
 import alertReporting from '../../../utils/constants/error.alerts'
+import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import {
   NorisCommunalWasteTaxSchema,
   NorisRealEstateTaxSchema,
@@ -37,32 +42,40 @@ import {
   validNorisRealEstateTaxes,
 } from './data/test.real-estate-tax'
 
-// log-nest doesn't export its ErrorSymbols, so look the alert flag up by the
-// symbol's description instead.
-function getAlert(response: object): unknown {
-  const alertSymbol = Object.getOwnPropertySymbols(response).find(
-    (symbol) => symbol.description === 'alert',
-  )
-  return alertSymbol === undefined
-    ? undefined
-    : Reflect.get(response, alertSymbol)
+const errorFactoryService = new ErrorFactoryService({ alertReporting })
+
+// The message is zod's serialized issue list; tests that know the invalid field override it.
+const expectedValidationError: LogNestErrorEqualExpectation = {
+  status: HttpStatus.BAD_REQUEST,
+  errorEnum: CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
+  message: expectStringContaining('Invalid'),
+  alert: true,
+  error: expectAny<ZodError>(ZodError),
 }
 
 describe('NorisValidatorSubservice', () => {
   let service: NorisValidatorSubservice
+  let logger: LineLoggerService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerService,
-        NorisValidatorSubservice,
         {
-          provide: ErrorFactoryService,
-          useValue: new ErrorFactoryService({ alertReporting }),
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
         },
+        NorisValidatorSubservice,
+        { provide: ErrorFactoryService, useValue: errorFactoryService },
       ],
     }).compile()
     service = module.get<NorisValidatorSubservice>(NorisValidatorSubservice)
+    logger = module.get(LineLoggerService)
+  })
+
+  it('should alert in grafana on noris validation errors', () => {
+    expect(alertReporting).toContain(
+      CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
+    )
   })
 
   it('should be defined', () => {
@@ -99,20 +112,10 @@ describe('NorisValidatorSubservice', () => {
               NorisTaxPaymentSchema,
               testPaymentInvalidVariabilnySymbol,
             )
-          }).toThrow(HttpException)
-
-          try {
-            service.validateSingleNorisData(
-              NorisTaxPaymentSchema,
-              testPaymentInvalidVariabilnySymbol,
-            )
-          } catch (error) {
-            const response = (error as HttpException).getResponse() as Record<
-              symbol | string,
-              unknown
-            >
-            expect(getAlert(response)).toBe(1)
-          }
+          }).toThrowEqualLogNestError({
+            ...expectedValidationError,
+            message: expectStringContaining('variabilny_symbol'),
+          })
         })
       })
     })
@@ -146,41 +149,21 @@ describe('NorisValidatorSubservice', () => {
           invalidNorisRealEstateTaxes.forEach((tax) => {
             expect(() => {
               service.validateSingleNorisData(NorisRealEstateTaxSchema, tax)
-            }).toThrow(HttpException)
-
-            try {
-              service.validateSingleNorisData(NorisRealEstateTaxSchema, tax)
-            } catch (error) {
-              const response = (error as HttpException).getResponse() as Record<
-                symbol | string,
-                unknown
-              >
-              expect(getAlert(response)).toBe(1)
-            }
+            }).toThrowEqualLogNestError(expectedValidationError)
           })
         })
 
         it('should throw error containing the field name that is invalid', () => {
-          expect(() => {
+          const validate = () =>
             service.validateSingleNorisData(
               NorisRealEstateTaxSchema,
               invalidNorisRealEstateTax1,
             )
-          }).toThrow(HttpException)
 
-          try {
-            service.validateSingleNorisData(
-              NorisRealEstateTaxSchema,
-              invalidNorisRealEstateTax1,
-            )
-          } catch (error) {
-            const response = (error as HttpException).getResponse() as Record<
-              symbol | string,
-              unknown
-            >
-            expect(getAlert(response)).toBe(1)
-            expect(response.message).toContain('variabilny_symbol')
-          }
+          expect(validate).toThrowEqualLogNestError({
+            ...expectedValidationError,
+            message: expectStringContaining('variabilny_symbol'),
+          })
         })
       })
     })
@@ -229,50 +212,37 @@ describe('NorisValidatorSubservice', () => {
           invalidNorisCommunalWasteTaxes.forEach((tax) => {
             expect(() => {
               service.validateSingleNorisData(NorisCommunalWasteTaxSchema, tax)
-            }).toThrow(HttpException)
-
-            try {
-              service.validateSingleNorisData(NorisCommunalWasteTaxSchema, tax)
-            } catch (error) {
-              const response = (error as HttpException).getResponse() as Record<
-                symbol | string,
-                unknown
-              >
-              expect(getAlert(response)).toBe(1)
-            }
+            }).toThrowEqualLogNestError(expectedValidationError)
           })
         })
 
         it('should throw error containing the field name that is invalid', () => {
-          expect(() => {
+          const validate = () =>
             service.validateSingleNorisData(
               NorisCommunalWasteTaxSchema,
               invalidNorisCommunalWasteTax1,
             )
-          }).toThrow(HttpException)
 
-          try {
-            service.validateSingleNorisData(
-              NorisCommunalWasteTaxSchema,
-              invalidNorisCommunalWasteTax1,
-            )
-          } catch (error) {
-            const response = (error as HttpException).getResponse() as Record<
-              symbol | string,
-              unknown
-            >
-            expect(getAlert(response)).toBe(1)
-            expect(response.message).toContain('variabilny_symbol')
-          }
+          expect(validate).toThrowEqualLogNestError({
+            ...expectedValidationError,
+            message: expectStringContaining('variabilny_symbol'),
+          })
         })
 
         it('should throw for invalid stav_dokladu', () => {
+          const invalidTax = {
+            ...testCommunalWasteTax1,
+            stav_dokladu: 'invalid',
+          }
           expect(() => {
-            service.validateSingleNorisData(NorisCommunalWasteTaxSchema, {
-              ...testCommunalWasteTax1,
-              stav_dokladu: 'invalid',
-            })
-          }).toThrow(HttpException)
+            service.validateSingleNorisData(
+              NorisCommunalWasteTaxSchema,
+              invalidTax,
+            )
+          }).toThrowEqualLogNestError({
+            ...expectedValidationError,
+            message: expectStringContaining('stav_dokladu'),
+          })
         })
 
         it('should throw error for invalid forma_uhrady', () => {
@@ -281,7 +251,10 @@ describe('NorisValidatorSubservice', () => {
               NorisCommunalWasteTaxSchema,
               invalidNorisCommunalWasteTax3,
             )
-          }).toThrow(HttpException)
+          }).toThrowEqualLogNestError({
+            ...expectedValidationError,
+            message: expectStringContaining('forma_uhrady'),
+          })
         })
       })
     })
@@ -289,9 +262,6 @@ describe('NorisValidatorSubservice', () => {
 
   describe('validateNorisData with array', () => {
     it('should validate all payments, return only valid and error log the rest', () => {
-      const errorLogSpy = jest
-        .spyOn(service['logger'], 'error')
-        .mockImplementation(jest.fn())
       const result = service.validateNorisData(NorisTaxPaymentSchema, [
         testPaymentValid,
         testPaymentStringUhrazeno,
@@ -305,15 +275,12 @@ describe('NorisValidatorSubservice', () => {
       })
       expect(result).not.toContainEqual(testPaymentInvalidVariabilnySymbol)
 
-      expect(errorLogSpy).toHaveBeenCalledTimes(1)
-      const [[firstError]] = errorLogSpy.mock.calls as [[HttpException]]
-      expect(getAlert(firstError.getResponse() as object)).toBe(1)
+      expect(vi.mocked(logger.error).mock.calls).toEqual([
+        [expect.toMatchLogNestError(expectedValidationError)],
+      ])
     })
 
     it('should validate all real estate taxes, return only valid and error log the rest', () => {
-      const errorLogSpy = jest
-        .spyOn(service['logger'], 'error')
-        .mockImplementation(jest.fn())
       const result = service.validateNorisData(
         NorisRealEstateTaxSchema,
         allNorisRealEstateTaxes,
@@ -323,19 +290,21 @@ describe('NorisValidatorSubservice', () => {
       expect(result).toContainEqual(testRealEstateTax2)
       expect(result).toContainEqual({ ...testRealEstateTax3, uhrazeno: 450.75 })
 
-      expect(errorLogSpy).toHaveBeenCalledTimes(
-        invalidNorisRealEstateTaxes.length,
+      expect(vi.mocked(logger.error).mock.calls).toEqual(
+        invalidNorisRealEstateTaxes.map((): unknown[] => [
+          expect.toMatchLogNestError(expectedValidationError),
+        ]),
       )
-      const [[firstError]] = errorLogSpy.mock.calls as [[HttpException]]
-      expect(getAlert(firstError.getResponse() as object)).toBe(1)
-      const [, [secondError]] = errorLogSpy.mock.calls
-      expect(JSON.stringify(secondError)).toContain('det_pozemky_DAN_E') // field name that is invalid
+      // field name that is invalid
+      expect(vi.mocked(logger.error)).toHaveBeenNthCalledWith(
+        2,
+        expect.toMatchLogNestError({
+          message: expectStringContaining('det_pozemky_DAN_E'),
+        }),
+      )
     })
 
     it('should validate all communal waste taxes, return only valid and error log the rest', () => {
-      const errorLogSpy = jest
-        .spyOn(service['logger'], 'error')
-        .mockImplementation(jest.fn())
       const result = service.validateNorisData(
         NorisCommunalWasteTaxSchema,
         allNorisCommunalWasteTaxes,
@@ -348,13 +317,18 @@ describe('NorisValidatorSubservice', () => {
       expect(result).toContainEqual(testCommunalWasteTax5)
       expect(result).toContainEqual(testCommunalWasteTax6)
 
-      expect(errorLogSpy).toHaveBeenCalledTimes(
-        invalidNorisCommunalWasteTaxes.length,
+      expect(vi.mocked(logger.error).mock.calls).toEqual(
+        invalidNorisCommunalWasteTaxes.map((): unknown[] => [
+          expect.toMatchLogNestError(expectedValidationError),
+        ]),
       )
-      const [[firstError]] = errorLogSpy.mock.calls as [[HttpException]]
-      expect(getAlert(firstError.getResponse() as object)).toBe(1)
-      const [, [secondError]] = errorLogSpy.mock.calls
-      expect(JSON.stringify(secondError)).toContain('objem_nadoby') // field name that is invalid
+      // field name that is invalid
+      expect(vi.mocked(logger.error)).toHaveBeenNthCalledWith(
+        2,
+        expect.toMatchLogNestError({
+          message: expectStringContaining('objem_nadoby'),
+        }),
+      )
     })
   })
 })

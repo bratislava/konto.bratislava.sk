@@ -4,6 +4,7 @@ import {
   LineLoggerService,
 } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
@@ -276,9 +277,11 @@ describe('AdminService', () => {
           { year: 1970, norisData: mockNorisData },
           TaxType.DZN,
         ),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'No tax administrator found in the database',
+        alert: true,
       })
 
       expect(prismaMock.taxAdministrator.findFirst).toHaveBeenCalledWith({})
@@ -300,9 +303,11 @@ describe('AdminService', () => {
           { year: 1970, norisData: mockNorisData },
           TaxType.DZN,
         ),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Tax with this variable symbol already exists',
+        alert: true,
       })
 
       expect(prismaMock.tax.findFirst).toHaveBeenCalledWith({
@@ -415,9 +420,11 @@ describe('AdminService', () => {
           taxType: mockTaxType,
           order: mockOrder,
         }),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Tax payer not found',
+        alert: true,
       })
 
       expect(prismaMock.taxPayer.findUnique).toHaveBeenCalledWith({
@@ -441,9 +448,11 @@ describe('AdminService', () => {
           taxType: mockTaxType,
           order: mockOrder,
         }),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Tax not found',
+        alert: true,
       })
 
       expect(prismaMock.taxPayer.findUnique).toHaveBeenCalledWith({

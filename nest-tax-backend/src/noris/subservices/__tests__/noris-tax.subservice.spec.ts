@@ -1,5 +1,6 @@
 import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import type { Mocked } from 'vitest'
 
@@ -170,9 +171,11 @@ describe('NorisTaxSubservice', () => {
         service.processNorisTaxData(unknownTaxType, [], mockYear, {
           suppressEmail: false,
         }),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: `Unknown tax type: ${unknownTaxType}`,
+        alert: true,
       })
     })
   })

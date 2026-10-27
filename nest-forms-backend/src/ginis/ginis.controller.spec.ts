@@ -6,8 +6,12 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosError, AxiosResponse } from 'axios'
 
 import { createMockGinisDocumentData } from '../__tests__/factories/ginisDocument.factory'
+import { expectAny } from '../__tests__/matchers'
 import ClientsService from '../clients/clients.service'
-import { FormsErrorsEnum } from '../forms/forms.errors.enum'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
 import alertReporting from '../utils/constants/error.alerts'
@@ -49,8 +53,11 @@ describe('GinisController', () => {
       controller['formsService'].getUniqueForm = vi.fn().mockResolvedValue(null)
       await expect(
         controller.getGinisDocumentByFormId('123'),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
         errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+        alert: true,
       })
     })
 
@@ -69,7 +76,8 @@ describe('GinisController', () => {
       controller['formsService'].getUniqueForm = vi.fn().mockResolvedValue({})
       await expect(
         controller.getGinisDocumentByFormId(formId),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
         errorEnum: ErrorEnum.NOT_FOUND_ERROR,
         message: `Form with id ${formId} does not have a ginisDocumentId`,
       })
@@ -92,11 +100,12 @@ describe('GinisController', () => {
         .mockRejectedValue(ginisError)
       await expect(
         controller.getGinisDocumentByFormId('123'),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.NOT_FOUND,
         errorEnum: ErrorEnum.NOT_FOUND_ERROR,
         message:
           'Document or document owner not found in GINIS - document id, if available: unavailable - document not found or invalid',
+        error: axiosError,
       })
 
       // GinisError without an underlying AxiosError -> generic internal server error
@@ -109,21 +118,24 @@ describe('GinisController', () => {
         .mockRejectedValue(ownerGinisError)
       await expect(
         controller.getGinisDocumentByFormId('123'),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Error while getting document or owner from GINIS:',
         error: ownerGinisError,
+        alert: true,
       })
 
       // Unexpected (non-Ginis) error, here a missing owner response -> generic internal server error
       controller['ginisAPIService'].getOwnerDetail = vi.fn()
       await expect(
         controller.getGinisDocumentByFormId('123'),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Error while getting document or owner from GINIS:',
+        error: expectAny(TypeError),
+        alert: true,
       })
     })
 

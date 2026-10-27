@@ -130,10 +130,11 @@ describe('TaxService', () => {
     it('should throw ForbiddenException when birth number is empty', async () => {
       await expect(
         service.getListOfTaxesByBirthnumberAndType('', TaxType.DZN),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.FORBIDDEN,
         errorEnum: CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
         message: CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+        alert: true,
       })
     })
 
@@ -253,10 +254,11 @@ describe('TaxService', () => {
     it('should throw ForbiddenException when birth number is empty for KO tax type', async () => {
       await expect(
         service.getListOfTaxesByBirthnumberAndType('', TaxType.KO),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.FORBIDDEN,
         errorEnum: CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
         message: CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+        alert: true,
       })
     })
 
@@ -1442,8 +1444,10 @@ describe('TaxService', () => {
             TaxType.DZN,
             1,
           ),
-        ).rejects.toThrowLogNestError({
+        ).rejects.toThrowEqualLogNestError({
+          status: HttpStatus.NOT_FOUND,
           errorEnum: CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
+          message: CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
         })
       })
 
@@ -1461,7 +1465,8 @@ describe('TaxService', () => {
             TaxType.DZN,
             1,
           ),
-        ).rejects.toThrowLogNestError({
+        ).rejects.toThrowEqualLogNestError({
+          status: HttpStatus.NOT_FOUND,
           errorEnum: CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
           message: CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
         })

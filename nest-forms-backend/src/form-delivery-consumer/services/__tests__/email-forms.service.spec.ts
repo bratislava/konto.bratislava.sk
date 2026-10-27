@@ -29,7 +29,10 @@ import BaConfigService from '../../../config/ba-config.service'
 import { ClusterEnv } from '../../../config/environment-variables'
 import ConvertService from '../../../convert/convert.service'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
-import { FormsErrorsEnum } from '../../../forms/forms.errors.enum'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../../../forms/forms.errors.enum'
 import { FormError, Forms, FormState } from '../../../generated/prisma/client'
 import { MailerAttachment } from '../../../mailer/mailer.interface'
 import MailgunService from '../../../mailer/mailgun.service'
@@ -37,7 +40,10 @@ import OloMailerService from '../../../mailer/olo-mailer.service'
 import PrismaService from '../../../prisma/prisma.service'
 import alertReporting from '../../../utils/constants/error.alerts'
 import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
-import { EmailFormsErrorsEnum } from '../../errors/email-forms.errors.enum'
+import {
+  EmailFormsErrorsEnum,
+  EmailFormsErrorsResponseEnum,
+} from '../../errors/email-forms.errors.enum'
 import EmailFormsService from '../email-forms.service'
 
 vi.mock('forms-shared/definitions/getFormDefinitionBySlug')
@@ -434,9 +440,11 @@ describe('EmailFormsService', () => {
       prismaMock.forms.findUnique.mockResolvedValue(null)
       await expect(
         service.sendEmailForm(formId, userEmail, userFirstName),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.NOT_FOUND,
         errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+        alert: true,
       })
     })
 
@@ -448,9 +456,11 @@ describe('EmailFormsService', () => {
 
       await expect(
         service.sendEmailForm(formId, userEmail, userFirstName),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.NOT_FOUND,
         errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${mockForm.formDefinitionSlug}`,
+        alert: true,
       })
     })
 
@@ -462,9 +472,10 @@ describe('EmailFormsService', () => {
 
       await expect(
         service.sendEmailForm(formId, userEmail, userFirstName),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: EmailFormsErrorsEnum.NOT_EMAIL_FORM,
+        message: `${EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM} Form id: ${formId}.`,
       })
     })
 
@@ -477,9 +488,10 @@ describe('EmailFormsService', () => {
 
       await expect(
         service.sendEmailForm(formId, userEmail, userFirstName),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+        message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
       })
     })
 
@@ -492,9 +504,10 @@ describe('EmailFormsService', () => {
 
       await expect(
         service.sendEmailForm(formId, userEmail, userFirstName),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: FormsErrorsEnum.EMPTY_FORM_SUMMARY,
+        message: FormsErrorsResponseEnum.EMPTY_FORM_SUMMARY,
       })
     })
 

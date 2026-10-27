@@ -1,5 +1,6 @@
 import { ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
@@ -22,7 +23,7 @@ import ScannerClientService from '../scanner-client/scanner-client.service'
 import { EDITABLE_ERRORS } from '../utils/constants'
 import alertReporting from '../utils/constants/error.alerts'
 import { GetFormsRequestDto } from './dtos/requests.dto'
-import { FormsErrorsEnum } from './forms.errors.enum'
+import { FormsErrorsEnum, FormsErrorsResponseEnum } from './forms.errors.enum'
 import FormsService from './forms.service'
 
 vi.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
@@ -253,9 +254,12 @@ describe('FormsService', () => {
 
         await expect(
           service.getForms(query, authUser.user),
-        ).rejects.toThrowLogNestError({
+        ).rejects.toThrowEqualLogNestError({
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
           errorEnum: FormsErrorsEnum.FORM_SENT_AT_MISSING_ERROR,
+          message: FormsErrorsResponseEnum.FORM_SENT_AT_MISSING_ERROR,
           console: { formId: form.id, state: FormState.QUEUED },
+          alert: true,
         })
       })
     })
@@ -267,8 +271,11 @@ describe('FormsService', () => {
       prismaMock.forms.findUnique.mockResolvedValue(null)
       await expect(
         service.checkFormBeforeSending(formId),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
         errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${formId}`,
+        alert: true,
       })
     })
 
@@ -277,8 +284,10 @@ describe('FormsService', () => {
       prismaMock.forms.findUnique.mockResolvedValue(form)
       await expect(
         service.checkFormBeforeSending('1'),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
+        message: `${FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR} Current form state is: ${form.state}.`,
       })
     })
 
@@ -336,8 +345,11 @@ describe('FormsService', () => {
 
       await expect(
         service.updateFormWithUser(formId, {}, authUser.user),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
         errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${formId}`,
+        alert: true,
       })
     })
 
@@ -391,11 +403,14 @@ describe('FormsService', () => {
       const formId = '123e4567-e89b-12d3-a456-426614174000'
       vi.spyOn(service, 'getUniqueForm').mockResolvedValue(null)
 
-      await expect(service.bumpJsonVersion(formId)).rejects.toThrowLogNestError(
-        {
-          errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        },
-      )
+      await expect(
+        service.bumpJsonVersion(formId),
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+        alert: true,
+      })
     })
 
     it('should throw error if form is not editable', async () => {
@@ -407,11 +422,13 @@ describe('FormsService', () => {
       vi.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
       service.isEditable = vi.fn().mockReturnValue(false)
 
-      await expect(service.bumpJsonVersion(formId)).rejects.toThrowLogNestError(
-        {
-          errorEnum: FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
-        },
-      )
+      await expect(
+        service.bumpJsonVersion(formId),
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.BAD_REQUEST,
+        errorEnum: FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR,
+      })
     })
 
     it('should throw error if form definition is not found', async () => {
@@ -425,11 +442,14 @@ describe('FormsService', () => {
       service.isEditable = vi.fn().mockReturnValue(true)
       ;(getFormDefinitionBySlug as Mock).mockReturnValue(null)
 
-      await expect(service.bumpJsonVersion(formId)).rejects.toThrowLogNestError(
-        {
-          errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        },
-      )
+      await expect(
+        service.bumpJsonVersion(formId),
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+        alert: true,
+      })
     })
 
     it('should throw error if version bump is not possible', async () => {
@@ -446,11 +466,13 @@ describe('FormsService', () => {
         schema: { type: 'object' },
       })
 
-      await expect(service.bumpJsonVersion(formId)).rejects.toThrowLogNestError(
-        {
-          errorEnum: FormsErrorsEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
-        },
-      )
+      await expect(
+        service.bumpJsonVersion(formId),
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.BAD_REQUEST,
+        errorEnum: FormsErrorsEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
+        message: FormsErrorsResponseEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
+      })
     })
 
     it('should update form version and data when bump is possible', async () => {

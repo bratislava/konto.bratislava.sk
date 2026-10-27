@@ -14,6 +14,7 @@ vi.mock('axios')
 const mockedAxios = axios as Mocked<typeof axios>
 
 const ENFORCEMENT_BACKEND_URL = 'https://nest-enforcement-backend.test'
+const towUrl = (ecv: string): string => `${ENFORCEMENT_BACKEND_URL}/api/public/tow/${ecv}`
 const ENFORCEMENT_BACKEND_TOW_API_KEY = 'tow-api-key-test'
 
 /**
@@ -107,12 +108,20 @@ describe('TowingService', () => {
     })
 
     it('maps a 404 response to NotFoundException with TOWING_NOT_FOUND', async () => {
+      const ecv = 'BA000XX'
       const axiosError = makeAxiosError(HttpStatus.NOT_FOUND)
       mockedAxios.get.mockRejectedValueOnce(axiosError)
 
-      await expect(service.getPublicTowingByEcv('BA000XX')).rejects.toThrowLogNestError({
+      await expect(service.getPublicTowingByEcv(ecv)).rejects.toThrowEqualLogNestError({
         status: HttpStatus.NOT_FOUND,
         errorEnum: TowingErrorsEnum.TOWING_NOT_FOUND,
+        message: TowingErrorsResponseEnum.TOWING_NOT_FOUND,
+        console: {
+          ecv,
+          url: towUrl(ecv),
+          status: HttpStatus.NOT_FOUND,
+        },
+        error: axiosError,
       })
     })
 
@@ -121,31 +130,49 @@ describe('TowingService', () => {
       const axiosError = makeAxiosError(HttpStatus.BAD_REQUEST)
       mockedAxios.get.mockRejectedValueOnce(axiosError)
 
-      await expect(service.getPublicTowingByEcv(ecv)).rejects.toThrowLogNestError({
+      await expect(service.getPublicTowingByEcv(ecv)).rejects.toThrowEqualLogNestError({
         status: HttpStatus.BAD_REQUEST,
         errorEnum: TowingErrorsEnum.ENFORCEMENT_BACKEND_REJECTED_REQUEST,
+        message: TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_REJECTED_REQUEST,
+        console: {
+          ecv,
+          url: towUrl(ecv),
+          status: HttpStatus.BAD_REQUEST,
+        },
         error: axiosError,
       })
     })
 
     it('maps a network error (no response) to 503 ENFORCEMENT_BACKEND_UNAVAILABLE', async () => {
       const ecv = 'BA123AB'
-      const axiosError = makeAxiosError(undefined, 'ECONNREFUSED')
+      const code = 'ECONNREFUSED'
+      const axiosError = makeAxiosError(undefined, code)
       mockedAxios.get.mockRejectedValueOnce(axiosError)
 
-      await expect(service.getPublicTowingByEcv(ecv)).rejects.toThrowLogNestError({
+      await expect(service.getPublicTowingByEcv(ecv)).rejects.toThrowEqualLogNestError({
         status: HttpStatus.SERVICE_UNAVAILABLE,
         errorEnum: TowingErrorsEnum.ENFORCEMENT_BACKEND_UNAVAILABLE,
+        message: TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_UNAVAILABLE,
+        console: { ecv, url: towUrl(ecv), code },
         error: axiosError,
       })
     })
 
     it('maps upstream 503 to 503 ENFORCEMENT_BACKEND_UNAVAILABLE', async () => {
-      mockedAxios.get.mockRejectedValueOnce(makeAxiosError(HttpStatus.SERVICE_UNAVAILABLE))
+      const ecv = 'BA123AB'
+      const axiosError = makeAxiosError(HttpStatus.SERVICE_UNAVAILABLE)
+      mockedAxios.get.mockRejectedValueOnce(axiosError)
 
-      await expect(service.getPublicTowingByEcv('BA123AB')).rejects.toThrowLogNestError({
+      await expect(service.getPublicTowingByEcv(ecv)).rejects.toThrowEqualLogNestError({
         status: HttpStatus.SERVICE_UNAVAILABLE,
         errorEnum: TowingErrorsEnum.ENFORCEMENT_BACKEND_UNAVAILABLE,
+        message: TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_UNAVAILABLE,
+        console: {
+          ecv,
+          url: towUrl(ecv),
+          status: HttpStatus.SERVICE_UNAVAILABLE,
+        },
+        error: axiosError,
       })
     })
 
@@ -159,10 +186,12 @@ describe('TowingService', () => {
         const axiosError = makeAxiosError(status)
         mockedAxios.get.mockRejectedValueOnce(axiosError)
 
-        await expect(service.getPublicTowingByEcv(ecv)).rejects.toThrowLogNestError({
+        await expect(service.getPublicTowingByEcv(ecv)).rejects.toThrowEqualLogNestError({
           status: HttpStatus.BAD_GATEWAY,
           errorEnum: ErrorEnum.BAD_GATEWAY_AUTH_ERROR,
           message: TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_UNEXPECTED_RESPONSE,
+          console: { ecv, url: towUrl(ecv), status },
+          alert: true,
           error: axiosError,
         })
       }
@@ -177,10 +206,11 @@ describe('TowingService', () => {
       const axiosError = makeAxiosError(status)
       mockedAxios.get.mockRejectedValueOnce(axiosError)
 
-      await expect(service.getPublicTowingByEcv(ecv)).rejects.toThrowLogNestError({
+      await expect(service.getPublicTowingByEcv(ecv)).rejects.toThrowEqualLogNestError({
         status: HttpStatus.BAD_GATEWAY,
         errorEnum: ErrorEnum.BAD_GATEWAY_ERROR,
         message: TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_UNEXPECTED_RESPONSE,
+        console: { ecv, url: towUrl(ecv), status },
         error: axiosError,
       })
     })

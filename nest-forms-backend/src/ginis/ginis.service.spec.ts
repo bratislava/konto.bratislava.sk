@@ -4,6 +4,7 @@ import { SslPridatSouborPridatSoubor } from '@bratislava/ginis-sdk'
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
 import { getQueueToken } from '@nestjs/bull'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -24,7 +25,10 @@ import {
 } from '../__tests__/factories/form.factory'
 import { createTestFormDefinitionSlovenskoSkGeneric } from '../__tests__/factories/formDefinition.factory'
 import { createMockGinisDocumentData } from '../__tests__/factories/ginisDocument.factory'
-import { expectObjectContaining } from '../__tests__/matchers'
+import {
+  expectObjectContaining,
+  expectStringContaining,
+} from '../__tests__/matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
@@ -203,8 +207,11 @@ describe('GinisService', () => {
 
       await expect(
         service.onQueueConsumption(messageBase),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
         errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${formBase.formDefinitionSlug}`,
+        alert: true,
       })
     })
 
@@ -219,12 +226,15 @@ describe('GinisService', () => {
 
       await expect(
         service.onQueueConsumption(messageBase),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        message: `onQueueConsumption: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}`,
         console: {
           formDefinitionType: FormDefinitionType.SlovenskoSkTax,
           formId: formBase.id,
         },
+        alert: true,
       })
     })
 
@@ -888,8 +898,13 @@ describe('GinisService', () => {
 
       await expect(
         service.createDocument(form, formDefinitionBase),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+        message: `createDocument: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
+        console: expectStringContaining(
+          `No form data json in form id: ${form.id}`,
+        ),
       })
     })
 
@@ -1159,7 +1174,8 @@ describe('GinisService', () => {
 
       await expect(
         service.extractContactParamsFromUri(form),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
         message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in form. Form id: ${form.id}`,
       })
@@ -1173,7 +1189,8 @@ describe('GinisService', () => {
 
       await expect(
         service.extractContactParamsFromExternalId(form),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
         message: `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: External id not found in form. Form id: ${form.id}`,
       })
@@ -1192,9 +1209,11 @@ describe('GinisService', () => {
 
       await expect(
         service.createDocument(form, formDefinitionBase),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
         message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in nases.`,
+        console: { formId: form.id },
       })
     })
 
@@ -1216,9 +1235,11 @@ describe('GinisService', () => {
 
       await expect(
         service.createDocument(form, formDefinitionBase),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
         message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Multiple results found for form uri.`,
+        console: { formId: form.id },
       })
     })
 
@@ -1237,8 +1258,10 @@ describe('GinisService', () => {
 
       await expect(
         service.createDocument(form, formDefinitionBase),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
         errorEnum: FormsErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
+        message: `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR}: Contact info not found in city account for external id: ${userExternalId}. Form id: ${form.id}`,
       })
     })
 

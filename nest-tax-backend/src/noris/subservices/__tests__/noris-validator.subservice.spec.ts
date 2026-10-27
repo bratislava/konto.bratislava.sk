@@ -1,9 +1,11 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import type { LogNestErrorExpectation } from '@bratislava/log-nest/testing'
+import type { LogNestErrorEqualExpectation } from '@bratislava/log-nest/testing'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import { ZodError } from 'zod'
 
-import { expectStringContaining } from '../../../__tests__/matchers'
+import { expectAny, expectStringContaining } from '../../../__tests__/matchers'
 import alertReporting from '../../../utils/constants/error.alerts'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import {
@@ -42,9 +44,13 @@ import {
 
 const errorFactoryService = new ErrorFactoryService({ alertReporting })
 
-const expectedValidationError: LogNestErrorExpectation = {
+// The message is zod's serialized issue list; tests that know the invalid field override it.
+const expectedValidationError: LogNestErrorEqualExpectation = {
+  status: HttpStatus.BAD_REQUEST,
   errorEnum: CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
+  message: expectStringContaining('Invalid'),
   alert: true,
+  error: expectAny<ZodError>(ZodError),
 }
 
 describe('NorisValidatorSubservice', () => {
@@ -106,7 +112,10 @@ describe('NorisValidatorSubservice', () => {
               NorisTaxPaymentSchema,
               testPaymentInvalidVariabilnySymbol,
             )
-          }).toThrowLogNestError(expectedValidationError)
+          }).toThrowEqualLogNestError({
+            ...expectedValidationError,
+            message: expectStringContaining('variabilny_symbol'),
+          })
         })
       })
     })
@@ -140,7 +149,7 @@ describe('NorisValidatorSubservice', () => {
           invalidNorisRealEstateTaxes.forEach((tax) => {
             expect(() => {
               service.validateSingleNorisData(NorisRealEstateTaxSchema, tax)
-            }).toThrowLogNestError(expectedValidationError)
+            }).toThrowEqualLogNestError(expectedValidationError)
           })
         })
 
@@ -151,7 +160,7 @@ describe('NorisValidatorSubservice', () => {
               invalidNorisRealEstateTax1,
             )
 
-          expect(validate).toThrowLogNestError({
+          expect(validate).toThrowEqualLogNestError({
             ...expectedValidationError,
             message: expectStringContaining('variabilny_symbol'),
           })
@@ -203,7 +212,7 @@ describe('NorisValidatorSubservice', () => {
           invalidNorisCommunalWasteTaxes.forEach((tax) => {
             expect(() => {
               service.validateSingleNorisData(NorisCommunalWasteTaxSchema, tax)
-            }).toThrowLogNestError(expectedValidationError)
+            }).toThrowEqualLogNestError(expectedValidationError)
           })
         })
 
@@ -214,7 +223,7 @@ describe('NorisValidatorSubservice', () => {
               invalidNorisCommunalWasteTax1,
             )
 
-          expect(validate).toThrowLogNestError({
+          expect(validate).toThrowEqualLogNestError({
             ...expectedValidationError,
             message: expectStringContaining('variabilny_symbol'),
           })
@@ -230,7 +239,10 @@ describe('NorisValidatorSubservice', () => {
               NorisCommunalWasteTaxSchema,
               invalidTax,
             )
-          }).toThrowLogNestError(expectedValidationError)
+          }).toThrowEqualLogNestError({
+            ...expectedValidationError,
+            message: expectStringContaining('stav_dokladu'),
+          })
         })
 
         it('should throw error for invalid forma_uhrady', () => {
@@ -239,7 +251,10 @@ describe('NorisValidatorSubservice', () => {
               NorisCommunalWasteTaxSchema,
               invalidNorisCommunalWasteTax3,
             )
-          }).toThrowLogNestError(expectedValidationError)
+          }).toThrowEqualLogNestError({
+            ...expectedValidationError,
+            message: expectStringContaining('forma_uhrady'),
+          })
         })
       })
     })

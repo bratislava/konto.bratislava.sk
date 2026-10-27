@@ -116,10 +116,11 @@ describe('FilesHelper', () => {
     it('should throw NotFoundException when form definition is not found', () => {
       vi.mocked(getFormDefinitionBySlug).mockReturnValue(null)
 
-      expect(() => service.forms2formInfo(mockForm)).toThrowLogNestError({
+      expect(() => service.forms2formInfo(mockForm)).toThrowEqualLogNestError({
         status: HttpStatus.NOT_FOUND,
         errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} test-slug`,
+        alert: true,
       })
     })
   })

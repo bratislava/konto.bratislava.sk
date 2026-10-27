@@ -38,12 +38,18 @@ import {
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import { FormError, Forms, FormState } from '../generated/prisma/client'
-import { NasesErrorsEnum } from '../nases/nases.errors.enum'
+import {
+  NasesErrorsEnum,
+  NasesErrorsResponseEnum,
+} from '../nases/nases.errors.enum'
 import NasesSenderService from '../nases/services/nases.sender.service'
 import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import alertReporting from '../utils/constants/error.alerts'
-import { FormSenderErrorsEnum } from './form-sender.errors.enum'
+import {
+  FormSenderErrorsEnum,
+  FormSenderErrorsResponseEnum,
+} from './form-sender.errors.enum'
 import { FormSenderService } from './form-sender.service'
 
 vi.mock('forms-shared/definitions/getFormDefinitionBySlug')
@@ -183,8 +189,11 @@ describe('FormSenderService', () => {
 
       await expect(
         service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: NasesErrorsEnum.SEND_TO_NASES_ERROR,
+        message: NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
+        alert: true,
       })
       expect(updateFormSpy).toHaveBeenCalledWith('1', {
         state: FormState.DRAFT,
@@ -217,8 +226,10 @@ describe('FormSenderService', () => {
 
       await expect(
         service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: FormSenderErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
+        message: FormSenderErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
       })
     })
 
@@ -258,8 +269,10 @@ describe('FormSenderService', () => {
           mockUser,
           authUser.user,
         ),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: FormSenderErrorsEnum.CREATE_PDF_IMAGE_ERROR,
+        message: `${FormSenderErrorsResponseEnum.CREATE_PDF_IMAGE_ERROR} Received form id: ${mockForm.id}.`,
         error: pdfError,
       })
       expect(sendToNasesSpy).not.toHaveBeenCalled()
@@ -308,8 +321,11 @@ describe('FormSenderService', () => {
           mockUser,
           authUser.user,
         ),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: NasesErrorsEnum.SEND_TO_NASES_ERROR,
+        message: NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
+        alert: true,
       })
       expect(sendToNasesSpy).toHaveBeenCalled()
       expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
@@ -550,8 +566,11 @@ describe('FormSenderService', () => {
 
       await expect(
         service.updateAndSendForm(mockForm.id, {}, authUser.user),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
         errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${mockForm.formDefinitionSlug}`,
+        alert: true,
       })
     })
 
@@ -568,8 +587,10 @@ describe('FormSenderService', () => {
 
       await expect(
         service.updateAndSendForm('1', {}, authUser.user),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_ACCEPTABLE,
         errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: FormsErrorsResponseEnum.FORM_DATA_INVALID,
       })
     })
 
@@ -581,8 +602,10 @@ describe('FormSenderService', () => {
 
       await expect(
         service.updateAndSendForm('1', {}, authUser.user),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: FormSenderErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
+        message: FormSenderErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
       })
     })
 
@@ -594,8 +617,10 @@ describe('FormSenderService', () => {
 
       await expect(
         service.updateAndSendForm('1', {}, authUser.user),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.FORBIDDEN,
         errorEnum: FormSenderErrorsEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
+        message: FormSenderErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
       })
     })
 
@@ -607,9 +632,12 @@ describe('FormSenderService', () => {
 
       await expect(
         service.updateAndSendForm(mockForm.id, {}, authUser.user),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
         errorEnum: FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
+        message: `${FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${mockForm.id}`,
         error: rabbitError,
+        alert: true,
       })
     })
 
@@ -689,7 +717,8 @@ describe('FormSenderService', () => {
 
       await expect(
         service.updateAndSendForm('1', {}, authUser.user),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
         message: `${FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR} It is already being sent.`,
       })
@@ -707,8 +736,12 @@ describe('FormSenderService', () => {
 
       await expect(
         service.updateAndSendForm(mockForm.id, {}, authUser.user),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
         errorEnum: FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
+        message: `${FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${mockForm.id}`,
+        error: rabbitError,
+        alert: true,
       })
 
       expect(service['formsService'].updateForm).toHaveBeenCalledWith('1', {
@@ -770,7 +803,8 @@ describe('FormSenderService', () => {
 
         await expect(
           service.updateAndSendForm(mockForm.id, {}, authUser.user),
-        ).rejects.toThrowLogNestError({
+        ).rejects.toThrowEqualLogNestError({
+          status: HttpStatus.BAD_REQUEST,
           errorEnum: FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
           message: `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Total: ${totalFileSize}, limit: ${maxTotalFileSize}`,
         })
@@ -808,7 +842,8 @@ describe('FormSenderService', () => {
 
         await expect(
           service.updateAndSendForm(mockForm.id, {}, authUser.user),
-        ).rejects.toThrowLogNestError({
+        ).rejects.toThrowEqualLogNestError({
+          status: HttpStatus.BAD_REQUEST,
           errorEnum: FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
           message: `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Total: ${totalFileSize}, limit: ${maxCumulativeSizeGlobal}`,
         })
@@ -915,9 +950,10 @@ describe('FormSenderService', () => {
 
       expect(() =>
         service['getFormSummaryOrThrow'](mockForm, mockFormDefinition),
-      ).toThrowLogNestError({
+      ).toThrowEqualLogNestError({
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: FormSenderErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
+        message: FormSenderErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
         error: summaryError,
       })
     })
@@ -945,8 +981,10 @@ describe('FormSenderService', () => {
           rabbitPayload,
           'test-uri',
         ),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: NasesErrorsEnum.UNABLE_SEND_FORM_TO_NASES,
+        message: NasesErrorsResponseEnum.UNABLE_SEND_FORM_TO_NASES,
         console: {
           status: sendResponse.status,
           formId: rabbitPayload.formId,
@@ -1033,8 +1071,15 @@ describe('FormSenderService', () => {
           rabbitPayload,
           'test-uri',
         ),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: NasesErrorsEnum.UNABLE_SEND_FORM_TO_NASES,
+        message: NasesErrorsResponseEnum.UNABLE_SEND_FORM_TO_NASES,
+        console: {
+          status: sendResponse.status,
+          formId: rabbitPayload.formId,
+          error: FormError.NASES_SEND_ERROR,
+        },
       })
 
       expect(updateFormSpy).toHaveBeenCalledWith(rabbitPayload.formId, {

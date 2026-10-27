@@ -1,5 +1,6 @@
 import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import axios from 'axios'
 import type { Mocked } from 'vitest'
@@ -414,10 +415,17 @@ describe('BloomreachOutboxProcessor', () => {
       // SUPERSEDED status update, so this only ever rejects that first call.
       prismaMock.bloomreachOutbox.update.mockRejectedValueOnce(downgradeError)
 
-      await expect(processor.processOutbox()).rejects.toThrowLogNestError({
+      await expect(processor.processOutbox()).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message:
           'Attempted to downgrade a terminal outbox entry while merging a superseded entry - mergeCustomerCommandData should have prevented this, investigate',
+        console: {
+          entryId: oldEntry.id,
+          newerEntryId: newerPendingEntry.id,
+          externalId: oldEntry.externalId,
+        },
+        alert: true,
         error: downgradeError,
       })
     })

@@ -1,3 +1,5 @@
+import type { LogNestErrorEqualExpectation } from '@bratislava/log-nest/testing'
+import { HttpStatus } from '@nestjs/common'
 import type { Mock } from 'vitest'
 
 import {
@@ -394,12 +396,14 @@ describe('UnifiedTaxUtil', () => {
   })
 
   describe('calculateInstallmentAmounts', () => {
-    const missingInstallmentError = {
+    const missingInstallmentError: LogNestErrorEqualExpectation = {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
       errorEnum: CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
       message: CustomErrorTaxTypesResponseEnum.MISSING_INSTALLMENT_AMOUNTS,
     }
 
-    const incorrectCountError = {
+    const incorrectCountError: LogNestErrorEqualExpectation = {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
       errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
       message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
     }
@@ -413,7 +417,7 @@ describe('UnifiedTaxUtil', () => {
 
       expect(() =>
         calculateInstallmentAmounts(installments, 0, 3),
-      ).toThrowLogNestError(missingInstallmentError)
+      ).toThrowEqualLogNestError(missingInstallmentError)
     })
 
     it('should throw when order 2 is missing even if numberOfInstallments is omitted', () => {
@@ -424,7 +428,7 @@ describe('UnifiedTaxUtil', () => {
 
       expect(() =>
         calculateInstallmentAmounts(installments, 0),
-      ).toThrowLogNestError(missingInstallmentError)
+      ).toThrowEqualLogNestError(missingInstallmentError)
     })
 
     it('should not throw INSTALLMENT_INCORRECT_COUNT when numberOfInstallments is omitted and length matches sequential orders', () => {
@@ -445,7 +449,7 @@ describe('UnifiedTaxUtil', () => {
 
       expect(() =>
         calculateInstallmentAmounts(installments, 0, 3),
-      ).toThrowLogNestError(incorrectCountError)
+      ).toThrowEqualLogNestError(incorrectCountError)
     })
 
     it('should distribute overallPaid sequentially across installments in order', () => {
@@ -1704,7 +1708,8 @@ describe('UnifiedTaxUtil', () => {
         ],
       }
 
-      expect(() => getTaxDetailPure(input)).toThrowLogNestError({
+      expect(() => getTaxDetailPure(input)).toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
       })
@@ -1737,7 +1742,8 @@ describe('UnifiedTaxUtil', () => {
         ],
       }
 
-      expect(() => getTaxDetailPure(input)).toThrowLogNestError({
+      expect(() => getTaxDetailPure(input)).toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
       })
@@ -1749,7 +1755,8 @@ describe('UnifiedTaxUtil', () => {
         installments: [],
       }
 
-      expect(() => getTaxDetailPure(input)).toThrowLogNestError({
+      expect(() => getTaxDetailPure(input)).toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         message: 'No installments found for the tax.',
       })
@@ -1858,7 +1865,8 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
 
     expect(() =>
       getTaxDetailPureForInstallmentGenerator(options),
-    ).toThrowLogNestError({
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
       message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
     })
@@ -1873,7 +1881,8 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
 
     expect(() =>
       getTaxDetailPureForInstallmentGenerator(options),
-    ).toThrowLogNestError({
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.AFTER_DUE_DATE,
       message: CustomErrorTaxTypesResponseEnum.AFTER_DUE_DATE,
     })
@@ -1888,7 +1897,8 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
 
     expect(() =>
       getTaxDetailPureForInstallmentGenerator(options),
-    ).toThrowLogNestError({
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
       message: CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
     })
@@ -1917,7 +1927,8 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
 
     expect(() =>
       getTaxDetailPureForInstallmentGenerator(options),
-    ).toThrowLogNestError({
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
       message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
     })
@@ -1946,7 +1957,8 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
 
     expect(() =>
       getTaxDetailPureForInstallmentGenerator(options),
-    ).toThrowLogNestError({
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
       message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
     })
@@ -1966,7 +1978,8 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
 
     expect(() =>
       getTaxDetailPureForInstallmentGenerator(options),
-    ).toThrowLogNestError({
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
       message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
     })
@@ -2012,7 +2025,8 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
 
     expect(() =>
       getTaxDetailPureForInstallmentGenerator(options),
-    ).toThrowLogNestError({
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
       errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
       message: 'No installments found for the tax.',
     })
@@ -2037,7 +2051,8 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
 
     expect(() =>
       getTaxDetailPureForInstallmentGenerator(options),
-    ).toThrowLogNestError({
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
       errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
       message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
     })
@@ -2072,7 +2087,8 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
 
     expect(() =>
       getTaxDetailPureForInstallmentGenerator(options),
-    ).toThrowLogNestError({
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
       errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
       message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
     })
@@ -2216,7 +2232,8 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
           },
         ],
       })
-    }).toThrowLogNestError({
+    }).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
       message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
     })
@@ -2233,7 +2250,8 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
           },
         ],
       })
-    }).toThrowLogNestError({
+    }).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
       message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
     })

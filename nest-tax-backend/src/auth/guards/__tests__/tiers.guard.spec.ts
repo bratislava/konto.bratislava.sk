@@ -1,4 +1,5 @@
 import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
+import type { LogNestErrorEqualExpectation } from '@bratislava/log-nest/testing'
 import { createMock } from '@golevelup/ts-vitest'
 import { ExecutionContext, HttpStatus } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
@@ -25,7 +26,7 @@ describe('TiersGuard', () => {
   let reflector: Mocked<Reflector>
   let cognitoSubservice: Mocked<CognitoSubservice>
   const errorFactoryService = new ErrorFactoryService({ alertReporting })
-  const forbiddenTierError = {
+  const forbiddenTierError: LogNestErrorEqualExpectation = {
     status: HttpStatus.FORBIDDEN,
     errorEnum: ErrorEnum.FORBIDDEN_ERROR,
     message: 'Forbidden tier',
@@ -167,7 +168,7 @@ describe('TiersGuard', () => {
 
       await expect(
         guard.canActivate(makeMockContext()),
-      ).rejects.toThrowLogNestError(forbiddenTierError)
+      ).rejects.toThrowEqualLogNestError(forbiddenTierError)
     })
 
     it('should throw a 403 ForbiddenException when user tier matches none of multiple required tiers', async () => {
@@ -181,7 +182,7 @@ describe('TiersGuard', () => {
 
       await expect(
         guard.canActivate(makeMockContext()),
-      ).rejects.toThrowLogNestError(forbiddenTierError)
+      ).rejects.toThrowEqualLogNestError(forbiddenTierError)
     })
   })
 

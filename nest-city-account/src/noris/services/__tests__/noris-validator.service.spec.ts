@@ -1,9 +1,11 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import type { LogNestErrorExpectation } from '@bratislava/log-nest/testing'
+import type { LogNestErrorEqualExpectation } from '@bratislava/log-nest/testing'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import z from 'zod'
 
-import { expectStringContaining } from '../../../__tests__/matchers'
+import { expectAny, expectStringContaining } from '../../../__tests__/matchers'
 import alertReporting from '../../../utils/constants/error.alerts'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import { EdeskRecordSchema } from '../../types/noris.types'
@@ -23,9 +25,12 @@ import {
   validEdeskRecords,
 } from './data/test.edesk-record'
 
-const expectValidationError = (messagePart?: string): LogNestErrorExpectation => ({
+// The message is zod's own issue dump, so only a distinctive part of it is asserted.
+const expectValidationError = (messagePart?: string): LogNestErrorEqualExpectation => ({
+  status: HttpStatus.BAD_REQUEST,
   errorEnum: CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
-  ...(messagePart && { message: expectStringContaining(messagePart) }),
+  message: messagePart ? expectStringContaining(messagePart) : expectAny<string>(String),
+  error: expectAny<z.ZodError>(z.ZodError),
 })
 
 describe('NorisValidatorService', () => {
@@ -69,32 +74,32 @@ describe('NorisValidatorService', () => {
           invalidEdeskRecords.forEach((record) => {
             expect(() => {
               service.validateNorisData(EdeskRecordSchema, record)
-            }).toThrowLogNestError(expectValidationError())
+            }).toThrowEqualLogNestError(expectValidationError())
           })
         })
 
         it('should throw error containing id_noris when missing', () => {
           expect(() => {
             service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordMissingIdNoris)
-          }).toThrowLogNestError(expectValidationError('id_noris'))
+          }).toThrowEqualLogNestError(expectValidationError('id_noris'))
         })
 
         it('should throw error containing uri_generated when missing', () => {
           expect(() => {
             service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordMissingUriGenerated)
-          }).toThrowLogNestError(expectValidationError('uri_generated'))
+          }).toThrowEqualLogNestError(expectValidationError('uri_generated'))
         })
 
         it('should throw for wrong type of id_noris', () => {
           expect(() => {
             service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordWrongIdNorisType)
-          }).toThrowLogNestError(expectValidationError('id_noris'))
+          }).toThrowEqualLogNestError(expectValidationError('id_noris'))
         })
 
         it('should throw for wrong type of uri_generated', () => {
           expect(() => {
             service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordWrongUriGeneratedType)
-          }).toThrowLogNestError(expectValidationError('uri_generated'))
+          }).toThrowEqualLogNestError(expectValidationError('uri_generated'))
         })
       })
     })

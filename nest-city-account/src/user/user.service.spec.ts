@@ -1,5 +1,6 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import type { Mocked, MockedFunction } from 'vitest'
 
@@ -20,7 +21,7 @@ import {
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { UserErrorsEnum } from './user.error.enum'
+import { UserErrorsEnum, UserErrorsResponseEnum } from './user.error.enum'
 import { UserService } from './user.service'
 import { UserTierService } from './user-tier.service'
 import { UserDataSubservice } from './utils/subservice/user-data.subservice'
@@ -253,8 +254,11 @@ describe('UserService', () => {
 
       await expect(
         service.updateGdprConsent(cognitoUserData, ConsentEnum.MARKETING, true)
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+        message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        alert: true,
       })
 
       expect(userDataSubservice.setUserConsents).not.toHaveBeenCalled()
@@ -294,8 +298,11 @@ describe('UserService', () => {
           cognitoUserData,
           DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT
         )
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+        message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        alert: true,
       })
 
       expect(userDataSubservice.setDeliveryMethodPreference).not.toHaveBeenCalled()

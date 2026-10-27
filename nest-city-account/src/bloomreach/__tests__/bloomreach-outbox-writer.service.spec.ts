@@ -1,5 +1,6 @@
 import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import type { Mocked } from 'vitest'
 
@@ -141,10 +142,13 @@ describe('BloomreachOutboxWriterService', () => {
       })
       prismaMock.bloomreachOutbox.create.mockRejectedValue(duplicatePendingError)
 
-      await expect(service.queueCustomerCommand(externalId)).rejects.toThrowLogNestError({
+      await expect(service.queueCustomerCommand(externalId)).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message:
           'bloomreach_outbox_customers_pending_key violated - lockTransactionWithKey should have prevented this, investigate a locking bug',
+        console: { externalId },
+        alert: true,
         error: duplicatePendingError,
       })
     })
@@ -173,10 +177,13 @@ describe('BloomreachOutboxWriterService', () => {
       })
       prismaMock.bloomreachOutbox.update.mockRejectedValue(downgradeError)
 
-      await expect(service.queueCustomerCommand(externalId)).rejects.toThrowLogNestError({
+      await expect(service.queueCustomerCommand(externalId)).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message:
           'Attempted to downgrade a terminal outbox entry - mergeCustomerCommandData should have prevented this, investigate',
+        console: { externalId },
+        alert: true,
         error: downgradeError,
       })
     })
@@ -326,10 +333,17 @@ describe('BloomreachOutboxWriterService', () => {
       })
       prismaMock.bloomreachOutbox.create.mockRejectedValue(duplicatePendingError)
 
-      await expect(service.queueConsentEvents([], externalId)).rejects.toThrowLogNestError({
+      await expect(service.queueConsentEvents([], externalId)).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message:
           'bloomreach_outbox_events_pending_key violated - lockTransactionWithKey should have prevented this, investigate a locking bug',
+        console: {
+          externalId,
+          eventType: eventCommand.commandData.event_type,
+          category: eventCommand.commandData.properties.category,
+        },
+        alert: true,
         error: duplicatePendingError,
       })
     })
@@ -359,10 +373,17 @@ describe('BloomreachOutboxWriterService', () => {
       })
       prismaMock.bloomreachOutbox.update.mockRejectedValue(downgradeError)
 
-      await expect(service.queueConsentEvents([], externalId)).rejects.toThrowLogNestError({
+      await expect(service.queueConsentEvents([], externalId)).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message:
           'Attempted to downgrade a terminal outbox entry - isExistingHigherPriorityEventCommand should have prevented this, investigate',
+        console: {
+          externalId,
+          eventType: eventCommand.commandData.event_type,
+          category: eventCommand.commandData.properties.category,
+        },
+        alert: true,
         error: downgradeError,
       })
     })

@@ -4,6 +4,7 @@ import {
   LineLoggerService,
 } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum } from 'openapi-clients/city-account'
@@ -716,8 +717,11 @@ describe('NorisTaxRealEstateSubservice', () => {
           2023,
           ['123456/7890'],
         ),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
+        message: 'Failed to get taxes from Noris',
+        alert: true,
         error: mockError,
       })
     })

@@ -1,5 +1,6 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
 
@@ -7,7 +8,7 @@ import ClientsService from '../../clients/clients.service'
 import BaConfigService from '../../config/ba-config.service'
 import { mockRfoResponseListOneItems } from '../../rfo-by-birthnumber/dtos/__test__/rfoResponse.mock'
 import alertReporting from '../../utils/constants/error.alerts'
-import { MagproxyErrorsEnum } from '../magproxy.errors.enum'
+import { MagproxyErrorsEnum, MagproxyErrorsResponseEnum } from '../magproxy.errors.enum'
 import { MagproxyService } from '../magproxy.service'
 
 describe('MagproxyService', () => {
@@ -69,8 +70,11 @@ describe('MagproxyService', () => {
     it('should throw error if the data is not an array', () => {
       expect(() => {
         service['validateRfoDataFormat']({} as unknown as ResponseRfoPersonDto[])
-      }).toThrowLogNestError({
+      }).toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: MagproxyErrorsEnum.RFO_DATA_ARRAY_EXPECTED,
+        message: MagproxyErrorsResponseEnum.RFO_DATA_ARRAY_EXPECTED,
+        alert: true,
       })
 
       expect(vi.mocked(logger.error)).toHaveBeenCalled()

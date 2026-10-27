@@ -136,9 +136,13 @@ describe('NorisConnectionService', () => {
       const operation = vi.fn().mockRejectedValue(opError)
       const errorMessage = 'fail'
 
-      await expect(service.withConnection(operation, errorMessage)).rejects.toThrowLogNestError({
+      await expect(
+        service.withConnection(operation, errorMessage)
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: errorMessage,
+        alert: true,
         error: opError,
       })
     })
@@ -152,9 +156,12 @@ describe('NorisConnectionService', () => {
       const operation = vi.fn().mockRejectedValue(mssqlError)
       const errorMessage = 'fail'
 
-      await expect(service.withConnection(operation, errorMessage)).rejects.toThrowLogNestError({
+      await expect(
+        service.withConnection(operation, errorMessage)
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.BAD_REQUEST,
         errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
+        message: `${errorMessage}: ${JSON.stringify({ code: mssqlError.code, name: mssqlError.name })}`,
         error: mssqlError,
       })
       expect(prismaMock.$executeRaw).toHaveBeenCalled()

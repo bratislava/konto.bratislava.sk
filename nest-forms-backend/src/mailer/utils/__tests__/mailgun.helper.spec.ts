@@ -11,7 +11,10 @@ import BaConfigService from '../../../config/ba-config.service'
 import StrapiService from '../../../strapi/strapi.service'
 import alertReporting from '../../../utils/constants/error.alerts'
 import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
-import { MailgunErrorsEnum } from '../../../utils/global-enums/mailgun.errors.enum'
+import {
+  MailgunErrorsEnum,
+  MailgunErrorsResponseEnum,
+} from '../../../utils/global-enums/mailgun.errors.enum'
 import MailgunHelper from '../mailgun.helper'
 
 // Mock for IMailgunClient
@@ -278,9 +281,10 @@ describe('MailgunHelper', () => {
 
       await expect(
         mailgunHelper.getFilledTemplate(templateName, {}),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.NOT_FOUND,
         errorEnum: MailgunErrorsEnum.TEMPLATE_NOT_FOUND,
+        message: `${MailgunErrorsResponseEnum.TEMPLATE_NOT_FOUND}: ${templateName}`,
       })
     })
   })

@@ -17,3 +17,6 @@ export const expectArrayContaining = <T>(arr: T[]): T[] => {
 
 export const expectStringContaining = (str: string): string =>
   expect.stringContaining(str) as string
+
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters -- T must be caller-specified (e.g. expectAny<Date>(Date)) since expect.any()'s sample argument doesn't determine the resulting matcher's type
+export const expectAny = <T>(sample: unknown): T => expect.any(sample) as T

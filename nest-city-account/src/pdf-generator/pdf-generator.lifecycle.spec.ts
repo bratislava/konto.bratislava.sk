@@ -4,11 +4,18 @@
  * the integration test in pdf-generator.service.spec.ts needs the real one.
  */
 
-import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  ErrorResponseEnum,
+  LineLoggerService,
+} from '@bratislava/log-nest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { chromium } from 'playwright'
 import type { Mock } from 'vitest'
 
+import { expectStringContaining } from '../__tests__/matchers'
 import BaConfig from '../config/ba-config'
 import BaConfigService from '../config/ba-config.service'
 import EnvironmentVariables from '../config/environment-variables'
@@ -112,8 +119,12 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
         close: vi.fn().mockResolvedValue(undefined),
       }))
 
-      await expect(service.generateFromTemplate(...templateArgs)).rejects.toThrowLogNestError({
+      await expect(service.generateFromTemplate(...templateArgs)).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+        console: expectStringContaining('Error generating PDF'),
+        alert: true,
         error: pdfError,
       })
 

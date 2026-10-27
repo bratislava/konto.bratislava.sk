@@ -3,9 +3,14 @@ import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosError } from 'axios'
 import type { MockInstance } from 'vitest'
+import { ZodError } from 'zod'
 
+import { expectAny, expectStringContaining } from '../__tests__/matchers'
 import BaConfigService from '../config/ba-config.service'
-import { StrapiErrorsEnum } from './strapi.errors.enum'
+import {
+  StrapiErrorsEnum,
+  StrapiErrorsResponseEnum,
+} from './strapi.errors.enum'
 import StrapiService from './strapi.service'
 
 describe('StrapiService', () => {
@@ -92,9 +97,12 @@ describe('StrapiService', () => {
 
         await expect(
           service.getFeedbackLink(formDefinitionSlug),
-        ).rejects.toThrowLogNestError({
+        ).rejects.toThrowEqualLogNestError({
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           errorEnum: StrapiErrorsEnum.FEEDBACK_LINK_FETCH_ERROR,
+          message: StrapiErrorsResponseEnum.FEEDBACK_LINK_FETCH_ERROR,
+          console: expectStringContaining(formDefinitionSlug),
+          error: expectAny(ZodError),
         })
       },
     )
@@ -105,9 +113,11 @@ describe('StrapiService', () => {
 
       await expect(
         service.getFeedbackLink(formDefinitionSlug),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.BAD_GATEWAY,
         errorEnum: StrapiErrorsEnum.FEEDBACK_LINK_FETCH_ERROR,
+        message: StrapiErrorsResponseEnum.FEEDBACK_LINK_FETCH_ERROR,
+        console: expectStringContaining(formDefinitionSlug),
         error: axiosError,
       })
     })

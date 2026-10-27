@@ -4,6 +4,7 @@ import {
   LineLoggerService,
 } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import mssql, { MSSQLError } from 'mssql'
 import type { Mock, Mocked } from 'vitest'
@@ -131,9 +132,11 @@ describe('NorisConnectionSubservice', () => {
         service.withConnection(async () => {
           return Promise.reject(genericError)
         }, errorMessage),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: errorMessage,
+        alert: true,
         error: genericError,
       })
       expect(prismaService.$transaction).not.toHaveBeenCalled()
@@ -148,9 +151,11 @@ describe('NorisConnectionSubservice', () => {
         service.withConnection(async () => {
           return Promise.reject(mssqlError)
         }, errorMessage),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: `${errorMessage}: ${JSON.stringify({ code: mssqlError.code, name: mssqlError.name })}`,
+        alert: true,
         error: mssqlError,
       })
       expect(prismaService.$transaction).not.toHaveBeenCalled()
@@ -171,7 +176,8 @@ describe('NorisConnectionSubservice', () => {
           service.withConnection(async () => {
             return Promise.reject(mssqlError)
           }, errorMessage),
-        ).rejects.toThrowLogNestError({
+        ).rejects.toThrowEqualLogNestError({
+          status: HttpStatus.BAD_REQUEST,
           errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
           message: `${errorMessage}: ${JSON.stringify({ code, name: mssqlError.name })}`,
           error: mssqlError,
@@ -188,8 +194,10 @@ describe('NorisConnectionSubservice', () => {
         service.withConnection(async () => {
           return Promise.reject(mssqlError)
         }, errorMessage),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.BAD_REQUEST,
         errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
+        message: `${errorMessage}: ${JSON.stringify({ code: mssqlError.code, name: mssqlError.name })}`,
         error: mssqlError,
       })
 

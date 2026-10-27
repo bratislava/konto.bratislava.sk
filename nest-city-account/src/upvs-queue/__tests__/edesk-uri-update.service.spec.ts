@@ -1,5 +1,6 @@
 import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
@@ -85,9 +86,11 @@ describe('EdeskUriUpdateService', () => {
 
       const input = { uri: 'rc://sk/old', id: 'id-1' }
 
-      await expect(service.handleUriUpdateInternal(input)).rejects.toThrowLogNestError({
+      await expect(service.handleUriUpdateInternal(input)).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: `Failed to update URI for physical entity id ${input.id}`,
+        alert: true,
       })
 
       expect(prismaMock.physicalEntity.update).toHaveBeenCalledWith({
@@ -107,9 +110,11 @@ describe('EdeskUriUpdateService', () => {
 
       const input = { uri: 'rc://sk/old', id: 'id-1' }
 
-      await expect(service.handleUriUpdateInternal(input)).rejects.toThrowLogNestError({
+      await expect(service.handleUriUpdateInternal(input)).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: `Failed to update URI for physical entity id ${input.id}`,
+        alert: true,
       })
 
       expect(prismaMock.physicalEntity.update).toHaveBeenCalledWith({

@@ -4,6 +4,7 @@ import {
   LineLoggerService,
 } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
 import type { MockInstance } from 'vitest'
@@ -554,9 +555,11 @@ describe('TaxImportTasksService', () => {
 
       await expect(
         service.loadOverpaymentsFromNoris(),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: `Invalid OVERPAYMENTS_LOOKBACK_DAYS configuration: ${invalidLookbackDays}. Must be a positive integer.`,
+        alert: true,
       })
 
       expect(
@@ -616,8 +619,12 @@ describe('TaxImportTasksService', () => {
 
       await expect(
         service.loadOverpaymentsFromNoris(),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
+        message:
+          'Failed to load overpayments from Noris after all retry attempts',
+        error,
       })
 
       expect(retryWithDelayMock).toHaveBeenCalled()
@@ -642,8 +649,11 @@ describe('TaxImportTasksService', () => {
 
       await expect(
         service.loadOverpaymentsFromNoris(),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
+        message:
+          'Failed to load overpayments from Noris after all retry attempts',
         error,
       })
 
@@ -664,8 +674,11 @@ describe('TaxImportTasksService', () => {
 
       await expect(
         service.loadOverpaymentsFromNoris(),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
+        message:
+          'Failed to load overpayments from Noris after all retry attempts',
         error,
       })
     })

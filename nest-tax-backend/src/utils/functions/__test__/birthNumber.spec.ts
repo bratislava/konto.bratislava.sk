@@ -1,4 +1,5 @@
 import { ErrorEnum } from '@bratislava/log-nest'
+import { HttpStatus } from '@nestjs/common'
 
 import { expectStringContaining } from '../../../__tests__/matchers'
 import { addSlashToBirthNumber } from '../birthNumber'
@@ -29,10 +30,12 @@ describe('addSlashToBirthNumber', () => {
     (invalidBirthNumber, anonymizedBirthNumber) => {
       expect(() =>
         addSlashToBirthNumber(invalidBirthNumber),
-      ).toThrowLogNestError({
+      ).toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Invalid birth number passed to addSlashToBirthNumber',
         console: expectStringContaining(`'${anonymizedBirthNumber}'`),
+        alert: true,
       })
     },
   )

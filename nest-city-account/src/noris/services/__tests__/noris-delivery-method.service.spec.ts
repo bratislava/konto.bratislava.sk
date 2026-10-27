@@ -1,5 +1,6 @@
 import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 
@@ -154,9 +155,11 @@ describe('NorisDeliveryMethodService', () => {
 
       await expect(
         service.updateDeliveryMethods({ data: invalidCityAccountData })
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Date must be provided when delivery method is CITY_ACCOUNT',
+        alert: true,
       })
     })
 

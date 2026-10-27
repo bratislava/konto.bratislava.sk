@@ -288,9 +288,11 @@ describe('PaymentService', () => {
 
       await expect(
         service.trackPaymentInBloomreach(mockTaxPayment, externalId),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Failed to track payment in Bloomreach.',
+        alert: true,
       })
 
       expect(bloomreachService.trackEventTaxPayment).toHaveBeenCalled()
@@ -356,7 +358,8 @@ describe('PaymentService', () => {
 
       await expect(
         service.trackPaymentInBloomreach(mockTaxPayment, externalId),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
         errorEnum: ErrorEnum.NOT_FOUND_ERROR,
         message: `Tax with id ${mockTaxPayment.taxId} not found.`,
       })
@@ -731,9 +734,11 @@ describe('PaymentService', () => {
 
       await expect(
         service.processPaymentResponse(TaxType.DZN, mockQuery),
-      ).rejects.toThrowLogNestError({
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,
+        message: 'Error to redirect to response',
+        alert: true,
         error: unexpectedError,
       })
 

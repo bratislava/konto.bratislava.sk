@@ -1,8 +1,8 @@
 import { createHash } from 'node:crypto'
 
-import { ErrorFactoryService } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
-import { Inject, Injectable, Logger } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import type { Cache } from 'cache-manager'
 
 import {
@@ -34,15 +34,14 @@ const OPERATION_TIMEOUT_MS = 1000
  * Sending is a critical path that must not wait for CEP (up to ~20 s), and the signature was already verified right
  * after signing, so the send reuses that verdict.
  *
- * Caches CEP verification verdicts in Redis, keyed by a hash of the signature. The verdict contains only codes and
- * the certificate issuer, no personal data. Failures are logged and treated as a miss, so a Redis outage only means
+ * Caches CEP verification verdicts in Redis, keyed by a hash of the signature. The verdict contains result codes and
+ * the certificate issuer and serial number, never the signed content. Failures are logged and treated as a miss, so a Redis outage only means
  * CEP is called every time.
  */
 @Injectable()
 export default class SignatureVerdictCacheService {
-  private readonly logger = new Logger('SignatureVerdictCacheService')
-
   constructor(
+    private readonly logger: LineLoggerService,
     @Inject(CACHE_MANAGER) private readonly cache: Cache,
     private readonly errorFactoryService: ErrorFactoryService,
   ) {}

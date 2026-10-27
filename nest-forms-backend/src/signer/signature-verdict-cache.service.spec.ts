@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 
-import { ErrorFactoryService } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { HttpException } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
@@ -42,6 +42,7 @@ describe('SignatureVerdictCacheService', () => {
       providers: [
         SignatureVerdictCacheService,
         ErrorFactoryService,
+        LineLoggerService,
         { provide: CACHE_MANAGER, useValue: cache },
       ],
     }).compile()

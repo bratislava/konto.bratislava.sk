@@ -1,5 +1,5 @@
-import { ErrorFactoryService } from '@bratislava/log-nest'
-import { Injectable, Logger } from '@nestjs/common'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { Injectable } from '@nestjs/common'
 import { isAxiosError } from 'axios'
 import type { ApiCepVerifyPost200Response } from 'openapi-clients/slovensko-sk'
 
@@ -67,18 +67,23 @@ type CheckResult =
   | { status: 'unavailable' }
   | { status: 'verified'; verdict: CepVerificationVerdict }
 
+/** The certificate serial number identifies the signer, logs get only the result codes. */
+const verdictForLog = (verdict: CepVerificationVerdict) =>
+  verdict.accepted
+    ? { accepted: true, result: verdict.signature.result }
+    : verdict
+
 /**
  * Verifies signed forms with the Slovensko.sk CEP service (`POST /api/cep/verify`), see `evaluateCepVerification` for how the
  * response is interpreted. Behaviour depends on `FEATURE_TOGGLE_SIGNATURE_VERIFICATION`.
  *
  * The CEP response contains the whole signed form and the signer's personal data, it is never logged. Only the
- * verdict (codes and certificate issuer) is.
+ * verdict result codes are.
  */
 @Injectable()
 export default class SignatureVerificationService {
-  private readonly logger = new Logger('SignatureVerificationService')
-
   constructor(
+    private readonly logger: LineLoggerService,
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly clientsService: ClientsService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
@@ -124,14 +129,12 @@ export default class SignatureVerificationService {
 
     const cachedVerdict = await this.verdictCache.get(content)
     if (cachedVerdict) {
-      this.logger.log(
-        `Signature verification: ${JSON.stringify({
-          ...context,
-          mode,
-          cached: true,
-          verdict: cachedVerdict,
-        })}`,
-      )
+      this.logger.log('Signature verification', {
+        ...context,
+        mode,
+        cached: true,
+        verdict: verdictForLog(cachedVerdict),
+      })
       return { status: 'verified', verdict: cachedVerdict }
     }
 
@@ -140,30 +143,26 @@ export default class SignatureVerificationService {
       response = await this.callCepVerify(content)
     } catch (error) {
       // The error is not passed to the logger on purpose, its request config contains the signed form.
-      this.logger.error(
-        `Signature verification unavailable: ${JSON.stringify({
-          ...context,
-          mode,
-          durationMs: Date.now() - startedAt,
-          status: isAxiosError(error) ? error.response?.status : undefined,
-          code: isAxiosError(error) ? error.code : undefined,
-          message: error instanceof Error ? error.message : String(error),
-        })}`,
-      )
+      this.logger.error('Signature verification unavailable', {
+        ...context,
+        mode,
+        durationMs: Date.now() - startedAt,
+        status: isAxiosError(error) ? error.response?.status : undefined,
+        code: isAxiosError(error) ? error.code : undefined,
+        error: error instanceof Error ? error.message : String(error),
+      })
       return { status: 'unavailable' }
     }
 
     // The generated client types ASiC authorizations without `signature` and `verification`, the API returns them.
     const verdict = evaluateCepVerification(response as CepVerifyResponse)
-    this.logger.log(
-      `Signature verification: ${JSON.stringify({
-        ...context,
-        mode,
-        cached: false,
-        durationMs: Date.now() - startedAt,
-        verdict,
-      })}`,
-    )
+    this.logger.log('Signature verification', {
+      ...context,
+      mode,
+      cached: false,
+      durationMs: Date.now() - startedAt,
+      verdict: verdictForLog(verdict),
+    })
     // New cases get investigated and added to docs/signature-verification.md.
     if (isUnknownCepVerdict(verdict)) {
       this.logger.error(

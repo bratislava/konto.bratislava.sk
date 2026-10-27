@@ -1,4 +1,4 @@
-import { ErrorFactoryService } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosError, AxiosHeaders } from 'axios'
@@ -14,6 +14,7 @@ import { SignerErrorsEnum } from './signer.errors.enum'
 
 const SIGNATURE = 'UEsDBAoAAAgAANurNFqKIflF'
 const CONTEXT = { formId: 'form-1' }
+const SERIAL_NUMBER = '1122334455667788'
 const ISSUER =
   'C=SK,L=Bratislava,2.5.4.97=NTRSK-35975946,O=Disig a.s.,CN=SVK eID ACA2'
 
@@ -31,7 +32,7 @@ const verified = (result: number, verifierResult: number) => ({
             format: 'XadesBPLevelB',
             certificate: {
               issuer: ISSUER,
-              serial_number: '1',
+              serial_number: SERIAL_NUMBER,
               subject: 'CN=<redacted>',
             },
           },
@@ -102,6 +103,7 @@ describe('SignatureVerificationService', () => {
       providers: [
         SignatureVerificationService,
         ErrorFactoryService,
+        LineLoggerService,
         {
           provide: ClientsService,
           useValue: { slovenskoSkApi: { apiCepVerifyPost } },
@@ -130,15 +132,19 @@ describe('SignatureVerificationService', () => {
 
     service = app.get(SignatureVerificationService)
 
-    const collect = (message: unknown) => {
-      loggedMessages.push(String(message))
+    const collect = (...args: unknown[]) => {
+      loggedMessages.push(
+        args
+          .map((arg) => (typeof arg === 'string' ? arg : JSON.stringify(arg)))
+          .join(' '),
+      )
     }
     Object.defineProperty(service, 'logger', {
       value: {
         log: collect,
-        error: (message: unknown) => {
+        error: (message: unknown, ...rest: unknown[]) => {
           loggedErrors.push(message)
-          collect(message)
+          collect(message, ...rest)
         },
       },
     })
@@ -177,7 +183,7 @@ describe('SignatureVerificationService', () => {
       )
     })
 
-    it('logs the verdict but never the signature or the response content', async () => {
+    it('logs the verdict but never the signature, the certificate or the response content', async () => {
       respondWith(RESPONSES.valid)
       await service.verifyFormSignature(SIGNATURE, CONTEXT)
       apiCepVerifyPost.mockRejectedValue(upstreamError())
@@ -185,7 +191,9 @@ describe('SignatureVerificationService', () => {
 
       const logs = loggedMessages.join('\n')
       expect(logs).toContain('form-1')
-      expect(logs).toContain(ISSUER)
+      expect(logs).toContain('"result":3')
+      expect(logs).not.toContain(ISSUER)
+      expect(logs).not.toContain(SERIAL_NUMBER)
       expect(logs).not.toContain(SIGNATURE)
       expect(logs).not.toContain('PII')
       expect(logs).not.toContain('<redacted>')

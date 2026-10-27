@@ -6,6 +6,12 @@
 
 - Made all "telefon" and "email" fields optional
 
+### 1.1.0 (27-10-2026 - https://github.com/bratislava/konto.bratislava.sk/pull/4710)
+
+- Added "Máte rodné číslo?" / "Má rodné číslo?" question before "Rodné číslo" for the taxpayer and the spouse
+- "Rodné číslo" is validated (with or without the slash, valid date and checksum), people without one fill in the
+  new "Dátum narodenia" field instead of entering the date into "Rodné číslo"
+
 ## Žiadosť o stanovisko k investičnému zámeru (stanovisko-k-investicnemu-zameru)
 
 ### 1.1.0 (23-03-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2492)

@@ -179,6 +179,8 @@ export default class BaConfig {
     return {
       versioning: this.validatedConfig.FEATURE_TOGGLE_VERSIONING,
       fileSizeLimits: this.validatedConfig.FEATURE_TOGGLE_FILE_SIZE_LIMITS,
+      signatureVerification:
+        this.validatedConfig.FEATURE_TOGGLE_SIGNATURE_VERIFICATION,
     }
   }
 

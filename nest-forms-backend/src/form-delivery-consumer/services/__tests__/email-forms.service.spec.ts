@@ -1,3 +1,4 @@
+import * as renderSummaryEmail from '@bratislava/email-templates/forms/summary-email'
 import {
   ErrorEnum,
   ErrorFactoryService,
@@ -15,7 +16,6 @@ import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefini
 import * as formDataExtractors from 'forms-shared/form-utils/formDataExtractors'
 import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 import { FormSendPolicy } from 'forms-shared/send-policy/sendPolicy'
-import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
 import type { Mocked, MockInstance } from 'vitest'
 
 import prismaMock from '../../../../test/singleton'
@@ -47,7 +47,7 @@ import {
 import EmailFormsService from '../email-forms.service'
 
 vi.mock('forms-shared/definitions/getFormDefinitionBySlug')
-vi.mock('forms-shared/summary-email/renderSummaryEmail')
+vi.mock('@bratislava/email-templates/forms/summary-email')
 vi.mock('forms-shared/form-utils/omitExtraData')
 vi.mock('forms-shared/form-utils/formDataExtractors')
 

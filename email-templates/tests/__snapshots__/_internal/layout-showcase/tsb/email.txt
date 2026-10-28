@@ -1,0 +1,25 @@
+Subject: TSB: Ukážka rozloženia
+
+Ukážka rozloženia e-mailu
+
+Dobrý deň, Jana,
+
+takto vyzerá bežný odsek textu s dôležitou časťou a odkazom https://bratislava.sk. Text je zarovnaný vľavo a riadkovanie zodpovedá webu Bratislavského konta.
+
+Prejsť do Bratislavského konta https://konto.bratislava.sk
+
+
+Podnadpis sekcie
+
+Jednorazový kód:
+
+482913
+
+Menší sekundárny text, napríklad doplňujúce informácie.
+
+Ďakujeme, že využívate naše služby.
+Vaše TSB & Hlavné mesto SR Bratislava
+
+Informácie o spracúvaní osobných údajov v Bratislavskom konte nájdete v Podmienkach ochrany súkromia pre Bratislavské konto https://bratislava.sk/dokumenty/podmienky-ochrany-sukromia-pre-bratislavske-konto, ďalšie informácie na stránke Ochrana osobných údajov https://bratislava.sk/ochrana-osobnych-udajov.
+
+© 2026 Hlavné mesto SR Bratislava

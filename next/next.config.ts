@@ -36,6 +36,22 @@ const prepareIframeResizerScript = () => {
   return publicPath
 }
 
+/**
+ * Copies the email assets (fonts, logos, icons) of @bratislava/email-templates into
+ * `public/email-assets`. Emails link to them, and the files under a version folder never change, so
+ * they are served with a long cache and CORS (web fonts are cross-origin requests in email clients).
+ */
+const prepareEmailAssets = () => {
+  const sourcePath = path.join(__dirname, 'node_modules/@bratislava/email-templates/assets')
+  if (!fs.existsSync(sourcePath)) {
+    throw new Error('Email assets not found')
+  }
+
+  fs.cpSync(sourcePath, path.join(__dirname, 'public/email-assets'), { recursive: true })
+}
+
+prepareEmailAssets()
+
 const nextConfig: NextConfig = {
   i18n: i18nextConfig.i18n,
   reactStrictMode: true,
@@ -98,6 +114,18 @@ const nextConfig: NextConfig = {
   },
   env: {
     IFRAME_RESIZER_PUBLIC_PATH: prepareIframeResizerScript(),
+  },
+  async headers() {
+    return [
+      {
+        source: '/email-assets/:path*',
+        locale: false,
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+    ]
   },
   async redirects() {
     return [

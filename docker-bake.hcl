@@ -95,6 +95,32 @@ target "forms-shared-test-local-update" {
   tags     = ["forms-shared-docker-runner:test-local-update"]
 }
 
+# --- email-templates ----------------------------------------------------------
+# Tests only; the package is built by the images that use it.
+
+target "email-templates-test" {
+  inherits   = ["_toolchain"]
+  dockerfile = "email-templates/Dockerfile.test"
+  target     = "test"
+  args = {
+    PLAYWRIGHT_VERSION = PLAYWRIGHT_VERSION
+  }
+}
+
+# Run by `pnpm --filter @bratislava/email-templates docker:test`. Tagged because, unlike the
+# `test` target above, the image is started with `docker run` afterwards.
+target "email-templates-test-local" {
+  inherits = ["email-templates-test"]
+  target   = "test-local"
+  tags     = ["email-templates-docker-runner:test-local"]
+}
+
+target "email-templates-test-local-update" {
+  inherits = ["email-templates-test"]
+  target   = "test-local-update"
+  tags     = ["email-templates-docker-runner:test-local-update"]
+}
+
 # --- next ---------------------------------------------------------------------
 
 target "next" {

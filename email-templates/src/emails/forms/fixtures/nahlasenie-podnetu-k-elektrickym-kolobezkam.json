@@ -1,0 +1,96 @@
+{
+  "formSummary": {
+    "summaryJson": {
+      "type": "Form",
+      "id": "root",
+      "title": "Nahlásenie podnetu k elektrickým kolobežkám",
+      "steps": [
+        {
+          "type": "Step",
+          "id": "root_podnet",
+          "title": "Podnet",
+          "children": [
+            {
+              "type": "Field",
+              "id": "root_podnet_typPodnetu",
+              "label": "Typ podnetu",
+              "value": "nespravneZaparkovana",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Nesprávne zaparkovaná kolobežka"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_podnet_poskytovatel",
+              "label": "Poskytovateľ kolobežky",
+              "value": "bolt",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Bolt"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_podnet_miestoPodnetu",
+              "label": "Miesto podnetu",
+              "value": "Námestie SNP 1, Bratislava",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Námestie SNP 1, Bratislava"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_podnet_identifikacnyKod",
+              "label": "Identifikačný kód kolobežky",
+              "value": "BT-8745692",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "BT-8745692"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_podnet_fotografia",
+              "label": "Fotografia podnetu",
+              "value": [
+                "b1feb5ae-da31-4619-a735-c3389dc9e17b"
+              ],
+              "displayValues": [
+                {
+                  "type": "File",
+                  "id": "b1feb5ae-da31-4619-a735-c3389dc9e17b"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "additionalInfo": null,
+    "termsAndConditions": "Stiahnutím, uložením a/alebo odoslaním žiadosti výslovne vyhlasujem, že som sa oboznámil s [podmienkami ochrany súkromia pre Bratislavské konto](https://bratislava.sk/dokumenty/podmienky-ochrany-sukromia-pre-bratislavske-konto) ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti."
+  },
+  "serverFiles": [
+    {
+      "id": "b1feb5ae-da31-4619-a735-c3389dc9e17b",
+      "fileName": "fotografia-podnetu.jpg",
+      "fileSize": 0,
+      "status": "SAFE"
+    }
+  ],
+  "fileIdInfoMap": {
+    "b1feb5ae-da31-4619-a735-c3389dc9e17b": {
+      "url": "https://example.com/files/b1feb5ae-da31-4619-a735-c3389dc9e17b",
+      "fileName": "fotografia-podnetu.jpg"
+    }
+  }
+}

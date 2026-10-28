@@ -1,0 +1,107 @@
+{
+  "name": "@bratislava/email-templates",
+  "version": "1.0.0",
+  "description": "Emails of Bratislavské konto and related city services, rendered with React Email.",
+  "license": "EUPL-1.2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit --project tsconfig.build.json && tsdown && node scripts/verify-dist.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "playwright test",
+    "test:update": "playwright test --update-snapshots",
+    "test:ci": "cross-env CI=true playwright test",
+    "test:ci:update": "cross-env CI=true playwright test --update-snapshots",
+    "docker:test": "node scripts/run-docker-test.ts test-local",
+    "docker:test:update": "node scripts/run-docker-test.ts test-local-update",
+    "preview": "pnpm --filter email-templates-preview run dev",
+    "export-html": "tsx scripts/export-html.ts",
+    "update-assets-manifest": "node scripts/update-assets-manifest.ts",
+    "generate-form-summary-fixtures": "tsx scripts/generate-form-summary-fixtures.ts",
+    "prettier": "prettier --write .",
+    "prettier:check": "prettier --check ."
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./city-account": {
+      "types": "./dist/city-account.d.ts",
+      "default": "./dist/city-account.js"
+    },
+    "./forms": {
+      "types": "./dist/forms.d.ts",
+      "default": "./dist/forms.js"
+    },
+    "./forms/summary-email": {
+      "types": "./dist/forms/summary-email.d.ts",
+      "default": "./dist/forms/summary-email.js"
+    },
+    "./kupaliska": {
+      "types": "./dist/kupaliska.d.ts",
+      "default": "./dist/kupaliska.js"
+    },
+    "./parking": {
+      "types": "./dist/parking.d.ts",
+      "default": "./dist/parking.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      ".": [
+        "dist/index.d.ts"
+      ],
+      "city-account": [
+        "dist/city-account.d.ts"
+      ],
+      "forms": [
+        "dist/forms.d.ts"
+      ],
+      "forms/summary-email": [
+        "dist/forms/summary-email.d.ts"
+      ],
+      "kupaliska": [
+        "dist/kupaliska.d.ts"
+      ],
+      "parking": [
+        "dist/parking.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist",
+    "assets"
+  ],
+  "sideEffects": false,
+  "dependencies": {
+    "classnames": "2.5.1",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-email": "6.11.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "cross-env": "10.1.0",
+    "forms-shared": "workspace:*",
+    "prettier": "3.9.10",
+    "tsdown": "0.23.1",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  },
+  "peerDependencies": {
+    "forms-shared": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "forms-shared": {
+      "optional": true
+    }
+  },
+  "volta": {
+    "extends": "../package.json"
+  }
+}

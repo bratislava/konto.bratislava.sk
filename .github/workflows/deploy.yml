@@ -102,6 +102,15 @@ jobs:
     with:
       image: harbor.bratislava.sk/standalone/forms-shared
 
+  test-email-templates:
+    name: Test email-templates
+    needs: resolve
+    if: needs.resolve.outputs.next == 'true' || needs.resolve.outputs.nest-forms-backend == 'true'
+    uses: ./.github/workflows/test-email-templates.yml
+    secrets: inherit
+    with:
+      image: harbor.bratislava.sk/standalone/email-templates
+
   # ---- Build & push per-cluster service images ----
   # Each build job builds the deployable image, pushes it, and re-tags it for
   # the cluster. The matching deploy-* job below then triggers the infra deploy.
@@ -200,13 +209,15 @@ jobs:
 
   # ---- Gate + trigger infrastructure deploys ----
   # builds-complete is the gate: nothing deploys until every in-scope build (and
-  # the forms-shared test) has finished and none failed. It does no work of its own.
+  # the forms-shared and email-templates tests) has finished and none failed. It
+  # does no work of its own.
   builds-complete:
     name: All builds completed
     needs:
       [
         resolve,
         test-forms-shared,
+        test-email-templates,
         build-strapi,
         build-cvdmirror,
         build-clamav,
@@ -253,7 +264,7 @@ jobs:
 
   deploy-nest-forms-backend:
     name: nest-forms-backend
-    needs: [ resolve, build-nest-forms-backend, test-forms-shared, builds-complete ]
+    needs: [ resolve, build-nest-forms-backend, test-forms-shared, test-email-templates, builds-complete ]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-forms-backend == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@v3.0.1
     secrets: inherit
@@ -298,6 +309,7 @@ jobs:
         resolve,
         build-next,
         test-forms-shared,
+        test-email-templates,
         builds-complete,
         deploy-strapi,
         deploy-nest-forms-backend,

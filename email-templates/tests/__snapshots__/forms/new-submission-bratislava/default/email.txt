@@ -1,0 +1,30 @@
+Subject: Bratislavské konto: Nové podanie
+
+Nové podanie
+
+Názov        Nahlásenie podnetu k elektrickým kolobežkám
+Odoslané     15. 1. 2026 o 10:30
+ID podania   3f2b6d1e-9c4a-4f0e-8b7d-2a1c5e6f7a8b
+
+
+Podnet
+
+Typ podnetu
+
+Nesprávne zaparkovaná kolobežka
+
+Poskytovateľ kolobežky
+
+Bolt
+
+Miesto podnetu
+
+Námestie SNP 1, Bratislava
+
+Identifikačný kód kolobežky
+
+BT-8745692
+
+Fotografia podnetu
+
+fotografia-podnetu.jpg https://example.com/files/b1feb5ae-da31-4619-a735-c3389dc9e17b

@@ -1,0 +1,202 @@
+Subject: TSB: Nové podanie [3f2b6d1e]
+
+Nové podanie
+
+Názov        Objednávka informatívneho zákresu sietí
+Odoslané     15. 1. 2026 o 10:30
+ID podania   3f2b6d1e-9c4a-4f0e-8b7d-2a1c5e6f7a8b
+
+
+Žiadateľ
+
+Žiadate ako
+
+Fyzická osoba
+
+Meno
+
+Ján
+
+Priezvisko
+
+Kováč
+
+Korešpondenčná adresa
+
+Mierová 12
+
+Mesto
+
+Bratislava
+
+PSČ
+
+82108
+
+Email
+
+jan.kovac@priklad.sk
+
+Telefónne číslo
+
++421905987654
+
+
+Stavebník
+
+Je stavebník rovnaká osoba ako žiadateľ?
+
+Nie
+
+Splnomocnenie na zastupovanie
+
+splnomocnenie.pdf https://example.com/files/b9050ef5-0d98-41c4-aba1-b0fc5a65a442
+
+Žiadate ako
+
+Fyzická osoba
+
+Meno
+
+Marta
+
+Priezvisko
+
+Nováková
+
+Korešpondenčná adresa
+
+Šancová 56
+
+Mesto
+
+Bratislava
+
+PSČ
+
+83104
+
+Email
+
+marta.novakova@priklad.sk
+
+Telefónne číslo
+
++421902123456
+
+
+Zodpovedný projektant
+
+Meno
+
+Peter
+
+Priezvisko
+
+Horváth
+
+Email
+
+peter.horvath@priklad.sk
+
+Telefónne číslo
+
++421911654321
+
+Číslo autorizačného osvedčenia
+
+123456789
+
+Dátum spracovania projektovej dokumentácie
+
+4. 7. 2024
+
+
+Informácie o stavbe
+
+Názov stavby/projektu
+
+Nový Bytový Dom
+
+ID stavby
+
+BYT-2024-001
+
+Ulica
+
+Dunajská
+
+Súpisné číslo
+
+1234
+
+Parcelné čísla
+
+56789
+
+Katastrálne územie
+
+Karlova Ves
+
+Dúbravka
+
+Hlavná stavba
+
+Stavba 01 - Bytový dom Luna
+
+Členenie hlavnej stavby
+
+SO 01 Hlavná budova, SO 02 Podzemné garáže
+
+Hlavná stavba podľa účelu
+
+1120 - VIACBYTOVÉ BUDOVY
+
+Ostatné stavby
+
+Stavba 02 - Oplotenie - SO 01
+Stavba 03 - Prípojky - SO 01, SO 02, SO 03
+
+Nachádzajú sa v navrhovanej stavbe byty?
+
+Áno
+
+Počet bytov celkovo
+
+24
+
+Počet 1-izbových bytov
+
+6
+
+Počet 2-izbových bytov
+
+12
+
+Počet 3-izbových bytov
+
+4
+
+Počet 4-izbových bytov
+
+2
+
+Počet viac ako 4-izbových bytov
+
+0
+
+
+Typ žiadosti
+
+Typ žiadosti
+
+o záväzné stanovisko k stavebnému zámeru - navrhovaná stavba
+
+
+Prílohy
+
+Projektová dokumentácia
+
+projektova-dokumentacia-1.pdf https://example.com/files/1cdcb500-7f11-45d1-a31b-0ab614482e27
+
+projektova-dokumentacia-2.pdf https://example.com/files/01d3bd64-270e-4a04-83da-f72cdd8717c4

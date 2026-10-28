@@ -1,0 +1,7 @@
+# Snapshots are compared byte for byte; a CRLF checkout (core.autocrlf on Windows) would fail them.
+tests/__snapshots__/** text eol=lf
+*.png binary
+*.woff binary
+*.woff2 binary
+# Published assets are served byte for byte, and assets/manifest.json pins their hashes.
+assets/** -text

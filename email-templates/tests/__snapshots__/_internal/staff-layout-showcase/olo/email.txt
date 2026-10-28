@@ -1,0 +1,18 @@
+Subject: OLO: Nové podanie
+
+Ukážka rozloženia e-mailu
+
+Dobrý deň, Jana,
+
+takto vyzerá bežný odsek textu s dôležitou časťou a odkazom https://bratislava.sk. Text je zarovnaný vľavo a riadkovanie zodpovedá webu Bratislavského konta.
+
+Prejsť do Bratislavského konta https://konto.bratislava.sk
+
+
+Podnadpis sekcie
+
+Jednorazový kód:
+
+482913
+
+Menší sekundárny text, napríklad doplňujúce informácie.

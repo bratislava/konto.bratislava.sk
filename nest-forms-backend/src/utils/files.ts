@@ -1,4 +1,4 @@
-import { FileIdInfoMap } from 'forms-shared/summary-email/renderSummaryEmail'
+import { FileIdInfoMap } from '@bratislava/email-templates/forms/summary-email'
 import * as jwt from 'jsonwebtoken'
 
 import { FormWithFiles } from './types/prisma'

@@ -100,6 +100,7 @@
     "yet-another-react-lightbox": "3.32.2"
   },
   "devDependencies": {
+    "@bratislava/email-templates": "workspace:*",
     "@bratislava/eslint-config-next": "0.21.0",
     "@graphql-codegen/cli": "7.4.6",
     "@graphql-codegen/typescript-graphql-request": "7.1.0",

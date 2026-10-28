@@ -74,6 +74,7 @@ COPY --from=prod-deps --chown=node:node /app ./
 COPY --from=builder --chown=node:node /app/nest-forms-backend/nest-cli.json ./nest-forms-backend/nest-cli.json
 COPY --from=builder --chown=node:node /app/nest-forms-backend/prisma.config.ts ./nest-forms-backend/prisma.config.ts
 COPY --from=builder --chown=node:node /app/nest-forms-backend/prisma ./nest-forms-backend/prisma
+COPY --from=builder --chown=node:node /app/email-templates/dist ./email-templates/dist
 COPY --from=builder --chown=node:node /app/forms-shared/dist ./forms-shared/dist
 COPY --from=builder --chown=node:node /app/openapi-clients/dist ./openapi-clients/dist
 COPY --from=builder --chown=node:node /app/nest-forms-backend/dist ./nest-forms-backend/dist

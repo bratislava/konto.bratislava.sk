@@ -1,0 +1,5 @@
+/dist
+/export
+/tests/__snapshots__
+/assets
+/src/emails/forms/fixtures

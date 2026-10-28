@@ -1,0 +1,619 @@
+{
+  "formSummary": {
+    "summaryJson": {
+      "type": "Form",
+      "id": "root",
+      "title": "Žiadosť o záväzné stanovisko k investičnej činnosti",
+      "steps": [
+        {
+          "type": "Step",
+          "id": "root_ziadatel",
+          "title": "Žiadateľ",
+          "children": [
+            {
+              "type": "Field",
+              "id": "root_ziadatel_ziadatelTyp",
+              "label": "Žiadate ako",
+              "value": "fyzickaOsoba",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Fyzická osoba"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_meno",
+              "label": "Meno",
+              "value": "Ján",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Ján"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_priezvisko",
+              "label": "Priezvisko",
+              "value": "Kováč",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Kováč"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_ulicaACislo",
+              "label": "Korešpondenčná adresa",
+              "value": "Mierová 12",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Mierová 12"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_mesto",
+              "label": "Mesto",
+              "value": "Bratislava",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Bratislava"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_psc",
+              "label": "PSČ",
+              "value": "82108",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "82108"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_email",
+              "label": "Email",
+              "value": "jan.kovac@priklad.sk",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "jan.kovac@priklad.sk"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_telefon",
+              "label": "Telefónne číslo",
+              "value": "+421905987654",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "+421905987654"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Step",
+          "id": "root_stavebnik",
+          "title": "Stavebník",
+          "children": [
+            {
+              "type": "Field",
+              "id": "root_stavebnik_stavebnikZiadatelom",
+              "label": "Je stavebník rovnaká osoba ako žiadateľ?",
+              "value": false,
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Nie"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavebnik_splnomocnenie",
+              "label": "Splnomocnenie na zastupovanie",
+              "value": "b9050ef5-0d98-41c4-aba1-b0fc5a65a442",
+              "displayValues": [
+                {
+                  "type": "File",
+                  "id": "b9050ef5-0d98-41c4-aba1-b0fc5a65a442"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavebnik_ziadatelTyp",
+              "label": "Žiadate ako",
+              "value": "fyzickaOsoba",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Fyzická osoba"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavebnik_meno",
+              "label": "Meno",
+              "value": "Marta",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Marta"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavebnik_priezvisko",
+              "label": "Priezvisko",
+              "value": "Nováková",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Nováková"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavebnik_ulicaACislo",
+              "label": "Korešpondenčná adresa",
+              "value": "Šancová 56",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Šancová 56"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavebnik_mesto",
+              "label": "Mesto",
+              "value": "Bratislava",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Bratislava"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavebnik_psc",
+              "label": "PSČ",
+              "value": "83104",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "83104"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavebnik_email",
+              "label": "Email",
+              "value": "marta.novakova@priklad.sk",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "marta.novakova@priklad.sk"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavebnik_telefon",
+              "label": "Telefónne číslo",
+              "value": "+421902123456",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "+421902123456"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Step",
+          "id": "root_zodpovednyProjektant",
+          "title": "Zodpovedný projektant",
+          "children": [
+            {
+              "type": "Field",
+              "id": "root_zodpovednyProjektant_meno",
+              "label": "Meno",
+              "value": "Peter",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Peter"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_zodpovednyProjektant_priezvisko",
+              "label": "Priezvisko",
+              "value": "Horváth",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Horváth"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_zodpovednyProjektant_email",
+              "label": "Email",
+              "value": "peter.horvath@priklad.sk",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "peter.horvath@priklad.sk"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_zodpovednyProjektant_telefon",
+              "label": "Telefónne číslo",
+              "value": "+421911654321",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "+421911654321"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_zodpovednyProjektant_autorizacneOsvedcenie",
+              "label": "Číslo autorizačného osvedčenia",
+              "value": "123456789",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "123456789"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_zodpovednyProjektant_datumSpracovania",
+              "label": "Dátum spracovania projektovej dokumentácie",
+              "value": "2024-07-04",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "4. 7. 2024"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Step",
+          "id": "root_stavba",
+          "title": "Informácie o stavbe",
+          "children": [
+            {
+              "type": "Field",
+              "id": "root_stavba_nazov",
+              "label": "Názov stavby/projektu",
+              "value": "Nový Bytový Dom",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Nový Bytový Dom"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_idStavby",
+              "label": "ID stavby",
+              "value": "BYT-2024-001",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "BYT-2024-001"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_ulica",
+              "label": "Ulica",
+              "value": "Dunajská",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Dunajská"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_supisneCislo",
+              "label": "Súpisné číslo",
+              "value": "1234",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "1234"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_parcelneCisla",
+              "label": "Parcelné čísla",
+              "value": "56789",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "56789"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_katastralneUzemia",
+              "label": "Katastrálne územie",
+              "value": [
+                "805211",
+                "806099"
+              ],
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Karlova Ves"
+                },
+                {
+                  "type": "String",
+                  "value": "Dúbravka"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_clenenieStavby_hlavnaStavba",
+              "label": "Hlavná stavba",
+              "value": "Stavba 01 - Bytový dom Luna",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Stavba 01 - Bytový dom Luna"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_clenenieStavby_clenenieHlavnejStavby",
+              "label": "Členenie hlavnej stavby",
+              "value": "SO 01 Hlavná budova, SO 02 Podzemné garáže",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "SO 01 Hlavná budova, SO 02 Podzemné garáže"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_clenenieStavby_hlavnaStavbaPodlaUcelu",
+              "label": "Hlavná stavba podľa účelu",
+              "value": "1120 - VIACBYTOVÉ BUDOVY",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "1120 - VIACBYTOVÉ BUDOVY"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_clenenieStavby_ostatneStavby",
+              "label": "Ostatné stavby",
+              "value": "Stavba 02 - Oplotenie - SO 01\nStavba 03 - Prípojky - SO 01, SO 02, SO 03",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Stavba 02 - Oplotenie - SO 01\nStavba 03 - Prípojky - SO 01, SO 02, SO 03"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_clenenieStavby_obsahujeByty",
+              "label": "Nachádzajú sa v navrhovanej stavbe byty?",
+              "value": true,
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Áno"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_clenenieStavby_pocetBytovCelkovo",
+              "label": "Počet bytov celkovo",
+              "value": 24,
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "24"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_clenenieStavby_pocet1IzbovychBytov",
+              "label": "Počet 1-izbových bytov",
+              "value": 6,
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "6"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_clenenieStavby_pocet2IzbovychBytov",
+              "label": "Počet 2-izbových bytov",
+              "value": 12,
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "12"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_clenenieStavby_pocet3IzbovychBytov",
+              "label": "Počet 3-izbových bytov",
+              "value": 4,
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "4"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_clenenieStavby_pocet4IzbovychBytov",
+              "label": "Počet 4-izbových bytov",
+              "value": 2,
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "2"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_stavba_clenenieStavby_pocetViacAko4IzbovychBytov",
+              "label": "Počet viac ako 4-izbových bytov",
+              "value": 0,
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "0"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Step",
+          "id": "root_typZiadosti",
+          "title": "Typ žiadosti",
+          "children": [
+            {
+              "type": "Field",
+              "id": "root_typZiadosti_typ",
+              "label": "Typ žiadosti",
+              "value": "stavebnyZamerNavrhovanaStavba",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "o záväzné stanovisko k stavebnému zámeru - navrhovaná stavba"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Step",
+          "id": "root_prilohy",
+          "title": "Prílohy",
+          "children": [
+            {
+              "type": "Field",
+              "id": "root_prilohy_projektovaDokumentacia",
+              "label": "Projektová dokumentácia",
+              "value": [
+                "1cdcb500-7f11-45d1-a31b-0ab614482e27",
+                "01d3bd64-270e-4a04-83da-f72cdd8717c4"
+              ],
+              "displayValues": [
+                {
+                  "type": "File",
+                  "id": "1cdcb500-7f11-45d1-a31b-0ab614482e27"
+                },
+                {
+                  "type": "File",
+                  "id": "01d3bd64-270e-4a04-83da-f72cdd8717c4"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "additionalInfo": null,
+    "termsAndConditions": "Stiahnutím, uložením a/alebo odoslaním žiadosti výslovne vyhlasujem, že som sa oboznámil s [podmienkami ochrany súkromia pre Bratislavské konto](https://bratislava.sk/dokumenty/podmienky-ochrany-sukromia-pre-bratislavske-konto) ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti."
+  },
+  "serverFiles": [
+    {
+      "id": "b9050ef5-0d98-41c4-aba1-b0fc5a65a442",
+      "fileName": "splnomocnenie.pdf",
+      "fileSize": 0,
+      "status": "SAFE"
+    },
+    {
+      "id": "1cdcb500-7f11-45d1-a31b-0ab614482e27",
+      "fileName": "projektova-dokumentacia-1.pdf",
+      "fileSize": 0,
+      "status": "SAFE"
+    },
+    {
+      "id": "01d3bd64-270e-4a04-83da-f72cdd8717c4",
+      "fileName": "projektova-dokumentacia-2.pdf",
+      "fileSize": 0,
+      "status": "SAFE"
+    }
+  ],
+  "fileIdInfoMap": {
+    "b9050ef5-0d98-41c4-aba1-b0fc5a65a442": {
+      "url": "https://example.com/files/b9050ef5-0d98-41c4-aba1-b0fc5a65a442",
+      "fileName": "splnomocnenie.pdf"
+    },
+    "1cdcb500-7f11-45d1-a31b-0ab614482e27": {
+      "url": "https://example.com/files/1cdcb500-7f11-45d1-a31b-0ab614482e27",
+      "fileName": "projektova-dokumentacia-1.pdf"
+    },
+    "01d3bd64-270e-4a04-83da-f72cdd8717c4": {
+      "url": "https://example.com/files/01d3bd64-270e-4a04-83da-f72cdd8717c4",
+      "fileName": "projektova-dokumentacia-2.pdf"
+    }
+  }
+}

@@ -1,0 +1,301 @@
+{
+  "formSummary": {
+    "summaryJson": {
+      "type": "Form",
+      "id": "root",
+      "title": "KOLO Taxi",
+      "steps": [
+        {
+          "type": "Step",
+          "id": "root_ziadatel",
+          "title": "Žiadateľ",
+          "children": [
+            {
+              "type": "Field",
+              "id": "root_ziadatel_ziadatelTyp",
+              "label": "Žiadam ako",
+              "value": "Právnická osoba",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Právnická osoba"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_nazovOrganizacie",
+              "label": "Názov organizácie",
+              "value": "Odpad s.r.o.",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Odpad s.r.o."
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_adresaSidlaOrganizacie_ulicaACislo",
+              "label": "Ulica a číslo",
+              "value": "Palisády 10",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Palisády 10"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_adresaSidlaOrganizacie_mestoPsc_mesto",
+              "label": "Mesto",
+              "value": "Bratislava",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Bratislava"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_adresaSidlaOrganizacie_mestoPsc_psc",
+              "label": "PSČ",
+              "value": "82244",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "82244"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_ico",
+              "label": "IČO",
+              "value": "154515451",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "154515451"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_dic",
+              "label": "DIČ",
+              "value": "545454524154",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "545454524154"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_platcaDph",
+              "label": "Som platca DPH?",
+              "value": false,
+              "displayValues": [
+                {
+                  "type": "None"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_konatel",
+              "label": "Konateľ",
+              "value": "Alexander Veľký",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Alexander Veľký"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_zastupeny",
+              "label": "Zastúpený - na základe splnomocnenia",
+              "value": "Alexander Macedónsky",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Alexander Macedónsky"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_menoKontaktnejOsoby",
+              "label": "Meno kontaktnej osoby",
+              "value": "Jozef Druhý",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Jozef Druhý"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_telefon",
+              "label": "Telefónne číslo",
+              "value": "+421944555444",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "+421944555444"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_email",
+              "label": "Email",
+              "value": "test@email.com",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "test@email.com"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_fakturacia_iban",
+              "label": "IBAN",
+              "value": "SK3112000000198742637541",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "SK3112000000198742637541"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_fakturacia_elektronickaFaktura",
+              "label": "Súhlasím so zaslaním elektronickej faktúry",
+              "value": true,
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Súhlasím so zaslaním elektronickej faktúry"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_ziadatel_fakturacia_emailPreFaktury",
+              "label": "E-mail pre zasielanie elektronických faktúr",
+              "value": "velky@alexander.com",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "velky@alexander.com"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Step",
+          "id": "root_sluzba",
+          "title": "Služba",
+          "children": [
+            {
+              "type": "Field",
+              "id": "root_sluzba_miestoDodania",
+              "label": "Miesto dodania / výkonu služby",
+              "value": "Veľká 10",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Veľká 10"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_sluzba_popisDarovanychVeci",
+              "label": "Popis darovaných vecí",
+              "value": "práčka, kreslo",
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "práčka, kreslo"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_sluzba_fotoDarovanychVeci",
+              "label": "Foto darovaných vecí",
+              "value": [
+                "3e7b1557-a1ab-459f-907d-3b219255d83a"
+              ],
+              "displayValues": [
+                {
+                  "type": "File",
+                  "id": "3e7b1557-a1ab-459f-907d-3b219255d83a"
+                }
+              ]
+            },
+            {
+              "type": "Field",
+              "id": "root_sluzba_suhlasSPlatbou",
+              "label": "Vyjadrenie súhlasu s platbou",
+              "value": true,
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Súhlasím s platbou za službu KOLO Taxi"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Step",
+          "id": "root_suhlasy",
+          "title": "Súhlasy",
+          "children": [
+            {
+              "type": "Field",
+              "id": "root_suhlasy_suhlasSVop",
+              "label": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
+              "value": true,
+              "displayValues": [
+                {
+                  "type": "String",
+                  "value": "Súhlasím s Všeobecnými obchodnými podmienkami OLO"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "additionalInfo": null,
+    "termsAndConditions": "Vaše osobné údaje používame na vybavenie vašej požiadavky. Viac informácií nájdete na stránke [KOLO - informácie o spracúvaní osobných údajov](https://www.olo.sk/o-nas/dokumenty/kolo-informacie-o-spracuvani-osobnych-udajov)."
+  },
+  "serverFiles": [
+    {
+      "id": "3e7b1557-a1ab-459f-907d-3b219255d83a",
+      "fileName": "test1.jpg",
+      "fileSize": 0,
+      "status": "SAFE"
+    }
+  ],
+  "fileIdInfoMap": {
+    "3e7b1557-a1ab-459f-907d-3b219255d83a": {
+      "url": "https://example.com/files/3e7b1557-a1ab-459f-907d-3b219255d83a",
+      "fileName": "test1.jpg"
+    }
+  }
+}

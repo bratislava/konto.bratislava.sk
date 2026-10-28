@@ -66,8 +66,7 @@ export default class StatusService {
   // function which checks if minio is running
   public isMinioRunning(): ServiceRunningDto {
     try {
-      const result = this.minioStorageService.client()
-      this.logger.log(result)
+      this.minioStorageService.client()
       return {
         running: true,
       }

@@ -232,7 +232,7 @@ catalogs:
 overrides:
   '@x0k/json-schema-merge': 1.1.0
 
-packageExtensionsChecksum: sha256-W+bZrGIAkwwr7gBib+vjZzW5QKkX147Wowgm7Lh95pU=
+packageExtensionsChecksum: sha256-hh+vk1Vy6nvxUNQgQU4+cBiJbEhsLTqBqmZzROX6FR0=
 
 importers:
 

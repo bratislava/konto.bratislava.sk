@@ -13,6 +13,14 @@ interface Props {
   solid?: boolean
 }
 
+const stringifyForLog = (value: unknown) => {
+  try {
+    return JSON.stringify(value)
+  } catch (error) {
+    return `<value of type ${typeof value} is not serializable: ${error instanceof Error ? error.message : 'unknown reason'}>`
+  }
+}
+
 const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
   const { t } = useTranslation()
 
@@ -24,7 +32,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
     if (!isError(error)) {
       logger.error(
         `${GENERIC_ERROR_MESSAGE} - something not error-like passed into AccountErrorAlert: `,
-        JSON.stringify(error),
+        stringifyForLog(error),
       )
 
       return t('AccountErrorAlert.errors.unknown')
@@ -34,7 +42,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
       logger.error(
         `${GENERIC_ERROR_MESSAGE} - unknown error without error code in AccountErrorAlert: `,
         error.message,
-        JSON.stringify(error),
+        stringifyForLog(error),
       )
 
       return t('AccountErrorAlert.errors.unknown')

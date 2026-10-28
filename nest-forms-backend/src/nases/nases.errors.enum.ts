@@ -7,6 +7,7 @@ export enum NasesErrorsEnum {
   FAILED_FORM_REGISTRATION_VERIFICATION = 'FAILED_FORM_REGISTRATION_VERIFICATION',
   IDENTITY_SEARCH_DATA_INCONSISTENT = 'IDENTITY_SEARCH_DATA_INCONSISTENT',
   FORM_DEFINITION_NOT_IN_SLOVENSKO_SK = 'FORM_DEFINITION_NOT_IN_SLOVENSKO_SK',
+  CREATE_ENVELOPE_ERROR = 'CREATE_ENVELOPE_ERROR',
 }
 
 export enum NasesErrorsResponseEnum {
@@ -18,6 +19,7 @@ export enum NasesErrorsResponseEnum {
   FAILED_FORM_REGISTRATION_VERIFICATION = 'Failed to verify form registration in Slovensko.sk.',
   IDENTITY_SEARCH_DATA_INCONSISTENT = 'Data from identity search is inconsistent or missing.',
   FORM_DEFINITION_NOT_IN_SLOVENSKO_SK = 'Some form definitions are not correctly registered in slovensko.sk.',
+  CREATE_ENVELOPE_ERROR = 'Failed to create envelope for NASES message.',
 }
 
 export const NasesErrorCodesEnum: Record<string, string> = {

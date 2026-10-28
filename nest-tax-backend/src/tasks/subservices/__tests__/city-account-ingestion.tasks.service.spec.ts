@@ -1,10 +1,11 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { Mocked } from 'vitest'
 
 import prismaMock from '../../../../test/singleton'
 import { createTestTaxPayer } from '../../../__tests__/factories/taxPayer.factory'
 import { createTestUserDataFromCityAccount } from '../../../__tests__/factories/userDataFromCityAccount.factory'
-import { expectObjectContaining } from '../../../__tests__/jest-matchers'
+import { expectObjectContaining } from '../../../__tests__/matchers'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
@@ -12,7 +13,7 @@ import CityAccountIngestionTasksService from '../city-account-ingestion.tasks.se
 
 describe('CityAccountIngestionTasksService', () => {
   let service: CityAccountIngestionTasksService
-  let cityAccountSubservice: jest.Mocked<CityAccountSubservice>
+  let cityAccountSubservice: Mocked<CityAccountSubservice>
 
   const missingSince = new Date('2027-01-15T10:00:00.000Z')
 
@@ -42,11 +43,11 @@ describe('CityAccountIngestionTasksService', () => {
         { provide: DatabaseSubservice, useValue: {} },
         {
           provide: CityAccountSubservice,
-          useValue: { getUserDataAdminBatch: jest.fn() },
+          useValue: { getUserDataAdminBatch: vi.fn() },
         },
         {
           provide: LineLoggerService,
-          useValue: { log: jest.fn() },
+          useValue: { log: vi.fn() },
         },
       ],
     }).compile()
@@ -55,10 +56,6 @@ describe('CityAccountIngestionTasksService', () => {
     cityAccountSubservice = module.get(CityAccountSubservice)
 
     prismaMock.taxPayer.updateMany.mockResolvedValue({ count: 0 })
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
   })
 
   describe('recheckCityAccountUserMissing', () => {

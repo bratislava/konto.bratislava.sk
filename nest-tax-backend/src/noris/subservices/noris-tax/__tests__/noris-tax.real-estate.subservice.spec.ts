@@ -15,7 +15,7 @@ import { createTestTax } from '../../../../__tests__/factories/tax.factory'
 import { createTestTaxAdministratorEntry } from '../../../../__tests__/factories/taxAdministrator.factory'
 import { createTestTaxPayer } from '../../../../__tests__/factories/taxPayer.factory'
 import { createTestUserDataFromCityAccount } from '../../../../__tests__/factories/userDataFromCityAccount.factory'
-import { expectAny } from '../../../../__tests__/jest-matchers'
+import { expectAny } from '../../../../__tests__/matchers'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import BaConfigService from '../../../../config/ba-config.service'
 import {
@@ -660,11 +660,11 @@ describe('NorisTaxRealEstateSubservice', () => {
     const taxD2 = makeNorisRecord('444444/4444', 'VS-D2')
 
     beforeEach(() => {
-      jest.useFakeTimers({ now })
+      vi.useFakeTimers({ now })
     })
 
     afterEach(() => {
-      jest.useRealTimers()
+      vi.useRealTimers()
     })
 
     it.each([

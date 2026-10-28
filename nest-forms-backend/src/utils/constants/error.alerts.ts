@@ -34,6 +34,7 @@ export default [
   FormSenderErrorsEnum.SEND_TO_GINIS_ERROR,
   NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
   NasesErrorsEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
+  NasesErrorsEnum.CREATE_ENVELOPE_ERROR,
   FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
   FormsErrorsEnum.FORM_ARCHIVED,
   FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,

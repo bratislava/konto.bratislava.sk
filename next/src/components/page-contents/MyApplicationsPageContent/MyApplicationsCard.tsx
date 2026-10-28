@@ -108,7 +108,7 @@ const MyApplicationsCard = ({
       showToast({ message: t('useFormExportImport.success.xmlExport'), variant: 'success' })
     } catch (error) {
       showToast({ message: t('useFormExportImport.errors.xmlExport'), variant: 'error' })
-      logger.error(JSON.stringify(error))
+      logger.error(error)
     }
   }
 

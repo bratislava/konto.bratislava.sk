@@ -348,10 +348,18 @@ export default class NasesSenderService {
     try {
       message = await this.createEnvelopeSendMessage(data, senderUri)
     } catch (error) {
+      this.logger.error(
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: NasesErrorsEnum.CREATE_ENVELOPE_ERROR,
+          message: NasesErrorsResponseEnum.CREATE_ENVELOPE_ERROR,
+          console: { formId: data.id },
+          error,
+        }),
+      )
       return {
         status: 500,
         data: {
-          message: `Failed to create envelope for nases message: ${(error as Error).message || 'Unknown error'}. Details: ${JSON.stringify(error)}`,
+          message: NasesErrorsResponseEnum.CREATE_ENVELOPE_ERROR,
         },
       }
     }

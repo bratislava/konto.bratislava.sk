@@ -59,6 +59,15 @@ export const isFileMultipleSchema = (schema: RJSFSchema) =>
  *
  * Context:
  * https://github.com/rjsf-team/react-jsonschema-form/issues/4344
+ *
+ * `requiredBooleanDefault` strategy:
+ * Since RJSF 6.9.0 a required boolean without a `default` is pre-filled with `false`. For us that would silently answer
+ * required yes/no radio groups with "No" (so the `required` error never shows) and turn the `required` error of
+ * unchecked agreement checkboxes (`const: true`) into a `const` error. `skip` keeps such booleans `undefined` until the
+ * user answers them.
+ *
+ * Context:
+ * https://github.com/rjsf-team/react-jsonschema-form/pull/5170
  */
 export const baDefaultFormStateBehavior: Experimental_DefaultFormStateBehavior = {
   arrayMinItems: {
@@ -67,6 +76,7 @@ export const baDefaultFormStateBehavior: Experimental_DefaultFormStateBehavior =
   },
   allOf: 'populateDefaults',
   constAsDefaults: 'never',
+  requiredBooleanDefault: 'skip',
 }
 
 export const baGetDefaultFormState = (

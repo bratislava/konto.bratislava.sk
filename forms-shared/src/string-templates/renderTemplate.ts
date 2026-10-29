@@ -1,5 +1,5 @@
 import type { GenericObjectType } from '@rjsf/utils'
-import { Eta } from 'eta'
+import { Eta } from 'eta/core'
 
 import { FormDefinition } from '../definitions/formDefinitionTypes'
 import { safeArray, safeBoolean, safeNumber, safeString } from '../form-utils/safeData'

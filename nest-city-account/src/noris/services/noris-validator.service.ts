@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import z from 'zod'
 
@@ -8,7 +8,7 @@ import { CustomErrorNorisTypesEnum } from '../noris.errors'
 export class NorisValidatorService {
   constructor(
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   validateNorisData<T extends z.ZodType>(schema: T, data: unknown[]): z.infer<T>[]

@@ -1,3 +1,4 @@
+import { LogAllowList } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -27,6 +28,7 @@ import { FormMigrationsService } from '../services/form-migrations.service'
 export class FormMigrationsController {
   constructor(private readonly formMigrationService: FormMigrationsService) {}
 
+  @LogAllowList({ success: true })
   @Post('prepare')
   @ApiOkResponse({
     type: PrepareMigrationOutput,
@@ -46,6 +48,7 @@ export class FormMigrationsController {
     return { success: true }
   }
 
+  @LogAllowList({ success: true })
   @Post('claim/:formId')
   @ApiOkResponse({
     type: ClaimMigrationOutput,

@@ -1,9 +1,9 @@
-import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
-import { BloomreachContactDatabaseService } from '../../bloomreach/bloomreach-contact-database.service'
 import { BloomreachOutboxService } from '../../bloomreach/bloomreach-outbox.service'
-import { CognitoUserAttributesTierEnum } from '../../generated/prisma/client'
+import { BloomreachContactDatabaseService } from '../../bloomreach/contact-database/bloomreach-contact-database.service'
+import { CognitoUserAttributesTierEnum } from '../../generated/prisma/enums'
 import { PrismaService } from '../../prisma/prisma.service'
 import { CognitoGetUserData, CognitoUserAttributesEnum } from '../../utils/global-dtos/cognito.dto'
 import { UserIdentitySubservice } from '../../utils/subservices/user-identity.subservice'
@@ -17,7 +17,7 @@ export class PaasMpaService {
     private readonly prisma: PrismaService,
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly userIdentitySubservice: UserIdentitySubservice,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   private isVerifiedTier(tier?: CognitoUserAttributesTierEnum): boolean {

@@ -1,3 +1,4 @@
+import { LogAllowList } from '@bratislava/log-nest'
 import {
   Body,
   Controller,
@@ -56,6 +57,7 @@ export default class FormsController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard, FormDefinitionMustBeEnabledGuard)
+  @LogAllowList({ formId: true, success: true })
   @Post(':formId/bump-version')
   async bumpJsonVersion(
     @Param('formId') formId: string,
@@ -79,6 +81,20 @@ export default class FormsController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth])
   @UseGuards(UserAuthGuard)
+  @LogAllowList({
+    currentPage: true,
+    pagination: true,
+    countPages: true,
+    items: {
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+      state: true,
+      error: true,
+      formDefinitionSlug: true,
+    },
+    meta: true,
+  })
   @Get('forms')
   async getForms(
     @Query() query: GetFormsRequestDto,
@@ -101,6 +117,18 @@ export default class FormsController {
   @FormAccessAllowMigrations()
   @AllowCompletedDisabledForms(true)
   @UseGuards(UserAuthGuard, FormAccessGuard, FormDefinitionMustBeEnabledGuard)
+  @LogAllowList({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    state: true,
+    error: true,
+    formDefinitionSlug: true,
+    jsonVersion: true,
+    finishSubmission: true,
+    ginisDocumentId: true,
+    requiresMigration: true,
+  })
   @Get(':formId')
   async getForm(
     @Param('formId') formId: string,
@@ -126,6 +154,7 @@ export default class FormsController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard)
+  @LogAllowList({ archived: true, formId: true })
   @Delete(':formId')
   async deleteForm(
     @Param('formId') formId: string,
@@ -154,6 +183,17 @@ export default class FormsController {
     FormDefinitionMustBeEnabledGuard,
     FormMustBeEditableGuard,
   )
+  @LogAllowList({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    state: true,
+    error: true,
+    formDefinitionSlug: true,
+    jsonVersion: true,
+    finishSubmission: true,
+    ginisDocumentId: true,
+  })
   @Post(':formId/update')
   async updateForm(
     @Body() data: UpdateFormRequestDto,

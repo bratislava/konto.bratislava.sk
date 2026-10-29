@@ -2,7 +2,7 @@ import {
   ErrorEnum,
   ErrorFactoryService,
   ErrorResponseEnum,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import axios, { isAxiosError } from 'axios'
@@ -38,7 +38,7 @@ export class MagproxyService {
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly clientsService: ClientsService,
     private readonly baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   private async auth(token: string): Promise<string> {

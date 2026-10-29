@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { HttpException, Injectable } from '@nestjs/common'
 import * as mssql from 'mssql'
@@ -38,7 +38,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
     paymentSubservice: NorisPaymentSubservice,
     databaseSubservice: DatabaseSubservice,
     baConfigService: BaConfigService,
-    logger: LineLoggerSubservice,
+    logger: LineLoggerService,
   ) {
     super(
       qrCodeService,

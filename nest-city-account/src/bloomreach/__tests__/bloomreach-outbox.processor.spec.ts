@@ -1,7 +1,9 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import axios from 'axios'
+import type { Mocked } from 'vitest'
 
 import prismaMock from '../../../test/singleton'
 import {
@@ -9,23 +11,32 @@ import {
   expectDefined,
   expectObjectContaining,
   expectStringContaining,
-} from '../../__tests__/jest-matchers'
+} from '../../__tests__/matchers'
 import BaConfigService from '../../config/ba-config.service'
-import { BloomreachOutbox, BloomreachOutboxStatus } from '../../generated/prisma/client'
-import { PrismaService } from '../../prisma/prisma.service'
 import {
+  BloomreachCommandName,
+  BloomreachOutbox,
+  BloomreachOutboxStatus,
+} from '../../generated/prisma/client'
+import { PrismaService } from '../../prisma/prisma.service'
+import alertReporting from '../../utils/constants/error.alerts'
+import {
+  BLOOMREACH_WIRE_COMMAND_NAME,
   BloomreachBatchCommand,
-  BloomreachCommandNameEnum,
+  BloomreachCommandDataKind,
   BloomreachConsentActionEnum,
   BloomreachEventNameEnum,
+  toWireCommandData,
 } from '../bloomreach.types'
+import { BloomreachMergeConsentService } from '../bloomreach-merge-consent.service'
 import { BloomreachOutboxProcessor } from '../bloomreach-outbox.processor'
 
-jest.mock('axios')
-const mockedAxios = axios as jest.Mocked<typeof axios>
+vi.mock('axios')
+const mockedAxios = axios as Mocked<typeof axios>
 
 describe('BloomreachOutboxProcessor', () => {
   let processor: BloomreachOutboxProcessor
+  let mergeConsentService: Mocked<BloomreachMergeConsentService>
 
   const now = new Date('2026-03-26T12:00:00Z')
 
@@ -42,11 +53,17 @@ describe('BloomreachOutboxProcessor', () => {
     createdAt: now,
     updatedAt: now,
     externalId: 'cognito-1',
-    commandName: BloomreachCommandNameEnum.CUSTOMERS,
-    commandData: { customer_ids: { city_account_id: 'cognito-1' }, properties: {} },
+    commandName: BloomreachCommandName.CUSTOMERS,
+    commandData: {
+      kind: BloomreachCommandDataKind.CUSTOMER,
+      customer_ids: { city_account_id: 'cognito-1' },
+      properties: {},
+      update_timestamp: 100,
+    },
     status: BloomreachOutboxStatus.PROCESSING,
     attempts: 0,
     lastError: null,
+    isTerminal: false,
     ...overrides,
   })
 
@@ -59,12 +76,13 @@ describe('BloomreachOutboxProcessor', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         BloomreachOutboxProcessor,
         { provide: PrismaService, useValue: prismaMock },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
         {
-          provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>(),
+          provide: BloomreachMergeConsentService,
+          useValue: createMock<BloomreachMergeConsentService>(),
         },
         {
           provide: BaConfigService,
@@ -78,17 +96,20 @@ describe('BloomreachOutboxProcessor', () => {
     }).compile()
 
     processor = module.get<BloomreachOutboxProcessor>(BloomreachOutboxProcessor)
-
+    mergeConsentService = module.get(BloomreachMergeConsentService)
     // Default: no stale PROCESSING entries to recover
     prismaMock.bloomreachOutbox.findMany.mockResolvedValue([])
-    // findSupersededEntriesAndMerge uses a transaction — pass prismaMock as the tx client
-    // so findFirst/update mocks work inside the transaction
     prismaMock.$transaction.mockImplementation(async (fn) => fn(prismaMock))
+    prismaMock.$queryRaw.mockReset()
+    prismaMock.$queryRaw.mockResolvedValueOnce([{ acquired: true }])
   })
 
-  afterEach(() => {
-    jest.clearAllMocks()
-  })
+  // The raw claim query returns ids; the rows are then loaded with findMany
+  // (the first findMany call is stale-entry recovery).
+  const mockClaimedEntries = (entries: BloomreachOutbox[]) => {
+    prismaMock.$queryRaw.mockResolvedValue(entries.map(({ id }) => ({ id })))
+    prismaMock.bloomreachOutbox.findMany.mockResolvedValueOnce([]).mockResolvedValueOnce(entries)
+  }
 
   describe('processOutbox', () => {
     it('should skip when integration is not active', async () => {
@@ -110,17 +131,27 @@ describe('BloomreachOutboxProcessor', () => {
 
     it('should send batch with command_id and mark entries as COMPLETED on success', async () => {
       const entry = makeEntry()
-      prismaMock.$queryRaw.mockResolvedValue([entry])
+      mockClaimedEntries([entry])
       mockedAxios.post.mockResolvedValue({
         data: { success: true, results: [{ success: true, time: 0.01 }] },
       })
 
       await processor.processOutbox()
 
+      expect(prismaMock.bloomreachOutbox.findMany).toHaveBeenCalledWith({
+        where: { id: { in: ['entry-1'] } },
+        orderBy: { createdAt: 'asc' },
+      })
       expect(mockedAxios.post).toHaveBeenCalledWith(
         'https://api.bloomreach.test/track/v2/projects/test-project/batch',
         {
-          commands: [{ name: entry.commandName, data: entry.commandData, command_id: 'entry-1' }],
+          commands: [
+            {
+              name: BLOOMREACH_WIRE_COMMAND_NAME[entry.commandName],
+              data: toWireCommandData(entry.commandData),
+              command_id: 'entry-1',
+            },
+          ],
         },
         expectObjectContaining({
           headers: expectObjectContaining({
@@ -136,9 +167,10 @@ describe('BloomreachOutboxProcessor', () => {
 
     it('should mark entries back to PENDING on API failure when under max attempts', async () => {
       const entry = makeEntry({ attempts: 1 })
-      prismaMock.$queryRaw.mockResolvedValue([entry])
+      mockClaimedEntries([entry])
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
-      mockedAxios.post.mockRejectedValue(new Error('Request failed with status code 500'))
+      const sendError = new Error('Request failed with status code 500')
+      mockedAxios.post.mockRejectedValue(sendError)
 
       await processor.processOutbox()
 
@@ -147,14 +179,14 @@ describe('BloomreachOutboxProcessor', () => {
         data: {
           status: BloomreachOutboxStatus.PENDING,
           attempts: 2,
-          lastError: expectStringContaining('500'),
+          lastError: sendError.message,
         },
       })
     })
 
     it('should mark entries as FAILED when max attempts reached', async () => {
       const entry = makeEntry({ attempts: 4 })
-      prismaMock.$queryRaw.mockResolvedValue([entry])
+      mockClaimedEntries([entry])
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
       mockedAxios.post.mockRejectedValue(new Error('Request failed'))
 
@@ -172,7 +204,7 @@ describe('BloomreachOutboxProcessor', () => {
 
     it('should handle per-command failures from batch response', async () => {
       const entries = [makeEntry({ id: 'entry-1' }), makeEntry({ id: 'entry-2' })]
-      prismaMock.$queryRaw.mockResolvedValue(entries)
+      mockClaimedEntries(entries)
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
       mockedAxios.post.mockResolvedValue({
         data: {
@@ -204,7 +236,7 @@ describe('BloomreachOutboxProcessor', () => {
 
     it('should roll back all entries when API returns no results', async () => {
       const entry = makeEntry()
-      prismaMock.$queryRaw.mockResolvedValue([entry])
+      mockClaimedEntries([entry])
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
       mockedAxios.post.mockResolvedValue({ data: { success: false } })
 
@@ -221,9 +253,9 @@ describe('BloomreachOutboxProcessor', () => {
     it('should process multiple entries in a single batch', async () => {
       const entries = [
         makeEntry({ id: 'entry-1' }),
-        makeEntry({ id: 'entry-2', commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS }),
+        makeEntry({ id: 'entry-2', commandName: BloomreachCommandName.CUSTOMERS_EVENTS }),
       ]
-      prismaMock.$queryRaw.mockResolvedValue(entries)
+      mockClaimedEntries(entries)
       mockedAxios.post.mockResolvedValue({
         data: {
           success: true,
@@ -244,24 +276,84 @@ describe('BloomreachOutboxProcessor', () => {
       })
     })
 
+    it('should revert entry without sending when the merge consent check fails', async () => {
+      const entry = makeEntry()
+      mockClaimedEntries([entry])
+      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
+      mergeConsentService.ensureConsentsSurviveMerge.mockResolvedValue(false)
+
+      await processor.processOutbox()
+
+      expect(mockedAxios.post).not.toHaveBeenCalled()
+      expect(prismaMock.bloomreachOutbox.update).toHaveBeenCalledWith({
+        where: { id: 'entry-1' },
+        data: {
+          status: BloomreachOutboxStatus.PENDING,
+          // Doesn't count toward the attempts budget
+          attempts: 0,
+          lastError: 'Bloomreach merge consent check failed',
+        },
+      })
+    })
+
+    it('should send remaining entries when one merge consent check fails', async () => {
+      const entries = [makeEntry({ id: 'entry-1' }), makeEntry({ id: 'entry-2' })]
+      mockClaimedEntries(entries)
+      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
+      // Checks run in claim order — the first call is for entry-1
+      mergeConsentService.ensureConsentsSurviveMerge
+        .mockResolvedValueOnce(false)
+        .mockResolvedValueOnce(true)
+      mockedAxios.post.mockResolvedValue({
+        data: { success: true, results: [{ success: true, time: 0.01 }] },
+      })
+
+      await processor.processOutbox()
+
+      const requestBody = expectDefined(mockedAxios.post.mock.calls[0]?.[1])
+      expect((requestBody as { commands: BloomreachBatchCommand[] }).commands).toEqual([
+        {
+          name: BLOOMREACH_WIRE_COMMAND_NAME[entries[1].commandName],
+          data: toWireCommandData(entries[1].commandData),
+          command_id: 'entry-2',
+        },
+      ])
+      expect(prismaMock.bloomreachOutbox.updateMany).toHaveBeenCalledWith({
+        where: { id: { in: ['entry-2'] } },
+        data: { status: BloomreachOutboxStatus.COMPLETED },
+      })
+      expect(prismaMock.bloomreachOutbox.update).toHaveBeenCalledWith({
+        where: { id: 'entry-1' },
+        data: {
+          status: BloomreachOutboxStatus.PENDING,
+          attempts: 0,
+          lastError: 'Bloomreach merge consent check failed',
+        },
+      })
+    })
+
     it('should mark reverted customers entry as SUPERSEDED and merge data into newer PENDING entry', async () => {
       const oldEntry = makeEntry({
         id: 'old-entry',
         commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
           customer_ids: { city_account_id: 'cognito-1' },
           properties: { phone: '0900000000', email: 'old@example.com' },
+          update_timestamp: 100,
         },
       })
       const newerPendingEntry = makeEntry({
         id: 'newer-entry',
         status: BloomreachOutboxStatus.PENDING,
         commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
           customer_ids: { city_account_id: 'cognito-1' },
           properties: { email: 'new@example.com' },
+          update_timestamp: 200,
         },
       })
 
-      prismaMock.$queryRaw.mockResolvedValue([oldEntry])
+      mockClaimedEntries([oldEntry])
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerPendingEntry)
       mockedAxios.post.mockRejectedValue(new Error('API down'))
 
@@ -281,18 +373,69 @@ describe('BloomreachOutboxProcessor', () => {
         where: { id: 'newer-entry' },
         data: {
           commandData: {
+            kind: BloomreachCommandDataKind.CUSTOMER,
             customer_ids: { city_account_id: 'cognito-1' },
             properties: { phone: '0900000000', email: 'new@example.com' },
+            update_timestamp: 200,
           },
+          isTerminal: false,
         },
+      })
+    })
+
+    it('should wrap a terminal-downgrade failure while merging into the newer PENDING entry', async () => {
+      const oldEntry = makeEntry({
+        id: 'old-entry',
+        commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
+          customer_ids: { city_account_id: 'cognito-1' },
+          properties: { phone: '0900000000', email: 'old@example.com' },
+          update_timestamp: 100,
+        },
+      })
+      const newerPendingEntry = makeEntry({
+        id: 'newer-entry',
+        status: BloomreachOutboxStatus.PENDING,
+        commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
+          customer_ids: { city_account_id: 'cognito-1' },
+          properties: { email: 'new@example.com' },
+          update_timestamp: 200,
+        },
+      })
+
+      mockClaimedEntries([oldEntry])
+      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerPendingEntry)
+      mockedAxios.post.mockRejectedValue(new Error('API down'))
+      const downgradeError = Object.assign(new Error('rejected by trigger'), {
+        name: 'DriverAdapterError',
+        cause: { kind: 'postgres', code: 'BR001' },
+      })
+      // The merge-into-newer-entry update runs before the old entry's own
+      // SUPERSEDED status update, so this only ever rejects that first call.
+      prismaMock.bloomreachOutbox.update.mockRejectedValueOnce(downgradeError)
+
+      await expect(processor.processOutbox()).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message:
+          'Attempted to downgrade a terminal outbox entry while merging a superseded entry - mergeCustomerCommandData should have prevented this, investigate',
+        console: {
+          entryId: oldEntry.id,
+          newerEntryId: newerPendingEntry.id,
+          externalId: oldEntry.externalId,
+        },
+        alert: true,
+        error: downgradeError,
       })
     })
 
     it('should mark reverted event entry as SUPERSEDED without merge when newer PENDING exists', async () => {
       const oldEventEntry = makeEntry({
         id: 'old-event',
-        commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
+        commandName: BloomreachCommandName.CUSTOMERS_EVENTS,
         commandData: {
+          kind: BloomreachCommandDataKind.EVENT,
           customer_ids: { city_account_id: 'cognito-1' },
           event_type: BloomreachEventNameEnum.CONSENT,
           properties: {
@@ -300,13 +443,15 @@ describe('BloomreachOutboxProcessor', () => {
             category: 'ESBS-MARKETING',
             valid_until: 'unlimited',
           },
+          timestamp: 100,
         },
       })
       const newerEventEntry = makeEntry({
         id: 'newer-event',
-        commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
+        commandName: BloomreachCommandName.CUSTOMERS_EVENTS,
         status: BloomreachOutboxStatus.PENDING,
         commandData: {
+          kind: BloomreachCommandDataKind.EVENT,
           customer_ids: { city_account_id: 'cognito-1' },
           event_type: BloomreachEventNameEnum.CONSENT,
           properties: {
@@ -314,10 +459,11 @@ describe('BloomreachOutboxProcessor', () => {
             category: 'ESBS-MARKETING',
             valid_until: 'unlimited',
           },
+          timestamp: 200,
         },
       })
 
-      prismaMock.$queryRaw.mockResolvedValue([oldEventEntry])
+      mockClaimedEntries([oldEventEntry])
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerEventEntry)
       mockedAxios.post.mockRejectedValue(new Error('API down'))
 
@@ -368,16 +514,20 @@ describe('BloomreachOutboxProcessor', () => {
         status: BloomreachOutboxStatus.PROCESSING,
         updatedAt: new Date('2026-03-26T11:58:00Z'),
         commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
           customer_ids: { city_account_id: 'cognito-1' },
           properties: { phone: '0900000000', email: 'old@example.com' },
+          update_timestamp: 100,
         },
       })
       const newerEntry = makeEntry({
         id: 'newer-1',
         status: BloomreachOutboxStatus.PENDING,
         commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
           customer_ids: { city_account_id: 'cognito-1' },
           properties: { email: 'new@example.com' },
+          update_timestamp: 200,
         },
       })
       prismaMock.bloomreachOutbox.findMany.mockResolvedValue([staleEntry])
@@ -400,9 +550,12 @@ describe('BloomreachOutboxProcessor', () => {
         where: { id: 'newer-1' },
         data: {
           commandData: {
+            kind: BloomreachCommandDataKind.CUSTOMER,
             customer_ids: { city_account_id: 'cognito-1' },
             properties: { phone: '0900000000', email: 'new@example.com' },
+            update_timestamp: 200,
           },
+          isTerminal: false,
         },
       })
     })

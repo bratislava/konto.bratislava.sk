@@ -1,4 +1,6 @@
-import { createMock } from '@golevelup/ts-jest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import {
   FormDefinition,
@@ -17,18 +19,25 @@ import { Files, Forms } from '../../generated/prisma/client'
 import { MinioStorageService } from '../../minio-storage/minio-storage.service'
 import PrismaService from '../../prisma/prisma.service'
 import ScannerClientService from '../../scanner-client/scanner-client.service'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import alertReporting from '../../utils/constants/error.alerts'
+import { FilesErrorsEnum } from '../files.errors.enum'
 import FilesHelper from '../files.helper'
 
-jest.mock('forms-shared/definitions/formDefinitionTypes')
-jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
+vi.mock('forms-shared/definitions/formDefinitionTypes')
+vi.mock('forms-shared/definitions/getFormDefinitionBySlug')
 
 describe('FilesHelper', () => {
   let service: FilesHelper
+  let logger: LineLoggerService
+  const errorFactory = new ErrorFactoryService({ alertReporting })
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
       providers: [
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         FilesHelper,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -52,14 +61,12 @@ describe('FilesHelper', () => {
           provide: ScannerClientService,
           useValue: createMock<ScannerClientService>(),
         },
-        {
-          provide: ThrowerErrorGuard,
-          useValue: createMock<ThrowerErrorGuard>(),
-        },
+        { provide: ErrorFactoryService, useValue: errorFactory },
       ],
     }).compile()
 
     service = app.get<FilesHelper>(FilesHelper)
+    logger = app.get(LineLoggerService)
   })
 
   it('should be defined', () => {
@@ -81,11 +88,11 @@ describe('FilesHelper', () => {
         pospID: 'test-posp-id',
       })
 
-      jest.mocked(getFormDefinitionBySlug).mockReturnValue(mockFormDefinition)
+      vi.mocked(getFormDefinitionBySlug).mockReturnValue(mockFormDefinition)
     })
 
     it('should return FormInfo with pospID for SlovenskoSk form definition', () => {
-      jest.mocked(isSlovenskoSkFormDefinition).mockReturnValue(true)
+      vi.mocked(isSlovenskoSkFormDefinition).mockReturnValue(true)
 
       const result = service.forms2formInfo(mockForm)
 
@@ -96,7 +103,7 @@ describe('FilesHelper', () => {
     })
 
     it('should return FormInfo with slug for non-SlovenskoSk form definition', () => {
-      jest.mocked(isSlovenskoSkFormDefinition).mockReturnValue(false)
+      vi.mocked(isSlovenskoSkFormDefinition).mockReturnValue(false)
 
       const result = service.forms2formInfo(mockForm)
 
@@ -107,28 +114,18 @@ describe('FilesHelper', () => {
     })
 
     it('should throw NotFoundException when form definition is not found', () => {
-      jest.mocked(getFormDefinitionBySlug).mockReturnValue(null)
+      vi.mocked(getFormDefinitionBySlug).mockReturnValue(null)
 
-      const mockThrowException = jest.fn()
-      service['throwerErrorGuard'].NotFoundException = mockThrowException
-
-      expect(() => service.forms2formInfo(mockForm)).toThrow()
-      expect(mockThrowException).toHaveBeenCalledWith(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} test-slug`,
-      )
+      expect(() => service.forms2formInfo(mockForm)).toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} test-slug`,
+        alert: true,
+      })
     })
   })
 
   describe('areErrorFilesInForm', () => {
-    beforeEach(() => {
-      jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
-    })
-
-    afterEach(() => {
-      jest.spyOn(service['logger'], 'error').mockRestore()
-    })
-
     it('should return true when there are error files', async () => {
       const mockErrorFiles: Files[] = [
         {
@@ -136,11 +133,18 @@ describe('FilesHelper', () => {
         } as Files,
       ]
 
+      const formId = 'test-form-id'
       prismaMock.files.findMany.mockResolvedValue(mockErrorFiles)
 
-      const result = await service.areErrorFilesInForm('test-form-id')
+      const result = await service.areErrorFilesInForm(formId)
 
       expect(result).toBe(true)
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        expect.toMatchLogNestError({
+          errorEnum: FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
+          console: { formId, errorFiles: mockErrorFiles },
+        }),
+      )
     })
 
     it('should return true when there are multiple error files', async () => {
@@ -166,6 +170,7 @@ describe('FilesHelper', () => {
       const result = await service.areErrorFilesInForm('test-form-id')
 
       expect(result).toBe(false)
+      expect(vi.mocked(logger.error)).not.toHaveBeenCalled()
     })
   })
 })

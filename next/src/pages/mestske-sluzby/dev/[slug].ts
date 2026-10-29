@@ -57,7 +57,14 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
           formMigrationRequired: false,
           isEmbedded,
           isDevRoute: true,
-          strapiForm: { slug, isTemporarilyDisabled: false },
+          strapiForm: {
+            slug,
+            moreInformationUrl: null,
+            isTemporarilyDisabled: false,
+            temporarilyDisabledUntil: null,
+            temporarilyDisabledReason: null,
+            formSentPage: null,
+          },
           versionCompareContinueAction: VersionCompareContinueAction.None,
         },
         appProps: {

@@ -106,6 +106,12 @@ target "next" {
   }
 }
 
+target "next-lint" {
+  inherits   = ["_toolchain", "_turbo-cache"]
+  dockerfile = "next/Dockerfile"
+  target     = "lint"
+}
+
 # --- strapi -------------------------------------------------------------------
 
 target "strapi" {
@@ -139,9 +145,19 @@ target "nest-city-account-test" {
   target   = "test"
 }
 
+target "nest-city-account-typecheck" {
+  inherits = ["_nest-city-account"]
+  target   = "typecheck"
+}
+
 target "nest-city-account-lint" {
   inherits = ["_nest-city-account"]
   target   = "lint"
+}
+
+target "nest-city-account-verify-bootstrap" {
+  inherits = ["_nest-city-account"]
+  target   = "verify-bootstrap"
 }
 
 target "_nest-clamav-scanner" {
@@ -164,9 +180,19 @@ target "nest-clamav-scanner-test" {
   target   = "test"
 }
 
+target "nest-clamav-scanner-typecheck" {
+  inherits = ["_nest-clamav-scanner"]
+  target   = "typecheck"
+}
+
 target "nest-clamav-scanner-lint" {
   inherits = ["_nest-clamav-scanner"]
   target   = "lint"
+}
+
+target "nest-clamav-scanner-verify-bootstrap" {
+  inherits = ["_nest-clamav-scanner"]
+  target   = "verify-bootstrap"
 }
 
 target "_nest-forms-backend" {
@@ -189,9 +215,19 @@ target "nest-forms-backend-test" {
   target   = "test"
 }
 
+target "nest-forms-backend-typecheck" {
+  inherits = ["_nest-forms-backend"]
+  target   = "typecheck"
+}
+
 target "nest-forms-backend-lint" {
   inherits = ["_nest-forms-backend"]
   target   = "lint"
+}
+
+target "nest-forms-backend-verify-bootstrap" {
+  inherits = ["_nest-forms-backend"]
+  target   = "verify-bootstrap"
 }
 
 # The only service with E2E tests. CI_E2E_DATABASE_URL points at a database that
@@ -221,9 +257,19 @@ target "nest-tax-backend-test" {
   target   = "test"
 }
 
+target "nest-tax-backend-typecheck" {
+  inherits = ["_nest-tax-backend"]
+  target   = "typecheck"
+}
+
 target "nest-tax-backend-lint" {
   inherits = ["_nest-tax-backend"]
   target   = "lint"
+}
+
+target "nest-tax-backend-verify-bootstrap" {
+  inherits = ["_nest-tax-backend"]
+  target   = "verify-bootstrap"
 }
 
 # Bare `docker buildx bake` builds every deployable image.

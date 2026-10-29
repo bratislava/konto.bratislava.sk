@@ -3,6 +3,11 @@ import {
   GinisError,
   SslDetailDokumentuWflDokument,
 } from '@bratislava/ginis-sdk'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LogAllowList,
+} from '@bratislava/log-nest'
 import { Controller, Get, HttpStatus, Param, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
@@ -24,8 +29,6 @@ import {
   mapGinisHistory,
   MappedDocumentHistory,
 } from '../utils/ginis/ginis-api-helper'
-import { ErrorsEnum } from '../utils/global-enums/errors.enum'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import GinisDocumentDetailResponseDto from './dtos/ginis-api.response.dto'
 import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService from './subservices/ginis-api.service'
@@ -38,7 +41,7 @@ export default class GinisController {
     private readonly ginisAPIService: GinisAPIService,
     private readonly ginisHelper: GinisHelper,
     private readonly formsService: FormsService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
   ) {}
 
   @ApiOperation({
@@ -52,23 +55,24 @@ export default class GinisController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth])
   @UseGuards(UserAuthGuard, FormAccessGuard)
+  @LogAllowList({ id: true, dossierId: true })
   @Get(':formId')
   async getGinisDocumentByFormId(
     @Param('formId') formId: string,
   ): Promise<GinisDocumentDetailResponseDto> {
     const form = await this.formsService.getUniqueForm(formId)
     if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
     const { ginisDocumentId } = form
     if (!ginisDocumentId) {
-      throw this.throwerErrorGuard.NotFoundException(
-        ErrorsEnum.NOT_FOUND_ERROR,
-        `Form with id ${formId} does not have a ginisDocumentId`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: ErrorEnum.NOT_FOUND_ERROR,
+        message: `Form with id ${formId} does not have a ginisDocumentId`,
+      })
     }
 
     let wflDocument: SslDetailDokumentuWflDokument | null = null
@@ -85,11 +89,11 @@ export default class GinisController {
       documentHistory = mapGinisHistory(document)
     } catch (error) {
       if (error instanceof GinisError && error.axiosError) {
-        throw this.throwerErrorGuard.fromAxiosError(error.axiosError, {
+        throw this.errorFactoryService.fromAxiosError(error.axiosError, {
           statusOverrides: {
             [HttpStatus.NOT_FOUND]: {
               status: HttpStatus.NOT_FOUND,
-              errorEnum: ErrorsEnum.NOT_FOUND_ERROR,
+              errorEnum: ErrorEnum.NOT_FOUND_ERROR,
               message: `Document or document owner not found in GINIS - document id, if available: ${
                 wflDocument?.['Id-dokumentu'] ||
                 'unavailable - document not found or invalid'
@@ -98,12 +102,11 @@ export default class GinisController {
           },
         })
       }
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Error while getting document or owner from GINIS:',
-        undefined,
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: 'Error while getting document or owner from GINIS:',
         error,
-      )
+      })
     }
     return {
       id: wflDocument['Id-dokumentu'],

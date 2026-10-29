@@ -1,4 +1,4 @@
-import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { PhysicalEntity } from '../generated/prisma/client'
@@ -9,7 +9,7 @@ export class PhysicalEntityService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   async linkToUserIdByBirthnumber(userId: string, birthNumber: string) {

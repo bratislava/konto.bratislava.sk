@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { parse } from 'csv-parse/sync'
 import dayjs from 'dayjs'
@@ -56,7 +56,7 @@ export interface OutputFile {
 
 @Injectable()
 export class CardPaymentReportingService {
-  private readonly logger = new LineLoggerSubservice(
+  private readonly logger = new LineLoggerService(
     CardPaymentReportingService.name,
   )
 

@@ -40,6 +40,9 @@ RUN pnpm turbo run build --filter=nest-city-account
 FROM builder-deps AS test
 RUN pnpm turbo run test --filter=nest-city-account
 
+FROM builder-deps AS typecheck
+RUN pnpm turbo run typecheck --filter=nest-city-account
+
 FROM builder AS lint
 RUN pnpm turbo run lint --filter=nest-city-account
 
@@ -79,3 +82,7 @@ EXPOSE 3000
 # tini tears the container down before `node` can drain in-flight requests.
 ENTRYPOINT [ "/sbin/tini", "--" ]
 CMD [ "sh", "-c", "./node_modules/.bin/prisma migrate deploy && exec node dist/main" ]
+
+FROM runner AS verify-bootstrap
+COPY --chown=node:node nest-city-account/.env.example ./.env.example
+RUN node --run verify-bootstrap

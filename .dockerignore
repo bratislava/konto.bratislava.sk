@@ -30,6 +30,7 @@ e2e-tests/results
 # Secrets
 **/.env*
 !**/.env.spec
+!**/.env.example
 **/*.pem
 **/*.key
 

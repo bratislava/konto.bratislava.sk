@@ -1,7 +1,7 @@
 import { plainToInstance } from 'class-transformer'
 import { validate } from 'class-validator'
 
-import { expectAny, expectObjectContaining } from '../../../__tests__/jest-matchers'
+import { expectAny, expectObjectContaining } from '../../../__tests__/matchers'
 import { IsBirthNumber, IsIco, IsIdentityCard } from '../validation.decorators'
 
 /** Known-valid samples for `rodnecislo` / Slovak birth number (see rodnecislo checksum rules). */

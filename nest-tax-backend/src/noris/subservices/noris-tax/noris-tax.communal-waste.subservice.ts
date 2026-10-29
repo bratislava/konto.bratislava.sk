@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { HttpException, Injectable } from '@nestjs/common'
 import groupBy from 'lodash/groupBy'
@@ -46,7 +46,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     paymentSubservice: NorisPaymentSubservice,
     databaseSubservice: DatabaseSubservice,
     baConfigService: BaConfigService,
-    logger: LineLoggerSubservice,
+    logger: LineLoggerService,
   ) {
     super(
       qrCodeService,
@@ -226,7 +226,6 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
 
     // Process new taxes
     await this.processNorisTaxData(norisData, year, {
-      ...userDataFromCityAccount,
       suppressEmail: false,
     })
 

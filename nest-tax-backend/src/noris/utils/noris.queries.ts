@@ -366,6 +366,7 @@ WITH NorisRows AS (
             AND lcs.dane21_priznanie.podnikatel = 'N'
             AND lcs.dane21_doklad.pohladavka IS NOT NULL
             AND lcs.dane21_priznanie.rodne_cislo IN (@birth_numbers)
+            AND dsum.dan_spolu > 0
         )
 )
 SELECT * FROM NorisRows WHERE _rn = 1

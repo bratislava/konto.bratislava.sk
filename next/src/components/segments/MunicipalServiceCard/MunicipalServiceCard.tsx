@@ -132,6 +132,7 @@ const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => {
     ...getLinkProps({
       label: service.buttonText,
       url: service.href ?? ROUTES.MUNICIPAL_SERVICES_FORM(service.slug),
+      municipalService: null,
     }),
     analyticsProps: { id: `Mestské služby: ${service.title}` },
   }

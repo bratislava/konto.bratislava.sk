@@ -1,40 +1,47 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import Handlebars from 'handlebars'
+import type { Mock } from 'vitest'
 
-import { expectStringContaining } from '../../../__tests__/jest-matchers'
+import { expectStringContaining } from '../../../__tests__/matchers'
 import BaConfigService from '../../../config/ba-config.service'
+import StrapiService from '../../../strapi/strapi.service'
+import alertReporting from '../../../utils/constants/error.alerts'
 import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
 import {
   MailgunErrorsEnum,
   MailgunErrorsResponseEnum,
 } from '../../../utils/global-enums/mailgun.errors.enum'
-import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import MailgunHelper from '../mailgun.helper'
 
 // Mock for IMailgunClient
 const mockMailgunClient = {
   domains: {
     domainTemplates: {
-      get: jest.fn(),
+      get: vi.fn(),
     },
   },
 }
 
 // Mock for Handlebars.compile
-jest.mock('handlebars', () => ({
-  compile: jest.fn(),
+vi.mock('handlebars', () => ({
+  default: { compile: vi.fn() },
 }))
 
 // Mock for Mailgun
-jest.mock('mailgun.js', () =>
-  jest.fn().mockImplementation(() => ({
-    client: jest.fn().mockReturnValue(mockMailgunClient),
-  })),
-)
+vi.mock('mailgun.js', () => ({
+  default: vi.fn().mockImplementation(function () {
+    return { client: vi.fn().mockReturnValue(mockMailgunClient) }
+  }),
+}))
 
 describe('MailgunHelper', () => {
   let mailgunHelper: MailgunHelper
+  let strapiService: StrapiService
+  const errorFactory = new ErrorFactoryService({ alertReporting })
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -54,23 +61,15 @@ describe('MailgunHelper', () => {
           },
         },
         {
-          provide: ThrowerErrorGuard,
-          useValue: {
-            NotFoundException: jest
-              .fn()
-              .mockImplementation((enum1, message) => {
-                throw new Error(`NotFound: ${enum1} - ${message}`)
-              }),
-          },
+          provide: StrapiService,
+          useValue: createMock<StrapiService>(),
         },
+        { provide: ErrorFactoryService, useValue: errorFactory },
       ],
     }).compile()
 
     mailgunHelper = moduleRef.get<MailgunHelper>(MailgunHelper)
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
+    strapiService = moduleRef.get<StrapiService>(StrapiService)
   })
 
   describe('constructor', () => {
@@ -82,7 +81,7 @@ describe('MailgunHelper', () => {
   describe('createEmailVariables', () => {
     const mockFormSentAt = new Date('2026-02-11T12:00:00.000Z')
 
-    it('should process PARAMETER type variables correctly', () => {
+    it('should process PARAMETER type variables correctly', async () => {
       const input: SendEmailInputDto = {
         to: 'user@example.com',
         template: MailgunTemplateEnum.GINIS_SENT,
@@ -95,13 +94,15 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = mailgunHelper.createEmailVariables(input)
+      const result = await mailgunHelper.createEmailVariables(input)
 
       expect(result.applicationName).toBe('Test Application')
       expect(result.firstName).toBe('John')
     })
 
-    it('should process SELECT type variables correctly', () => {
+    it('should process FEEDBACK_LINK type variables correctly', async () => {
+      const feedbackLink = 'https://test.feedback.com/bratislava/'
+      vi.mocked(strapiService.getFeedbackLink).mockResolvedValue(feedbackLink)
       const input: SendEmailInputDto = {
         to: 'user@example.com',
         template: MailgunTemplateEnum.GINIS_SUCCESS,
@@ -114,14 +115,16 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = mailgunHelper.createEmailVariables(input)
+      const result = await mailgunHelper.createEmailVariables(input)
 
-      expect(result.feedbackLink).toBe(
-        'https://bravo.staffino.com/bratislava/id=WW1hkstR',
+      expect(strapiService.getFeedbackLink).toHaveBeenCalledWith(
+        'stanovisko-k-investicnemu-zameru',
       )
+      expect(result.feedbackLink).toBe(feedbackLink)
     })
 
-    it('should not set SELECT type variables if slug does not match', () => {
+    it('should not set FEEDBACK_LINK type variables if the form has no feedback link', async () => {
+      vi.mocked(strapiService.getFeedbackLink).mockResolvedValue(null)
       const input: SendEmailInputDto = {
         to: 'user@example.com',
         template: MailgunTemplateEnum.GINIS_SUCCESS,
@@ -134,12 +137,52 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = mailgunHelper.createEmailVariables(input)
+      const result = await mailgunHelper.createEmailVariables(input)
 
       expect(result.feedbackLink).toBeUndefined()
     })
 
-    it('should handle htmlData in OLO_NEW_SUBMISSION template', () => {
+    it('should throw if fetching the feedback link fails', async () => {
+      const error = new Error('Strapi is down')
+      vi.mocked(strapiService.getFeedbackLink).mockRejectedValue(error)
+      const input: SendEmailInputDto = {
+        to: 'user@example.com',
+        template: MailgunTemplateEnum.GINIS_SUCCESS,
+        data: {
+          formId: 'form-123',
+          messageSubject: 'Test Application',
+          firstName: 'John',
+          slug: 'stanovisko-k-investicnemu-zameru',
+          formSentAt: mockFormSentAt,
+        },
+      }
+
+      await expect(mailgunHelper.createEmailVariables(input)).rejects.toBe(
+        error,
+      )
+    })
+
+    it('should not fetch the feedback link if the template has no FEEDBACK_LINK variable', async () => {
+      const getFeedbackLinkSpy = vi.mocked(strapiService.getFeedbackLink)
+      const input: SendEmailInputDto = {
+        to: 'user@example.com',
+        template: MailgunTemplateEnum.GINIS_IN_PROGRESS,
+        data: {
+          formId: 'form-123',
+          messageSubject: 'Test Application',
+          firstName: 'John',
+          slug: 'stanovisko-k-investicnemu-zameru',
+          formSentAt: mockFormSentAt,
+        },
+      }
+
+      const result = await mailgunHelper.createEmailVariables(input)
+
+      expect(getFeedbackLinkSpy).not.toHaveBeenCalled()
+      expect(result.feedbackLink).toBeUndefined()
+    })
+
+    it('should handle htmlData in OLO_NEW_SUBMISSION template', async () => {
       const input: SendEmailInputDto = {
         to: 'olo@example.com',
         template: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
@@ -153,13 +196,13 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = mailgunHelper.createEmailVariables(input)
+      const result = await mailgunHelper.createEmailVariables(input)
 
       expect(result.applicationName).toBe('OLO Test Application')
       expect(result.htmlData).toBe('<p>Form HTML data</p>')
     })
 
-    it('should handle ATTACHMENT_VIRUS template correctly', () => {
+    it('should handle ATTACHMENT_VIRUS template correctly', async () => {
       const input: SendEmailInputDto = {
         to: 'user@example.com',
         template: MailgunTemplateEnum.ATTACHMENT_VIRUS,
@@ -172,7 +215,7 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = mailgunHelper.createEmailVariables(input)
+      const result = await mailgunHelper.createEmailVariables(input)
 
       expect(result.applicationName).toBe('Virus Detected')
       expect(result.firstName).toBe('Jane')
@@ -194,12 +237,12 @@ describe('MailgunHelper', () => {
       })
 
       // Mock Handlebars.compile
-      const mockCompiledTemplate = jest
+      const mockCompiledTemplate = vi
         .fn()
         .mockReturnValue(
           '<p>Hello John, your application Test Application is being processed.</p>',
         )
-      ;(Handlebars.compile as jest.Mock).mockReturnValue(mockCompiledTemplate)
+      ;(Handlebars.compile as Mock).mockReturnValue(mockCompiledTemplate)
 
       const variables = {
         firstName: 'John',
@@ -234,11 +277,15 @@ describe('MailgunHelper', () => {
         version: null,
       })
 
+      const templateName = 'missing-template'
+
       await expect(
-        mailgunHelper.getFilledTemplate('missing-template', {}),
-      ).rejects.toThrow(
-        `NotFound: ${MailgunErrorsEnum.TEMPLATE_NOT_FOUND} - ${MailgunErrorsResponseEnum.TEMPLATE_NOT_FOUND}: missing-template`,
-      )
+        mailgunHelper.getFilledTemplate(templateName, {}),
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
+        errorEnum: MailgunErrorsEnum.TEMPLATE_NOT_FOUND,
+        message: `${MailgunErrorsResponseEnum.TEMPLATE_NOT_FOUND}: ${templateName}`,
+      })
     })
   })
 })

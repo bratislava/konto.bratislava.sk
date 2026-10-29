@@ -1,4 +1,5 @@
-import { createMock } from '@golevelup/ts-jest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../test/singleton'
@@ -7,7 +8,6 @@ import FormValidatorRegistryService from '../form-validator-registry/form-valida
 import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
 import TaxService from '../tax/tax.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import ConvertService from './convert.service'
 
 describe('ConvertService', () => {
@@ -16,9 +16,10 @@ describe('ConvertService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerService,
         ConvertService,
         { provide: TaxService, useValue: createMock<TaxService>() },
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         {
           provide: BaConfigService,
           useValue: {

@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import formData from 'form-data'
 import Mailgun from 'mailgun.js'
@@ -17,7 +17,7 @@ export class MailgunService {
   constructor(
     private readonly mailgunMessageBuilder: MailgunMessageBuilder,
     private readonly baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {
     this.mg = mailgun.client({
       username: 'api',
@@ -46,12 +46,11 @@ export class MailgunService {
       // The type safety is preserved at the call site where sendEmail is invoked - the generic parameter T
       // ensures that the templateKey and options are correctly matched. The 'as any' here is safe because
       // we've already validated the types through the function signature.
-      const factoryMethod = this.mailgunMessageBuilder[templateKey]
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const messageData = await factoryMethod.call(this.mailgunMessageBuilder, options as any)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
+      const messageData = await this.mailgunMessageBuilder[templateKey](options as any)
 
       const response = await this.mg.messages.create(
-        this.baConfigService.mailgun.defaultDomain,
+        this.baConfigService.mailgun.domain,
         messageData
       )
       this.logger.log('Mailgun response', response)

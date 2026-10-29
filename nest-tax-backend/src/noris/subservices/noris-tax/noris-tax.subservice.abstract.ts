@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
@@ -45,7 +45,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     protected readonly bloomreachService: BloomreachService,
     protected readonly errorFactoryService: ErrorFactoryService,
     protected readonly databaseSubservice: DatabaseSubservice,
-    protected readonly logger: LineLoggerSubservice,
+    protected readonly logger: LineLoggerService,
     protected readonly cityAccountSubservice: CityAccountSubservice,
     protected readonly paymentSubservice: NorisPaymentSubservice,
     protected readonly baConfigService: BaConfigService,
@@ -209,6 +209,12 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       year,
     )
 
+    await this.markAlreadyImportedAsSuccess(
+      norisData,
+      norisDataNotInDatabase,
+      year,
+    )
+
     if (prepareOnly) {
       // In prepare mode, just check if taxes exist and return the birth numbers
       // The tracking will be done in the prepareTaxes function via TaxImportAttempt table
@@ -220,13 +226,14 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         where: { birthNumber: { in: birthNumbers } },
         select: { birthNumber: true, id: true },
       })
-      await this.prismaService.taxImportAttempt.createMany({
-        data: taxPayers.map((taxPayer) => ({
-          taxPayerId: taxPayer.id,
-          status: TaxImportStatus.READY_TO_IMPORT,
+      await this.prismaService.taxImportAttempt.updateMany({
+        where: {
+          taxPayerId: { in: taxPayers.map((taxPayer) => taxPayer.id) },
           year,
           taxType: taxDefinition.type,
-        })),
+          status: { in: [TaxImportStatus.FAILED, TaxImportStatus.NOT_FOUND] },
+        },
+        data: { status: TaxImportStatus.READY_TO_IMPORT },
       })
       return { birthNumbers }
     }
@@ -293,6 +300,33 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     )
 
     return { birthNumbers: [...birthNumbersResult] }
+  }
+
+  private async markAlreadyImportedAsSuccess(
+    norisData: TaxTypeToNorisData[TTaxType][],
+    norisDataNotInDatabase: TaxTypeToNorisData[TTaxType][],
+    year: number,
+  ): Promise<void> {
+    const birthNumbersWithMissingTaxes = new Set(
+      norisDataNotInDatabase.map((norisItem) => norisItem.ICO_RC),
+    )
+    const alreadyImportedBirthNumbers = [
+      ...new Set(norisData.map((norisItem) => norisItem.ICO_RC)),
+    ].filter((birthNumber) => !birthNumbersWithMissingTaxes.has(birthNumber))
+
+    if (alreadyImportedBirthNumbers.length === 0) {
+      return
+    }
+
+    await this.prismaService.taxImportAttempt.updateMany({
+      where: {
+        taxPayer: { birthNumber: { in: alreadyImportedBirthNumbers } },
+        year,
+        taxType: this.getTaxDefinition().type,
+        status: { not: TaxImportStatus.SUCCESS },
+      },
+      data: { status: TaxImportStatus.SUCCESS },
+    })
   }
 
   /**

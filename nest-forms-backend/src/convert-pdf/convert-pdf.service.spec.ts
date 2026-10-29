@@ -1,4 +1,5 @@
-import { createMock } from '@golevelup/ts-jest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import {
   FormDefinitionSlovenskoSk,
@@ -19,19 +20,18 @@ import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import { PDF_EXPORT_FILE_NAME } from '../utils/files'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import ConvertPdfService from './convert-pdf.service'
 
-jest.mock('../files/files.service')
+vi.mock('../files/files.service')
 
 describe('ConvertPdfService', () => {
   let convertPdfService: ConvertPdfService
   let filesHelper: FilesHelper
   let convertService: ConvertService
   // mocks the part of other services we're using
-  const putObject = jest.fn()
+  const putObject = vi.fn()
   putObject.mockResolvedValue(true)
-  const generatePdf = jest.fn()
+  const generatePdf = vi.fn()
   generatePdf.mockResolvedValue(true)
 
   // TODO create factories for test data
@@ -59,6 +59,7 @@ describe('ConvertPdfService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LineLoggerService,
         {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),
@@ -92,7 +93,7 @@ describe('ConvertPdfService', () => {
           },
         },
         ScannerClientService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: FormAccessService,
@@ -112,11 +113,11 @@ describe('ConvertPdfService', () => {
     prismaMock.files.findMany.mockResolvedValue([])
     prismaMock.files.create.mockResolvedValue(fakeFile)
     prismaMock.files.update.mockResolvedValue(fakeFile)
-    convertService.generatePdf = jest
+    convertService.generatePdf = vi
       .fn()
       .mockResolvedValue(expectedPdfExportPath)
 
-    filesHelper.upsertFileByUid = jest.fn().mockResolvedValue(fakeFile)
+    filesHelper.upsertFileByUid = vi.fn().mockResolvedValue(fakeFile)
   })
 
   it('should be defined', () => {

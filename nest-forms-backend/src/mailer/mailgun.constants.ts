@@ -1,29 +1,19 @@
-import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
-
 import BaConfigService from '../config/ba-config.service'
 
 export enum MailgunConfigVariableType {
   PARAMETER = 'PARAMETER',
-  SELECT = 'SELECT',
   STRING = 'STRING',
+  FEEDBACK_LINK = 'FEEDBACK_LINK',
 }
 
-export const MAILGUN_CONFIG_FEEDBACK_URLS = Object.fromEntries(
-  formDefinitions
-    .filter((formDefinition) => formDefinition.feedbackLink)
-    .map((formDefinition) => [
-      formDefinition.slug,
-      formDefinition.feedbackLink,
-    ]),
-)
-
 type MailgunConfigVariableByType =
-  | { type: MailgunConfigVariableType.STRING; value: string }
   | {
-      type: Exclude<MailgunConfigVariableType, MailgunConfigVariableType.STRING>
-      value: unknown
-      selectorVariable?: string
+      type:
+        | MailgunConfigVariableType.PARAMETER
+        | MailgunConfigVariableType.STRING
+      value: string
     }
+  | { type: MailgunConfigVariableType.FEEDBACK_LINK }
 
 interface MailgunConfig {
   template: string
@@ -53,9 +43,7 @@ export function getMailgunConfig(
           value: baConfigService.frontend.url,
         },
         feedbackLink: {
-          type: MailgunConfigVariableType.SELECT,
-          value: MAILGUN_CONFIG_FEEDBACK_URLS,
-          selectorVariable: 'slug',
+          type: MailgunConfigVariableType.FEEDBACK_LINK,
         },
       },
     },
@@ -76,9 +64,7 @@ export function getMailgunConfig(
           value: baConfigService.frontend.url,
         },
         feedbackLink: {
-          type: MailgunConfigVariableType.SELECT,
-          value: MAILGUN_CONFIG_FEEDBACK_URLS,
-          selectorVariable: 'slug',
+          type: MailgunConfigVariableType.FEEDBACK_LINK,
         },
       },
     },
@@ -117,9 +103,7 @@ export function getMailgunConfig(
           value: baConfigService.frontend.url,
         },
         feedbackLink: {
-          type: MailgunConfigVariableType.SELECT,
-          value: MAILGUN_CONFIG_FEEDBACK_URLS,
-          selectorVariable: 'slug',
+          type: MailgunConfigVariableType.FEEDBACK_LINK,
         },
       },
     },
@@ -140,9 +124,7 @@ export function getMailgunConfig(
           value: baConfigService.frontend.url,
         },
         feedbackLink: {
-          type: MailgunConfigVariableType.SELECT,
-          value: MAILGUN_CONFIG_FEEDBACK_URLS,
-          selectorVariable: 'slug',
+          type: MailgunConfigVariableType.FEEDBACK_LINK,
         },
       },
     },
@@ -228,9 +210,7 @@ export function getMailgunConfig(
           value: '{{firstName}}',
         },
         feedbackLink: {
-          type: MailgunConfigVariableType.SELECT,
-          value: MAILGUN_CONFIG_FEEDBACK_URLS,
-          selectorVariable: 'slug',
+          type: MailgunConfigVariableType.FEEDBACK_LINK,
         },
       },
     },
@@ -247,9 +227,7 @@ export function getMailgunConfig(
           value: '{{firstName}}',
         },
         feedbackLink: {
-          type: MailgunConfigVariableType.SELECT,
-          value: MAILGUN_CONFIG_FEEDBACK_URLS,
-          selectorVariable: 'slug',
+          type: MailgunConfigVariableType.FEEDBACK_LINK,
         },
       },
     },

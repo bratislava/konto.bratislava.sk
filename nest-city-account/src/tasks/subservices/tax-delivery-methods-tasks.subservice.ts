@@ -1,9 +1,9 @@
-import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import pLimit from 'p-limit'
 import { z } from 'zod'
 
-import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum } from '../../generated/prisma/client'
+import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum } from '../../generated/prisma/enums'
 import { MailgunService } from '../../mailgun/mailgun.service'
 import {
   NorisDeliveryMethodService,
@@ -37,7 +37,7 @@ export class TaxDeliveryMethodsTasksSubservice {
     private readonly norisDeliveryMethodService: NorisDeliveryMethodService,
     private readonly mailgunService: MailgunService,
     private readonly pdfGeneratorService: PdfGeneratorService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   async updateDeliveryMethodsInNoris() {

@@ -40,6 +40,7 @@ NASES_RECIPIENT_URI=ico://sk/test-recipient
 
 # Frontend
 FRONTEND_URL=https://city-account-next.staging.bratislava.sk
+CITY_ACCOUNT_STRAPI_URL=https://city-account-strapi.staging.bratislava.sk
 USER_ACCOUNT_API="https://nest-city-account.staging.bratislava.sk"
 USER_ACCOUNT_API_KEY=test-api-key
 

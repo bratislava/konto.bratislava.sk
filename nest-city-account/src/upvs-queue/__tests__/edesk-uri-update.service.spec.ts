@@ -1,39 +1,34 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
-import { HttpException, HttpStatus } from '@nestjs/common'
+import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
-import { expectObjectContaining } from '../../__tests__/jest-matchers'
+import { expectObjectContaining } from '../../__tests__/matchers'
 import { ExternalEdeskCheck } from '../../generated/prisma/client'
 import { QueueItemStatusEnum } from '../../generated/prisma/enums'
 import { GetIdentitiesByUrisResult, NasesService } from '../../nases/nases.service'
 import { PrismaService } from '../../prisma/prisma.service'
+import alertReporting from '../../utils/constants/error.alerts'
 import { EdeskUriUpdateService } from '../edesk-uri-update.service'
 
 describe('EdeskUriUpdateService', () => {
   let service: EdeskUriUpdateService
   let nasesService: NasesService
-  let errorFactoryService: ErrorFactoryService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         EdeskUriUpdateService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: NasesService, useValue: createMock<NasesService>() },
-        { provide: ErrorFactoryService, useValue: createMock<ErrorFactoryService>() },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
       ],
     }).compile()
 
     service = module.get(EdeskUriUpdateService)
     nasesService = module.get(NasesService)
-    errorFactoryService = module.get(ErrorFactoryService)
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
   })
 
   describe('getUriToUpdateInternal', () => {
@@ -68,7 +63,7 @@ describe('EdeskUriUpdateService', () => {
 
   describe('handleUriUpdateInternal', () => {
     it('writes the resolved uri on success', async () => {
-      jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
+      vi.mocked(nasesService.getIdentitiesByUris).mockResolvedValue({
         success: [
           { physicalEntityId: 'id-1', inputUri: 'rc://sk/old', data: { uri: 'rc://sk/new' } },
         ],
@@ -84,20 +79,28 @@ describe('EdeskUriUpdateService', () => {
     })
 
     it('bumps the fail counter and clears uriPossiblyOutdated on a confirmed failure', async () => {
-      jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
+      vi.mocked(nasesService.getIdentitiesByUris).mockResolvedValue({
         success: [],
         failed: [{ inputUri: 'rc://sk/old', possibleUriChange: false }],
       } satisfies GetIdentitiesByUrisResult)
-      jest
-        .spyOn(errorFactoryService, 'InternalServerErrorException')
-        .mockReturnValue(new HttpException('failed to update', HttpStatus.INTERNAL_SERVER_ERROR))
 
-      await expect(
-        service.handleUriUpdateInternal({ uri: 'rc://sk/old', id: 'id-1' })
-      ).rejects.toThrow('failed to update')
+      const input = { uri: 'rc://sk/old', id: 'id-1' }
+
+      await expect(service.handleUriUpdateInternal(input)).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `Failed to update URI for physical entity id ${input.id}`,
+        console: {
+          physicalEntityId: input.id,
+          confirmedFailed: true,
+          successCount: 0,
+          failedCount: 1,
+        },
+        alert: true,
+      })
 
       expect(prismaMock.physicalEntity.update).toHaveBeenCalledWith({
-        where: { id: 'id-1' },
+        where: { id: input.id },
         data: expectObjectContaining({
           uriPossiblyOutdated: false,
           activeEdeskUpdateFailCount: { increment: 1 },
@@ -106,20 +109,28 @@ describe('EdeskUriUpdateService', () => {
     })
 
     it('keeps uriPossiblyOutdated when the failure is a possible URI change', async () => {
-      jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
+      vi.mocked(nasesService.getIdentitiesByUris).mockResolvedValue({
         success: [],
         failed: [{ inputUri: 'rc://sk/old', possibleUriChange: true }],
       } satisfies GetIdentitiesByUrisResult)
-      jest
-        .spyOn(errorFactoryService, 'InternalServerErrorException')
-        .mockReturnValue(new HttpException('failed to update', HttpStatus.INTERNAL_SERVER_ERROR))
 
-      await expect(
-        service.handleUriUpdateInternal({ uri: 'rc://sk/old', id: 'id-1' })
-      ).rejects.toThrow('failed to update')
+      const input = { uri: 'rc://sk/old', id: 'id-1' }
+
+      await expect(service.handleUriUpdateInternal(input)).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+        message: `Failed to update URI for physical entity id ${input.id}`,
+        console: {
+          physicalEntityId: input.id,
+          confirmedFailed: false,
+          successCount: 0,
+          failedCount: 1,
+        },
+        alert: true,
+      })
 
       expect(prismaMock.physicalEntity.update).toHaveBeenCalledWith({
-        where: { id: 'id-1' },
+        where: { id: input.id },
         data: expectObjectContaining({
           uriPossiblyOutdated: true,
           activeEdeskUpdateFailCount: { increment: 1 },
@@ -130,7 +141,7 @@ describe('EdeskUriUpdateService', () => {
 
   describe('handleUriUpdateExternal', () => {
     it('marks the row COMPLETED and persists the death date on success', async () => {
-      jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
+      vi.mocked(nasesService.getIdentitiesByUris).mockResolvedValue({
         success: [
           {
             physicalEntityId: null,
@@ -158,9 +169,10 @@ describe('EdeskUriUpdateService', () => {
     })
 
     it('marks the row FAILED and bumps failCount when nothing is resolved', async () => {
-      jest
-        .spyOn(nasesService, 'getIdentitiesByUris')
-        .mockResolvedValue({ success: [], failed: [] } satisfies GetIdentitiesByUrisResult)
+      vi.mocked(nasesService.getIdentitiesByUris).mockResolvedValue({
+        success: [],
+        failed: [],
+      } satisfies GetIdentitiesByUrisResult)
 
       await service.handleUriUpdateExternal('rc://sk/ext')
 
@@ -171,7 +183,7 @@ describe('EdeskUriUpdateService', () => {
     })
 
     it('marks the row FAILED when the result is in failed without a possible URI change', async () => {
-      jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
+      vi.mocked(nasesService.getIdentitiesByUris).mockResolvedValue({
         success: [],
         failed: [{ inputUri: 'rc://sk/ext', possibleUriChange: false }],
       } satisfies GetIdentitiesByUrisResult)
@@ -185,7 +197,7 @@ describe('EdeskUriUpdateService', () => {
     })
 
     it('marks the row FAILED when the result is in failed with a possible URI change', async () => {
-      jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
+      vi.mocked(nasesService.getIdentitiesByUris).mockResolvedValue({
         success: [],
         failed: [{ inputUri: 'rc://sk/ext', possibleUriChange: true }],
       } satisfies GetIdentitiesByUrisResult)

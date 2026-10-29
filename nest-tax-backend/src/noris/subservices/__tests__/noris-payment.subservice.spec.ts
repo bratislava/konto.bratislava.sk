@@ -3,7 +3,7 @@ import {
   ErrorFactoryService,
   ErrorResponseEnum,
 } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
 import * as mssql from 'mssql'
@@ -18,6 +18,7 @@ import {
   TaxType,
 } from '../../../generated/prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
+import alertReporting from '../../../utils/constants/error.alerts'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
 import { NorisTaxPayment } from '../../types/noris.types'
@@ -25,42 +26,52 @@ import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisPaymentSubservice } from '../noris-payment.subservice'
 import { NorisValidatorSubservice } from '../noris-validator.subservice'
 
-const mockQuery = jest.fn()
-const mockInput = jest.fn()
+const mockQuery = vi.fn()
+const mockInput = vi.fn()
 const mockRequest = createMock<mssql.Request>({
   query: mockQuery,
   input: mockInput,
 })
 
-jest.mock('mssql', () => ({
-  Request: jest.fn().mockImplementation(() => mockRequest),
-}))
+// Keep the real exports (the service also uses e.g. `mssql.SmallDateTime`). mssql is CommonJS,
+// so its exports are only on `default` and are spread into the named exports too.
+vi.mock('mssql', async (importOriginal) => {
+  const actual = await importOriginal<
+    typeof import('mssql') & { default: typeof import('mssql') }
+  >()
+  return {
+    ...actual,
+    ...actual.default,
+    Request: vi.fn().mockImplementation(function () {
+      return mockRequest
+    }),
+  }
+})
 
-jest.mock('currency.js', () => ({
+vi.mock('currency.js', () => ({
   __esModule: true,
-  default: jest.fn().mockImplementation((value: number | string) => ({
+  default: vi.fn().mockImplementation((value: number | string) => ({
     intValue: parseInt(value.toString().replace(',', '.'), 10) * 100,
   })),
 }))
 
-jest.mock('../../utils/mapping.helper', () => ({
-  convertCurrencyToInt: jest
-    .fn()
-    .mockImplementation((value: number | string) => {
-      return parseInt(value.toString().replace(',', '.'), 10) * 100
-    }),
+vi.mock('../../utils/mapping.helper', () => ({
+  convertCurrencyToInt: vi.fn().mockImplementation((value: number | string) => {
+    return parseInt(value.toString().replace(',', '.'), 10) * 100
+  }),
 }))
 
 describe('NorisPaymentSubservice', () => {
   let service: NorisPaymentSubservice
   let bloomreachService: BloomreachService
   let connectionService: NorisConnectionSubservice
-  let errorFactoryService: ErrorFactoryService
+  const errorFactoryService = new ErrorFactoryService({ alertReporting })
   let cityAccountSubservice: CityAccountSubservice
 
   beforeEach(async () => {
-    jest.clearAllMocks()
-    jest.mocked(mssql.Request).mockReturnValue(mockRequest)
+    vi.mocked(mssql.Request).mockImplementation(function () {
+      return mockRequest
+    })
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -78,10 +89,7 @@ describe('NorisPaymentSubservice', () => {
           provide: NorisConnectionSubservice,
           useValue: createMock<NorisConnectionSubservice>(),
         },
-        {
-          provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>(),
-        },
+        { provide: ErrorFactoryService, useValue: errorFactoryService },
         {
           provide: NorisValidatorSubservice,
           useValue: createMock<NorisValidatorSubservice>(),
@@ -98,7 +106,6 @@ describe('NorisPaymentSubservice', () => {
     connectionService = module.get<NorisConnectionSubservice>(
       NorisConnectionSubservice,
     )
-    errorFactoryService = module.get<ErrorFactoryService>(ErrorFactoryService)
     cityAccountSubservice = module.get<CityAccountSubservice>(
       CityAccountSubservice,
     )
@@ -106,11 +113,9 @@ describe('NorisPaymentSubservice', () => {
     const norisValidatorSubservice = module.get<NorisValidatorSubservice>(
       NorisValidatorSubservice,
     )
-    jest
-      .spyOn(norisValidatorSubservice, 'validateNorisData')
-      .mockImplementation((schema, data) =>
-        data.map((item) => schema.parse(item)),
-      )
+    vi.mocked(norisValidatorSubservice.validateNorisData).mockImplementation(
+      (schema, data) => data.map((item) => schema.parse(item)),
+    )
   })
 
   it('should be defined', () => {
@@ -121,16 +126,15 @@ describe('NorisPaymentSubservice', () => {
     const DEFAULT_TEST_NOW = new Date('2025-01-01T12:00:00.000Z')
 
     beforeAll(() => {
-      jest.useFakeTimers()
+      vi.useFakeTimers()
     })
 
     beforeEach(() => {
-      jest.clearAllMocks()
-      jest.setSystemTime(DEFAULT_TEST_NOW)
+      vi.setSystemTime(DEFAULT_TEST_NOW)
     })
 
     afterAll(() => {
-      jest.useRealTimers()
+      vi.useRealTimers()
     })
 
     it('should successfully retrieve overpayments data from Noris and create payments', async () => {
@@ -162,8 +166,8 @@ describe('NorisPaymentSubservice', () => {
 
       mockQuery.mockResolvedValue(mockConnectionResult)
 
-      const withConnectionMock = jest
-        .spyOn(connectionService, 'withConnection')
+      const withConnectionMock = vi
+        .mocked(connectionService.withConnection)
         .mockImplementation(async (fn) => {
           return fn(createMock<mssql.ConnectionPool>())
         })
@@ -180,26 +184,26 @@ describe('NorisPaymentSubservice', () => {
           taxPayer: { id: 2, birthNumber: '098765/4321' },
         }),
       ]
-      jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue(mockTaxData)
+      vi.mocked(prismaMock.tax.findMany).mockResolvedValue(mockTaxData)
 
-      jest
-        .spyOn(cityAccountSubservice, 'getUserDataAdminBatchOptional')
-        .mockResolvedValue({
-          '123456/7890': {
-            externalId: 'external-123',
-            birthNumber: '123456/7890',
-            email: 'test1@example.com',
-            userAttribute: {},
-          },
-          '098765/4321': {
-            externalId: 'external-456',
-            birthNumber: '098765/4321',
-            email: 'test2@example.com',
-            userAttribute: {},
-          },
-        })
+      vi.mocked(
+        cityAccountSubservice.getUserDataAdminBatchOptional,
+      ).mockResolvedValue({
+        '123456/7890': {
+          externalId: 'external-123',
+          birthNumber: '123456/7890',
+          email: 'test1@example.com',
+          userAttribute: {},
+        },
+        '098765/4321': {
+          externalId: 'external-456',
+          birthNumber: '098765/4321',
+          email: 'test2@example.com',
+          userAttribute: {},
+        },
+      })
 
-      const mockTransaction = jest
+      const mockTransaction = vi
         .fn()
         .mockImplementation(
           async (
@@ -207,12 +211,12 @@ describe('NorisPaymentSubservice', () => {
           ) => {
             return callback(
               createMock<Prisma.TransactionClient>({
-                $queryRaw: jest.fn().mockResolvedValue([]),
+                $queryRaw: vi.fn().mockResolvedValue([]),
                 taxPayment: {
-                  aggregate: jest.fn().mockResolvedValue({
+                  aggregate: vi.fn().mockResolvedValue({
                     _sum: { amount: 0 },
                   }),
-                  create: jest.fn().mockResolvedValue({
+                  create: vi.fn().mockResolvedValue({
                     id: 1,
                     amount: 150_000,
                     source: 'BANK_ACCOUNT',
@@ -224,11 +228,9 @@ describe('NorisPaymentSubservice', () => {
             )
           },
         )
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi.mocked(prismaMock.$transaction).mockImplementation(mockTransaction)
 
-      jest
-        .spyOn(bloomreachService, 'trackEventTaxPayment')
-        .mockResolvedValue(true)
+      vi.mocked(bloomreachService.trackEventTaxPayment).mockResolvedValue(true)
 
       const result =
         await service.updateOverpaymentsDataFromNorisByDateRange(mockData)
@@ -251,15 +253,15 @@ describe('NorisPaymentSubservice', () => {
       }
 
       const connectionError = new Error('Database connection failed')
-      jest
-        .spyOn(connectionService, 'withConnection')
-        .mockImplementation(async () => {
+      vi.mocked(connectionService.withConnection).mockImplementation(
+        async () => {
           return Promise.reject(connectionError)
-        })
+        },
+      )
 
       await expect(
         service.updateOverpaymentsDataFromNorisByDateRange(mockData),
-      ).rejects.toThrow('Database connection failed')
+      ).rejects.toThrow(connectionError)
     })
 
     it('should handle mixed scenarios with some payments already created', async () => {
@@ -291,11 +293,11 @@ describe('NorisPaymentSubservice', () => {
 
       mockQuery.mockResolvedValue(mockConnectionResult)
 
-      jest
-        .spyOn(connectionService, 'withConnection')
-        .mockImplementation(async (fn) => {
+      vi.mocked(connectionService.withConnection).mockImplementation(
+        async (fn) => {
           return fn(createMock<mssql.ConnectionPool>())
-        })
+        },
+      )
 
       const mockTaxData = [
         createTestTax({
@@ -309,26 +311,26 @@ describe('NorisPaymentSubservice', () => {
           taxPayer: { id: 2, birthNumber: '222222/2222' },
         }),
       ]
-      jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue(mockTaxData)
+      vi.mocked(prismaMock.tax.findMany).mockResolvedValue(mockTaxData)
 
-      jest
-        .spyOn(cityAccountSubservice, 'getUserDataAdminBatchOptional')
-        .mockResolvedValue({
-          '111111/1111': {
-            externalId: 'external-111',
-            birthNumber: '111111/1111',
-            email: 'test1@example.com',
-            userAttribute: {},
-          },
-          '222222/2222': {
-            externalId: 'external-222',
-            birthNumber: '222222/2222',
-            email: 'test2@example.com',
-            userAttribute: {},
-          },
-        })
+      vi.mocked(
+        cityAccountSubservice.getUserDataAdminBatchOptional,
+      ).mockResolvedValue({
+        '111111/1111': {
+          externalId: 'external-111',
+          birthNumber: '111111/1111',
+          email: 'test1@example.com',
+          userAttribute: {},
+        },
+        '222222/2222': {
+          externalId: 'external-222',
+          birthNumber: '222222/2222',
+          email: 'test2@example.com',
+          userAttribute: {},
+        },
+      })
 
-      const mockTransaction = jest
+      const mockTransaction = vi
         .fn()
         .mockImplementation(
           async (
@@ -336,9 +338,9 @@ describe('NorisPaymentSubservice', () => {
           ) => {
             return callback(
               createMock<Prisma.TransactionClient>({
-                $queryRaw: jest.fn().mockResolvedValue([]),
+                $queryRaw: vi.fn().mockResolvedValue([]),
                 taxPayment: {
-                  aggregate: jest
+                  aggregate: vi
                     .fn()
                     .mockImplementation(
                       async ({ where }: Prisma.TaxPaymentAggregateArgs) => {
@@ -354,7 +356,7 @@ describe('NorisPaymentSubservice', () => {
                         })
                       },
                     ),
-                  create: jest.fn().mockResolvedValue({
+                  create: vi.fn().mockResolvedValue({
                     id: 2,
                     amount: 100_000,
                     source: 'BANK_ACCOUNT',
@@ -366,11 +368,9 @@ describe('NorisPaymentSubservice', () => {
             )
           },
         )
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi.mocked(prismaMock.$transaction).mockImplementation(mockTransaction)
 
-      jest
-        .spyOn(bloomreachService, 'trackEventTaxPayment')
-        .mockResolvedValue(true)
+      vi.mocked(bloomreachService.trackEventTaxPayment).mockResolvedValue(true)
 
       const result =
         await service.updateOverpaymentsDataFromNorisByDateRange(mockData)
@@ -403,11 +403,11 @@ describe('NorisPaymentSubservice', () => {
 
       mockQuery.mockResolvedValue(mockConnectionResult)
 
-      jest
-        .spyOn(connectionService, 'withConnection')
-        .mockImplementation(async (fn) => {
+      vi.mocked(connectionService.withConnection).mockImplementation(
+        async (fn) => {
           return fn(createMock<mssql.ConnectionPool>())
-        })
+        },
+      )
 
       const mockTaxData = [
         createTestTax({
@@ -416,20 +416,20 @@ describe('NorisPaymentSubservice', () => {
           taxPayer: { id: 3, birthNumber: '333333/3333' },
         }),
       ]
-      jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue(mockTaxData)
+      vi.mocked(prismaMock.tax.findMany).mockResolvedValue(mockTaxData)
 
-      jest
-        .spyOn(cityAccountSubservice, 'getUserDataAdminBatchOptional')
-        .mockResolvedValue({
-          '333333/3333': {
-            externalId: 'external-333',
-            birthNumber: '333333/3333',
-            email: 'test3@example.com',
-            userAttribute: {},
-          },
-        })
+      vi.mocked(
+        cityAccountSubservice.getUserDataAdminBatchOptional,
+      ).mockResolvedValue({
+        '333333/3333': {
+          externalId: 'external-333',
+          birthNumber: '333333/3333',
+          email: 'test3@example.com',
+          userAttribute: {},
+        },
+      })
 
-      const mockTransaction = jest
+      const mockTransaction = vi
         .fn()
         .mockImplementation(
           async (
@@ -437,12 +437,12 @@ describe('NorisPaymentSubservice', () => {
           ) => {
             return callback(
               createMock<Prisma.TransactionClient>({
-                $queryRaw: jest.fn().mockResolvedValue([]),
+                $queryRaw: vi.fn().mockResolvedValue([]),
                 taxPayment: {
-                  aggregate: jest.fn().mockResolvedValue({
+                  aggregate: vi.fn().mockResolvedValue({
                     _sum: { amount: 0 },
                   }),
-                  create: jest.fn().mockResolvedValue({
+                  create: vi.fn().mockResolvedValue({
                     id: 3,
                     amount: 70_000,
                     source: 'BANK_ACCOUNT',
@@ -454,11 +454,9 @@ describe('NorisPaymentSubservice', () => {
             )
           },
         )
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi.mocked(prismaMock.$transaction).mockImplementation(mockTransaction)
 
-      jest
-        .spyOn(bloomreachService, 'trackEventTaxPayment')
-        .mockResolvedValue(true)
+      vi.mocked(bloomreachService.trackEventTaxPayment).mockResolvedValue(true)
 
       const result =
         await service.updateOverpaymentsDataFromNorisByDateRange(mockData)
@@ -508,17 +506,17 @@ describe('NorisPaymentSubservice', () => {
 
       mockQuery.mockResolvedValue(mockConnectionResult)
 
-      jest
-        .spyOn(connectionService, 'withConnection')
-        .mockImplementation(async (fn) => {
+      vi.mocked(connectionService.withConnection).mockImplementation(
+        async (fn) => {
           return fn(createMock<mssql.ConnectionPool>())
-        })
+        },
+      )
 
-      jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue([])
+      vi.mocked(prismaMock.tax.findMany).mockResolvedValue([])
 
-      jest
-        .spyOn(cityAccountSubservice, 'getUserDataAdminBatchOptional')
-        .mockResolvedValue({})
+      vi.mocked(
+        cityAccountSubservice.getUserDataAdminBatchOptional,
+      ).mockResolvedValue({})
 
       const result =
         await service.updateOverpaymentsDataFromNorisByDateRange(mockData)
@@ -541,16 +539,16 @@ describe('NorisPaymentSubservice', () => {
 
       mockQuery.mockResolvedValue(mockConnectionResult)
 
-      jest
-        .spyOn(connectionService, 'withConnection')
-        .mockImplementation(async (fn) => {
+      vi.mocked(connectionService.withConnection).mockImplementation(
+        async (fn) => {
           return fn(createMock<mssql.ConnectionPool>())
-        })
+        },
+      )
 
-      jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue([])
-      jest
-        .spyOn(cityAccountSubservice, 'getUserDataAdminBatchOptional')
-        .mockResolvedValue({})
+      vi.mocked(prismaMock.tax.findMany).mockResolvedValue([])
+      vi.mocked(
+        cityAccountSubservice.getUserDataAdminBatchOptional,
+      ).mockResolvedValue({})
 
       const result =
         await service.updateOverpaymentsDataFromNorisByDateRange(mockData)
@@ -579,10 +577,6 @@ describe('NorisPaymentSubservice', () => {
 
   describe('processIndividualPayment', () => {
     const RECENT_DATE = dayjs().subtract(7, 'day').toDate()
-
-    beforeEach(() => {
-      jest.clearAllMocks()
-    })
 
     it('should return NOT_EXIST when tax data is not found', async () => {
       const mockNorisPayment: NorisTaxPayment = {
@@ -625,7 +619,7 @@ describe('NorisPaymentSubservice', () => {
 
       const userDataFromCityAccount = {}
 
-      const mockTransaction = jest
+      const mockTransaction = vi
         .fn()
         .mockImplementation(
           async (
@@ -633,11 +627,11 @@ describe('NorisPaymentSubservice', () => {
           ) => {
             return callback(
               createMock<Prisma.TransactionClient>({
-                $queryRaw: jest.fn().mockImplementation(async () => {
+                $queryRaw: vi.fn().mockImplementation(async () => {
                   return Promise.resolve([])
                 }),
                 taxPayment: {
-                  aggregate: jest.fn().mockResolvedValue({
+                  aggregate: vi.fn().mockResolvedValue({
                     _sum: { amount: 100_000 },
                   }),
                 },
@@ -646,7 +640,7 @@ describe('NorisPaymentSubservice', () => {
           },
         )
 
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi.mocked(prismaMock.$transaction).mockImplementation(mockTransaction)
 
       const result = await service['processIndividualPayment'](
         mockNorisPayment,
@@ -696,8 +690,8 @@ describe('NorisPaymentSubservice', () => {
         status: PaymentStatus.SUCCESS,
       }
 
-      const createSpyMock = jest.fn().mockResolvedValue(mockCreatedPayment)
-      const mockTransaction = jest
+      const createSpyMock = vi.fn().mockResolvedValue(mockCreatedPayment)
+      const mockTransaction = vi
         .fn()
         .mockImplementation(
           async (
@@ -705,9 +699,9 @@ describe('NorisPaymentSubservice', () => {
           ) => {
             return callback(
               createMock<Prisma.TransactionClient>({
-                $queryRaw: jest.fn().mockResolvedValue([]),
+                $queryRaw: vi.fn().mockResolvedValue([]),
                 taxPayment: {
-                  aggregate: jest.fn().mockResolvedValue({
+                  aggregate: vi.fn().mockResolvedValue({
                     _sum: { amount: 100_000 },
                   }),
                   create: createSpyMock,
@@ -717,10 +711,10 @@ describe('NorisPaymentSubservice', () => {
           },
         )
 
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi.mocked(prismaMock.$transaction).mockImplementation(mockTransaction)
 
-      const trackEventTaxPaymentMock = jest
-        .spyOn(bloomreachService, 'trackEventTaxPayment')
+      const trackEventTaxPaymentMock = vi
+        .mocked(bloomreachService.trackEventTaxPayment)
         .mockResolvedValue(true)
 
       const result = await service['processIndividualPayment'](
@@ -833,16 +827,15 @@ describe('NorisPaymentSubservice', () => {
           },
         }
 
-        jest
-          .spyOn(prismaMock, '$transaction')
-          .mockImplementation(async (callback) => {
+        vi.mocked(prismaMock.$transaction).mockImplementation(
+          async (callback) => {
             const tx = createMock<Prisma.TransactionClient>({
-              $queryRaw: jest.fn().mockResolvedValue([]),
+              $queryRaw: vi.fn().mockResolvedValue([]),
               taxPayment: {
-                aggregate: jest
+                aggregate: vi
                   .fn()
                   .mockResolvedValue({ _sum: { amount: alreadyPaid } }),
-                create: jest.fn().mockResolvedValue({
+                create: vi.fn().mockResolvedValue({
                   id: 1,
                   amount: expectedCreatedAmount,
                   source: 'BANK_ACCOUNT',
@@ -852,10 +845,11 @@ describe('NorisPaymentSubservice', () => {
               },
             })
             return callback(tx)
-          })
+          },
+        )
 
-        const trackEventMock = jest
-          .spyOn(bloomreachService, 'trackEventTaxPayment')
+        const trackEventMock = vi
+          .mocked(bloomreachService.trackEventTaxPayment)
           .mockResolvedValue(true)
 
         await service['processIndividualPayment'](
@@ -904,7 +898,7 @@ describe('NorisPaymentSubservice', () => {
         status: PaymentStatus.SUCCESS,
       }
 
-      const mockTransaction = jest
+      const mockTransaction = vi
         .fn()
         .mockImplementation(
           async (
@@ -912,19 +906,19 @@ describe('NorisPaymentSubservice', () => {
           ) => {
             return callback(
               createMock<Prisma.TransactionClient>({
-                $queryRaw: jest.fn().mockResolvedValue([]),
+                $queryRaw: vi.fn().mockResolvedValue([]),
                 taxPayment: {
-                  aggregate: jest.fn().mockResolvedValue({
+                  aggregate: vi.fn().mockResolvedValue({
                     _sum: { amount: null },
                   }),
-                  create: jest.fn().mockResolvedValue(mockCreatedPayment),
+                  create: vi.fn().mockResolvedValue(mockCreatedPayment),
                 },
               }),
             )
           },
         )
 
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi.mocked(prismaMock.$transaction).mockImplementation(mockTransaction)
 
       const result = await service['processIndividualPayment'](
         mockNorisPayment,
@@ -972,7 +966,7 @@ describe('NorisPaymentSubservice', () => {
         status: PaymentStatus.SUCCESS,
       }
 
-      const mockTransaction = jest
+      const mockTransaction = vi
         .fn()
         .mockImplementation(
           async (
@@ -980,22 +974,22 @@ describe('NorisPaymentSubservice', () => {
           ) => {
             return callback(
               createMock<Prisma.TransactionClient>({
-                $queryRaw: jest.fn().mockResolvedValue([]),
+                $queryRaw: vi.fn().mockResolvedValue([]),
                 taxPayment: {
-                  aggregate: jest.fn().mockResolvedValue({
+                  aggregate: vi.fn().mockResolvedValue({
                     _sum: { amount: null },
                   }),
-                  create: jest.fn().mockResolvedValue(mockCreatedPayment),
+                  create: vi.fn().mockResolvedValue(mockCreatedPayment),
                 },
               }),
             )
           },
         )
 
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi.mocked(prismaMock.$transaction).mockImplementation(mockTransaction)
 
-      const trackEventTaxPaymentMock = jest
-        .spyOn(bloomreachService, 'trackEventTaxPayment')
+      const trackEventTaxPaymentMock = vi
+        .mocked(bloomreachService.trackEventTaxPayment)
         .mockResolvedValue(true)
 
       const result = await service['processIndividualPayment'](
@@ -1038,7 +1032,7 @@ describe('NorisPaymentSubservice', () => {
         status: PaymentStatus.SUCCESS,
       }
 
-      const mockTransaction = jest
+      const mockTransaction = vi
         .fn()
         .mockImplementation(
           async (
@@ -1046,22 +1040,22 @@ describe('NorisPaymentSubservice', () => {
           ) => {
             return callback(
               createMock<Prisma.TransactionClient>({
-                $queryRaw: jest.fn().mockResolvedValue([]),
+                $queryRaw: vi.fn().mockResolvedValue([]),
                 taxPayment: {
-                  aggregate: jest.fn().mockResolvedValue({
+                  aggregate: vi.fn().mockResolvedValue({
                     _sum: { amount: null },
                   }),
-                  create: jest.fn().mockResolvedValue(mockCreatedPayment),
+                  create: vi.fn().mockResolvedValue(mockCreatedPayment),
                 },
               }),
             )
           },
         )
 
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi.mocked(prismaMock.$transaction).mockImplementation(mockTransaction)
 
-      const trackEventTaxPaymentMock = jest
-        .spyOn(bloomreachService, 'trackEventTaxPayment')
+      const trackEventTaxPaymentMock = vi
+        .mocked(bloomreachService.trackEventTaxPayment)
         .mockResolvedValue(true)
 
       const result = await service['processIndividualPayment'](
@@ -1097,25 +1091,18 @@ describe('NorisPaymentSubservice', () => {
       const userDataFromCityAccount = {}
 
       const transactionError = new Error('Database transaction failed')
-      const mockTransaction = jest.fn().mockRejectedValue(transactionError)
+      const mockTransaction = vi.fn().mockRejectedValue(transactionError)
 
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi.mocked(prismaMock.$transaction).mockImplementation(mockTransaction)
 
-      const errorFactoryServiceMock = jest
-        .spyOn(errorFactoryService, 'InternalServerErrorException')
-        .mockImplementation(() => {
-          throw new Error('Internal Server Error')
-        })
-
+      // The error is returned (not thrown), so that a single failing payment doesn't stop the batch.
       await expect(
         service['processIndividualPayment'](
           mockNorisPayment,
           taxesDataByVsMap,
           userDataFromCityAccount,
         ),
-      ).rejects.toThrow('Internal Server Error')
-
-      expect(errorFactoryServiceMock).toHaveBeenCalledWith({
+      ).resolves.toMatchLogNestError({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
         console: {
@@ -1159,7 +1146,7 @@ describe('NorisPaymentSubservice', () => {
         status: PaymentStatus.SUCCESS,
       }
 
-      const mockTransaction = jest
+      const mockTransaction = vi
         .fn()
         .mockImplementation(
           async (
@@ -1167,19 +1154,19 @@ describe('NorisPaymentSubservice', () => {
           ) => {
             return callback(
               createMock<Prisma.TransactionClient>({
-                $queryRaw: jest.fn().mockResolvedValue([]),
+                $queryRaw: vi.fn().mockResolvedValue([]),
                 taxPayment: {
-                  aggregate: jest.fn().mockResolvedValue({
+                  aggregate: vi.fn().mockResolvedValue({
                     _sum: { amount: null },
                   }),
-                  create: jest.fn().mockResolvedValue(mockCreatedPayment),
+                  create: vi.fn().mockResolvedValue(mockCreatedPayment),
                 },
               }),
             )
           },
         )
 
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi.mocked(prismaMock.$transaction).mockImplementation(mockTransaction)
 
       const result = await service['processIndividualPayment'](
         mockNorisPayment,
@@ -1212,7 +1199,7 @@ describe('NorisPaymentSubservice', () => {
 
       const userDataFromCityAccount = {}
 
-      const mockTransaction = jest
+      const mockTransaction = vi
         .fn()
         .mockImplementation(
           async (
@@ -1220,11 +1207,11 @@ describe('NorisPaymentSubservice', () => {
           ) => {
             return callback(
               createMock<Prisma.TransactionClient>({
-                $queryRaw: jest.fn().mockImplementation(async () => {
+                $queryRaw: vi.fn().mockImplementation(async () => {
                   return Promise.resolve([])
                 }),
                 taxPayment: {
-                  aggregate: jest.fn().mockResolvedValue({
+                  aggregate: vi.fn().mockResolvedValue({
                     _sum: { amount: 100_000 },
                   }),
                 },
@@ -1233,7 +1220,7 @@ describe('NorisPaymentSubservice', () => {
           },
         )
 
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      vi.mocked(prismaMock.$transaction).mockImplementation(mockTransaction)
 
       const result = await service['processIndividualPayment'](
         mockNorisPayment,
@@ -1285,32 +1272,32 @@ describe('NorisPaymentSubservice', () => {
       const OLD_DATE = dayjs(FIXED_NOW).subtract(200, 'day').toDate()
 
       beforeAll(() => {
-        jest.useFakeTimers()
-        jest.setSystemTime(FIXED_NOW)
+        vi.useFakeTimers()
+        vi.setSystemTime(FIXED_NOW)
       })
 
       afterAll(() => {
-        jest.useRealTimers()
+        vi.useRealTimers()
       })
 
       beforeEach(() => {
-        jest
-          .spyOn(prismaMock, '$transaction')
-          .mockImplementation(async (callback) => {
+        vi.mocked(prismaMock.$transaction).mockImplementation(
+          async (callback) => {
             const tx = createMock<Prisma.TransactionClient>({
-              $queryRaw: jest.fn().mockResolvedValue([]),
+              $queryRaw: vi.fn().mockResolvedValue([]),
               taxPayment: {
-                aggregate: jest.fn().mockResolvedValue({ _sum: { amount: 0 } }),
-                create: jest.fn().mockResolvedValue(MOCK_CREATED_PAYMENT),
+                aggregate: vi.fn().mockResolvedValue({ _sum: { amount: 0 } }),
+                create: vi.fn().mockResolvedValue(MOCK_CREATED_PAYMENT),
               },
             })
             return callback(tx)
-          })
+          },
+        )
       })
 
       it('should suppress email when datum_posledni_platby is older than 6 months', async () => {
-        const trackMock = jest
-          .spyOn(bloomreachService, 'trackEventTaxPayment')
+        const trackMock = vi
+          .mocked(bloomreachService.trackEventTaxPayment)
           .mockResolvedValue(true)
 
         await service['processIndividualPayment'](
@@ -1326,8 +1313,8 @@ describe('NorisPaymentSubservice', () => {
       })
 
       it('should not suppress email when datum_posledni_platby is recent', async () => {
-        const trackMock = jest
-          .spyOn(bloomreachService, 'trackEventTaxPayment')
+        const trackMock = vi
+          .mocked(bloomreachService.trackEventTaxPayment)
           .mockResolvedValue(true)
 
         await service['processIndividualPayment'](
@@ -1343,8 +1330,8 @@ describe('NorisPaymentSubservice', () => {
       })
 
       it('should not suppress email when datum_posledni_platby is null', async () => {
-        const trackMock = jest
-          .spyOn(bloomreachService, 'trackEventTaxPayment')
+        const trackMock = vi
+          .mocked(bloomreachService.trackEventTaxPayment)
           .mockResolvedValue(true)
 
         await service['processIndividualPayment'](
@@ -1360,8 +1347,8 @@ describe('NorisPaymentSubservice', () => {
       })
 
       it('should override bloomreachSettings.suppressEmail in case of historical payment', async () => {
-        const trackMock = jest
-          .spyOn(bloomreachService, 'trackEventTaxPayment')
+        const trackMock = vi
+          .mocked(bloomreachService.trackEventTaxPayment)
           .mockResolvedValue(true)
 
         await service['processIndividualPayment'](
@@ -1387,12 +1374,12 @@ describe('NorisPaymentSubservice', () => {
     const JUST_AFTER_THRESHOLD = dayjs(FIXED_NOW).subtract(181, 'day').toDate()
 
     beforeAll(() => {
-      jest.useFakeTimers()
-      jest.setSystemTime(FIXED_NOW)
+      vi.useFakeTimers()
+      vi.setSystemTime(FIXED_NOW)
     })
 
     afterAll(() => {
-      jest.useRealTimers()
+      vi.useRealTimers()
     })
 
     it('should return false when datum_posledni_platby is null', () => {

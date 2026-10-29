@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IsDefined, IsEnum, IsOptional, IsString } from 'class-validator'
 
-import { CognitoUserAttributesTierEnum } from '../../generated/prisma/client'
+import { CognitoUserAttributesTierEnum } from '../../generated/prisma/enums'
 import { OAuth2ClientName } from '../../oauth2/oauth2-client-name.enum'
 
 export enum CognitoUserAccountTypesEnum {

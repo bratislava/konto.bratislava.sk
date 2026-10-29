@@ -1,3 +1,5 @@
+import { ErrorEnum } from '@bratislava/log-nest'
+
 import { CityAccountErrorsEnum } from '../../auth/errors/city-account.errors.enum'
 import { FilesErrorsEnum } from '../../files/files.errors.enum'
 import { FormDeliveryConsumerErrorsEnum } from '../../form-delivery-consumer/errors/form-delivery-consumer.errors.enum'
@@ -9,7 +11,7 @@ import { NasesErrorsEnum } from '../../nases/nases.errors.enum'
 import { ScannerClientErrorsEnum } from '../../scanner-client/scanner-client.errors.enum'
 import { SignerErrorsEnum } from '../../signer/signer.errors.enum'
 import { StatusErrorsEnum } from '../../status/errors/status.errors.enum'
-import { ErrorsEnum } from '../global-enums/errors.enum'
+import { StrapiErrorsEnum } from '../../strapi/strapi.errors.enum'
 import { SharepointErrorsEnum } from '../subservices/dtos/sharepoint.errors.enum'
 
 /**
@@ -43,9 +45,9 @@ export default [
   ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
   ScannerClientErrorsEnum.FILE_HAS_WRONG_PARAMETERS,
   ScannerClientErrorsEnum.FILE_IN_SCANNER_NOT_FOUND,
-  ErrorsEnum.DATABASE_ERROR,
-  ErrorsEnum.INTERNAL_SERVER_ERROR,
-  ErrorsEnum.BAD_GATEWAY_AUTH_ERROR,
+  ErrorEnum.DATABASE_ERROR,
+  ErrorEnum.INTERNAL_SERVER_ERROR,
+  ErrorEnum.BAD_GATEWAY_AUTH_ERROR,
   FormError.UNABLE_TO_SCAN_FILES,
   FormError.GINIS_SEND_ERROR,
   FormError.NASES_SEND_ERROR,
@@ -55,5 +57,6 @@ export default [
   FormsErrorsEnum.FORM_NOT_REGISTERED_IN_SLOVENSKO_SK,
   GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
   CityAccountErrorsEnum.GET_USER_ERROR,
+  StrapiErrorsEnum.FEEDBACK_LINK_FETCH_ERROR,
   ...Object.values(StatusErrorsEnum),
 ] as string[]

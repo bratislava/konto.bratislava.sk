@@ -1,4 +1,5 @@
 import { Button, Typography } from '@bratislava/component-library'
+import { resolveFeedbackLink } from 'forms-shared/form-utils/resolveFeedbackLink'
 import { Trans, useTranslation } from 'next-i18next/pages'
 import { mergeProps } from 'react-aria/mergeProps'
 import { Heading } from 'react-aria-components/Heading'
@@ -43,7 +44,7 @@ const SuccessContent = () => {
   const { strapiFormSentPage } = useFormContext()
   const { isSignedIn } = useSsrAuth()
 
-  const feedbackLink = strapiFormSentPage?.feedbackLink?.trim()
+  const feedbackLink = resolveFeedbackLink(strapiFormSentPage)
 
   // TODO Translations - cleanup
   const actions = [

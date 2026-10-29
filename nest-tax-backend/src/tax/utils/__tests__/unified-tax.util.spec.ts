@@ -1,4 +1,6 @@
-import { ErrorFactoryService } from '@bratislava/log-nest'
+import type { LogNestErrorEqualExpectation } from '@bratislava/log-nest/testing'
+import { HttpStatus } from '@nestjs/common'
+import type { Mock } from 'vitest'
 
 import {
   DeliveryMethodNamed,
@@ -33,7 +35,7 @@ import {
 } from '../unified-tax.util'
 
 // Add this mock at the top after imports
-jest.mock('../../../tax-definitions/getTaxDefinitionByType')
+vi.mock('../../../tax-definitions/getTaxDefinitionByType')
 
 /**
  * NORIS `dueDate` per order. Order 1 is not merged into installment row dates (row 1 uses
@@ -381,34 +383,30 @@ function expectEqualAsJsonStringsWithDates(received: object, expected: object) {
 }
 
 describe('UnifiedTaxUtil', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     // Get the actual implementation
-    const actualModule = jest.requireActual<{
+    const actualModule = await vi.importActual<{
       getTaxDefinitionByType: typeof getTaxDefinitionByType
     }>('../../../tax-definitions/getTaxDefinitionByType')
 
     // Reset and setup default mock to use actual implementation
-    ;(getTaxDefinitionByType as jest.Mock).mockImplementation(
+    ;(getTaxDefinitionByType as Mock).mockImplementation(
       actualModule.getTaxDefinitionByType,
     )
   })
 
-  afterEach(() => {
-    jest.clearAllMocks()
-  })
-
   describe('calculateInstallmentAmounts', () => {
-    const missingInstallmentError =
-      new ErrorFactoryService().InternalServerErrorException({
-        errorEnum: CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
-        message: CustomErrorTaxTypesResponseEnum.MISSING_INSTALLMENT_AMOUNTS,
-      })
+    const missingInstallmentError: LogNestErrorEqualExpectation = {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      errorEnum: CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
+      message: CustomErrorTaxTypesResponseEnum.MISSING_INSTALLMENT_AMOUNTS,
+    }
 
-    const incorrectCountError =
-      new ErrorFactoryService().InternalServerErrorException({
-        errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-        message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
-      })
+    const incorrectCountError: LogNestErrorEqualExpectation = {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+      message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+    }
 
     it('should throw when order 2 is missing (gap in 1..installments.length)', () => {
       const installments = [
@@ -417,9 +415,12 @@ describe('UnifiedTaxUtil', () => {
         { order: 4, amount: 300 },
       ]
 
-      expect(() => calculateInstallmentAmounts(installments, 0, 3)).toThrow(
-        missingInstallmentError,
-      )
+      expect(() =>
+        calculateInstallmentAmounts(installments, 0, 3),
+      ).toThrowEqualLogNestError({
+        ...missingInstallmentError,
+        console: { installmentOrders: [1, 3, 4], missingOrder: 2 },
+      })
     })
 
     it('should throw when order 2 is missing even if numberOfInstallments is omitted', () => {
@@ -428,9 +429,12 @@ describe('UnifiedTaxUtil', () => {
         { order: 3, amount: 200 },
       ]
 
-      expect(() => calculateInstallmentAmounts(installments, 0)).toThrow(
-        missingInstallmentError,
-      )
+      expect(() =>
+        calculateInstallmentAmounts(installments, 0),
+      ).toThrowEqualLogNestError({
+        ...missingInstallmentError,
+        console: { installmentOrders: [1, 3], missingOrder: 2 },
+      })
     })
 
     it('should not throw INSTALLMENT_INCORRECT_COUNT when numberOfInstallments is omitted and length matches sequential orders', () => {
@@ -449,9 +453,12 @@ describe('UnifiedTaxUtil', () => {
         { order: 2, amount: 200 },
       ]
 
-      expect(() => calculateInstallmentAmounts(installments, 0, 3)).toThrow(
-        incorrectCountError,
-      )
+      expect(() =>
+        calculateInstallmentAmounts(installments, 0, 3),
+      ).toThrowEqualLogNestError({
+        ...incorrectCountError,
+        console: { expectedInstallmentCount: 3, installmentCount: 2 },
+      })
     })
 
     it('should distribute overallPaid sequentially across installments in order', () => {
@@ -768,7 +775,7 @@ describe('UnifiedTaxUtil', () => {
             today: new Date('2025-01-21 21:00'),
           })
 
-          const expected = createExpectedOutput(jest.fn())
+          const expected = createExpectedOutput(vi.fn())
 
           expectEqualAsJsonStringsWithDates(output, expected)
         })
@@ -1710,12 +1717,12 @@ describe('UnifiedTaxUtil', () => {
         ],
       }
 
-      expect(() => getTaxDetailPure(input)).toThrow(
-        new ErrorFactoryService().InternalServerErrorException({
-          errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-          message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
-        }),
-      )
+      expect(() => getTaxDetailPure(input)).toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+        message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+        console: { expectedInstallmentCount: 3, installmentCount: 2 },
+      })
     })
 
     it('should throw error when installments.length !== numberOfInstallments (more installments)', () => {
@@ -1745,12 +1752,12 @@ describe('UnifiedTaxUtil', () => {
         ],
       }
 
-      expect(() => getTaxDetailPure(input)).toThrow(
-        new ErrorFactoryService().InternalServerErrorException({
-          errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-          message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
-        }),
-      )
+      expect(() => getTaxDetailPure(input)).toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+        message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+        console: { expectedInstallmentCount: 3, installmentCount: 4 },
+      })
     })
 
     it('should throw error when installments array is empty', () => {
@@ -1759,12 +1766,12 @@ describe('UnifiedTaxUtil', () => {
         installments: [],
       }
 
-      expect(() => getTaxDetailPure(input)).toThrow(
-        new ErrorFactoryService().InternalServerErrorException({
-          errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-          message: 'No installments found for the tax.',
-        }),
-      )
+      expect(() => getTaxDetailPure(input)).toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+        message: 'No installments found for the tax.',
+        console: { expectedInstallmentCount: 3 },
+      })
     })
 
     it('DZN with tax ruling but only one NORIS row: JUST_ONE_INSTALLMENT (not INSTALLMENT_INCORRECT_COUNT)', () => {
@@ -1822,20 +1829,16 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     isCancelled: false,
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // Get the actual implementation
-    const actualModule = jest.requireActual<{
+    const actualModule = await vi.importActual<{
       getTaxDefinitionByType: typeof getTaxDefinitionByType
     }>('../../../tax-definitions/getTaxDefinitionByType')
 
     // Reset and setup default mock to use actual implementation
-    ;(getTaxDefinitionByType as jest.Mock).mockImplementation(
+    ;(getTaxDefinitionByType as Mock).mockImplementation(
       actualModule.getTaxDefinitionByType,
     )
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
   })
 
   it('should generate payment for the first installment', () => {
@@ -1872,12 +1875,18 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       taxPayments: [{ amount: 6601, status: PaymentStatus.SUCCESS }],
     }
 
-    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
-        errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
-        message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
-      }),
-    )
+    expect(() =>
+      getTaxDetailPureForInstallmentGenerator(options),
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
+      errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
+      message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+      console: {
+        reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
+        taxId: 123,
+        taxType: TaxType.DZN,
+      },
+    })
   })
 
   it('should throw an error if payment is after the due date', () => {
@@ -1887,12 +1896,19 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       taxPayments: [],
     }
 
-    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
-        errorEnum: CustomErrorTaxTypesEnum.AFTER_DUE_DATE,
-        message: CustomErrorTaxTypesResponseEnum.AFTER_DUE_DATE,
-      }),
-    )
+    expect(() =>
+      getTaxDetailPureForInstallmentGenerator(options),
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
+      errorEnum: CustomErrorTaxTypesEnum.AFTER_DUE_DATE,
+      message: CustomErrorTaxTypesResponseEnum.AFTER_DUE_DATE,
+      console: {
+        reasonNotPossible:
+          InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
+        taxId: 123,
+        taxType: TaxType.DZN,
+      },
+    })
   })
 
   it('should throw an error if below threshold', () => {
@@ -1902,12 +1918,19 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       taxPayments: [],
     }
 
-    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
-        errorEnum: CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
-        message: CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
-      }),
-    )
+    expect(() =>
+      getTaxDetailPureForInstallmentGenerator(options),
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
+      errorEnum: CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
+      message: CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
+      console: {
+        reasonNotPossible:
+          InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD,
+        taxId: 123,
+        taxType: TaxType.DZN,
+      },
+    })
   })
 
   it('should throw JUST_ONE_INSTALLMENT when only one installment and no tax ruling due date', () => {
@@ -1931,12 +1954,19 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       isCancelled: false,
     }
 
-    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
-        errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
-        message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
-      }),
-    )
+    expect(() =>
+      getTaxDetailPureForInstallmentGenerator(options),
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
+      errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
+      message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
+      console: {
+        reasonNotPossible:
+          InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT,
+        taxId: 123,
+        taxType: TaxType.KO,
+      },
+    })
   })
 
   it('should throw JUST_ONE_INSTALLMENT when only one installment even with tax ruling due date (KO)', () => {
@@ -1960,12 +1990,19 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       isCancelled: false,
     }
 
-    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
-        errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
-        message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
-      }),
-    )
+    expect(() =>
+      getTaxDetailPureForInstallmentGenerator(options),
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
+      errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
+      message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
+      console: {
+        reasonNotPossible:
+          InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT,
+        taxId: 123,
+        taxType: TaxType.KO,
+      },
+    })
   })
 
   it('DZN installment generator throws JUST_ONE_INSTALLMENT when only one NORIS row', () => {
@@ -1980,22 +2017,29 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       ],
     }
 
-    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
-        errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
-        message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
-      }),
-    )
+    expect(() =>
+      getTaxDetailPureForInstallmentGenerator(options),
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
+      errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
+      message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
+      console: {
+        reasonNotPossible:
+          InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT,
+        taxId: 123,
+        taxType: TaxType.DZN,
+      },
+    })
   })
 
-  it('should work when threshold is 0', () => {
+  it('should work when threshold is 0', async () => {
     // Get the actual implementation and override just paymentCalendarThreshold
-    const actualModule = jest.requireActual<{
+    const actualModule = await vi.importActual<{
       getTaxDefinitionByType: typeof getTaxDefinitionByType
     }>('../../../tax-definitions/getTaxDefinitionByType')
     const actualDefinition = actualModule.getTaxDefinitionByType(TaxType.DZN)
 
-    ;(getTaxDefinitionByType as jest.Mock).mockReturnValue({
+    ;(getTaxDefinitionByType as Mock).mockReturnValue({
       ...actualDefinition,
       paymentCalendarThreshold: 0,
     })
@@ -2026,12 +2070,18 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       installments: [],
     }
 
-    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().InternalServerErrorException({
-        errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-        message: 'No installments found for the tax.',
-      }),
-    )
+    expect(() =>
+      getTaxDetailPureForInstallmentGenerator(options),
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+      message: 'No installments found for the tax.',
+      console: {
+        expectedInstallmentCount: 3,
+        taxId: 123,
+        taxType: TaxType.DZN,
+      },
+    })
   })
 
   it('should throw error when installments.length !== numberOfInstallments (fewer installments)', () => {
@@ -2051,12 +2101,19 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       ],
     }
 
-    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().InternalServerErrorException({
-        errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-        message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
-      }),
-    )
+    expect(() =>
+      getTaxDetailPureForInstallmentGenerator(options),
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+      message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+      console: {
+        expectedInstallmentCount: 3,
+        installmentCount: 2,
+        taxId: 123,
+        taxType: TaxType.DZN,
+      },
+    })
   })
 
   it('should throw error when installments.length > numberOfInstallments', () => {
@@ -2086,12 +2143,19 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       ],
     }
 
-    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ErrorFactoryService().InternalServerErrorException({
-        errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-        message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
-      }),
-    )
+    expect(() =>
+      getTaxDetailPureForInstallmentGenerator(options),
+    ).toThrowEqualLogNestError({
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+      message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+      console: {
+        expectedInstallmentCount: 3,
+        installmentCount: 4,
+        taxId: 123,
+        taxType: TaxType.DZN,
+      },
+    })
   })
 
   it('should generate payment for first installment when its due date has passed and it is not yet paid', () => {
@@ -2232,12 +2296,12 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
           },
         ],
       })
-    }).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
-        errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
-        message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
-      }),
-    )
+    }).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
+      errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
+      message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+      console: { taxId: 123, taxType: TaxType.DZN },
+    })
   })
 
   it('should handle overpaid tax', () => {
@@ -2251,11 +2315,11 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
           },
         ],
       })
-    }).toThrow(
-      new ErrorFactoryService().UnprocessableEntityException({
-        errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
-        message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
-      }),
-    )
+    }).toThrowEqualLogNestError({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
+      errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
+      message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+      console: { taxId: 123, taxType: TaxType.DZN },
+    })
   })
 })

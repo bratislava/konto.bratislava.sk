@@ -4,7 +4,6 @@ import komunitneZahrady, {
   komunitneZahradyFiles,
 } from '../schemas/komunitneZahrady'
 import nahlaseniePodnetuKElektrickymKolobezkam, {
-  nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
   nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
   nahlaseniePodnetuKElektrickymKolobezkamFiles,
 } from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
@@ -147,7 +146,6 @@ export const formDefinitions: FormDefinition[] = [
       ginisFunctionId: 'MAG0SF00ASI3',
     },
     isSigned: false,
-    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1hkstR',
     files: stanoviskoKInvesticnemuZameruFiles,
   },
   {
@@ -171,7 +169,6 @@ export const formDefinitions: FormDefinition[] = [
       ginisFunctionId: 'MAG0SF00ASI3',
     },
     isSigned: false,
-    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1vhwT6',
     files: zavazneStanoviskoKInvesticnejCinnostiFiles,
   },
   {
@@ -236,7 +233,6 @@ export const formDefinitions: FormDefinition[] = [
       extractTechnical: priznanieKDaniZNehnutelnostiExtractTechnicalSubject,
     },
     isSigned: true,
-    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFtP1By',
     files: priznanieKDaniZNehnutelnostiFiles,
   },
   // testing integration of new posID against GINIS&NORIS, will be removed afterwards
@@ -271,7 +267,6 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: ziadostONajomBytuTermsAndConditions,
-    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWKiASWp',
     sharepointData: ziadostONajomBytuSharepointData,
     skipGinisStateUpdate: true,
     ginisDocumentTypeId: 'MAG00400ACCI',
@@ -505,7 +500,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
-    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeQNdJ',
     email: {
       address: { prod: ['wf-izs@tsb.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: {
@@ -534,7 +528,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
-    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeYNBT',
     email: {
       address: { prod: ['wf-vs@tsb.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: {
@@ -562,7 +555,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
-    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeC4TS',
     email: {
       address: { prod: ['wf-oskpd@tsb.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: {
@@ -591,7 +583,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
-    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeud2E',
     email: {
       address: { prod: ['wf-ouz@tsb.sk'], test: ['inovacie.bratislava@gmail.com'] },
       fromAddress: {
@@ -623,7 +614,6 @@ export const formDefinitions: FormDefinition[] = [
       ginisNodeId: 'MAG0SS00A129',
     },
     isSigned: true,
-    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFOtcNg',
     files: oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyFiles,
   },
   {
@@ -664,7 +654,6 @@ export const formDefinitions: FormDefinition[] = [
       ginisFunctionId: 'MAG0SF00ASI3',
     },
     isSigned: false,
-    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWKjwznb',
     files: ziadostOUzemnoplanovaciuInformaciuFiles,
   },
   {
@@ -691,11 +680,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     email: {
       address: {
-        prod: [
-          nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
-          // nahlaseniePodnetuKElektrickymKolobezkamExtractMunicipalityEmailAddress, TODO: implement municipality email extraction by address field
-          'mikromobilita@bratislava.sk',
-        ],
+        prod: ['mikromobilita@bratislava.sk'],
         test: ['inovacie.bratislava@gmail.com'],
       },
       fromAddress: {

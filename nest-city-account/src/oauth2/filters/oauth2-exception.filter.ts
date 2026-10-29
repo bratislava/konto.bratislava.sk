@@ -1,4 +1,4 @@
-import { ErrorEnum, ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
 import { validateSync } from 'class-validator'
@@ -31,7 +31,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
 
   constructor(
     private readonly oauth2ClientSubservice: OAuth2ClientSubservice,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   catch(exception: HttpException, host: ArgumentsHost) {

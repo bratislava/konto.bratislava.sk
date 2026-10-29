@@ -102,6 +102,9 @@ export default class EnvironmentVariables {
   FRONTEND_URL: string
 
   @EnvUrl()
+  CITY_ACCOUNT_STRAPI_URL: string
+
+  @EnvUrl()
   USER_ACCOUNT_API: string
 
   @EnvString()

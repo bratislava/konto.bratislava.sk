@@ -10,7 +10,7 @@ export const useJsonParseMemo = <T>(stringToParse: string | undefined | null) =>
         return null
       }
 
-      return JSON.parse(stringToParse) as unknown as T
+      return JSON.parse(stringToParse) as T
     } catch (error) {
       logger.error('Error parsing JSON: ', stringToParse, error)
     }

@@ -76,6 +76,8 @@ export const useGetContext = () => {
       shouldPollServerFiles(query.state.data, clientFiles) ? REFETCH_INTERVAL : false
   }, [clientFiles])
 
+  const [initialServerFilesUpdatedAt] = useState(() => Date.now())
+
   const serverFilesQueryKey = ['serverFiles', formId]
   const serverFilesQuery = useQuery({
     queryKey: serverFilesQueryKey,
@@ -91,7 +93,7 @@ export const useGetContext = () => {
     staleTime: Infinity,
     refetchInterval,
     initialData: initialServerFiles,
-    initialDataUpdatedAt: Date.now(),
+    initialDataUpdatedAt: initialServerFilesUpdatedAt,
   })
 
   /**

@@ -1,8 +1,8 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton'
-import { expectAny } from '../../../__tests__/jest-matchers'
+import { expectAny } from '../../../__tests__/matchers'
 import { OAuth2Data } from '../../../generated/prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { CleanupTasksSubservice } from '../cleanup-tasks.subservice'
@@ -13,7 +13,7 @@ describe('CleanupTasksSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        LineLoggerService,
         CleanupTasksSubservice,
         { provide: PrismaService, useValue: prismaMock },
       ],
@@ -22,29 +22,25 @@ describe('CleanupTasksSubservice', () => {
     service = module.get<CleanupTasksSubservice>(CleanupTasksSubservice)
   })
 
-  afterEach(() => {
-    jest.clearAllMocks()
-  })
-
   describe('deleteOldUserVerificationData', () => {
     it('should delete UserIdCardVerify and LegalPersonIcoIdCardVerify records older than 1 month', async () => {
-      const userIdCardVerifyDeleteSpy = jest
-        .spyOn(prismaMock.userIdCardVerify, 'deleteMany')
+      const userIdCardVerifyDeleteSpy = vi
+        .mocked(prismaMock.userIdCardVerify.deleteMany)
         .mockResolvedValue({ count: 0 })
-      const legalPersonIcoIdCardVerifyDeleteSpy = jest
-        .spyOn(prismaMock.legalPersonIcoIdCardVerify, 'deleteMany')
+      const legalPersonIcoIdCardVerifyDeleteSpy = vi
+        .mocked(prismaMock.legalPersonIcoIdCardVerify.deleteMany)
         .mockResolvedValue({ count: 0 })
 
       const mockDate = new Date('2024-01-15T00:00:00.000Z')
-      jest.useFakeTimers()
-      jest.setSystemTime(mockDate)
+      vi.useFakeTimers()
+      vi.setSystemTime(mockDate)
 
       const oneMonthAgo = new Date(mockDate)
       oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
 
       await service.deleteOldUserVerificationData()
 
-      jest.useRealTimers()
+      vi.useRealTimers()
 
       expect(userIdCardVerifyDeleteSpy).toHaveBeenCalledWith({
         where: {
@@ -76,16 +72,16 @@ describe('CleanupTasksSubservice', () => {
       ]
 
       prismaMock.oAuth2Data.findMany.mockResolvedValue(mockExpiredRecords as OAuth2Data[])
-      const updateManySpy = jest.spyOn(prismaMock.oAuth2Data, 'updateMany')
-      const warnSpy = jest.spyOn(LineLoggerSubservice.prototype, 'warn')
+      const updateManySpy = vi.mocked(prismaMock.oAuth2Data.updateMany)
+      const warnSpy = vi.spyOn(LineLoggerService.prototype, 'warn')
 
       const mockDate = new Date('2024-01-15T00:00:00.000Z')
-      jest.useFakeTimers()
-      jest.setSystemTime(mockDate)
+      vi.useFakeTimers()
+      vi.setSystemTime(mockDate)
 
       await service.cleanupExpiredAuthorizationCodes()
 
-      jest.useRealTimers()
+      vi.useRealTimers()
 
       expect(prismaMock.oAuth2Data.findMany).toHaveBeenCalledWith({
         where: {
@@ -129,7 +125,7 @@ describe('CleanupTasksSubservice', () => {
 
     it('should not update anything if there are no expired records', async () => {
       prismaMock.oAuth2Data.findMany.mockResolvedValue([])
-      const updateManySpy = jest.spyOn(prismaMock.oAuth2Data, 'updateMany')
+      const updateManySpy = vi.mocked(prismaMock.oAuth2Data.updateMany)
 
       await service.cleanupExpiredAuthorizationCodes()
 
@@ -145,16 +141,16 @@ describe('CleanupTasksSubservice', () => {
       ]
 
       prismaMock.oAuth2Data.findMany.mockResolvedValue(mockOldRecords as OAuth2Data[])
-      const deleteManySpy = jest.spyOn(prismaMock.oAuth2Data, 'deleteMany')
-      const logSpy = jest.spyOn(LineLoggerSubservice.prototype, 'log')
+      const deleteManySpy = vi.mocked(prismaMock.oAuth2Data.deleteMany)
+      const logSpy = vi.spyOn(LineLoggerService.prototype, 'log')
 
       const mockDate = new Date('2024-01-15T00:00:00.000Z')
-      jest.useFakeTimers()
-      jest.setSystemTime(mockDate)
+      vi.useFakeTimers()
+      vi.setSystemTime(mockDate)
 
       await service.deleteOldOAuth2Data()
 
-      jest.useRealTimers()
+      vi.useRealTimers()
 
       expect(prismaMock.oAuth2Data.findMany).toHaveBeenCalledWith({
         where: {
@@ -199,7 +195,7 @@ describe('CleanupTasksSubservice', () => {
 
     it('should not delete anything if there are no old records', async () => {
       prismaMock.oAuth2Data.findMany.mockResolvedValue([])
-      const deleteManySpy = jest.spyOn(prismaMock.oAuth2Data, 'deleteMany')
+      const deleteManySpy = vi.mocked(prismaMock.oAuth2Data.deleteMany)
 
       await service.deleteOldOAuth2Data()
 

@@ -1,11 +1,16 @@
 import { Readable } from 'node:stream'
 
 import { SslPridatSouborPridatSoubor } from '@bratislava/ginis-sdk'
-import { createMock } from '@golevelup/ts-jest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
 import { getQueueToken } from '@nestjs/bull'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { extractFormSubjectTechnical } from 'forms-shared/form-utils/formDataExtractors'
+import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
+import type { Mock } from 'vitest'
 
 import prismaMock from '../../test/singleton'
 import {
@@ -20,11 +25,19 @@ import {
 } from '../__tests__/factories/form.factory'
 import { createTestFormDefinitionSlovenskoSkGeneric } from '../__tests__/factories/formDefinition.factory'
 import { createMockGinisDocumentData } from '../__tests__/factories/ginisDocument.factory'
-import { expectObjectContaining } from '../__tests__/jest-matchers'
+import {
+  expectObjectContaining,
+  expectStringContaining,
+} from '../__tests__/matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
+import { NodeEnv } from '../config/environment-variables'
 import ConvertService from '../convert/convert.service'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../forms/forms.errors.enum'
 import {
   Files,
   FormError,
@@ -36,7 +49,7 @@ import MailgunService from '../mailer/mailgun.service'
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import NasesContactsService from '../nases/services/nases.contacts.service'
 import PrismaService from '../prisma/prisma.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import alertReporting from '../utils/constants/error.alerts'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckDeliveryPayloadDto } from './dtos/ginis.response.dto'
 import GinisService from './ginis.service'
@@ -48,27 +61,32 @@ import GinisAPIService, {
   SslWflDocumentElectronicSourceExistence,
 } from './subservices/ginis-api.service'
 
-jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
-  getFormDefinitionBySlug: jest.fn(),
+vi.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
+  getFormDefinitionBySlug: vi.fn(),
 }))
-jest.mock('./subservices/ginis.helper')
-jest.mock('../rabbitmq-client/rabbitmq-client.service')
-jest.mock('forms-shared/form-utils/formDataExtractors', () => ({
-  extractFormSubjectPlain: jest.fn(),
-  extractFormSubjectTechnical: jest.fn(),
+vi.mock('./subservices/ginis.helper')
+vi.mock('../rabbitmq-client/rabbitmq-client.service')
+vi.mock('forms-shared/form-utils/formDataExtractors', () => ({
+  extractFormSubjectPlain: vi.fn(),
+  extractFormSubjectTechnical: vi.fn(),
 }))
-jest.mock('forms-shared/slovensko-sk/xmlBuilder', () => ({
-  buildSlovenskoSkXml: jest.fn(),
+vi.mock('forms-shared/slovensko-sk/xmlBuilder', () => ({
+  buildSlovenskoSkXml: vi.fn(),
 }))
 
 describe('GinisService', () => {
   let service: GinisService
+  const errorFactory = new ErrorFactoryService({ alertReporting })
 
   beforeEach(async () => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         GinisService,
         GinisAPIService,
         GinisHelper,
@@ -78,10 +96,10 @@ describe('GinisService', () => {
         {
           provide: MinioStorageService,
           useValue: {
-            download: jest.fn(),
+            download: vi.fn(),
           },
         },
-        ThrowerErrorGuard,
+        { provide: ErrorFactoryService, useValue: errorFactory },
         { provide: PrismaService, useValue: prismaMock },
         {
           provide: ApiJwtTokensService,
@@ -91,12 +109,12 @@ describe('GinisService', () => {
           provide: NasesContactsService,
           useValue: createMock<NasesContactsService>(),
         },
-        { provide: getQueueToken('sharepoint'), useValue: { add: jest.fn() } },
+        { provide: getQueueToken('sharepoint'), useValue: { add: vi.fn() } },
         {
           provide: BaConfigService,
           useValue: {
             environment: {
-              nodeEnv: 'development',
+              nodeEnv: NodeEnv.Development,
             },
             ginisApi: {
               username: '',
@@ -128,28 +146,25 @@ describe('GinisService', () => {
 
     service = module.get<GinisService>(GinisService)
 
-    Object.defineProperty(service, 'logger', {
-      value: { error: jest.fn(), debug: jest.fn(), log: jest.fn() },
-    })
-
     // Create a real NasesContactsService instance for extraction methods
     // The extraction methods are pure functions that don't need dependencies
     const realNasesContactsService = new NasesContactsService(
-      module.get(ThrowerErrorGuard),
+      module.get(ErrorFactoryService),
       module.get(ClientsService),
+      new LineLoggerService(NasesContactsService.name),
     )
 
     // Use real implementations for extraction methods
-    jest
-      .spyOn(service['nasesContactsService'], 'extractNaturalPersonData')
-      .mockImplementation((contact) =>
-        realNasesContactsService.extractNaturalPersonData(contact),
-      )
-    jest
-      .spyOn(service['nasesContactsService'], 'extractCorporateBodyData')
-      .mockImplementation((contact) =>
-        realNasesContactsService.extractCorporateBodyData(contact),
-      )
+    vi.mocked(
+      service['nasesContactsService'].extractNaturalPersonData,
+    ).mockImplementation((contact) =>
+      realNasesContactsService.extractNaturalPersonData(contact),
+    )
+    vi.mocked(
+      service['nasesContactsService'].extractCorporateBodyData,
+    ).mockImplementation((contact) =>
+      realNasesContactsService.extractCorporateBodyData(contact),
+    )
   })
 
   it('should be defined', () => {
@@ -178,25 +193,30 @@ describe('GinisService', () => {
       prismaMock.forms.findUnique.mockResolvedValue(null)
       const result = await service.onQueueConsumption(messageBase)
 
-      const spy = jest.spyOn(service['ginisHelper'], 'setFormToError')
+      const spy = vi.spyOn(service['ginisHelper'], 'setFormToError')
       expect(result.requeue).toBeFalsy()
       expect(spy).toHaveBeenCalled()
     })
 
     it('should error when form definition does not exist', async () => {
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue(null)
 
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
       })
 
-      await expect(service.onQueueConsumption(messageBase)).rejects.toThrow(
-        'Form definition was not found for given slug. slug',
-      )
+      await expect(
+        service.onQueueConsumption(messageBase),
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${formBase.formDefinitionSlug}`,
+        alert: true,
+      })
     })
 
     it('should error when form definition is not of a SlovenskoSkGeneric type', async () => {
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkTax,
       })
 
@@ -204,20 +224,29 @@ describe('GinisService', () => {
         ...formBase,
       })
 
-      await expect(service.onQueueConsumption(messageBase)).rejects.toThrow(
-        'onQueueConsumption: Got unsupported type of FormDefinition.',
-      )
+      await expect(
+        service.onQueueConsumption(messageBase),
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        message: `onQueueConsumption: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}`,
+        console: {
+          formDefinitionType: FormDefinitionType.SlovenskoSkTax,
+          formId: formBase.id,
+        },
+        alert: true,
+      })
     })
 
     it('should run register if not yet registered', async () => {
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
       })
 
       prismaMock.forms.findUnique.mockResolvedValue(formBase)
 
-      const registerSpy = jest
+      const registerSpy = vi
         .spyOn(service, 'registerGinisDocument')
         .mockResolvedValue(false)
 
@@ -234,10 +263,10 @@ describe('GinisService', () => {
 
       expect(registerSpy).not.toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
-      jest.clearAllMocks()
+      vi.clearAllMocks()
 
       // should try to register and requeue if it couldn't find the document
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
       })
@@ -248,10 +277,10 @@ describe('GinisService', () => {
       result = await service.onQueueConsumption(messageBase)
       expect(registerSpy).toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
-      jest.clearAllMocks()
+      vi.clearAllMocks()
 
       // should only change state if there was error to allow register again
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
       })
@@ -272,7 +301,7 @@ describe('GinisService', () => {
     })
 
     it('should upload files', async () => {
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
       })
@@ -290,7 +319,7 @@ describe('GinisService', () => {
           },
         ),
       )
-      const uploadSpy = jest
+      const uploadSpy = vi
         .spyOn(service, 'uploadAttachments')
         .mockResolvedValue()
 
@@ -298,10 +327,10 @@ describe('GinisService', () => {
       let result = await service.onQueueConsumption(messageBase)
       expect(uploadSpy).toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
-      jest.clearAllMocks()
+      vi.clearAllMocks()
 
       // When one error - requeue, upload, report error
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
       })
@@ -321,10 +350,10 @@ describe('GinisService', () => {
       result = await service.onQueueConsumption(messageBase)
       expect(uploadSpy).toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
-      jest.clearAllMocks()
+      vi.clearAllMocks()
 
       // When all errors - requeue, upload, report error
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
       })
@@ -344,10 +373,10 @@ describe('GinisService', () => {
       result = await service.onQueueConsumption(messageBase)
       expect(uploadSpy).toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
-      jest.clearAllMocks()
+      vi.clearAllMocks()
 
       // When no more files, change to Attachments uploaded
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
       })
@@ -370,7 +399,7 @@ describe('GinisService', () => {
       expect(result.requeue).toBeTruthy()
 
       // When missing ginisDocumentId, skip upload
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
       })
@@ -393,7 +422,7 @@ describe('GinisService', () => {
     })
 
     it('should mark as files uploaded if there are no files', async () => {
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
       })
@@ -403,7 +432,7 @@ describe('GinisService', () => {
         ginisState: GinisState.REGISTERED,
       })
 
-      const uploadSpy = jest
+      const uploadSpy = vi
         .spyOn(service, 'uploadAttachments')
         .mockResolvedValue()
       const result = await service.onQueueConsumption(messageBase)
@@ -421,7 +450,7 @@ describe('GinisService', () => {
     })
 
     it('should assign submission if all files are uploaded', async () => {
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
         ginisAssignment: {
@@ -435,7 +464,7 @@ describe('GinisService', () => {
         ...formBase,
         ginisState: GinisState.ATTACHMENTS_UPLOADED,
       })
-      const assignSpy = jest
+      const assignSpy = vi
         .spyOn(service, 'assignSubmission')
         .mockResolvedValue()
 
@@ -478,7 +507,7 @@ describe('GinisService', () => {
     })
 
     it('should mark as ready for processing if there is no sharepoint', async () => {
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
       })
@@ -487,10 +516,10 @@ describe('GinisService', () => {
         ginisState: GinisState.SUBMISSION_ASSIGNED,
       })
 
-      const sendMailSpy = jest
-        .spyOn(service['mailgunService'], 'sendEmail')
+      const sendMailSpy = vi
+        .mocked(service['mailgunService'].sendEmail)
         .mockResolvedValue()
-      const sendToSharepointSpy = jest.spyOn(service['sharepointQueue'], 'add')
+      const sendToSharepointSpy = vi.spyOn(service['sharepointQueue'], 'add')
 
       let result = await service.onQueueConsumption({
         ...messageBase,
@@ -512,8 +541,8 @@ describe('GinisService', () => {
       expect(sendMailSpy).not.toHaveBeenCalled()
       expect(sendToSharepointSpy).not.toHaveBeenCalled()
 
-      jest.clearAllMocks()
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      vi.clearAllMocks()
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
       })
@@ -537,7 +566,7 @@ describe('GinisService', () => {
     })
 
     it('should send to sharepoint', async () => {
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
         sharepointData: {
@@ -554,10 +583,10 @@ describe('GinisService', () => {
         ginisState: GinisState.SUBMISSION_ASSIGNED,
       })
 
-      const sendMailSpy = jest
-        .spyOn(service['mailgunService'], 'sendEmail')
+      const sendMailSpy = vi
+        .mocked(service['mailgunService'].sendEmail)
         .mockResolvedValue()
-      const sendToSharepointSpy = jest.spyOn(service['sharepointQueue'], 'add')
+      const sendToSharepointSpy = vi.spyOn(service['sharepointQueue'], 'add')
 
       let result = await service.onQueueConsumption({
         ...messageBase,
@@ -579,8 +608,8 @@ describe('GinisService', () => {
       expect(sendMailSpy).not.toHaveBeenCalled()
       expect(sendToSharepointSpy).toHaveBeenCalled()
 
-      jest.clearAllMocks()
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+      vi.clearAllMocks()
+      ;(getFormDefinitionBySlug as Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
         sharepointData: {
@@ -614,19 +643,20 @@ describe('GinisService', () => {
 
   describe('registerToGinis', () => {
     beforeEach(() => {
-      jest
-        .spyOn(service['ginisHelper'], 'retryWithDelay')
-        .mockImplementation(async (fn) => fn())
+      vi.spyOn(service['ginisHelper'], 'retryWithDelay').mockImplementation(
+        async (fn) => fn(),
+      )
 
-      jest
-        .spyOn(service['ginisApiService'], 'findDocumentId')
-        .mockResolvedValue('gid1')
+      vi.spyOn(service['ginisApiService'], 'findDocumentId').mockResolvedValue(
+        'gid1',
+      )
     })
 
     it('should update form with error after ginis error', async () => {
-      jest
-        .spyOn(service['ginisApiService'], 'findDocumentId')
-        .mockRejectedValueOnce(new Error('Ginis find failed'))
+      vi.spyOn(
+        service['ginisApiService'],
+        'findDocumentId',
+      ).mockRejectedValueOnce(new Error('Ginis find failed'))
 
       const result = await service.registerGinisDocument('formId1')
 
@@ -643,9 +673,10 @@ describe('GinisService', () => {
     })
 
     it('should not update form after unsuccessful find', async () => {
-      jest
-        .spyOn(service['ginisApiService'], 'findDocumentId')
-        .mockResolvedValueOnce(null)
+      vi.spyOn(
+        service['ginisApiService'],
+        'findDocumentId',
+      ).mockResolvedValueOnce(null)
 
       const result = await service.registerGinisDocument('formId1')
 
@@ -693,17 +724,17 @@ describe('GinisService', () => {
     })
 
     beforeEach(() => {
-      jest
-        .spyOn(service['ginisHelper'], 'retryWithDelay')
-        .mockImplementation(async (fn) => fn())
+      vi.spyOn(service['ginisHelper'], 'retryWithDelay').mockImplementation(
+        async (fn) => fn(),
+      )
 
-      jest
-        .spyOn(service['minioStorageService'], 'download')
-        .mockResolvedValue(mockStream)
+      vi.spyOn(service['minioStorageService'], 'download').mockResolvedValue(
+        mockStream,
+      )
 
-      jest
-        .spyOn(service['ginisApiService'], 'uploadFile')
-        .mockResolvedValue({} as SslPridatSouborPridatSoubor)
+      vi.spyOn(service['ginisApiService'], 'uploadFile').mockResolvedValue(
+        {} as SslPridatSouborPridatSoubor,
+      )
     })
 
     it('should update form to RUNNING_UPLOAD_ATTACHMENTS', async () => {
@@ -718,11 +749,11 @@ describe('GinisService', () => {
     })
 
     it('should update file with error after ginis error', async () => {
-      jest
-        .spyOn(service['ginisApiService'], 'uploadFile')
-        .mockRejectedValueOnce(new Error('Ginis upload failed'))
+      vi.spyOn(service['ginisApiService'], 'uploadFile').mockRejectedValueOnce(
+        new Error('Ginis upload failed'),
+      )
 
-      const spy = jest.spyOn(prismaMock.files, 'update')
+      const spy = vi.spyOn(prismaMock.files, 'update')
       await service.uploadAttachments(formMock, 'mockPospID')
       expect(spy).toHaveBeenCalledWith(
         expectObjectContaining({
@@ -734,7 +765,7 @@ describe('GinisService', () => {
     })
 
     it('should update file as uploaded on success', async () => {
-      const spy = jest.spyOn(prismaMock.files, 'update')
+      const spy = vi.spyOn(prismaMock.files, 'update')
       await service.uploadAttachments(formMock, 'mockPospID')
       expect(spy).toHaveBeenCalledWith(
         expectObjectContaining({
@@ -749,15 +780,13 @@ describe('GinisService', () => {
 
   describe('assignSubmission', () => {
     beforeEach(() => {
-      jest
-        .spyOn(service['ginisHelper'], 'retryWithDelay')
-        .mockImplementation(async (fn) => fn())
+      vi.spyOn(service['ginisHelper'], 'retryWithDelay').mockImplementation(
+        async (fn) => fn(),
+      )
 
-      jest
-        .spyOn(service['ginisApiService'], 'assignDocument')
-        .mockResolvedValue({
-          'Datum-zmeny': '2025-06-02T19:06:00',
-        })
+      vi.spyOn(service['ginisApiService'], 'assignDocument').mockResolvedValue({
+        'Datum-zmeny': '2025-06-02T19:06:00',
+      })
     })
 
     it('should update file to RUNNING_ASSIGN_SUBMISSION', async () => {
@@ -772,9 +801,10 @@ describe('GinisService', () => {
     })
 
     it('should update form with error after ginis error', async () => {
-      jest
-        .spyOn(service['ginisApiService'], 'assignDocument')
-        .mockRejectedValueOnce(new Error('Ginis assign failed'))
+      vi.spyOn(
+        service['ginisApiService'],
+        'assignDocument',
+      ).mockRejectedValueOnce(new Error('Ginis assign failed'))
 
       await service.assignSubmission('docId', 'nodeId', 'functionId')
 
@@ -818,50 +848,49 @@ describe('GinisService', () => {
     const mockWflDocument = createMockGinisDocumentData()['Wfl-dokument']
 
     beforeEach(() => {
-      const { extractFormSubjectTechnical } = jest.requireMock<{
-        extractFormSubjectTechnical: jest.Mock
-      }>('forms-shared/form-utils/formDataExtractors')
-      extractFormSubjectTechnical.mockReturnValue('Test Subject')
+      vi.mocked(extractFormSubjectTechnical).mockReturnValue('Test Subject')
 
-      jest
-        .spyOn(service['ginisHelper'], 'retryWithDelay')
-        .mockImplementation(async (fn) => fn())
+      vi.spyOn(service['ginisHelper'], 'retryWithDelay').mockImplementation(
+        async (fn) => fn(),
+      )
 
-      jest
-        .spyOn(service['ginisApiService'], 'createDocument')
-        .mockResolvedValue('newDocId')
+      vi.spyOn(service['ginisApiService'], 'createDocument').mockResolvedValue(
+        'newDocId',
+      )
 
-      jest
-        .spyOn(service['ginisApiService'], 'getDocumentDetail')
-        .mockResolvedValue(
-          createMockGinisDocumentData({
-            'Wfl-dokument': {
-              ...mockWflDocument,
-              'Priznak-el-obrazu':
-                SslWflDocumentElectronicSourceExistence.EXISTS,
-            },
-          }),
-        )
+      vi.spyOn(
+        service['ginisApiService'],
+        'getDocumentDetail',
+      ).mockResolvedValue(
+        createMockGinisDocumentData({
+          'Wfl-dokument': {
+            ...mockWflDocument,
+            'Priznak-el-obrazu': SslWflDocumentElectronicSourceExistence.EXISTS,
+          },
+        }),
+      )
 
-      jest
-        .spyOn(service['ginisApiService'], 'findDocumentId')
-        .mockResolvedValue('foundDocId')
+      vi.spyOn(service['ginisApiService'], 'findDocumentId').mockResolvedValue(
+        'foundDocId',
+      )
 
-      jest
-        .spyOn(service['ginisApiService'], 'createFormIdProperty')
-        .mockResolvedValue('1')
+      vi.spyOn(
+        service['ginisApiService'],
+        'createFormIdProperty',
+      ).mockResolvedValue('1')
 
-      jest
-        .spyOn(service['ginisApiService'], 'setFormIdProperty')
-        .mockResolvedValue()
+      vi.spyOn(
+        service['ginisApiService'],
+        'setFormIdProperty',
+      ).mockResolvedValue()
 
-      jest
-        .spyOn(service['ginisApiService'], 'upsertContact')
-        .mockResolvedValue('contactId')
+      vi.spyOn(service['ginisApiService'], 'upsertContact').mockResolvedValue(
+        'contactId',
+      )
 
-      jest
-        .spyOn(service['apiJwtTokensService'], 'createTechnicalAccountJwtToken')
-        .mockReturnValue('jwt-token')
+      vi.mocked(
+        service['apiJwtTokensService'].createTechnicalAccountJwtToken,
+      ).mockReturnValue('jwt-token')
     })
 
     it('should throw error when formDataJson is null', async () => {
@@ -869,7 +898,14 @@ describe('GinisService', () => {
 
       await expect(
         service.createDocument(form, formDefinitionBase),
-      ).rejects.toThrow('Form data is empty.')
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errorEnum: FormsErrorsEnum.EMPTY_FORM_DATA,
+        message: `createDocument: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
+        console: expectStringContaining(
+          `No form data json in form id: ${form.id}`,
+        ),
+      })
     })
 
     it('should create document with userExternalId only', async () => {
@@ -879,19 +915,17 @@ describe('GinisService', () => {
         mainUri: null,
       } as Forms
 
-      jest
-        .spyOn(
-          service['clientsService'].cityAccountApi,
-          'userIntegrationControllerGetContactAndIdInfoByExternalId',
-        )
-        .mockResolvedValue(
-          createCityAccountUserApiResponseMock({
-            email: 'test@example.com',
-            accountType: 'fo',
-            firstName: 'John',
-            lastName: 'Doe',
-          }),
-        )
+      vi.mocked(
+        service['clientsService'].cityAccountApi
+          .userIntegrationControllerGetContactAndIdInfoByExternalId,
+      ).mockResolvedValue(
+        createCityAccountUserApiResponseMock({
+          email: 'test@example.com',
+          accountType: 'fo',
+          firstName: 'John',
+          lastName: 'Doe',
+        }),
+      )
 
       await service.createDocument(form, formDefinitionBase)
 
@@ -923,24 +957,21 @@ describe('GinisService', () => {
         mainUri: 'uri://test',
       } as Forms
 
-      jest
-        .spyOn(
-          service['clientsService'].slovenskoSkApi,
-          'apiIamIdentitiesSearchPost',
-        )
-        .mockResolvedValue(
-          createSlovenskoSkIdentitiesApiResponseMock([
-            {
-              type: 'natural_person',
-              uri: 'uri://test',
-              emails: [{ address: 'test@example.com' }],
-              natural_person: {
-                given_names: ['John'],
-                family_names: [{ value: 'Doe', primary: true }],
-              },
+      vi.mocked(
+        service['clientsService'].slovenskoSkApi.apiIamIdentitiesSearchPost,
+      ).mockResolvedValue(
+        createSlovenskoSkIdentitiesApiResponseMock([
+          {
+            type: 'natural_person',
+            uri: 'uri://test',
+            emails: [{ address: 'test@example.com' }],
+            natural_person: {
+              given_names: ['John'],
+              family_names: [{ value: 'Doe', primary: true }],
             },
-          ]),
-        )
+          },
+        ]),
+      )
 
       await service.createDocument(form, formDefinitionBase)
 
@@ -962,24 +993,21 @@ describe('GinisService', () => {
         mainUri: 'uri://test',
       } as Forms
 
-      jest
-        .spyOn(
-          service['clientsService'].slovenskoSkApi,
-          'apiIamIdentitiesSearchPost',
-        )
-        .mockResolvedValue(
-          createSlovenskoSkIdentitiesApiResponseMock([
-            {
-              type: 'legal_entity',
-              uri: 'uri://test',
-              emails: [{ address: 'test@example.com' }],
-              corporate_body: {
-                name: 'Test Company',
-                cin: '12345678',
-              },
+      vi.mocked(
+        service['clientsService'].slovenskoSkApi.apiIamIdentitiesSearchPost,
+      ).mockResolvedValue(
+        createSlovenskoSkIdentitiesApiResponseMock([
+          {
+            type: 'legal_entity',
+            uri: 'uri://test',
+            emails: [{ address: 'test@example.com' }],
+            corporate_body: {
+              name: 'Test Company',
+              cin: '12345678',
             },
-          ]),
-        )
+          },
+        ]),
+      )
 
       await service.createDocument(form, formDefinitionBase)
 
@@ -1001,38 +1029,33 @@ describe('GinisService', () => {
         mainUri: 'uri://test',
       } as Forms
 
-      jest
-        .spyOn(
-          service['clientsService'].cityAccountApi,
-          'userIntegrationControllerGetContactAndIdInfoByExternalId',
-        )
-        .mockResolvedValue(
-          createCityAccountUserApiResponseMock({
-            email: 'external@example.com',
-            accountType: 'fo',
-            firstName: 'External',
-            lastName: 'User',
-          }),
-        )
+      vi.mocked(
+        service['clientsService'].cityAccountApi
+          .userIntegrationControllerGetContactAndIdInfoByExternalId,
+      ).mockResolvedValue(
+        createCityAccountUserApiResponseMock({
+          email: 'external@example.com',
+          accountType: 'fo',
+          firstName: 'External',
+          lastName: 'User',
+        }),
+      )
 
-      jest
-        .spyOn(
-          service['clientsService'].slovenskoSkApi,
-          'apiIamIdentitiesSearchPost',
-        )
-        .mockResolvedValue(
-          createSlovenskoSkIdentitiesApiResponseMock([
-            {
-              type: 'natural_person',
-              uri: 'uri://test',
-              emails: [{ address: 'uri@example.com' }],
-              natural_person: {
-                given_names: ['John'],
-                family_names: [{ value: 'Doe', primary: true }],
-              },
+      vi.mocked(
+        service['clientsService'].slovenskoSkApi.apiIamIdentitiesSearchPost,
+      ).mockResolvedValue(
+        createSlovenskoSkIdentitiesApiResponseMock([
+          {
+            type: 'natural_person',
+            uri: 'uri://test',
+            emails: [{ address: 'uri@example.com' }],
+            natural_person: {
+              given_names: ['John'],
+              family_names: [{ value: 'Doe', primary: true }],
             },
-          ]),
-        )
+          },
+        ]),
+      )
 
       await service.createDocument(form, formDefinitionBase)
 
@@ -1085,22 +1108,23 @@ describe('GinisService', () => {
     })
 
     it('should assign reference number if not present', async () => {
-      jest
-        .spyOn(service['ginisApiService'], 'getDocumentDetail')
-        .mockResolvedValue(
-          createMockGinisDocumentData({
-            'Cj-dokumentu': undefined,
-            'Wfl-dokument': {
-              ...mockWflDocument,
-              'Priznak-el-obrazu':
-                SslWflDocumentElectronicSourceExistence.EXISTS, // skip uploading sopurce document,
-            },
-          }),
-        )
+      vi.spyOn(
+        service['ginisApiService'],
+        'getDocumentDetail',
+      ).mockResolvedValue(
+        createMockGinisDocumentData({
+          'Cj-dokumentu': undefined,
+          'Wfl-dokument': {
+            ...mockWflDocument,
+            'Priznak-el-obrazu': SslWflDocumentElectronicSourceExistence.EXISTS, // skip uploading sopurce document,
+          },
+        }),
+      )
 
-      jest
-        .spyOn(service['ginisApiService'], 'assignReferenceNumber')
-        .mockResolvedValue()
+      vi.spyOn(
+        service['ginisApiService'],
+        'assignReferenceNumber',
+      ).mockResolvedValue()
 
       await service.createDocument(formBase, formDefinitionBase)
 
@@ -1110,9 +1134,9 @@ describe('GinisService', () => {
     })
 
     it('should set formId property when document not found by formId', async () => {
-      jest
-        .spyOn(service['ginisApiService'], 'findDocumentId')
-        .mockResolvedValue('differentDocId') // different from created
+      vi.spyOn(service['ginisApiService'], 'findDocumentId').mockResolvedValue(
+        'differentDocId',
+      ) // different from created
 
       await service.createDocument(formBase, formDefinitionBase)
 
@@ -1127,9 +1151,9 @@ describe('GinisService', () => {
     })
 
     it('should not set formId property when it is already set and document can be found by formId', async () => {
-      jest
-        .spyOn(service['ginisApiService'], 'findDocumentId')
-        .mockResolvedValue('newDocId') // same as created
+      vi.spyOn(service['ginisApiService'], 'findDocumentId').mockResolvedValue(
+        'newDocId',
+      ) // same as created
 
       await service.createDocument(formBase, formDefinitionBase)
 
@@ -1148,9 +1172,13 @@ describe('GinisService', () => {
         mainUri: null,
       } as Forms
 
-      await expect(service.extractContactParamsFromUri(form)).rejects.toThrow(
-        'Form uri not found in form',
-      )
+      await expect(
+        service.extractContactParamsFromUri(form),
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in form. Form id: ${form.id}`,
+      })
     })
 
     it('should throw error when userExternalId is missing in extractContactParamsFromExternalId', async () => {
@@ -1161,7 +1189,11 @@ describe('GinisService', () => {
 
       await expect(
         service.extractContactParamsFromExternalId(form),
-      ).rejects.toThrow('External id not found in form')
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: External id not found in form. Form id: ${form.id}`,
+      })
     })
 
     it('should throw error when contact not found in nases', async () => {
@@ -1171,16 +1203,18 @@ describe('GinisService', () => {
         mainUri: 'uri://test',
       } as Forms
 
-      jest
-        .spyOn(
-          service['clientsService'].slovenskoSkApi,
-          'apiIamIdentitiesSearchPost',
-        )
-        .mockResolvedValue(createSlovenskoSkIdentitiesApiResponseMock([]))
+      vi.mocked(
+        service['clientsService'].slovenskoSkApi.apiIamIdentitiesSearchPost,
+      ).mockResolvedValue(createSlovenskoSkIdentitiesApiResponseMock([]))
 
       await expect(
         service.createDocument(form, formDefinitionBase),
-      ).rejects.toThrow('Form uri not found in nases')
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Form uri not found in nases.`,
+        console: { formId: form.id },
+      })
     })
 
     it('should throw error when multiple contacts found in nases', async () => {
@@ -1190,40 +1224,45 @@ describe('GinisService', () => {
         mainUri: 'uri://test',
       } as Forms
 
-      jest
-        .spyOn(
-          service['clientsService'].slovenskoSkApi,
-          'apiIamIdentitiesSearchPost',
-        )
-        .mockResolvedValue(
-          createSlovenskoSkIdentitiesApiResponseMock([
-            { type: 'natural_person' },
-            { type: 'natural_person' },
-          ]),
-        )
+      vi.mocked(
+        service['clientsService'].slovenskoSkApi.apiIamIdentitiesSearchPost,
+      ).mockResolvedValue(
+        createSlovenskoSkIdentitiesApiResponseMock([
+          { type: 'natural_person' },
+          { type: 'natural_person' },
+        ]),
+      )
 
       await expect(
         service.createDocument(form, formDefinitionBase),
-      ).rejects.toThrow('Multiple results found for form uri')
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errorEnum: FormsErrorsEnum.FORM_DATA_INVALID,
+        message: `fetchContactByUri: ${FormsErrorsResponseEnum.FORM_DATA_INVALID}: Multiple results found for form uri.`,
+        console: { formId: form.id },
+      })
     })
 
     it('should throw error when contact info not found in city account', async () => {
+      const userExternalId = 'extId1'
       const form = {
         ...formBase,
-        userExternalId: 'extId1',
+        userExternalId,
         mainUri: null,
       } as Forms
 
-      jest
-        .spyOn(
-          service['clientsService'].cityAccountApi,
-          'userIntegrationControllerGetContactAndIdInfoByExternalId',
-        )
-        .mockResolvedValue(createEmptyCityAccountUserApiResponseMock())
+      vi.mocked(
+        service['clientsService'].cityAccountApi
+          .userIntegrationControllerGetContactAndIdInfoByExternalId,
+      ).mockResolvedValue(createEmptyCityAccountUserApiResponseMock())
 
       await expect(
         service.createDocument(form, formDefinitionBase),
-      ).rejects.toThrow('Contact info not found in city account')
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.NOT_FOUND,
+        errorEnum: FormsErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
+        message: `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR}: Contact info not found in city account for external id: ${userExternalId}. Form id: ${form.id}`,
+      })
     })
 
     it('should handle legal entity from userExternalId', async () => {
@@ -1233,19 +1272,17 @@ describe('GinisService', () => {
         mainUri: null,
       } as Forms
 
-      jest
-        .spyOn(
-          service['clientsService'].cityAccountApi,
-          'userIntegrationControllerGetContactAndIdInfoByExternalId',
-        )
-        .mockResolvedValue(
-          createCityAccountUserApiResponseMock({
-            email: 'test@example.com',
-            accountType: 'po',
-            name: 'Company Name',
-            ico: '87654321',
-          }),
-        )
+      vi.mocked(
+        service['clientsService'].cityAccountApi
+          .userIntegrationControllerGetContactAndIdInfoByExternalId,
+      ).mockResolvedValue(
+        createCityAccountUserApiResponseMock({
+          email: 'test@example.com',
+          accountType: 'po',
+          name: 'Company Name',
+          ico: '87654321',
+        }),
+      )
 
       await service.createDocument(form, formDefinitionBase)
 
@@ -1265,19 +1302,17 @@ describe('GinisService', () => {
         mainUri: null,
       } as Forms
 
-      jest
-        .spyOn(
-          service['clientsService'].cityAccountApi,
-          'userIntegrationControllerGetContactAndIdInfoByExternalId',
-        )
-        .mockResolvedValue(
-          createCityAccountUserApiResponseMock({
-            email: 'test@example.com',
-            accountType: 'fo-p',
-            name: 'Self Employed',
-            ico: '11223344',
-          }),
-        )
+      vi.mocked(
+        service['clientsService'].cityAccountApi
+          .userIntegrationControllerGetContactAndIdInfoByExternalId,
+      ).mockResolvedValue(
+        createCityAccountUserApiResponseMock({
+          email: 'test@example.com',
+          accountType: 'fo-p',
+          name: 'Self Employed',
+          ico: '11223344',
+        }),
+      )
 
       await service.createDocument(form, formDefinitionBase)
 
@@ -1291,33 +1326,31 @@ describe('GinisService', () => {
     })
 
     it('should upload XML source file when electronic source does not exist', async () => {
-      const { buildSlovenskoSkXml } = jest.requireMock<{
-        buildSlovenskoSkXml: jest.Mock
-      }>('forms-shared/slovensko-sk/xmlBuilder')
       const mockXmlObject = { root: { data: 'test' } }
       const mockXmlString =
         '<?xml version="1.0"?><root><data>test</data></root>'
 
-      jest
-        .spyOn(service['ginisApiService'], 'getDocumentDetail')
-        .mockResolvedValue(
-          createMockGinisDocumentData({
-            'Wfl-dokument': {
-              ...mockWflDocument,
-              'Priznak-el-obrazu':
-                SslWflDocumentElectronicSourceExistence.DOES_NOT_EXIST,
-            },
-          }),
-        )
+      vi.spyOn(
+        service['ginisApiService'],
+        'getDocumentDetail',
+      ).mockResolvedValue(
+        createMockGinisDocumentData({
+          'Wfl-dokument': {
+            ...mockWflDocument,
+            'Priznak-el-obrazu':
+              SslWflDocumentElectronicSourceExistence.DOES_NOT_EXIST,
+          },
+        }),
+      )
 
-      jest
-        .spyOn(service['convertService'], 'convertJsonToXmlObjectForForm')
-        .mockResolvedValue(mockXmlObject)
-      buildSlovenskoSkXml.mockReturnValue(mockXmlString)
+      vi.mocked(
+        service['convertService'].convertJsonToXmlObjectForForm,
+      ).mockResolvedValue(mockXmlObject)
+      vi.mocked(buildSlovenskoSkXml).mockReturnValue(mockXmlString)
 
-      jest
-        .spyOn(service['ginisApiService'], 'uploadFile')
-        .mockResolvedValue(createMock<SslPridatSouborPridatSoubor>({}))
+      vi.spyOn(service['ginisApiService'], 'uploadFile').mockResolvedValue(
+        createMock<SslPridatSouborPridatSoubor>({}),
+      )
 
       await service.createDocument(formBase, formDefinitionBase)
 
@@ -1337,25 +1370,25 @@ describe('GinisService', () => {
     })
 
     it('should not upload XML source file when electronic source exists', async () => {
-      jest
-        .spyOn(service['ginisApiService'], 'getDocumentDetail')
-        .mockResolvedValue(
-          createMockGinisDocumentData({
-            'Wfl-dokument': {
-              ...mockWflDocument,
-              'Priznak-el-obrazu':
-                SslWflDocumentElectronicSourceExistence.EXISTS,
-            },
-          }),
-        )
+      vi.spyOn(
+        service['ginisApiService'],
+        'getDocumentDetail',
+      ).mockResolvedValue(
+        createMockGinisDocumentData({
+          'Wfl-dokument': {
+            ...mockWflDocument,
+            'Priznak-el-obrazu': SslWflDocumentElectronicSourceExistence.EXISTS,
+          },
+        }),
+      )
 
-      jest
-        .spyOn(service['convertService'], 'convertJsonToXmlObjectForForm')
-        .mockResolvedValue({})
+      vi.mocked(
+        service['convertService'].convertJsonToXmlObjectForForm,
+      ).mockResolvedValue({})
 
-      jest
-        .spyOn(service['ginisApiService'], 'uploadFile')
-        .mockResolvedValue(createMock<SslPridatSouborPridatSoubor>({}))
+      vi.spyOn(service['ginisApiService'], 'uploadFile').mockResolvedValue(
+        createMock<SslPridatSouborPridatSoubor>({}),
+      )
 
       await service.createDocument(formBase, formDefinitionBase)
 

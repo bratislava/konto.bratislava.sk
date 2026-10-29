@@ -1,3 +1,4 @@
+import { resolveFeedbackLink } from 'forms-shared/form-utils/resolveFeedbackLink'
 import { useTranslation } from 'next-i18next/pages'
 
 import Markdown from '@/src/components/formatting/Markdown'
@@ -12,7 +13,7 @@ const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
 
   const { isTaxForm, isEmbedded, strapiFormSentPage } = useFormContext()
 
-  const feedbackLink = strapiFormSentPage?.feedbackLink?.trim()
+  const feedbackLink = resolveFeedbackLink(strapiFormSentPage)
 
   const contentFromStrapi = strapiFormSentPage?.content?.trim()
   const isContentCentered = strapiFormSentPage?.isContentCentered ?? true

@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -22,7 +22,7 @@ export default class TaxImportHelperService {
     private readonly prismaService: PrismaService,
     private readonly databaseSubservice: DatabaseSubservice,
     private readonly norisService: NorisService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   private async getImportWindowConfig(): Promise<{
@@ -90,7 +90,7 @@ export default class TaxImportHelperService {
   }> {
     const thisYear = new Date().getFullYear()
     // (number of tax types: 2) * (number of years to be imported: delta including initial)
-    const NorisCallsPerNewUser = 2 * (firstHistoricalYear - thisYear + 1)
+    const NorisCallsPerNewUser = 2 * (thisYear - firstHistoricalYear + 1)
 
     // Get users that have no taxes loaded and were never updated as a priority
     // For these users we will load all historical taxes at the same time
@@ -108,7 +108,7 @@ export default class TaxImportHelperService {
       this.UPLOAD_BIRTHNUMBERS_BATCH -
       newlyCreatedTaxPayers.length * NorisCallsPerNewUser
 
-    if (remainingCapacity === 0) {
+    if (remainingCapacity <= 0) {
       return {
         newlyCreated: newlyCreatedTaxPayers.map((u) => u.birthNumber),
         birthNumbers: [],
@@ -117,7 +117,7 @@ export default class TaxImportHelperService {
 
     // Then get existing users for the remaining capacity.
     // Check TaxImportAttempt table instead of Tax table
-    // In the preparation phase: find users without any attempt record (not yet prepared)
+    // In the preparation phase: find users without an attempt record, or with a NOT_FOUND / FAILED one
     // In the import phase: prioritize users with READY_TO_IMPORT status
     let existingTaxPayers: { birthNumber: string }[]
     if (isImportPhase) {
@@ -133,7 +133,8 @@ export default class TaxImportHelperService {
                                  AND tia."taxType" = ${taxType}::"TaxType"
           WHERE
             -- Exclude newly created users (they're handled separately)
-              NOT (tp."createdAt" = tp."updatedAt")
+              NOT (tp."createdAt" = tp."updatedAt"
+                  AND NOT EXISTS (SELECT 1 FROM "TaxImportAttempt" any_tia WHERE any_tia."taxPayerId" = tp.id))
 
             -- Include all users who do not have a tax successfully loaded 
             AND (tia.id IS NULL OR tia.status != 'SUCCESS'::"TaxImportStatus")
@@ -159,10 +160,12 @@ export default class TaxImportHelperService {
                                  AND tia."taxType" = ${taxType}::"TaxType"
           WHERE
             -- Exclude newly created users (they're handled separately)
-              NOT (tp."createdAt" = tp."updatedAt")
-            -- In prepare phase: only users who don't have any attempt for this year/type yet
-            AND tia.id IS NULL
-          ORDER BY tp."updatedAt"
+              NOT (tp."createdAt" = tp."updatedAt"
+                  AND NOT EXISTS (SELECT 1 FROM "TaxImportAttempt" any_tia WHERE any_tia."taxPayerId" = tp.id))
+            -- In prepare phase: only users who weren't attempted yet, weren't found in Noris, or failed
+            AND (tia.id IS NULL OR tia.status IN ('NOT_FOUND'::"TaxImportStatus", 'FAILED'::"TaxImportStatus"))
+          ORDER BY tia."updatedAt" NULLS FIRST,
+                   tp."updatedAt"
           LIMIT ${remainingCapacity}
       `
     }
@@ -196,29 +199,15 @@ export default class TaxImportHelperService {
       )
 
     // Move only the birth numbers which are not found in Noris to the end of the queue
-    const foundInNoris = result.foundInNoris || []
-    const notFoundInNoris = birthNumbers.filter(
-      (bn) => !foundInNoris.includes(bn),
+    const notFoundInNorisCount = await this.markNotFoundInNoris(
+      taxType,
+      birthNumbers,
+      year,
+      result.foundInNoris,
     )
 
-    if (notFoundInNoris.length > 0) {
-      await this.prismaService.taxImportAttempt.updateMany({
-        where: {
-          taxPayer: {
-            birthNumber: { in: notFoundInNoris },
-          },
-          year,
-          taxType,
-        },
-        data: {
-          updatedAt: new Date(),
-          status: TaxImportStatus.NOT_FOUND,
-        },
-      })
-    }
-
     this.logger.log(
-      `${result.birthNumbers.length} birth numbers are successfully added to tax backend. TaxType: ${taxType}, year: ${year}, requested: ${birthNumbers.length}, foundInNoris: ${foundInNoris.length}, notFoundInNoris: ${notFoundInNoris.length}, elapsedMs: ${Date.now() - startedAt}`,
+      `${result.birthNumbers.length} birth numbers are successfully added to tax backend. TaxType: ${taxType}, year: ${year}, requested: ${birthNumbers.length}, foundInNoris: ${birthNumbers.length - notFoundInNorisCount}, notFoundInNoris: ${notFoundInNorisCount}, elapsedMs: ${Date.now() - startedAt}`,
     )
   }
 
@@ -243,8 +232,51 @@ export default class TaxImportHelperService {
         },
       )
 
+    // Move only the birth numbers which are not found in Noris to the end of the queue
+    await this.markNotFoundInNoris(
+      taxType,
+      birthNumbers,
+      year,
+      result.foundInNoris,
+    )
+
     this.logger.log(
       `${result.birthNumbers.length} birth numbers are prepared and ready to import. TaxType: ${taxType}, year: ${year}, requested: ${birthNumbers.length}, elapsedMs: ${Date.now() - startedAt}`,
     )
+  }
+
+  private async markNotFoundInNoris(
+    taxType: TaxType,
+    birthNumbers: string[],
+    year: number,
+    foundInNoris: string[] = [],
+  ): Promise<number> {
+    const foundInNorisSet = new Set(foundInNoris)
+    const notFoundInNoris = birthNumbers.filter(
+      (birthNumber) => !foundInNorisSet.has(birthNumber),
+    )
+
+    if (notFoundInNoris.length === 0) {
+      return 0
+    }
+
+    await this.prismaService.taxImportAttempt.updateMany({
+      where: {
+        taxPayer: {
+          birthNumber: { in: notFoundInNoris },
+        },
+        year,
+        taxType,
+        status: {
+          not: TaxImportStatus.SUCCESS,
+        },
+      },
+      data: {
+        updatedAt: new Date(),
+        status: TaxImportStatus.NOT_FOUND,
+      },
+    })
+
+    return notFoundInNoris.length
   }
 }

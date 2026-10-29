@@ -1,6 +1,5 @@
+import { ErrorEnum, ErrorResponseEnum } from '@bratislava/log-nest'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-
-import { ErrorsEnum, ErrorsResponseEnum } from '../global-enums/errors.enum'
 
 export class BaseErrorDto {
   @ApiProperty({
@@ -11,7 +10,7 @@ export class BaseErrorDto {
 
   @ApiProperty({
     description: 'Detail error message',
-    example: ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+    example: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
   })
   declare message: string
 }
@@ -73,8 +72,8 @@ export class GlobalErrorDto extends BaseErrorDto {
 
   @ApiProperty({
     description: 'Exact error name',
-    example: ErrorsEnum.NOT_FOUND_ERROR,
-    enum: ErrorsEnum,
+    example: ErrorEnum.NOT_FOUND_ERROR,
+    enum: ErrorEnum,
   })
   declare errorName: string
 
@@ -199,14 +198,14 @@ export class InternalServerErrorDto extends GlobalErrorDto {
 
 export class DatabaseErrorDto extends InternalServerErrorDto {
   @ApiProperty({
-    example: ErrorsEnum.DATABASE_ERROR,
-    default: ErrorsEnum.DATABASE_ERROR,
+    example: ErrorEnum.DATABASE_ERROR,
+    default: ErrorEnum.DATABASE_ERROR,
   })
   declare errorName: string
 
   @ApiProperty({
-    example: ErrorsResponseEnum.DATABASE_ERROR,
-    default: ErrorsResponseEnum.DATABASE_ERROR,
+    example: ErrorResponseEnum.DATABASE_ERROR,
+    default: ErrorResponseEnum.DATABASE_ERROR,
   })
   declare message: string
 }

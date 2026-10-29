@@ -192,6 +192,7 @@
   "FormLandingPageCtaCard.redirectInfo": "Presmerovávam na formulár.",
   "FormModals.closeButton": "Zavrieť",
   "FormModals.conceptDeleteModal.buttonTitle": "Vymazať",
+  "FormModals.conceptDeleteModal.buttonTitleLoading": "Vymazáva sa",
   "FormModals.conceptDeleteModal.content": "Naozaj si želáte vymazať koncept? Táto akcia je nevratná.",
   "FormModals.conceptDeleteModal.contentWithName": "Naozaj si želáte vymazať koncept {{conceptName}}? Táto akcia je nevratná.",
   "FormModals.conceptDeleteModal.title": "Vymazať koncept",

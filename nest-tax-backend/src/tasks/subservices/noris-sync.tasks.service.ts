@@ -2,7 +2,7 @@ import {
   ErrorEnum,
   ErrorFactoryService,
   ErrorResponseEnum,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
@@ -28,7 +28,7 @@ export default class NorisSyncTasksService {
     private readonly prismaService: PrismaService,
     private readonly errorFactoryService: ErrorFactoryService,
     private readonly norisService: NorisService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {}
 
   async updatePaymentsFromNoris() {

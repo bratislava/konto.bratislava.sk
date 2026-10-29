@@ -1,9 +1,10 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { MockInstance } from 'vitest'
 
 import prismaMock from '../../test/singleton'
-import { expectObjectContaining } from '../__tests__/jest-matchers'
+import { expectObjectContaining } from '../__tests__/matchers'
 import { PhysicalEntity } from '../generated/prisma/client'
 import { MagproxyService } from '../magproxy/magproxy.service'
 import { PrismaService } from '../prisma/prisma.service'
@@ -32,13 +33,13 @@ const mockPhysicalEntity: PhysicalEntity = {
 describe('PhysicalEntityService', () => {
   let service: PhysicalEntityService
   const MagproxyServiceMock = createMock<MagproxyService>()
-  let consoleSpy: jest.SpyInstance
+  let consoleSpy: MockInstance
+  let logger: LineLoggerService
   beforeEach(async () => {
-    jest.clearAllTimers()
-    jest.clearAllMocks()
+    vi.clearAllTimers()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        { provide: LineLoggerService, useValue: createMock<LineLoggerService>() },
         PhysicalEntityService,
         ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },
@@ -47,8 +48,9 @@ describe('PhysicalEntityService', () => {
       ],
     }).compile()
     service = module.get<PhysicalEntityService>(PhysicalEntityService)
-    consoleSpy = jest.spyOn(console, 'log')
-    consoleSpy.mockImplementation(jest.fn())
+    logger = module.get(LineLoggerService)
+    consoleSpy = vi.spyOn(console, 'log')
+    consoleSpy.mockImplementation(vi.fn())
   })
 
   it('should be defined', () => {
@@ -58,9 +60,9 @@ describe('PhysicalEntityService', () => {
   describe('linkToUserIdByBirthnumber', () => {
     it('should link userId to entity successfully', async () => {
       const mockUserId = 'user123'
-      jest.spyOn(prismaMock.physicalEntity, 'findMany').mockResolvedValue([mockPhysicalEntity])
-      const updateSpy = jest
-        .spyOn(prismaMock.physicalEntity, 'update')
+      vi.mocked(prismaMock.physicalEntity.findMany).mockResolvedValue([mockPhysicalEntity])
+      const updateSpy = vi
+        .mocked(prismaMock.physicalEntity.update)
         .mockResolvedValue({ ...mockPhysicalEntity, userId: mockUserId })
 
       await service.linkToUserIdByBirthnumber(mockUserId, mockBirthNumber)
@@ -76,17 +78,17 @@ describe('PhysicalEntityService', () => {
 
     it('should fail if multiple entities exist for the same birthNumber', async () => {
       const mockUserId = 'user123'
-      jest
-        .spyOn(prismaMock.physicalEntity, 'findMany')
-        .mockResolvedValue([mockPhysicalEntity, { ...mockPhysicalEntity, id: 'another-id' }])
-      const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
+      vi.mocked(prismaMock.physicalEntity.findMany).mockResolvedValue([
+        mockPhysicalEntity,
+        { ...mockPhysicalEntity, id: 'another-id' },
+      ])
 
       await service.linkToUserIdByBirthnumber(mockUserId, mockBirthNumber)
 
       expect(prismaMock.physicalEntity.findMany).toHaveBeenCalledWith({
         where: { birthNumber: mockBirthNumber },
       })
-      expect(loggerSpy).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
         'Multiple physical entities in database with the same birth number.',
         expectObjectContaining({ userId: 'user123' })
       )
@@ -94,15 +96,14 @@ describe('PhysicalEntityService', () => {
 
     it('should fail if no entity is found for the given birthNumber', async () => {
       const mockUserId = 'user123'
-      jest.spyOn(prismaMock.physicalEntity, 'findMany').mockResolvedValue([])
-      const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
+      vi.mocked(prismaMock.physicalEntity.findMany).mockResolvedValue([])
 
       await service.linkToUserIdByBirthnumber(mockUserId, mockBirthNumber)
 
       expect(prismaMock.physicalEntity.findMany).toHaveBeenCalledWith({
         where: { birthNumber: mockBirthNumber },
       })
-      expect(loggerSpy).toHaveBeenCalledWith(
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
         'Physical entity with the given birth number does not exist.',
         { userId: 'user123' }
       )

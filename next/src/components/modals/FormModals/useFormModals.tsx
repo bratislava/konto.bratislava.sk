@@ -87,18 +87,7 @@ const useGetContext = () => {
   const [eidSendErrorModal, setEidSendErrorModal] = useState<ModalWithConfirmCallback>({
     isOpen: false,
   })
-  const [sendPending, setSendPending] = useState(false)
-  const [sendEidSaveConceptPending, setSendEidSaveConceptPending] = useState(false)
-  const [sendEidPending, setSendEidPending] = useState(false)
-  /*
-   * This is set to true when user confirms eID form send. It is irreversible and forbids the user to close the modal / edit the data / send the form
-   * again while redirecting.
-   */
-  const [redirectingToSlovenskoSkLogin, setRedirectingToSlovenskoSkLogin] = useState(false)
   const [signerIsDeploying, setSignerIsDeploying] = useState(false)
-
-  const eidSendConfirmationModalIsPending =
-    sendEidSaveConceptPending || redirectingToSlovenskoSkLogin
 
   const [taxFormPdfExportModal, setTaxFormPdfExportModal] =
     useState<TaxFormPdfExportModalState | null>(null)
@@ -129,17 +118,10 @@ const useGetContext = () => {
     setSendConfirmationEidLegalModal,
     sendConfirmationNonAuthenticatedEidModal,
     setSendConfirmationNonAuthenticatedEidModal,
-    sendPending,
-    setSendPending,
     eidSendingModal,
     setEidSendingModal,
     eidSendErrorModal,
     setEidSendErrorModal,
-    setSendEidSaveConceptPending,
-    sendEidPending,
-    setSendEidPending,
-    setRedirectingToSlovenskoSkLogin,
-    eidSendConfirmationModalIsPending,
     deleteConceptModal,
     setDeleteConceptModal,
     taxFormPdfExportModal,

@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
 import { LookupIdentityFOResult, NasesService } from '../nases/nases.service'
@@ -37,7 +37,7 @@ export class UrgentLookupService {
     private readonly physicalEntityService: PhysicalEntityService,
     private readonly nasesService: NasesService,
     private readonly cognitoSubservice: CognitoSubservice,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   /**

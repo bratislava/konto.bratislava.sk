@@ -1,5 +1,5 @@
-import { render } from '@react-email/components'
 import React from 'react'
+import { render } from 'react-email'
 
 import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'
@@ -25,6 +25,9 @@ export const renderSummaryEmail = async ({
 }: RenderSummaryEmailPayload) => {
   const fileInfos = mergeClientAndServerFilesSummary([], serverFiles)
 
+  // `render()` always prepends an XHTML `<!DOCTYPE …>`, also for fragments (`withHtmlBodyTags`
+  // false), so production emails carry it inside the Mailgun template's <body>. It was harmless in
+  // every client tested.
   return render(
     <SummaryEmail
       formSummary={formSummary}

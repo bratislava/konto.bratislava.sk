@@ -1,4 +1,4 @@
-import { ErrorFactoryService, LineLoggerSubservice } from '@bratislava/log-nest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { AmqpConnection, Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
 import { Channel, ConsumeMessage } from 'amqplib'
@@ -6,10 +6,11 @@ import { Channel, ConsumeMessage } from 'amqplib'
 import { ManuallyVerifyUserRequestDto } from '../admin/dtos/requests.admin.dto'
 import { OnlySuccessDto, UserVerifyState } from '../admin/dtos/responses.admin.dto'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
-import { getBloomreachContactDatabase } from '../bloomreach/bloomreach-contact-database.provider'
-import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
+import { BloomreachOutboxWriterService } from '../bloomreach/bloomreach-outbox-writer.service'
 import { BloomreachPayloadBuilder } from '../bloomreach/bloomreach-payload.builder'
+import { getBloomreachContactDatabase } from '../bloomreach/contact-database/bloomreach-contact-database.provider'
+import { BloomreachContactDatabaseService } from '../bloomreach/contact-database/bloomreach-contact-database.service'
 import getBaConfigInstance from '../config/ba-config.instance'
 import BaConfigService from '../config/ba-config.service'
 import { CognitoUserAttributesTierEnum, LegalPerson, User } from '../generated/prisma/client'
@@ -68,7 +69,7 @@ export class VerificationService {
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly userTierService: UserTierService,
     private readonly baConfigService: BaConfigService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   async sendToQueue(
@@ -145,7 +146,7 @@ export class VerificationService {
         const errorFactoryService = new ErrorFactoryService({ alertReporting })
         const prismaService = new PrismaService(
           getBaConfigInstance(),
-          new LineLoggerSubservice(PrismaService.name)
+          new LineLoggerService(PrismaService.name)
         )
         const cognitoSubservice = new CognitoSubservice(errorFactoryService, getBaConfigInstance())
         const userTierService = new UserTierService(cognitoSubservice, prismaService)
@@ -158,7 +159,7 @@ export class VerificationService {
         const bloomreachContactDatabaseService = new BloomreachContactDatabaseService(
           errorFactoryService,
           getBloomreachContactDatabase(),
-          new LineLoggerSubservice(BloomreachContactDatabaseService.name)
+          new LineLoggerService(BloomreachContactDatabaseService.name)
         )
 
         const userIdentitySubservice = new UserIdentitySubservice(prismaService)
@@ -168,17 +169,22 @@ export class VerificationService {
           userIdentitySubservice
         )
 
-        const bloomreachOutboxService = new BloomreachOutboxService(
+        const bloomreachOutboxWriterService = new BloomreachOutboxWriterService(
           prismaService,
           bloomreachPayloadBuilder,
           errorFactoryService,
+          new LineLoggerService(BloomreachOutboxWriterService.name)
+        )
+        const bloomreachOutboxService = new BloomreachOutboxService(
+          bloomreachOutboxWriterService,
+          errorFactoryService,
           getBaConfigInstance(),
-          new LineLoggerSubservice(BloomreachOutboxService.name)
+          new LineLoggerService(BloomreachOutboxService.name)
         )
 
         await bloomreachOutboxService.trackCustomer(data.msg.user.idUser)
       } catch (errorCatch) {
-        const logger = new LineLoggerSubservice('RabbitRPC')
+        const logger = new LineLoggerService('RabbitRPC')
         logger.error(
           'RabbitMQ error handler - catch cognito/parser error',
           {

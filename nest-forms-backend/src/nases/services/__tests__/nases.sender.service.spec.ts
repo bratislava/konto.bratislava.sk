@@ -1,8 +1,10 @@
 import { Readable } from 'node:stream'
 
-import { createMock } from '@golevelup/ts-jest'
+import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { v1, v4 } from 'uuid'
+import type { Mock } from 'vitest'
 import { Builder, Parser } from 'xml2js'
 
 import prismaMock from '../../../../test/singleton'
@@ -13,22 +15,21 @@ import { FileStatus } from '../../../generated/prisma/client'
 import { MinioStorageService } from '../../../minio-storage/minio-storage.service'
 import PrismaService from '../../../prisma/prisma.service'
 import TaxService from '../../../tax/tax.service'
-import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import { NasesErrorsResponseEnum } from '../../nases.errors.enum'
 import NasesSenderService from '../nases.sender.service'
 
-jest.mock('axios')
-jest.mock('../../../minio-storage/minio-storage.service')
-jest.mock('../../../convert/convert.service')
-jest.mock('uuid', () => ({
-  v4: jest.fn(),
-  v1: jest.fn(),
+vi.mock('axios')
+vi.mock('../../../minio-storage/minio-storage.service')
+vi.mock('../../../convert/convert.service')
+vi.mock('uuid', () => ({
+  v4: vi.fn(),
+  v1: vi.fn(),
 }))
 
 const createMockReadableStream = (content: string): Readable => {
   const readableStream = new Readable()
 
-  readableStream._read = jest.fn()
+  readableStream._read = vi.fn()
   readableStream.push(content)
   readableStream.push(null)
   return readableStream
@@ -38,12 +39,16 @@ describe('NasesSenderService', () => {
   let service: NasesSenderService
 
   beforeEach(async () => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
     const app: TestingModule = await Test.createTestingModule({
       providers: [
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         NasesSenderService,
         ConvertService,
-        ThrowerErrorGuard,
+        ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },
         MinioStorageService,
         { provide: TaxService, useValue: createMock<TaxService>() },
@@ -59,11 +64,6 @@ describe('NasesSenderService', () => {
     }).compile()
 
     service = app.get<NasesSenderService>(NasesSenderService)
-
-    // Suppress console output from logger
-    Object.defineProperty(service, 'logger', {
-      value: { error: jest.fn(), debug: jest.fn(), log: jest.fn() },
-    })
   })
 
   describe('should be defined', () => {
@@ -125,12 +125,12 @@ describe('NasesSenderService', () => {
         },
       ]
 
-      ;(v4 as jest.Mock).mockReturnValue('12345678-1234-1234-1234-123456789012')
-      ;(v1 as jest.Mock)
+      ;(v4 as Mock).mockReturnValue('12345678-1234-1234-1234-123456789012')
+      ;(v1 as Mock)
         .mockReturnValueOnce('12345678-1234-1234-1234-123456789012')
         .mockReturnValueOnce('98765432-9876-9876-9876-987654321098')
 
-      service['convertService'].convertJsonToXmlObjectForForm = jest
+      service['convertService'].convertJsonToXmlObjectForForm = vi
         .fn()
         .mockResolvedValue({
           eform: {
@@ -142,17 +142,17 @@ describe('NasesSenderService', () => {
 
       prismaMock.files.findMany.mockResolvedValue(mockFiles)
 
-      service['minioStorageService'].loadFileStream = jest
+      service['minioStorageService'].loadFileStream = vi
         .fn()
         .mockImplementation((_: string, filename: string) =>
           createMockReadableStream(`test string for input: ${filename}`),
         )
 
-      service['taxService'].getFilledInPdfBase64 = jest
+      service['taxService'].getFilledInPdfBase64 = vi
         .fn()
         .mockResolvedValue('AWUKDHLAIUWDHU=====')
 
-      service['convertService'].generatePdf = jest
+      service['convertService'].generatePdf = vi
         .fn()
         .mockImplementation(() =>
           createMockReadableStream('Summary PDF content with form details'),

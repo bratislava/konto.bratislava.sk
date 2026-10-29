@@ -1,27 +1,35 @@
 savePrefix: ''
+# Every install that changes the lockfile also collapses compatible duplicate
+# versions, the same way `pnpm dedupe` does, so copies don't pile up between
+# manual dedupes. Frozen installs (CI, Docker) leave the lockfile as it is.
+autoDedupe: true
+# Records autoDedupe (and the other resolution settings) in pnpm-lock.yaml.
+# Without the record, every non-frozen install resolves the whole graph again,
+# and `pnpm run` after a frozen install starts another install.
+lockfile:
+  includeResolutionSettings: true
 
 catalog:
-  '@internationalized/date': 3.12.2
-  '@playwright/test': 1.59.1
+  '@internationalized/date': 3.12.4
+  '@playwright/test': 1.64.1
   '@react-aria/utils': 3.34.1
-  '@react-stately/utils': 3.12.1
-  '@react-types/shared': 3.36.0
-  '@rjsf/core': 6.5.2
-  '@rjsf/utils': 6.5.2
-  '@rjsf/validator-ajv8': 6.5.2
-  '@types/node': 24.13.3
-  '@types/react': 19.2.18
-  '@types/react-dom': 19.2.5
+  '@react-types/shared': 3.37.0
+  '@rjsf/core': 6.11.0
+  '@rjsf/utils': 6.11.0
+  '@rjsf/validator-ajv8': 6.11.0
+  '@types/node': 24.19.2
+  '@types/react': 19.3.0
+  '@types/react-dom': 19.3.0
   ajv: 8.20.0
   ajv-errors: 3.0.0
   ajv-formats: 3.0.1
   axios: 1.18.1
-  playwright: 1.59.1
-  react: 19.2.8
-  react-aria: 3.50.0
-  react-aria-components: 1.19.0
-  react-dom: 19.2.8
-  react-stately: 3.48.0
+  playwright: 1.64.1
+  react: 19.3.1
+  react-aria: 3.53.1
+  react-aria-components: 1.22.1
+  react-dom: 19.3.1
+  react-stately: 3.51.0
 
 packages:
   - e2e-tests
@@ -43,7 +51,7 @@ packages:
 allowBuilds:
   '@apollo/protobufjs': true
   '@openapitools/openapi-generator-cli': true
-  # Pulled in by jest-haste-map 30.5. Its install script only compiles when a
+  # Pulled in by @graphql-codegen/cli. Its install script only compiles when a
   # source build is forced; the prebuilt binary comes from a per-platform
   # optional dependency.
   '@parcel/watcher': false
@@ -63,25 +71,37 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - '@bratislava/*'
 
-# @golevelup/nestjs-rabbitmq 9.0.2 and its @golevelup/nestjs-discovery still cap
-# their NestJS peers at v11. They run on NestJS 12 unchanged: the only Nest
-# internals they import (`@nestjs/common/constants`,
-# `@nestjs/core/helpers/external-context-creator`) resolve through Nest 12's
-# `./*` export. Support is pending upstream in
-# https://github.com/golevelup/nestjs/pull/1262.
-# TODO: Drop these rules once a release widens the peer range.
-peerDependencyRules:
-  allowedVersions:
-    '@golevelup/nestjs-rabbitmq>@nestjs/common': '12'
-    '@golevelup/nestjs-rabbitmq>@nestjs/core': '12'
-    '@golevelup/nestjs-discovery>@nestjs/common': '12'
-    '@golevelup/nestjs-discovery>@nestjs/core': '12'
-    # @bratislava/log-nest 1.1.0 caps its NestJS peers at v11. Without this rule
-    # it gets its own Nest 11 copy, so its HttpExceptions fail `instanceof` checks
-    # against Nest 12's.
-    # TODO: Drop these rules once log-nest widens its peer range to include v12.
-    '@bratislava/log-nest>@nestjs/common': '12'
-    '@bratislava/log-nest>@nestjs/core': '12'
+# `@x0k/json-schema-merge` (used by @rjsf/utils to merge `allOf`) before 1.1.0
+# attached the `else` of a later `allOf` condition to an earlier `if` that has
+# none, so RJSF's `omitExtraData` kept data from inactive branches. @rjsf/utils
+# 6.11.0 still allows ^1.0.6, so this forces the fixed release.
+# TODO: Drop this override once @rjsf/utils requires ^1.1.0 itself.
+overrides:
+  '@x0k/json-schema-merge': 1.1.0
+
+# These packages import `typescript` without declaring it as a dependency or peer, so instead of
+# the TypeScript of the project that uses them, they get whichever version pnpm happens to hoist,
+# which can be another workspace package's (incompatible) TypeScript. Declaring the peer makes them
+# resolve the using project's TypeScript.
+#
+# @golevelup/ts-vitest imports `vitest` without declaring it, so pnpm gives it
+# whichever vitest is hoisted, which can differ from the version running the
+# tests. Two vitest versions in one run break assertions. Declaring the peer
+# makes it use the consumer's vitest.
+packageExtensions:
+  '@darraghor/eslint-plugin-nestjs-typed':
+    peerDependencies:
+      typescript: '*'
+  eslint-plugin-import:
+    peerDependencies:
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+  '@golevelup/ts-vitest':
+    peerDependencies:
+      vitest: '*'
+
 
 # The root package.json pins Node and pnpm in devEngines with `onFail: error`,
 # so any tool that reads that contract and finds the wrong version stops instead

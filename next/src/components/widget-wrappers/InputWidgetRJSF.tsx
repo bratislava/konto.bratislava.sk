@@ -21,6 +21,10 @@ const InputWidgetRJSF = (props: InputWidgetRJSFProps) => {
         type={specificOptions.inputType}
         placeholder={specificOptions.placeholder}
         inputWidth={specificOptions.inputWidth}
+        // Chrome ignores `off` for autofill, but doesn't autofill inputs with an unrecognised value.
+        autoComplete={
+          specificOptions.autoComplete === 'off' ? 'disabled' : specificOptions.autoComplete
+        }
       />
     </WidgetWrapper>
   )

@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from '@bratislava/log-nest'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { DateTime } from 'luxon'
 
@@ -8,7 +8,7 @@ import { PrismaService } from '../../prisma/prisma.service'
 export class CleanupTasksSubservice {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly logger: LineLoggerSubservice
+    private readonly logger: LineLoggerService
   ) {}
 
   async deleteOldUserVerificationData() {

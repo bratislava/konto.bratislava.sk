@@ -59,7 +59,10 @@ const formVariants: FormVariant[] = [
     label: 'Strapi – custom content',
     formContext: mockFormContext({
       strapiFormSentPage: {
+        feedbackLink: null,
         content: 'Custom **content** from Strapi with a [link](#).',
+        isContentCentered: null,
+        alert: null,
       },
     }),
   },
@@ -67,9 +70,11 @@ const formVariants: FormVariant[] = [
     label: 'Strapi – content aligned to the left',
     formContext: mockFormContext({
       strapiFormSentPage: {
+        feedbackLink: null,
         content:
           'Custom content from Strapi aligned to the left, because `isContentCentered` is turned off.',
         isContentCentered: false,
+        alert: null,
       },
     }),
   },
@@ -78,6 +83,9 @@ const formVariants: FormVariant[] = [
     formContext: mockFormContext({
       feedbackLink: '#',
       strapiFormSentPage: {
+        feedbackLink: null,
+        content: null,
+        isContentCentered: null,
         alert: {
           title: 'Alert title',
           content: 'Alert content from Strapi.',

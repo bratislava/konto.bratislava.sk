@@ -1,7 +1,7 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import nodemailer from 'nodemailer'
@@ -27,7 +27,7 @@ export default class EmailSubservice {
   constructor(
     private readonly baConfigService: BaConfigService,
     private readonly errorFactoryService: ErrorFactoryService,
-    private readonly logger: LineLoggerSubservice,
+    private readonly logger: LineLoggerService,
   ) {
     this.transporter = nodemailer.createTransport({
       host: `email-smtp.${this.baConfigService.cognito.region}.amazonaws.com`,

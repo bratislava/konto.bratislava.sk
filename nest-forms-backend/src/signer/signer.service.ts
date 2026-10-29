@@ -1,10 +1,11 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable, Logger } from '@nestjs/common'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { getSignerData } from 'forms-shared/signer/signerData'
 import {
-  formatValidateXmlResultErrors,
   validateXml,
+  ValidateXmlResultError,
 } from 'forms-shared/slovensko-sk/validateXml'
 
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
@@ -14,19 +15,25 @@ import {
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { SignerDataRequestDto, SignerDataResponseDto } from './signer.dto'
 import {
   SignerErrorsEnum,
   SignerErrorsResponseEnum,
 } from './signer.errors.enum'
 
+const describeXmlError = ({ message, line, col }: ValidateXmlResultError) => ({
+  line,
+  col,
+  element: /^Element '([^']*)'/.exec(message)?.[1],
+  facet: /\[facet '(\w+)'\]/.exec(message)?.[1],
+})
+
 @Injectable()
 export default class SignerService {
   private readonly logger: Logger
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly formsService: FormsService,
     private readonly prismaService: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
@@ -34,18 +41,25 @@ export default class SignerService {
     this.logger = new Logger('SignerService')
   }
 
-  private async validateXml(xmlData: string, xsd: string): Promise<void> {
+  private async validateXml(
+    xmlData: string,
+    xsd: string,
+    context: { formId: string; slug: string; jsonVersion: string },
+  ): Promise<void> {
     const result = await validateXml(xmlData, xsd)
     if (result.success) {
       return
     }
 
-    throw this.throwerErrorGuard.BadRequestException(
-      SignerErrorsEnum.XML_VALIDATION_ERROR,
-      result.errors
-        ? `${SignerErrorsResponseEnum.XML_VALIDATION_ERROR} Errors: ${formatValidateXmlResultErrors(result.errors)}`
-        : SignerErrorsResponseEnum.XML_VALIDATION_ERROR,
-    )
+    throw this.errorFactoryService.BadRequestException({
+      errorEnum: SignerErrorsEnum.XML_VALIDATION_ERROR,
+      message: SignerErrorsResponseEnum.XML_VALIDATION_ERROR,
+      console: {
+        ...context,
+        errorCount: result.errors?.length ?? 0,
+        errors: result.errors?.map(describeXmlError),
+      },
+    })
   }
 
   async getSignerData(
@@ -54,28 +68,28 @@ export default class SignerService {
   ): Promise<SignerDataResponseDto> {
     const form = await this.formsService.getUniqueForm(formId)
     if (!form) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      })
     }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (formDefinition === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `getSignerData: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        message: `getSignerData: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      })
     }
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        {
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        message: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        console: {
           formDefinitionType: formDefinition.type,
           slug: form.formDefinitionSlug,
         },
-      )
+      })
     }
 
     const files = await this.prismaService.files.findMany({
@@ -93,7 +107,11 @@ export default class SignerService {
       serverFiles: files,
     })
 
-    await this.validateXml(signerData.xdcXMLData, signerData.xdcUsedXSD)
+    await this.validateXml(signerData.xdcXMLData, signerData.xdcUsedXSD, {
+      formId,
+      slug: form.formDefinitionSlug,
+      jsonVersion: form.jsonVersion,
+    })
 
     return signerData
   }

@@ -1,3 +1,4 @@
+import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import FormData from 'form-data'
 import Handlebars from 'handlebars'
@@ -5,6 +6,7 @@ import Mailgun from 'mailgun.js'
 import { Interfaces, TemplateQuery } from 'mailgun.js/definitions'
 
 import BaConfigService from '../../config/ba-config.service'
+import StrapiService from '../../strapi/strapi.service'
 import {
   SendEmailInputDto,
   SendEmailVariablesDto,
@@ -13,7 +15,6 @@ import {
   MailgunErrorsEnum,
   MailgunErrorsResponseEnum,
 } from '../../utils/global-enums/mailgun.errors.enum'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import {
   getMailgunConfig,
   MailgunConfigVariableType,
@@ -24,8 +25,9 @@ export default class MailgunHelper {
   mailgunClient: Interfaces.IMailgunClient
 
   constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly errorFactoryService: ErrorFactoryService,
     private readonly baConfigService: BaConfigService,
+    private readonly strapiService: StrapiService,
   ) {
     const mailgun = new Mailgun(FormData)
     this.mailgunClient = mailgun.client({
@@ -35,46 +37,49 @@ export default class MailgunHelper {
     })
   }
 
-  createEmailVariables(data: SendEmailInputDto): SendEmailVariablesDto {
+  async createEmailVariables(
+    data: SendEmailInputDto,
+  ): Promise<SendEmailVariablesDto> {
     const mailgunConfig = getMailgunConfig(this.baConfigService)
     const response: SendEmailVariablesDto = {}
-    Object.entries(mailgunConfig[data.template].variables).forEach(
-      ([key, val]) => {
-        switch (val.type) {
-          case MailgunConfigVariableType.PARAMETER: {
-            const base =
-              response[key as keyof SendEmailVariablesDto] || val.value
-            let baseStr = String(base)
-            Object.entries(data.data).forEach(([k, v]) => {
-              if (v) {
-                baseStr = baseStr.replace(`{{${k}}}`, v.toString())
-              }
-            })
-            response[key as keyof SendEmailVariablesDto] = baseStr
-            break
-          }
-
-          case MailgunConfigVariableType.SELECT:
-            if (
-              typeof val.value === 'object' &&
-              Object.prototype.hasOwnProperty.call(val.value, data.data.slug)
-            ) {
-              response[key as keyof SendEmailVariablesDto] =
-                val.value?.[data.data.slug as keyof typeof val.value]
+    await Promise.all(
+      Object.entries(mailgunConfig[data.template].variables).map(
+        async ([key, val]) => {
+          switch (val.type) {
+            case MailgunConfigVariableType.PARAMETER: {
+              let baseStr =
+                response[key as keyof SendEmailVariablesDto] || val.value
+              Object.entries(data.data).forEach(([k, v]) => {
+                if (v) {
+                  baseStr = baseStr.replace(`{{${k}}}`, v.toString())
+                }
+              })
+              response[key as keyof SendEmailVariablesDto] = baseStr
+              break
             }
 
-            break
+            case MailgunConfigVariableType.FEEDBACK_LINK: {
+              const feedbackLink = await this.strapiService.getFeedbackLink(
+                data.data.slug,
+              )
+              if (feedbackLink) {
+                response[key as keyof SendEmailVariablesDto] = feedbackLink
+              }
 
-          case MailgunConfigVariableType.STRING:
-            response[key as keyof SendEmailVariablesDto] = val.value
+              break
+            }
 
-            break
+            case MailgunConfigVariableType.STRING:
+              response[key as keyof SendEmailVariablesDto] = val.value
 
-          default:
-            response[key as keyof SendEmailVariablesDto] = undefined
-          // No default
-        }
-      },
+              break
+
+            default:
+              response[key as keyof SendEmailVariablesDto] = undefined
+            // No default
+          }
+        },
+      ),
     )
     return response
   }
@@ -99,10 +104,10 @@ export default class MailgunHelper {
     )
 
     if (!response.version?.template) {
-      throw this.throwerErrorGuard.NotFoundException(
-        MailgunErrorsEnum.TEMPLATE_NOT_FOUND,
-        `${MailgunErrorsResponseEnum.TEMPLATE_NOT_FOUND}: ${templateName}`,
-      )
+      throw this.errorFactoryService.NotFoundException({
+        errorEnum: MailgunErrorsEnum.TEMPLATE_NOT_FOUND,
+        message: `${MailgunErrorsResponseEnum.TEMPLATE_NOT_FOUND}: ${templateName}`,
+      })
     }
 
     const compiledTemplate = Handlebars.compile(response.version.template)

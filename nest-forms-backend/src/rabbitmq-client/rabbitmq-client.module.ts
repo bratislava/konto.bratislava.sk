@@ -1,10 +1,10 @@
+import { LineLoggerService } from '@bratislava/log-nest'
 import { AmqpConnection, RabbitMQModule } from '@golevelup/nestjs-rabbitmq'
 import { Module } from '@nestjs/common'
 
 import BaConfigModule from '../config/ba-config.module'
 import BaConfigService from '../config/ba-config.service'
 import { RABBIT_FORM_DELIVERY } from '../utils/constants'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import RabbitmqClientService from './rabbitmq-client.service'
 
 @Module({
@@ -23,7 +23,7 @@ import RabbitmqClientService from './rabbitmq-client.service'
           },
         ],
         connectionInitOptions: { wait: false },
-        logger: new LineLoggerSubservice('RabbitMQ'),
+        logger: new LineLoggerService('RabbitMQ'),
       }),
       inject: [BaConfigService],
     }),
@@ -32,17 +32,19 @@ import RabbitmqClientService from './rabbitmq-client.service'
   exports: [RabbitmqClientService, RabbitMQModule],
 })
 export default class RabbitmqClientModule {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private rabbitmqClientService: RabbitmqClientService,
     private amqpConnection: AmqpConnection,
     private baConfigService: BaConfigService,
+    private readonly logger: LineLoggerService,
   ) {
-    this.rabbitmqClientService = new RabbitmqClientService(amqpConnection)
-    this.logger = new LineLoggerSubservice('RabbitmqClientModule')
-    this.logger.log(
-      `Setting up rabbit mq connection to: ${this.baConfigService.rabbitMq.uri}`,
+    this.rabbitmqClientService = new RabbitmqClientService(
+      amqpConnection,
+      new LineLoggerService(RabbitmqClientService.name),
     )
+    // only the host is logged, the uri contains credentials
+    const host =
+      URL.parse(this.baConfigService.rabbitMq.uri)?.host ?? '<unparsable uri>'
+    this.logger.log(`Setting up rabbit mq connection to: ${host}`)
   }
 }

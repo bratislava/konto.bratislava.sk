@@ -116,6 +116,22 @@ If you don't have Passbolt access, ask around on the konto.bratislava.sk team.
 
 By creating a PR, GitHub actions will run validation pipelines and Dockerized build, lint and test pipelines.
 
+## Email templates (Mailgun)
+
+`nest-city-account` and `nest-forms-backend` send emails from templates stored in Mailgun (EU region). There are two Mailgun domains:
+
+- `digital.bratislava.sk` – **production**, used only by the `production` cluster.
+- `test.bratislava.sk` – used by the `development` and `staging` clusters.
+
+The services pick the domain from `MAILGUN_DOMAIN` in `<service>/.env.deploy.<cluster>`.
+
+The two domains **must stay in sync**. To change a template:
+
+1. Make the change in `test.bratislava.sk` and test it on dev/staging.
+2. Once it is approved, apply exactly the same change to `digital.bratislava.sk`.
+
+Do not edit templates directly in `digital.bratislava.sk`. Do not leave a tested change in `test.bratislava.sk` unpublished either: either publish it to `digital.bratislava.sk` or revert it in `test.bratislava.sk`. A template that exists, or differs, in only one domain means dev/staging no longer tests what production sends.
+
 ## Docker
 
 A few things here differ from a typical per-service Docker setup:
@@ -129,6 +145,7 @@ A few things here differ from a typical per-service Docker setup:
 - Two Dockerfile checks are skipped for every image, via a `BUILDKIT_DOCKERFILE_CHECK` build arg on the shared bake target instead of a `# check=skip=` directive in each Dockerfile. `docker-bake.hcl` says which and why.
 - CI runs the Turborepo cache server on the runner's loopback, so builds reach it at `127.0.0.1` — no published port, no proxy, no `host.docker.internal` (a Docker Desktop convenience that does not exist on Linux runners). Three pieces have to line up for that: the `network=host` buildx driver option, `network = "host"` on the bake target, and `allow: network.host` on each bake step to grant the gated entitlement. Missing any one of them yields a silent cache miss, not an error.
 - Tests and lint run inside `docker build` as their own stages, not as runner steps, so an unchanged service short-circuits on the layer cache instead of re-running them.
+- Each Nest service's `verify-bootstrap` stage runs its `verify-bootstrap` script on the prod-only runner image: NestJS preview mode resolves the whole DI graph without instantiating providers, catching DI errors and runtime packages left in `devDependencies`. `.env.example` has to pass env validation for it.
 - CI bake steps pass `source: .` so the build uses the files already checked out on the runner. Without it, `docker/bake-action` has Docker download the whole repository again from GitHub, including every tag. That adds about 30 seconds to each build for no benefit.
 - Next.js images bake their environment in, so they are built per cluster. Backend images are environment-agnostic and built once per commit.
 

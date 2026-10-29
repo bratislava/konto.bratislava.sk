@@ -100,6 +100,32 @@ export const useGetContext = () => {
     },
   })
 
+  const { mutate: deleteConceptMutate, isPending: deleteConceptIsPending } = useMutation({
+    mutationFn: () =>
+      formsClient.formsControllerDeleteForm(formId, { authStrategy: 'authOrGuestWithToken' }),
+    networkMode: 'always',
+    onMutate: () => {
+      showToast({ message: t('useFormExportImport.info.conceptDelete'), variant: 'info' })
+    },
+    onSuccess: () => {
+      closeToasts()
+      showToast({ message: t('useFormExportImport.success.conceptDelete'), variant: 'success' })
+      turnOffLeaveProtection()
+      // My applications page is available only for signed-in users.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      router.push(isSignedIn ? ROUTES.MY_APPLICATIONS : ROUTES.HOME)
+
+      // a promise returned is awaited before toggling the isLoading
+      // we use this to prevent re-enabling the button - the promise never resolves, the state is cleared by the redirect
+      return new Promise(() => {})
+    },
+    onError: (error) => {
+      logger.error(error)
+      closeToasts()
+      showToast({ message: t('useFormExportImport.errors.conceptDelete'), variant: 'error' })
+    },
+  })
+
   const migrateForm = () => {
     if (migrateFormIsPending) {
       return
@@ -275,19 +301,12 @@ export const useGetContext = () => {
     saveConceptMutate({ fromModal })
   }
 
-  const deleteConcept = async () => {
-    showToast({ message: t('useFormExportImport.info.conceptDelete'), variant: 'info' })
-    try {
-      await formsClient.formsControllerDeleteForm(formId, {
-        authStrategy: 'authOrGuestWithToken',
-      })
-      closeToasts()
-      showToast({ message: t('useFormExportImport.success.conceptDelete'), variant: 'success' })
-      await router.push(ROUTES.MY_APPLICATIONS)
-    } catch (error) {
-      logger.error(error)
-      showToast({ message: t('useFormExportImport.errors.conceptDelete'), variant: 'error' })
+  const deleteConcept = () => {
+    if (deleteConceptIsPending) {
+      return
     }
+
+    deleteConceptMutate()
   }
 
   return {
@@ -305,6 +324,7 @@ export const useGetContext = () => {
     handleImportXml,
     handleImportJson,
     deleteConcept,
+    deleteConceptIsPending,
   }
 }
 

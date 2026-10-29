@@ -1,13 +1,6 @@
 import type { iframeResizer } from '@iframe-resizer/child'
 import Script from 'next/script'
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { createContext, PropsWithChildren, useContext, useEffect, useRef, useState } from 'react'
 
 import { environment } from '@/src/environment'
 

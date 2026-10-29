@@ -16,7 +16,7 @@ COPY . .
 ARG TURBO_VERSION
 RUN pnpm dlx turbo@${TURBO_VERSION} prune city-account-next --docker
 
-FROM base AS builder
+FROM base AS builder-deps
 COPY --from=prepare /app/out/json/ .
 RUN pnpm install --frozen-lockfile
 COPY --from=prepare /app/out/full/ .
@@ -30,6 +30,10 @@ ENV TURBO_TEAM=$TURBO_TEAM
 ARG TURBO_TOKEN
 ENV TURBO_TOKEN=$TURBO_TOKEN
 
+FROM builder-deps AS lint
+RUN pnpm turbo run lint --filter=city-account-next
+
+FROM builder-deps AS builder
 ARG NEXT_BUILD_ENV
 ENV NEXT_BUILD_ENV=$NEXT_BUILD_ENV
 RUN cp "next/.env.ci-build.$NEXT_BUILD_ENV" next/.env.production.local

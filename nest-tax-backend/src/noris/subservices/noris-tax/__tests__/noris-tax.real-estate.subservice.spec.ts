@@ -1,12 +1,14 @@
 import {
   ErrorEnum,
   ErrorFactoryService,
-  LineLoggerSubservice,
+  LineLoggerService,
 } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum } from 'openapi-clients/city-account'
+import type { Mock, Mocked } from 'vitest'
 
 import prismaMock from '../../../../../test/singleton'
 import { createTestTax } from '../../../../__tests__/factories/tax.factory'
@@ -16,6 +18,7 @@ import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import BaConfigService from '../../../../config/ba-config.service'
 import {
   TaxAdministrator,
+  TaxImportStatus,
   TaxPayer,
   TaxType,
 } from '../../../../generated/prisma/client'
@@ -25,6 +28,7 @@ import { generateItemizedRealEstateTaxDetail } from '../../../../tax/utils/helpe
 import { createTestingRealEstateTaxMock } from '../../../../tax/utils/testing-tax-mock'
 import { getTaxDefinitionByType } from '../../../../tax-definitions/getTaxDefinitionByType'
 import { TaxDefinition } from '../../../../tax-definitions/taxDefinitionsTypes'
+import alertReporting from '../../../../utils/constants/error.alerts'
 import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../../utils/subservices/database.subservice'
 import { TaxWithTaxPayer } from '../../../../utils/types/types.prisma'
@@ -36,28 +40,33 @@ import { NorisPaymentSubservice } from '../../noris-payment.subservice'
 import { NorisValidatorSubservice } from '../../noris-validator.subservice'
 import { NorisTaxRealEstateSubservice } from '../noris-tax.real-estate.subservice'
 
-jest.mock('../../../../tax-definitions/getTaxDefinitionByType', () => ({
-  getTaxDefinitionByType: jest.fn(),
+vi.mock('../../../../tax-definitions/getTaxDefinitionByType', () => ({
+  getTaxDefinitionByType: vi.fn(),
 }))
 
-const mockPLimitFn = jest.fn((fn: () => unknown) => fn())
-jest.mock('p-limit', () => () => mockPLimitFn)
+const { mockPLimitFn } = vi.hoisted(() => ({
+  mockPLimitFn: vi.fn((fn: () => unknown) => fn()),
+}))
+vi.mock('p-limit', () => ({ default: () => mockPLimitFn }))
 
-jest.mock('mssql', () => ({
-  Request: jest.fn().mockImplementation(() => ({
-    input: jest.fn(),
-    query: jest.fn().mockResolvedValue({ recordset: [] }),
-  })),
-  VarChar: jest.fn(),
-  Int: jest.fn(),
+vi.mock('mssql', () => ({
+  Request: vi.fn().mockImplementation(function () {
+    return {
+      input: vi.fn(),
+      query: vi.fn().mockResolvedValue({ recordset: [] }),
+    }
+  }),
+  VarChar: vi.fn(),
+  Int: vi.fn(),
 }))
 
 describe('NorisTaxRealEstateSubservice', () => {
   let service: NorisTaxRealEstateSubservice
-  let connectionService: jest.Mocked<NorisConnectionSubservice>
-  let cityAccountSubservice: jest.Mocked<CityAccountSubservice>
-  let paymentSubservice: jest.Mocked<NorisPaymentSubservice>
-  let errorFactoryService: jest.Mocked<ErrorFactoryService>
+  let connectionService: Mocked<NorisConnectionSubservice>
+  let cityAccountSubservice: Mocked<CityAccountSubservice>
+  let paymentSubservice: Mocked<NorisPaymentSubservice>
+  const errorFactoryService = new ErrorFactoryService({ alertReporting })
+  let logger: LineLoggerService
 
   const mockNorisData: NorisRealEstateTax[] = [
     {
@@ -150,7 +159,7 @@ describe('NorisTaxRealEstateSubservice', () => {
   const mockTaxDefinition = {
     type: TaxType.DZN,
     isUnique: true,
-    mapNorisToTaxDetailData: jest.fn().mockReturnValue([
+    mapNorisToTaxDetailData: vi.fn().mockReturnValue([
       {
         type: AreaTypesEnum.APARTMENT,
         amount: 30_000,
@@ -169,7 +178,10 @@ describe('NorisTaxRealEstateSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        LineLoggerSubservice,
+        {
+          provide: LineLoggerService,
+          useValue: createMock<LineLoggerService>(),
+        },
         NorisTaxRealEstateSubservice,
         {
           provide: NorisConnectionSubservice,
@@ -183,10 +195,7 @@ describe('NorisTaxRealEstateSubservice', () => {
           provide: NorisPaymentSubservice,
           useValue: createMock<NorisPaymentSubservice>(),
         },
-        {
-          provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>(),
-        },
+        { provide: ErrorFactoryService, useValue: errorFactoryService },
         {
           provide: BloomreachService,
           useValue: createMock<BloomreachService>(),
@@ -214,27 +223,14 @@ describe('NorisTaxRealEstateSubservice', () => {
     connectionService = module.get(NorisConnectionSubservice)
     cityAccountSubservice = module.get(CityAccountSubservice)
     paymentSubservice = module.get(NorisPaymentSubservice)
-    errorFactoryService = module.get(ErrorFactoryService)
-    ;(getTaxDefinitionByType as jest.Mock).mockReturnValue(mockTaxDefinition)
+    logger = module.get(LineLoggerService)
+    ;(getTaxDefinitionByType as Mock).mockReturnValue(mockTaxDefinition)
 
-    Object.defineProperty(service, 'logger', {
-      value: {
-        log: jest.fn(),
-        error: jest.fn(),
-        warn: jest.fn(),
-      },
-      writable: true,
-    })
-
-    jest
-      .spyOn(service['norisValidatorSubservice'], 'validateNorisData')
-      .mockImplementation((schema, data) =>
-        data.map((item) => schema.parse(item)),
-      )
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
+    vi.mocked(
+      service['norisValidatorSubservice'].validateNorisData,
+    ).mockImplementation((schema, data) =>
+      data.map((item) => schema.parse(item)),
+    )
   })
 
   describe('constructor', () => {
@@ -246,19 +242,19 @@ describe('NorisTaxRealEstateSubservice', () => {
   describe('getTaxDataByYearAndBirthNumber', () => {
     it('should fetch tax data from Noris successfully', async () => {
       const mockRequest = {
-        input: jest.fn(),
-        query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
+        input: vi.fn(),
+        query: vi.fn().mockResolvedValue({ recordset: mockNorisData }),
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      jest.mocked(mssql.Request).mockImplementation(() =>
-        createMock<mssql.Request>({
+      vi.mocked(mssql.Request).mockImplementation(function () {
+        return createMock<mssql.Request>({
           input: mockRequest.input,
           query: mockRequest.query,
-        }),
-      )
+        })
+      })
 
       const result = await service['getTaxDataByYearAndBirthNumber'](2023, [
         '123456/7890',
@@ -283,24 +279,24 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       await expect(
         service['getTaxDataByYearAndBirthNumber'](2023, ['123456/7890']),
-      ).rejects.toThrow('Database connection failed')
+      ).rejects.toThrow(mockError)
     })
 
     it('should handle multiple birth numbers correctly', async () => {
       const mockRequest = {
-        input: jest.fn(),
-        query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
+        input: vi.fn(),
+        query: vi.fn().mockResolvedValue({ recordset: mockNorisData }),
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      jest.mocked(mssql.Request).mockImplementation(() =>
-        createMock<mssql.Request>({
+      vi.mocked(mssql.Request).mockImplementation(function () {
+        return createMock<mssql.Request>({
           input: mockRequest.input,
           query: mockRequest.query,
-        }),
-      )
+        })
+      })
 
       const birthNumbers = ['123456/7890', '987654/3210']
       await service['getTaxDataByYearAndBirthNumber'](2023, birthNumbers)
@@ -323,15 +319,15 @@ describe('NorisTaxRealEstateSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      jest.mocked(mssql.Request).mockImplementation(() =>
-        createMock<mssql.Request>({
-          input: jest.fn(),
-          query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
-        }),
-      )
-      jest
-        .spyOn(service, 'processNorisTaxData')
-        .mockResolvedValue({ birthNumbers: ['123456/7890'] })
+      vi.mocked(mssql.Request).mockImplementation(function () {
+        return createMock<mssql.Request>({
+          input: vi.fn(),
+          query: vi.fn().mockResolvedValue({ recordset: mockNorisData }),
+        })
+      })
+      vi.spyOn(service, 'processNorisTaxData').mockResolvedValue({
+        birthNumbers: ['123456/7890'],
+      })
 
       prismaMock.taxPayer.findMany.mockResolvedValue([
         { birthNumber: '123456/7890', id: 123_456 } as TaxPayer,
@@ -381,9 +377,9 @@ describe('NorisTaxRealEstateSubservice', () => {
       prismaMock.tax.upsert.mockResolvedValue(
         createTestTax({ id: 1, order: 1, taxPayer, isCancelled: false }),
       )
-      jest
-        .spyOn(service['bloomreachService'], 'trackEventTax')
-        .mockResolvedValue(true)
+      vi.mocked(service['bloomreachService'].trackEventTax).mockResolvedValue(
+        true,
+      )
     })
 
     it('should process Noris tax data and return birth numbers', async () => {
@@ -432,6 +428,43 @@ describe('NorisTaxRealEstateSubservice', () => {
       expect(result).toEqual({ birthNumbers: [] })
     })
 
+    it('should not update attempts when the tax is imported successfully', async () => {
+      await service.processNorisTaxData(mockNorisData, 2023, {
+        suppressEmail: true,
+      })
+
+      // SUCCESS is set in the insert transaction (upsert), not via updateMany
+      expect(prismaMock.taxImportAttempt.updateMany).not.toHaveBeenCalled()
+    })
+
+    it.each([
+      { mode: 'import', prepareOnly: false },
+      { mode: 'prepare', prepareOnly: true },
+    ])(
+      'should mark attempts as SUCCESS when the tax is already in the database ($mode)',
+      async ({ prepareOnly }) => {
+        prismaMock.tax.findMany.mockResolvedValue([
+          createTestTax({ taxPayer: { birthNumber: '123456/7890' } }),
+        ])
+        prismaMock.taxPayer.findMany.mockResolvedValue([])
+
+        await service.processNorisTaxData(mockNorisData, 2023, {
+          prepareOnly,
+          suppressEmail: true,
+        })
+
+        expect(prismaMock.taxImportAttempt.updateMany).toHaveBeenCalledWith({
+          where: {
+            taxPayer: { birthNumber: { in: ['123456/7890'] } },
+            year: 2023,
+            taxType: TaxType.DZN,
+            status: { not: TaxImportStatus.SUCCESS },
+          },
+          data: { status: TaxImportStatus.SUCCESS },
+        })
+      },
+    )
+
     it('should handle empty Noris data', async () => {
       const result = await service.processNorisTaxData([], 2023, {
         suppressEmail: true,
@@ -442,6 +475,138 @@ describe('NorisTaxRealEstateSubservice', () => {
       )
       expect(result).toEqual({ birthNumbers: [] })
     })
+
+    it('should update existing attempts to READY_TO_IMPORT in prepare mode', async () => {
+      prismaMock.taxPayer.findMany.mockResolvedValue([
+        createTestTaxPayer({ id: 1, birthNumber: '123456/7890' }),
+      ])
+
+      const result = await service.processNorisTaxData(mockNorisData, 2023, {
+        prepareOnly: true,
+        suppressEmail: true,
+      })
+
+      expect(prismaMock.taxImportAttempt.createMany).not.toHaveBeenCalled()
+      expect(prismaMock.taxImportAttempt.updateMany).toHaveBeenCalledWith({
+        where: {
+          taxPayerId: { in: [1] },
+          year: 2023,
+          taxType: TaxType.DZN,
+          status: {
+            in: [TaxImportStatus.FAILED, TaxImportStatus.NOT_FOUND],
+          },
+        },
+        data: { status: TaxImportStatus.READY_TO_IMPORT },
+      })
+      expect(cityAccountSubservice.getUserDataAdminBatch).not.toHaveBeenCalled()
+      expect(result).toEqual({ birthNumbers: ['123456/7890'] })
+    })
+  })
+
+  describe('markAlreadyImportedAsSuccess', () => {
+    const makeNorisRecord = (
+      birthNumber: string,
+      variableSymbol: string,
+    ): NorisRealEstateTax => ({
+      ...mockNorisData[0],
+      ICO_RC: birthNumber,
+      variabilny_symbol: variableSymbol,
+    })
+
+    const taxA = makeNorisRecord('111111/1111', 'VS-A')
+    const taxB = makeNorisRecord('222222/2222', 'VS-B')
+    const taxC = makeNorisRecord('333333/3333', 'VS-C')
+    // Same tax payer with multiple taxes (e.g. KO with more variable symbols)
+    const taxD1 = makeNorisRecord('444444/4444', 'VS-D1')
+    const taxD2 = makeNorisRecord('444444/4444', 'VS-D2')
+
+    it.each([
+      {
+        name: 'all taxes from Noris are already in the database',
+        norisData: [taxA, taxB, taxC],
+        norisDataNotInDatabase: [],
+        expectedBirthNumbers: ['111111/1111', '222222/2222', '333333/3333'],
+      },
+      {
+        name: 'some tax payers still have missing taxes',
+        norisData: [taxA, taxB, taxC],
+        norisDataNotInDatabase: [taxB],
+        expectedBirthNumbers: ['111111/1111', '333333/3333'],
+      },
+      {
+        name: 'all but one tax payer still have missing taxes',
+        norisData: [taxA, taxB, taxC],
+        norisDataNotInDatabase: [taxA, taxC],
+        expectedBirthNumbers: ['222222/2222'],
+      },
+      {
+        name: 'tax payer with multiple taxes, all in the database',
+        norisData: [taxA, taxD1, taxD2],
+        norisDataNotInDatabase: [taxA],
+        expectedBirthNumbers: ['444444/4444'],
+      },
+      {
+        name: 'tax payer with multiple taxes, one missing',
+        norisData: [taxA, taxD1, taxD2],
+        norisDataNotInDatabase: [taxD2],
+        expectedBirthNumbers: ['111111/1111'],
+      },
+      {
+        name: 'missing record not present in Noris data',
+        norisData: [taxA, taxB],
+        norisDataNotInDatabase: [taxC],
+        expectedBirthNumbers: ['111111/1111', '222222/2222'],
+      },
+    ])(
+      'should mark as SUCCESS only tax payers without missing taxes when $name',
+      async ({ norisData, norisDataNotInDatabase, expectedBirthNumbers }) => {
+        await service['markAlreadyImportedAsSuccess'](
+          norisData,
+          norisDataNotInDatabase,
+          2023,
+        )
+
+        expect(prismaMock.taxImportAttempt.updateMany).toHaveBeenCalledTimes(1)
+        expect(prismaMock.taxImportAttempt.updateMany).toHaveBeenCalledWith({
+          where: {
+            taxPayer: { birthNumber: { in: expectedBirthNumbers } },
+            year: 2023,
+            taxType: TaxType.DZN,
+            status: { not: TaxImportStatus.SUCCESS },
+          },
+          data: { status: TaxImportStatus.SUCCESS },
+        })
+      },
+    )
+
+    it.each([
+      {
+        name: 'Noris data is empty',
+        norisData: [],
+        norisDataNotInDatabase: [],
+      },
+      {
+        name: 'all taxes are missing in the database',
+        norisData: [taxA, taxB],
+        norisDataNotInDatabase: [taxA, taxB],
+      },
+      {
+        name: 'every tax payer has at least one missing tax',
+        norisData: [taxA, taxD1, taxD2],
+        norisDataNotInDatabase: [taxA, taxD1],
+      },
+    ])(
+      'should not update attempts when $name',
+      async ({ norisData, norisDataNotInDatabase }) => {
+        await service['markAlreadyImportedAsSuccess'](
+          norisData,
+          norisDataNotInDatabase,
+          2023,
+        )
+
+        expect(prismaMock.taxImportAttempt.updateMany).not.toHaveBeenCalled()
+      },
+    )
   })
 
   describe('getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords', () => {
@@ -466,33 +631,33 @@ describe('NorisTaxRealEstateSubservice', () => {
       prismaMock.$transaction.mockImplementation(async (callback: unknown) => {
         const mockTx = {
           taxInstallment: {
-            upsert: jest.fn().mockResolvedValue({}),
-            deleteMany: jest.fn().mockResolvedValue({}),
+            upsert: vi.fn().mockResolvedValue({}),
+            deleteMany: vi.fn().mockResolvedValue({}),
           },
           taxDetail: {
-            deleteMany: jest.fn().mockResolvedValue({}),
+            deleteMany: vi.fn().mockResolvedValue({}),
           },
           taxAdministrator: {
-            upsert: jest.fn().mockResolvedValue({ id: 1 }),
+            upsert: vi.fn().mockResolvedValue({ id: 1 }),
           },
           taxPayer: {
-            upsert: jest
+            upsert: vi
               .fn()
               .mockResolvedValue({ id: 1, birthNumber: '123456/7890' }),
           },
           taxPayerTaxAdministrator: {
-            upsert: jest.fn().mockResolvedValue({}),
+            upsert: vi.fn().mockResolvedValue({}),
           },
           tax: {
-            findFirst: jest.fn().mockResolvedValue(null),
-            upsert: jest.fn().mockResolvedValue({
+            findFirst: vi.fn().mockResolvedValue(null),
+            upsert: vi.fn().mockResolvedValue({
               id: 1,
               taxPayer: { id: 1 },
               isCancelled: false,
             }),
           },
           taxImportAttempt: {
-            upsert: jest.fn().mockResolvedValue({}),
+            upsert: vi.fn().mockResolvedValue({}),
           },
         }
         const runTransaction = callback as (tx: typeof mockTx) => Promise<void>
@@ -504,12 +669,12 @@ describe('NorisTaxRealEstateSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      jest.mocked(mssql.Request).mockImplementation(() =>
-        createMock<mssql.Request>({
-          input: jest.fn(),
-          query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
-        }),
-      )
+      vi.mocked(mssql.Request).mockImplementation(function () {
+        return createMock<mssql.Request>({
+          input: vi.fn(),
+          query: vi.fn().mockResolvedValue({ recordset: mockNorisData }),
+        })
+      })
 
       const result =
         await service.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
@@ -547,25 +712,17 @@ describe('NorisTaxRealEstateSubservice', () => {
       const mockError = new Error('Noris connection failed')
       connectionService.withConnection.mockRejectedValue(mockError)
 
-      errorFactoryService.InternalServerErrorException.mockImplementation(
-        () => {
-          throw mockError
-        },
-      )
-
       await expect(
         service.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
           2023,
           ['123456/7890'],
         ),
-      ).rejects.toThrow()
-
-      expect(
-        errorFactoryService.InternalServerErrorException,
-      ).toHaveBeenCalledWith({
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
         message: 'Failed to get taxes from Noris',
         console: { year: 2023, taxType: TaxType.DZN, batchSize: 1 },
+        alert: true,
         error: mockError,
       })
     })
@@ -575,12 +732,12 @@ describe('NorisTaxRealEstateSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      jest.mocked(mssql.Request).mockImplementation(() =>
-        createMock<mssql.Request>({
-          input: jest.fn(),
-          query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
-        }),
-      )
+      vi.mocked(mssql.Request).mockImplementation(function () {
+        return createMock<mssql.Request>({
+          input: vi.fn(),
+          query: vi.fn().mockResolvedValue({ recordset: mockNorisData }),
+        })
+      })
 
       const result =
         await service.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
@@ -592,19 +749,18 @@ describe('NorisTaxRealEstateSubservice', () => {
     })
 
     it('should handle database transaction errors gracefully', async () => {
-      const mockLogger = jest.spyOn(service['logger'], 'error')
       const mockError = new Error('Transaction failed')
 
       prismaMock.$transaction.mockRejectedValue(mockError)
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      jest.mocked(mssql.Request).mockImplementation(() =>
-        createMock<mssql.Request>({
-          input: jest.fn(),
-          query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
-        }),
-      )
+      vi.mocked(mssql.Request).mockImplementation(function () {
+        return createMock<mssql.Request>({
+          input: vi.fn(),
+          query: vi.fn().mockResolvedValue({ recordset: mockNorisData }),
+        })
+      })
 
       const result =
         await service.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
@@ -612,7 +768,13 @@ describe('NorisTaxRealEstateSubservice', () => {
           ['123456/7890'],
         )
 
-      expect(mockLogger).toHaveBeenCalled()
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        expect.toMatchLogNestError({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to update tax in database.',
+          error: mockError,
+        }),
+      )
       expect(result).toEqual({ updated: 0 })
     })
   })
@@ -627,19 +789,17 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       await expect(
         service['getTaxDataByYearAndBirthNumber'](2023, ['123456/7890']),
-      ).rejects.toThrow('Connection failed')
+      ).rejects.toThrow(mockError)
     })
 
     it('should handle non-Error objects in connection failures', async () => {
       const mockError = new Error('String error')
 
-      jest
-        .spyOn(connectionService, 'withConnection')
-        .mockRejectedValue(mockError)
+      vi.mocked(connectionService.withConnection).mockRejectedValue(mockError)
 
       await expect(
         service['getTaxDataByYearAndBirthNumber'](2023, ['123456/7890']),
-      ).rejects.toThrow('String error')
+      ).rejects.toThrow(mockError)
     })
   })
 
@@ -691,33 +851,33 @@ describe('NorisTaxRealEstateSubservice', () => {
       prismaMock.$transaction.mockImplementation(async (callback: unknown) => {
         const mockTx = {
           taxInstallment: {
-            upsert: jest.fn().mockResolvedValue({}),
-            deleteMany: jest.fn().mockResolvedValue({}),
+            upsert: vi.fn().mockResolvedValue({}),
+            deleteMany: vi.fn().mockResolvedValue({}),
           },
           taxDetail: {
-            deleteMany: jest.fn().mockResolvedValue({}),
+            deleteMany: vi.fn().mockResolvedValue({}),
           },
           taxAdministrator: {
-            upsert: jest.fn().mockResolvedValue({ id: 1 }),
+            upsert: vi.fn().mockResolvedValue({ id: 1 }),
           },
           taxPayer: {
-            upsert: jest
+            upsert: vi
               .fn()
               .mockResolvedValue({ id: 1, birthNumber: '123456/7890' }),
           },
           taxPayerTaxAdministrator: {
-            upsert: jest.fn().mockResolvedValue({}),
+            upsert: vi.fn().mockResolvedValue({}),
           },
           tax: {
-            findFirst: jest.fn().mockResolvedValue(null),
-            upsert: jest.fn().mockResolvedValue({
+            findFirst: vi.fn().mockResolvedValue(null),
+            upsert: vi.fn().mockResolvedValue({
               id: 1,
               taxPayer: { id: 1 },
               isCancelled: false,
             }),
           },
           taxImportAttempt: {
-            upsert: jest.fn().mockResolvedValue({}),
+            upsert: vi.fn().mockResolvedValue({}),
           },
         }
         const runTransaction = callback as (tx: typeof mockTx) => Promise<void>
@@ -729,12 +889,12 @@ describe('NorisTaxRealEstateSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      jest.mocked(mssql.Request).mockImplementation(() =>
-        createMock<mssql.Request>({
-          input: jest.fn(),
-          query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
-        }),
-      )
+      vi.mocked(mssql.Request).mockImplementation(function () {
+        return createMock<mssql.Request>({
+          input: vi.fn(),
+          query: vi.fn().mockResolvedValue({ recordset: mockNorisData }),
+        })
+      })
 
       const result =
         await service.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
@@ -749,12 +909,12 @@ describe('NorisTaxRealEstateSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      jest.mocked(mssql.Request).mockImplementation(() =>
-        createMock<mssql.Request>({
-          input: jest.fn(),
-          query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
-        }),
-      )
+      vi.mocked(mssql.Request).mockImplementation(function () {
+        return createMock<mssql.Request>({
+          input: vi.fn(),
+          query: vi.fn().mockResolvedValue({ recordset: mockNorisData }),
+        })
+      })
       prismaMock.$transaction.mockRejectedValue(new Error('Test error'))
 
       const result =
@@ -778,7 +938,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
         createTestingTaxMock: createTestingRealEstateTaxMock,
         iban: 'SK3175000000000025747653',
-        mapNorisToTaxDetailData: jest.fn().mockReturnValue([
+        mapNorisToTaxDetailData: vi.fn().mockReturnValue([
           {
             type: AreaTypesEnum.GROUND,
             amount: 30_000,
@@ -805,7 +965,7 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       beforeEach(() => {
         const qrCodeService = service['qrCodeService']
-        qrCodeService.createQrCode = jest.fn().mockResolvedValue('qr-code')
+        qrCodeService.createQrCode = vi.fn().mockResolvedValue('qr-code')
 
         prismaMock.taxAdministrator.upsert.mockResolvedValue({
           id: 1,
@@ -947,7 +1107,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
         createTestingTaxMock: createTestingRealEstateTaxMock,
         iban: 'SK3175000000000025747653',
-        mapNorisToTaxDetailData: jest.fn().mockReturnValue([
+        mapNorisToTaxDetailData: vi.fn().mockReturnValue([
           {
             type: AreaTypesEnum.GROUND,
             amount: 30_000,
@@ -978,42 +1138,47 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       beforeEach(() => {
         const qrCodeService = service['qrCodeService']
-        qrCodeService.createQrCode = jest.fn().mockResolvedValue('qr-code')
+        qrCodeService.createQrCode = vi.fn().mockResolvedValue('qr-code')
 
         bloomreachService = service['bloomreachService']
-        bloomreachService.trackEventTax = jest.fn().mockResolvedValue(true)
+        bloomreachService.trackEventTax = vi.fn().mockResolvedValue(true)
 
         prismaMock.$transaction.mockImplementation(
           async (callback: unknown) => {
             const mockTx = {
               taxAdministrator: {
-                upsert: jest.fn().mockResolvedValue({
+                upsert: vi.fn().mockResolvedValue({
                   id: 1,
                   name: 'Test Administrator',
                 }),
               },
               taxPayer: {
-                upsert: jest.fn().mockResolvedValue({
+                upsert: vi.fn().mockResolvedValue({
                   id: 1,
                   birthNumber: '123456/7890',
                 }),
               },
               taxPayerTaxAdministrator: {
-                upsert: jest.fn().mockResolvedValue({}),
+                upsert: vi.fn().mockResolvedValue({}),
               },
               tax: {
-                upsert: jest.fn().mockResolvedValue({
+                findFirst: vi.fn().mockResolvedValue(null),
+                upsert: vi.fn().mockResolvedValue({
                   id: 1,
                   order: 1,
                   taxPayer: { id: 1 },
+                  isCancelled: false,
                 }),
               },
               taxInstallment: {
-                upsert: jest.fn().mockResolvedValue({}),
-                deleteMany: jest.fn().mockResolvedValue({}),
+                upsert: vi.fn().mockResolvedValue({}),
+                deleteMany: vi.fn().mockResolvedValue({}),
               },
               taxDetail: {
-                createMany: jest.fn().mockResolvedValue({}),
+                createMany: vi.fn().mockResolvedValue({}),
+              },
+              taxImportAttempt: {
+                upsert: vi.fn().mockResolvedValue({}),
               },
             }
             const runTransaction = callback as (
@@ -1031,23 +1196,23 @@ describe('NorisTaxRealEstateSubservice', () => {
           async (callback: unknown) => {
             const mockTx = {
               taxAdministrator: {
-                upsert: jest.fn().mockResolvedValue({
+                upsert: vi.fn().mockResolvedValue({
                   id: 1,
                   name: 'Test Administrator',
                 }),
               },
               taxPayer: {
-                upsert: jest.fn().mockResolvedValue({
+                upsert: vi.fn().mockResolvedValue({
                   id: 1,
                   birthNumber: '123456/7890',
                 }),
               },
               taxPayerTaxAdministrator: {
-                upsert: jest.fn().mockResolvedValue({}),
+                upsert: vi.fn().mockResolvedValue({}),
               },
               tax: {
-                findFirst: jest.fn().mockResolvedValue(null),
-                upsert: jest.fn().mockResolvedValue({
+                findFirst: vi.fn().mockResolvedValue(null),
+                upsert: vi.fn().mockResolvedValue({
                   id: 1,
                   order: 1,
                   taxPayer: { id: 1 },
@@ -1055,14 +1220,14 @@ describe('NorisTaxRealEstateSubservice', () => {
                 }),
               },
               taxInstallment: {
-                upsert: jest.fn().mockResolvedValue({}),
-                deleteMany: jest.fn().mockResolvedValue({}),
+                upsert: vi.fn().mockResolvedValue({}),
+                deleteMany: vi.fn().mockResolvedValue({}),
               },
               taxDetail: {
-                createMany: jest.fn().mockResolvedValue({}),
+                createMany: vi.fn().mockResolvedValue({}),
               },
               taxImportAttempt: {
-                upsert: jest.fn().mockResolvedValue({}),
+                upsert: vi.fn().mockResolvedValue({}),
               },
             }
             const runTransaction = callback as (
@@ -1115,43 +1280,45 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       it('should handle bloomreach tracking failure', async () => {
         const birthNumbersResult = new Set<string>()
+        const year = 2023
+        const taxPayerId = 1
 
         prismaMock.$transaction.mockImplementation(
           async (callback: unknown) => {
             const mockTx = {
               taxAdministrator: {
-                upsert: jest.fn().mockResolvedValue({
+                upsert: vi.fn().mockResolvedValue({
                   id: 1,
                   name: 'Test Administrator',
                 }),
               },
               taxPayer: {
-                upsert: jest.fn().mockResolvedValue({
+                upsert: vi.fn().mockResolvedValue({
                   id: 1,
                   birthNumber: '123456/7890',
                 }),
               },
               taxPayerTaxAdministrator: {
-                upsert: jest.fn().mockResolvedValue({}),
+                upsert: vi.fn().mockResolvedValue({}),
               },
               tax: {
-                findFirst: jest.fn().mockResolvedValue(null),
-                upsert: jest.fn().mockResolvedValue({
+                findFirst: vi.fn().mockResolvedValue(null),
+                upsert: vi.fn().mockResolvedValue({
                   id: 1,
                   order: 1,
-                  taxPayer: { id: 1 },
+                  taxPayer: { id: taxPayerId },
                   isCancelled: false,
                 }),
               },
               taxInstallment: {
-                upsert: jest.fn().mockResolvedValue({}),
-                deleteMany: jest.fn().mockResolvedValue({}),
+                upsert: vi.fn().mockResolvedValue({}),
+                deleteMany: vi.fn().mockResolvedValue({}),
               },
               taxDetail: {
-                createMany: jest.fn().mockResolvedValue({}),
+                createMany: vi.fn().mockResolvedValue({}),
               },
               taxImportAttempt: {
-                upsert: jest.fn().mockResolvedValue({}),
+                upsert: vi.fn().mockResolvedValue({}),
               },
             }
             const runTransaction = callback as (
@@ -1161,34 +1328,32 @@ describe('NorisTaxRealEstateSubservice', () => {
           },
         )
 
-        bloomreachService.trackEventTax = jest.fn().mockResolvedValue(false)
+        bloomreachService.trackEventTax = vi.fn().mockResolvedValue(false)
 
         await service['processTaxRecordFromNoris'](
           mockTaxDefinitionForProcess,
           birthNumbersResult,
           mockNorisData[0],
           mockUserData,
-          2023,
+          year,
           false,
         )
 
         expect(birthNumbersResult.has('123456/7890')).toBe(false)
-        expect(
-          errorFactoryService.InternalServerErrorException,
-        ).toHaveBeenCalledWith({
-          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-          message:
-            'Error in send Tax data to Bloomreach for tax payer with ID 1 and year 2023',
-          console: expect.objectContaining({
-            taxId: 1,
-            taxType: TaxType.DZN,
-          }) as Record<string, unknown>,
-        })
+        expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+          expect.toMatchLogNestError({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: 'Failed to insert tax to database.',
+            error: expect.toMatchLogNestError({
+              errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+              message: `Error in send Tax data to Bloomreach for tax payer with ID ${taxPayerId} and year ${year}`,
+            }),
+          }),
+        )
       })
 
       it('should handle database transaction errors', async () => {
         const birthNumbersResult = new Set<string>()
-        const mockLogger = jest.spyOn(service['logger'], 'error')
         const mockError = new Error('Database error')
 
         prismaMock.$transaction.mockRejectedValue(mockError)
@@ -1203,15 +1368,20 @@ describe('NorisTaxRealEstateSubservice', () => {
         )
 
         expect(birthNumbersResult.has('123456/7890')).toBe(false)
-        expect(mockLogger).toHaveBeenCalled()
+        expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+          expect.toMatchLogNestError({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: 'Failed to insert tax to database.',
+            error: mockError,
+          }),
+        )
       })
 
       it('should handle bloomreach tracking errors', async () => {
         const birthNumbersResult = new Set<string>()
-        const mockLogger = jest.spyOn(service['logger'], 'error')
         const mockError = new Error('Bloomreach error')
 
-        bloomreachService.trackEventTax = jest.fn().mockRejectedValue(mockError)
+        bloomreachService.trackEventTax = vi.fn().mockRejectedValue(mockError)
 
         await service['processTaxRecordFromNoris'](
           mockTaxDefinitionForProcess,
@@ -1223,7 +1393,13 @@ describe('NorisTaxRealEstateSubservice', () => {
         )
 
         expect(birthNumbersResult.has('123456/7890')).toBe(false)
-        expect(mockLogger).toHaveBeenCalled()
+        expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+          expect.toMatchLogNestError({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: 'Failed to insert tax to database.',
+            error: mockError,
+          }),
+        )
       })
     })
   })

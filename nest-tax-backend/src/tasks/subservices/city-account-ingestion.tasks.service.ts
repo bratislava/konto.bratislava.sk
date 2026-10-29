@@ -1,8 +1,4 @@
-import {
-  ErrorEnum,
-  ErrorFactoryService,
-  LineLoggerSubservice,
-} from '@bratislava/log-nest'
+import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../prisma/prisma.service'

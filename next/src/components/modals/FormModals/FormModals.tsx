@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next/pages'
 
 import Markdown from '@/src/components/formatting/Markdown'
 import { useFormRedirects } from '@/src/components/forms/useFormRedirects'
+import { useFormSend } from '@/src/components/forms/useFormSend'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import IdentityVerificationModal from '@/src/components/modals/IdentityVerificationModal'
 import RegistrationModal from '@/src/components/modals/RegistrationModal'
@@ -57,13 +58,10 @@ export const FormMessageModals = () => {
     setSendConfirmationEidLegalModal,
     sendConfirmationNonAuthenticatedEidModal,
     setSendConfirmationNonAuthenticatedEidModal,
-    sendPending,
     eidSendingModal,
     setEidSendingModal,
     eidSendErrorModal,
     setEidSendErrorModal,
-    sendEidPending,
-    eidSendConfirmationModalIsPending,
     deleteConceptModal,
     setDeleteConceptModal,
     signerIsDeploying,
@@ -71,8 +69,14 @@ export const FormMessageModals = () => {
     xmlImportVersionConfirmationModal,
     setXmlImportVersionConfirmationModal,
   } = useFormModals()
-  const { saveConcept, saveConceptIsPending, migrateForm, migrateFormIsPending } =
-    useFormExportImport()
+  const {
+    saveConcept,
+    saveConceptIsPending,
+    migrateForm,
+    migrateFormIsPending,
+    deleteConceptIsPending,
+  } = useFormExportImport()
+  const { sendFormIsPending, saveConceptAndSendEidIsPending, sendFormEidIsPending } = useFormSend()
   const { verifyIdentity } = useFormRedirects()
 
   const messageModals: (MessageModalProps & { key: FormMessageModalsKeys })[] = [
@@ -191,7 +195,7 @@ export const FormMessageModals = () => {
           variant="solid"
           size="small"
           onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.confirmCallback()}
-          isLoading={sendPending}
+          isLoading={sendFormIsPending}
           loadingText={t('FormModals.sendConfirmationModal.buttonTitleLoading')}
         >
           {t('FormModals.sendConfirmationModal.buttonTitle')}
@@ -202,13 +206,13 @@ export const FormMessageModals = () => {
           variant="outline-soft"
           size="small"
           onPress={() => setSendConfirmationModal({ isOpen: false })}
-          isDisabled={sendPending}
+          isDisabled={sendFormIsPending}
         >
           {t('FormModals.closeButton')}
         </Button>
       ),
-      isDismissable: !sendPending,
-      noCloseButton: sendPending,
+      isDismissable: !sendFormIsPending,
+      noCloseButton: sendFormIsPending,
       children: t('FormModals.sendConfirmationModal.content'),
     },
     {
@@ -228,7 +232,7 @@ export const FormMessageModals = () => {
           onPress={() =>
             sendConfirmationEidModal.isOpen && sendConfirmationEidModal.confirmCallback()
           }
-          isLoading={eidSendConfirmationModalIsPending}
+          isLoading={saveConceptAndSendEidIsPending}
           loadingText={t('FormModals.sendConfirmationEidModal.buttonTitleLoading')}
         >
           {t('FormModals.sendConfirmationEidModal.buttonTitle')}
@@ -239,13 +243,13 @@ export const FormMessageModals = () => {
           variant="outline-soft"
           size="small"
           onPress={() => setSendConfirmationEidModal({ isOpen: false })}
-          isDisabled={eidSendConfirmationModalIsPending}
+          isDisabled={saveConceptAndSendEidIsPending}
         >
           {t('FormModals.closeButton')}
         </Button>
       ),
-      isDismissable: !eidSendConfirmationModalIsPending,
-      noCloseButton: eidSendConfirmationModalIsPending,
+      isDismissable: !saveConceptAndSendEidIsPending,
+      noCloseButton: saveConceptAndSendEidIsPending,
       children: (
         <>
           {t('FormModals.sendConfirmationEidModal.content')}
@@ -272,7 +276,7 @@ export const FormMessageModals = () => {
           onPress={() =>
             sendConfirmationEidLegalModal.isOpen && sendConfirmationEidLegalModal.confirmCallback()
           }
-          isLoading={eidSendConfirmationModalIsPending}
+          isLoading={saveConceptAndSendEidIsPending}
           loadingText={t('FormModals.sendConfirmationEidLegalModal.buttonTitleLoading')}
         >
           {t('FormModals.sendConfirmationEidLegalModal.buttonTitle')}
@@ -283,13 +287,13 @@ export const FormMessageModals = () => {
           variant="outline-soft"
           size="small"
           onPress={() => setSendConfirmationEidLegalModal({ isOpen: false })}
-          isDisabled={eidSendConfirmationModalIsPending}
+          isDisabled={saveConceptAndSendEidIsPending}
         >
           {t('FormModals.closeButton')}
         </Button>
       ),
-      isDismissable: !eidSendConfirmationModalIsPending,
-      noCloseButton: eidSendConfirmationModalIsPending,
+      isDismissable: !saveConceptAndSendEidIsPending,
+      noCloseButton: saveConceptAndSendEidIsPending,
       children: (
         <>
           {t('FormModals.sendConfirmationEidLegalModal.content')}
@@ -317,7 +321,7 @@ export const FormMessageModals = () => {
             sendConfirmationNonAuthenticatedEidModal.isOpen &&
             sendConfirmationNonAuthenticatedEidModal.confirmCallback()
           }
-          isLoading={eidSendConfirmationModalIsPending}
+          isLoading={saveConceptAndSendEidIsPending}
           loadingText={t('FormModals.sendConfirmationNonAuthenticatedEidModal.buttonTitleLoading')}
         >
           {t('FormModals.sendConfirmationNonAuthenticatedEidModal.buttonTitle')}
@@ -328,13 +332,13 @@ export const FormMessageModals = () => {
           variant="outline-soft"
           size="small"
           onPress={() => setSendConfirmationNonAuthenticatedEidModal({ isOpen: false })}
-          isDisabled={eidSendConfirmationModalIsPending}
+          isDisabled={saveConceptAndSendEidIsPending}
         >
           {t('FormModals.closeButton')}
         </Button>
       ),
-      isDismissable: !eidSendConfirmationModalIsPending,
-      noCloseButton: eidSendConfirmationModalIsPending,
+      isDismissable: !saveConceptAndSendEidIsPending,
+      noCloseButton: saveConceptAndSendEidIsPending,
       children: t('FormModals.sendConfirmationNonAuthenticatedEidModal.content'),
     },
     {
@@ -366,13 +370,13 @@ export const FormMessageModals = () => {
           variant="solid"
           size="small"
           onPress={() => setEidSendErrorModal({ isOpen: false })}
-          isDisabled={sendEidPending}
+          isDisabled={sendFormEidIsPending}
         >
           {t('FormModals.closeButton')}
         </Button>
       ),
-      isDismissable: !sendEidPending,
-      noCloseButton: sendEidPending,
+      isDismissable: !sendFormEidIsPending,
+      noCloseButton: sendFormEidIsPending,
       children: t('FormModals.eidSendErrorModal.content'),
     },
     {
@@ -390,6 +394,8 @@ export const FormMessageModals = () => {
           variant="negative-solid"
           size="small"
           onPress={() => deleteConceptModal.isOpen && deleteConceptModal.confirmCallback()}
+          isLoading={deleteConceptIsPending}
+          loadingText={t('FormModals.conceptDeleteModal.buttonTitleLoading')}
         >
           {t('FormModals.conceptDeleteModal.buttonTitle')}
         </Button>
@@ -399,6 +405,7 @@ export const FormMessageModals = () => {
           variant="outline-soft"
           size="small"
           onPress={() => setDeleteConceptModal({ isOpen: false })}
+          isDisabled={deleteConceptIsPending}
         >
           {t('FormModals.closeButton')}
         </Button>

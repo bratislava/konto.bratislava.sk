@@ -1347,6 +1347,7 @@ describe('NorisTaxRealEstateSubservice', () => {
             error: expect.toMatchLogNestError({
               errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
               message: `Error in send Tax data to Bloomreach for tax payer with ID ${taxPayerId} and year ${year}`,
+              console: { taxId: 1, taxType: TaxType.DZN },
             }),
           }),
         )

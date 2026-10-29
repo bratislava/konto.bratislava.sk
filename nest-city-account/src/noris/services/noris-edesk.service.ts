@@ -35,23 +35,19 @@ export class NorisEdeskService {
   }
 
   async updateEdeskChecks(edeskChecks: UpdateEdeskChecks[]): Promise<void> {
-    const edeskUpdateProcessed = edeskChecks.map(async (edeskCheck) =>
-      this.concurrencyLimit(async () =>
-        this.connectionService.withConnection(async (connection) => {
-          await connection
-            .request()
-            .input('id_noris', mssql.Int, edeskCheck.idNoris)
-            .input('edesk_status', mssql.VarChar, edeskCheck.edeskStatus)
-            .input('edesk_number', mssql.VarChar, edeskCheck.edeskNumber)
-            .input('edesk_uri', mssql.VarChar, edeskCheck.uri)
-            .input('edesk_pco', mssql.VarChar, null)
-            .input('last_check', mssql.DateTime, edeskCheck.lastCheck)
-            .input('death_date', mssql.VarChar, edeskCheck.deathDate)
-            .execute('lcs.usp21_ino_edesk_update')
-        }, 'Failed to update edesk checks')
-      )
+    await this.concurrencyLimit.map(edeskChecks, async (edeskCheck) =>
+      this.connectionService.withConnection(async (connection) => {
+        await connection
+          .request()
+          .input('id_noris', mssql.Int, edeskCheck.idNoris)
+          .input('edesk_status', mssql.VarChar, edeskCheck.edeskStatus)
+          .input('edesk_number', mssql.VarChar, edeskCheck.edeskNumber)
+          .input('edesk_uri', mssql.VarChar, edeskCheck.uri)
+          .input('edesk_pco', mssql.VarChar, null)
+          .input('last_check', mssql.DateTime, edeskCheck.lastCheck)
+          .input('death_date', mssql.VarChar, edeskCheck.deathDate)
+          .execute('lcs.usp21_ino_edesk_update')
+      }, 'Failed to update edesk checks')
     )
-
-    await Promise.all(edeskUpdateProcessed)
   }
 }

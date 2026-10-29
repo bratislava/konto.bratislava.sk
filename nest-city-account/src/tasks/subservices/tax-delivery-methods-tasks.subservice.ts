@@ -617,20 +617,16 @@ export class TaxDeliveryMethodsTasksSubservice {
     // Process all users with in-memory data.
     await this.pdfGeneratorService.withSharedBrowser(async () => {
       const limit = pLimit(DELIVERY_METHOD_EMAIL_CONCURRENCY)
-      await Promise.all(
-        users.map(async (user) =>
-          limit(async () => {
-            await this.processUserDeliveryMethodChange(
-              user,
-              latestDeliveryMethod.get(user.id),
-              previousDeliveryMethod.get(user.id),
-              yesterdayDeliveryMethodChange.get(user.id),
-              yesterdayStart,
-              yesterdayEnd
-            )
-          })
+      await limit.map(users, async (user) => {
+        await this.processUserDeliveryMethodChange(
+          user,
+          latestDeliveryMethod.get(user.id),
+          previousDeliveryMethod.get(user.id),
+          yesterdayDeliveryMethodChange.get(user.id),
+          yesterdayStart,
+          yesterdayEnd
         )
-      )
+      })
     })
   }
 }

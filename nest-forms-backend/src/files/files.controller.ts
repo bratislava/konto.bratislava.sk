@@ -23,7 +23,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger'
-import contentDisposition from 'content-disposition'
+import { create as createContentDisposition } from 'content-disposition'
 import { Response } from 'express'
 import { contentType } from 'mime-types'
 
@@ -220,7 +220,7 @@ export default class FilesController {
     res.set({
       'Content-Type': contentType(file.fileName) || 'application/octet-stream', // default needed as contentType returns false if not found
       'Access-Control-Expose-Headers': 'Content-Disposition',
-      'Content-Disposition': contentDisposition(file.fileName),
+      'Content-Disposition': createContentDisposition(file.fileName),
     })
     return new StreamableFile(fileStream)
   }

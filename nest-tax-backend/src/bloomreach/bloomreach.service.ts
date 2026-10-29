@@ -6,6 +6,7 @@ import {
 import { Injectable } from '@nestjs/common'
 
 import BaConfigService from '../config/ba-config.service'
+import { TaxType } from '../generated/prisma/client'
 import {
   BloomreachEventNameEnum,
   TaxBloomreachData,
@@ -30,13 +31,13 @@ export class BloomreachService {
   }
 
   private async trackEvent(
-    data: object,
+    data: { year: number; tax_type: TaxType; order: number },
     cognitoId: string,
     eventName: BloomreachEventNameEnum,
   ): Promise<boolean> {
     if (!this.baConfigService.featureToggles.sendBloomreachEvents) {
       this.logger.debug(
-        `Bloomreach events are disabled, skipping event ${eventName} for user ${cognitoId}. Object content: ${JSON.stringify(data)}`,
+        `Bloomreach events are disabled, skipping event ${eventName} for user ${cognitoId}.`,
       )
       return true
     }
@@ -64,6 +65,13 @@ export class BloomreachService {
         this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: `Error in send data to Bloomreach for user id ${cognitoId}`,
+          console: {
+            eventName,
+            httpStatus: eventResponse.status,
+            year: data.year,
+            taxType: data.tax_type,
+            order: data.order,
+          },
         }),
       )
       return false

@@ -417,7 +417,10 @@ describe('UnifiedTaxUtil', () => {
 
       expect(() =>
         calculateInstallmentAmounts(installments, 0, 3),
-      ).toThrowEqualLogNestError(missingInstallmentError)
+      ).toThrowEqualLogNestError({
+        ...missingInstallmentError,
+        console: { installmentOrders: [1, 3, 4], missingOrder: 2 },
+      })
     })
 
     it('should throw when order 2 is missing even if numberOfInstallments is omitted', () => {
@@ -428,7 +431,10 @@ describe('UnifiedTaxUtil', () => {
 
       expect(() =>
         calculateInstallmentAmounts(installments, 0),
-      ).toThrowEqualLogNestError(missingInstallmentError)
+      ).toThrowEqualLogNestError({
+        ...missingInstallmentError,
+        console: { installmentOrders: [1, 3], missingOrder: 2 },
+      })
     })
 
     it('should not throw INSTALLMENT_INCORRECT_COUNT when numberOfInstallments is omitted and length matches sequential orders', () => {
@@ -449,7 +455,10 @@ describe('UnifiedTaxUtil', () => {
 
       expect(() =>
         calculateInstallmentAmounts(installments, 0, 3),
-      ).toThrowEqualLogNestError(incorrectCountError)
+      ).toThrowEqualLogNestError({
+        ...incorrectCountError,
+        console: { expectedInstallmentCount: 3, installmentCount: 2 },
+      })
     })
 
     it('should distribute overallPaid sequentially across installments in order', () => {
@@ -1712,6 +1721,7 @@ describe('UnifiedTaxUtil', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+        console: { expectedInstallmentCount: 3, installmentCount: 2 },
       })
     })
 
@@ -1746,6 +1756,7 @@ describe('UnifiedTaxUtil', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+        console: { expectedInstallmentCount: 3, installmentCount: 4 },
       })
     })
 
@@ -1759,6 +1770,7 @@ describe('UnifiedTaxUtil', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
         message: 'No installments found for the tax.',
+        console: { expectedInstallmentCount: 3 },
       })
     })
 
@@ -1869,6 +1881,11 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
       message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+      console: {
+        reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
+        taxId: 123,
+        taxType: TaxType.DZN,
+      },
     })
   })
 
@@ -1885,6 +1902,12 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.AFTER_DUE_DATE,
       message: CustomErrorTaxTypesResponseEnum.AFTER_DUE_DATE,
+      console: {
+        reasonNotPossible:
+          InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
+        taxId: 123,
+        taxType: TaxType.DZN,
+      },
     })
   })
 
@@ -1901,6 +1924,12 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
       message: CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
+      console: {
+        reasonNotPossible:
+          InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD,
+        taxId: 123,
+        taxType: TaxType.DZN,
+      },
     })
   })
 
@@ -1931,6 +1960,12 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
       message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
+      console: {
+        reasonNotPossible:
+          InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT,
+        taxId: 123,
+        taxType: TaxType.KO,
+      },
     })
   })
 
@@ -1961,6 +1996,12 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
       message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
+      console: {
+        reasonNotPossible:
+          InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT,
+        taxId: 123,
+        taxType: TaxType.KO,
+      },
     })
   })
 
@@ -1982,6 +2023,12 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
       message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
+      console: {
+        reasonNotPossible:
+          InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT,
+        taxId: 123,
+        taxType: TaxType.DZN,
+      },
     })
   })
 
@@ -2029,6 +2076,11 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
       message: 'No installments found for the tax.',
+      console: {
+        expectedInstallmentCount: 3,
+        taxId: 123,
+        taxType: TaxType.DZN,
+      },
     })
   })
 
@@ -2055,6 +2107,12 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
       message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+      console: {
+        expectedInstallmentCount: 3,
+        installmentCount: 2,
+        taxId: 123,
+        taxType: TaxType.DZN,
+      },
     })
   })
 
@@ -2091,6 +2149,12 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
       message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+      console: {
+        expectedInstallmentCount: 3,
+        installmentCount: 4,
+        taxId: 123,
+        taxType: TaxType.DZN,
+      },
     })
   })
 
@@ -2236,6 +2300,7 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
       status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
       message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+      console: { taxId: 123, taxType: TaxType.DZN },
     })
   })
 
@@ -2254,6 +2319,7 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
       status: HttpStatus.UNPROCESSABLE_ENTITY,
       errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
       message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+      console: { taxId: 123, taxType: TaxType.DZN },
     })
   })
 })

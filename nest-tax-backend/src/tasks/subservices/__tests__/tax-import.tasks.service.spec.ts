@@ -10,6 +10,7 @@ import dayjs from 'dayjs'
 import type { MockInstance } from 'vitest'
 
 import prismaMock from '../../../../test/singleton'
+import { expectAny } from '../../../__tests__/matchers'
 import { TaxType } from '../../../generated/prisma/client'
 import { CustomErrorNorisTypesEnum } from '../../../noris/noris.errors'
 import { NorisService } from '../../../noris/noris.service'
@@ -624,6 +625,11 @@ describe('TaxImportTasksService', () => {
         errorEnum: CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
         message:
           'Failed to load overpayments from Noris after all retry attempts',
+        console: {
+          lookbackDays: 3,
+          fromDate: expectAny<string>(String),
+          elapsedMs: expectAny<number>(Number),
+        },
         error,
       })
 
@@ -654,6 +660,11 @@ describe('TaxImportTasksService', () => {
         errorEnum: CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
         message:
           'Failed to load overpayments from Noris after all retry attempts',
+        console: {
+          lookbackDays: 3,
+          fromDate: expectAny<string>(String),
+          elapsedMs: expectAny<number>(Number),
+        },
         error,
       })
 
@@ -679,6 +690,11 @@ describe('TaxImportTasksService', () => {
         errorEnum: CustomErrorNorisTypesEnum.LOAD_OVERPAYMENTS_FROM_NORIS_ERROR,
         message:
           'Failed to load overpayments from Noris after all retry attempts',
+        console: {
+          lookbackDays: 3,
+          fromDate: expectAny<string>(String),
+          elapsedMs: expectAny<number>(Number),
+        },
         error,
       })
     })

@@ -24,10 +24,12 @@ describe('CleanupTasksSubservice', () => {
 
   describe('deleteOldUserVerificationData', () => {
     it('should delete UserIdCardVerify and LegalPersonIcoIdCardVerify records older than 1 month', async () => {
-      const userIdCardVerifyDeleteSpy = vi.mocked(prismaMock.userIdCardVerify.deleteMany)
-      const legalPersonIcoIdCardVerifyDeleteSpy = vi.mocked(
-        prismaMock.legalPersonIcoIdCardVerify.deleteMany
-      )
+      const userIdCardVerifyDeleteSpy = vi
+        .mocked(prismaMock.userIdCardVerify.deleteMany)
+        .mockResolvedValue({ count: 0 })
+      const legalPersonIcoIdCardVerifyDeleteSpy = vi
+        .mocked(prismaMock.legalPersonIcoIdCardVerify.deleteMany)
+        .mockResolvedValue({ count: 0 })
 
       const mockDate = new Date('2024-01-15T00:00:00.000Z')
       vi.useFakeTimers()
@@ -60,13 +62,18 @@ describe('CleanupTasksSubservice', () => {
 
   describe('cleanupExpiredAuthorizationCodes', () => {
     it('should cleanup expired authorization codes older than 5 minutes', async () => {
-      const mockExpiredRecords: Pick<OAuth2Data, 'id' | 'authorizationCode'>[] = [
-        { id: '1', authorizationCode: 'code1' },
-        { id: '2', authorizationCode: 'code2' },
+      const codeCreatedAt = new Date('2024-01-14T23:50:00.000Z')
+      const mockExpiredRecords: Pick<
+        OAuth2Data,
+        'id' | 'authorizationCode' | 'authorizationCodeCreatedAt'
+      >[] = [
+        { id: '1', authorizationCode: 'code1', authorizationCodeCreatedAt: codeCreatedAt },
+        { id: '2', authorizationCode: 'code2', authorizationCodeCreatedAt: codeCreatedAt },
       ]
 
       prismaMock.oAuth2Data.findMany.mockResolvedValue(mockExpiredRecords as OAuth2Data[])
       const updateManySpy = vi.mocked(prismaMock.oAuth2Data.updateMany)
+      const warnSpy = vi.spyOn(LineLoggerService.prototype, 'warn')
 
       const mockDate = new Date('2024-01-15T00:00:00.000Z')
       vi.useFakeTimers()
@@ -89,6 +96,7 @@ describe('CleanupTasksSubservice', () => {
         select: {
           id: true,
           authorizationCode: true,
+          authorizationCodeCreatedAt: true,
         },
       })
 
@@ -104,6 +112,15 @@ describe('CleanupTasksSubservice', () => {
           refreshTokenEnc: null,
         },
       })
+
+      // codes are logged only after the update went through
+      expect(warnSpy).toHaveBeenCalledWith('Cleaned up expired oAuth2 tokens with id: 1', {
+        authorizationCode: 'code1',
+        authorizationCodeCreatedAt: codeCreatedAt,
+      })
+      expect(updateManySpy.mock.invocationCallOrder[0]).toBeLessThan(
+        warnSpy.mock.invocationCallOrder[0]
+      )
     })
 
     it('should not update anything if there are no expired records', async () => {
@@ -120,11 +137,12 @@ describe('CleanupTasksSubservice', () => {
     it('should delete OAuth2 records older than 1 month', async () => {
       const mockOldRecords: Pick<OAuth2Data, 'id' | 'authorizationCode'>[] = [
         { id: '1', authorizationCode: 'code1' },
-        { id: '2', authorizationCode: 'code2' },
+        { id: '2', authorizationCode: null },
       ]
 
       prismaMock.oAuth2Data.findMany.mockResolvedValue(mockOldRecords as OAuth2Data[])
       const deleteManySpy = vi.mocked(prismaMock.oAuth2Data.deleteMany)
+      const logSpy = vi.spyOn(LineLoggerService.prototype, 'log')
 
       const mockDate = new Date('2024-01-15T00:00:00.000Z')
       vi.useFakeTimers()
@@ -164,6 +182,15 @@ describe('CleanupTasksSubservice', () => {
           },
         },
       })
+
+      // codes are logged only after the delete went through
+      expect(logSpy).toHaveBeenCalledWith('Deleted 2 old oAuth2 records: 1/code1, 2/null', {
+        cutoff: expectAny<Date>(Date),
+        recordCount: 2,
+      })
+      expect(deleteManySpy.mock.invocationCallOrder[0]).toBeLessThan(
+        logSpy.mock.invocationCallOrder[0]
+      )
     })
 
     it('should not delete anything if there are no old records', async () => {

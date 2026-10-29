@@ -281,6 +281,7 @@ describe('AdminService', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'No tax administrator found in the database',
+        console: { year: 1970, taxType: TaxType.DZN },
         alert: true,
       })
 
@@ -307,6 +308,12 @@ describe('AdminService', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Tax with this variable symbol already exists',
+        console: {
+          existingTaxId: 1,
+          existingTaxPayerId: 1,
+          year: 1970,
+          taxType: TaxType.DZN,
+        },
         alert: true,
       })
 
@@ -395,7 +402,9 @@ describe('AdminService', () => {
         },
       })
 
-      expect(getUserDataAdminSpy).toHaveBeenCalledWith(mockBirthNumber)
+      expect(getUserDataAdminSpy).toHaveBeenCalledWith(mockBirthNumber, {
+        taxPayerId: 1,
+      })
 
       expect(trackEventTaxSpy).toHaveBeenCalledWith(
         {
@@ -424,6 +433,7 @@ describe('AdminService', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Tax payer not found',
+        console: { year: 2024, taxType: 'DZN', order: 1 },
         alert: true,
       })
 
@@ -452,6 +462,7 @@ describe('AdminService', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Tax not found',
+        console: { taxPayerId: 1, year: 2024, taxType: 'DZN', order: 1 },
         alert: true,
       })
 
@@ -496,7 +507,9 @@ describe('AdminService', () => {
       })
 
       expect(prismaMock.tax.delete).toHaveBeenCalled()
-      expect(getUserDataAdminSpy).toHaveBeenCalledWith(mockBirthNumber)
+      expect(getUserDataAdminSpy).toHaveBeenCalledWith(mockBirthNumber, {
+        taxPayerId: 1,
+      })
       expect(trackEventTaxSpy).not.toHaveBeenCalled()
     })
 

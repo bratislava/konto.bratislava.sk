@@ -6,7 +6,7 @@ import {
 import { createMock } from '@golevelup/ts-vitest'
 import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import mssql, { MSSQLError } from 'mssql'
+import mssql, { MSSQLError, RequestError } from 'mssql'
 import type { Mock, Mocked } from 'vitest'
 
 import BaConfigService from '../../../config/ba-config.service'
@@ -136,6 +136,7 @@ describe('NorisConnectionSubservice', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: errorMessage,
+        console: { elapsedMs: expect.any(Number) as number },
         alert: true,
         error: genericError,
       })
@@ -155,10 +156,35 @@ describe('NorisConnectionSubservice', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: `${errorMessage}: ${JSON.stringify({ code: mssqlError.code, name: mssqlError.name })}`,
+        console: { elapsedMs: expect.any(Number) as number },
         alert: true,
         error: mssqlError,
       })
       expect(prismaService.$transaction).not.toHaveBeenCalled()
+    })
+
+    it('should not log the message of a request error, which can quote bound values', async () => {
+      const requestError = new RequestError(
+        "Conversion failed when converting the varchar value '123456/7890' to data type int.",
+        'EREQUEST',
+      )
+      requestError.number = 245
+      const errorFactoryServiceSpy = vi.spyOn(
+        errorFactoryService,
+        'InternalServerErrorException',
+      )
+
+      await expect(
+        service.withConnection(async () => {
+          return Promise.reject(requestError)
+        }, errorMessage),
+      ).rejects.toThrow(errorMessage)
+
+      const loggedError = errorFactoryServiceSpy.mock.calls[0][0].error as Error
+      expect(loggedError).not.toBe(requestError)
+      expect(loggedError.name).toBe('RequestError')
+      expect(loggedError.message).toContain('"number":245')
+      expect(loggedError.message).not.toContain('123456/7890')
     })
 
     it.each([
@@ -180,6 +206,7 @@ describe('NorisConnectionSubservice', () => {
           status: HttpStatus.BAD_REQUEST,
           errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
           message: `${errorMessage}: ${JSON.stringify({ code, name: mssqlError.name })}`,
+          console: { elapsedMs: expect.any(Number) as number },
           error: mssqlError,
         })
 
@@ -198,6 +225,7 @@ describe('NorisConnectionSubservice', () => {
         status: HttpStatus.BAD_REQUEST,
         errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
         message: `${errorMessage}: ${JSON.stringify({ code: mssqlError.code, name: mssqlError.name })}`,
+        console: { elapsedMs: expect.any(Number) as number },
         error: mssqlError,
       })
 

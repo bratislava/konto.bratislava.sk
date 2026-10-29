@@ -5,7 +5,11 @@ import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { ZodError } from 'zod'
 
-import { expectAny, expectStringContaining } from '../../../__tests__/matchers'
+import {
+  expectAny,
+  expectObjectContaining,
+  expectStringContaining,
+} from '../../../__tests__/matchers'
 import alertReporting from '../../../utils/constants/error.alerts'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import {
@@ -49,6 +53,7 @@ const expectedValidationError: LogNestErrorEqualExpectation = {
   status: HttpStatus.BAD_REQUEST,
   errorEnum: CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
   message: expectStringContaining('Invalid'),
+  console: expectObjectContaining({ issues: expectAny<unknown[]>(Array) }),
   alert: true,
   error: expectAny<ZodError>(ZodError),
 }

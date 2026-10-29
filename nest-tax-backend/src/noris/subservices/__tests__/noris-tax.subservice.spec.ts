@@ -175,6 +175,7 @@ describe('NorisTaxSubservice', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: `Unknown tax type: ${unknownTaxType}`,
+        console: { year: mockYear, count: 0 },
         alert: true,
       })
     })

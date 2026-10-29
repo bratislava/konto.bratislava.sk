@@ -185,6 +185,7 @@ export default class TaxImportHelperService {
       return
     }
 
+    const startedAt = Date.now()
     const yearIsCurrent = year === new Date().getFullYear()
     const result =
       await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
@@ -198,7 +199,7 @@ export default class TaxImportHelperService {
       )
 
     // Move only the birth numbers which are not found in Noris to the end of the queue
-    await this.markNotFoundInNoris(
+    const notFoundInNorisCount = await this.markNotFoundInNoris(
       taxType,
       birthNumbers,
       year,
@@ -206,7 +207,7 @@ export default class TaxImportHelperService {
     )
 
     this.logger.log(
-      `${result.birthNumbers.length} birth numbers are successfully added to tax backend.`,
+      `${result.birthNumbers.length} birth numbers are successfully added to tax backend. TaxType: ${taxType}, year: ${year}, requested: ${birthNumbers.length}, foundInNoris: ${birthNumbers.length - notFoundInNorisCount}, notFoundInNoris: ${notFoundInNorisCount}, elapsedMs: ${Date.now() - startedAt}`,
     )
   }
 
@@ -219,6 +220,7 @@ export default class TaxImportHelperService {
       return
     }
 
+    const startedAt = Date.now()
     const result =
       await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
         taxType,
@@ -239,7 +241,7 @@ export default class TaxImportHelperService {
     )
 
     this.logger.log(
-      `${result.birthNumbers.length} birth numbers are prepared and ready to import.`,
+      `${result.birthNumbers.length} birth numbers are prepared and ready to import. TaxType: ${taxType}, year: ${year}, requested: ${birthNumbers.length}, elapsedMs: ${Date.now() - startedAt}`,
     )
   }
 
@@ -248,14 +250,14 @@ export default class TaxImportHelperService {
     birthNumbers: string[],
     year: number,
     foundInNoris: string[] = [],
-  ): Promise<void> {
+  ): Promise<number> {
     const foundInNorisSet = new Set(foundInNoris)
     const notFoundInNoris = birthNumbers.filter(
       (birthNumber) => !foundInNorisSet.has(birthNumber),
     )
 
     if (notFoundInNoris.length === 0) {
-      return
+      return 0
     }
 
     await this.prismaService.taxImportAttempt.updateMany({
@@ -274,5 +276,7 @@ export default class TaxImportHelperService {
         status: TaxImportStatus.NOT_FOUND,
       },
     })
+
+    return notFoundInNoris.length
   }
 }

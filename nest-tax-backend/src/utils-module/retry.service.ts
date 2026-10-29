@@ -14,6 +14,7 @@ export class RetryService {
     functionName: string,
     retries = 3,
     delayMs = 5 * 60 * 1000, // 5 minutes
+    attempt = 1,
   ): Promise<T> {
     try {
       return await fn()
@@ -22,13 +23,19 @@ export class RetryService {
         throw error
       }
       this.logger.warn(
-        `Retry attempt failed for function ${functionName}. Retrying in ${(delayMs / 1000).toFixed(2)} seconds. Remaining retries: ${retries - 1}`,
+        `Retry attempt failed for function ${functionName}. Retrying in ${(delayMs / 1000).toFixed(2)} seconds. Remaining retries: ${retries - 1}, attempt: ${attempt}`,
         toLogfmt(error),
       )
       await new Promise<void>((resolve) => {
         setTimeout(resolve, delayMs)
       })
-      return this.retryWithDelay(fn, functionName, retries - 1, delayMs)
+      return this.retryWithDelay(
+        fn,
+        functionName,
+        retries - 1,
+        delayMs,
+        attempt + 1,
+      )
     }
   }
 }

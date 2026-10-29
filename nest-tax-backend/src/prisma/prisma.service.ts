@@ -16,7 +16,7 @@ const getPrismaClientOptions = (connectionString: string) => {
       { emit: 'event', level: 'warn' },
       { emit: 'event', level: 'error' },
     ],
-    errorFormat: 'colorless',
+    errorFormat: 'minimal',
   } satisfies Prisma.PrismaClientOptions
 }
 

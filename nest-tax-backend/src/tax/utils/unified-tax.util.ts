@@ -226,6 +226,7 @@ const isStateHoliday = (date: Dayjs): boolean => {
     }).InternalServerErrorException({
       errorEnum: CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
       message: CustomErrorTaxTypesResponseEnum.STATE_HOLIDAY_NOT_EXISTS,
+      console: { year, date: date.format('YYYY-MM-DD') },
     })
   }
 
@@ -284,6 +285,7 @@ export const calculateInstallmentAmounts = (
   installments: { order: number; amount: number }[],
   overallPaid: number,
   numberOfInstallments?: number,
+  logContext?: Record<string, unknown>,
 ) => {
   if (installments.length === 0) {
     throw new ErrorFactoryService({
@@ -291,6 +293,10 @@ export const calculateInstallmentAmounts = (
     }).InternalServerErrorException({
       errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
       message: 'No installments found for the tax.',
+      console: {
+        ...logContext,
+        expectedInstallmentCount: numberOfInstallments,
+      },
     })
   }
 
@@ -300,6 +306,11 @@ export const calculateInstallmentAmounts = (
     }).InternalServerErrorException({
       errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
       message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+      console: {
+        ...logContext,
+        installmentCount: installments.length,
+        expectedInstallmentCount: numberOfInstallments,
+      },
     })
   }
 
@@ -315,6 +326,11 @@ export const calculateInstallmentAmounts = (
       }).InternalServerErrorException({
         errorEnum: CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
         message: CustomErrorTaxTypesResponseEnum.MISSING_INSTALLMENT_AMOUNTS,
+        console: {
+          ...logContext,
+          missingOrder: order,
+          installmentOrders: installments.map((item) => item.order),
+        },
       })
     }
     return installment.amount
@@ -423,6 +439,7 @@ const calculateInstallmentPaymentDetails = (options: {
   numberOfInstallments?: number
   iban: string
   isCancelled: boolean
+  logContext?: Record<string, unknown>
 }): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
   activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
 } => {
@@ -437,6 +454,7 @@ const calculateInstallmentPaymentDetails = (options: {
     numberOfInstallments,
     iban,
     isCancelled,
+    logContext,
   } = options
 
   if (overallAmount <= paymentCalendarThreshold) {
@@ -475,6 +493,11 @@ const calculateInstallmentPaymentDetails = (options: {
     }).InternalServerErrorException({
       errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
       message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+      console: {
+        ...logContext,
+        reason: 'Missing due date of the last installment',
+        installmentCount: installmentsByOrder.length,
+      },
     })
   }
 
@@ -507,6 +530,7 @@ const calculateInstallmentPaymentDetails = (options: {
     installments,
     overallPaid,
     numberOfInstallments,
+    logContext,
   )
 
   const installmentStatuses = calculateInstallmentStatus(
@@ -534,6 +558,11 @@ const calculateInstallmentPaymentDetails = (options: {
     }).InternalServerErrorException({
       errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
       message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+      console: {
+        ...logContext,
+        reason: 'No active installment',
+        installmentStatuses: installmentDetails.map((item) => item.status),
+      },
     })
   }
 
@@ -611,8 +640,12 @@ const calculateOneTimePaymentDetails = (options: {
   }
 }
 
+/**
+ * @param logContext - non-PII ids (e.g. taxId) attached to error logs
+ */
 export const getTaxDetailPure = <TTaxType extends TaxType>(
   options: GetTaxDetailPureOptions<TTaxType>,
+  logContext?: Record<string, unknown>,
 ): GetTaxDetailPureResponse<TTaxType> => {
   const {
     type,
@@ -668,6 +701,7 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
     numberOfInstallments: taxDefinition.numberOfInstallments,
     iban: taxDefinition.iban,
     isCancelled,
+    logContext,
   })
 
   const itemizedDetail: TaxTypeToResponseDetailItemizedDto[TTaxType] =
@@ -709,6 +743,7 @@ export const getTaxDetailPureForOneTimeGenerator = (options: {
     }).UnprocessableEntityException({
       errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
       message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+      console: { taxId, taxType },
     })
   }
 
@@ -782,7 +817,14 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     numberOfInstallments,
     iban,
     isCancelled,
+    logContext: { taxId, taxType },
   })
+
+  const logContext = {
+    taxId,
+    taxType,
+    reasonNotPossible: installmentPayment.reasonNotPossible,
+  }
 
   // Check if installment payment is possible
   if (
@@ -797,6 +839,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
         }).UnprocessableEntityException({
           errorEnum: CustomErrorTaxTypesEnum.ALREADY_PAID,
           message: CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+          console: logContext,
         })
 
       case InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE:
@@ -805,6 +848,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
         }).UnprocessableEntityException({
           errorEnum: CustomErrorTaxTypesEnum.AFTER_DUE_DATE,
           message: CustomErrorTaxTypesResponseEnum.AFTER_DUE_DATE,
+          console: logContext,
         })
 
       case InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD:
@@ -813,6 +857,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
         }).UnprocessableEntityException({
           errorEnum: CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
           message: CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
+          console: logContext,
         })
 
       case InstallmentPaymentReasonNotPossibleEnum.TAX_IS_CANCELLED:
@@ -821,6 +866,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
         }).UnprocessableEntityException({
           errorEnum: CustomErrorTaxTypesEnum.TAX_IS_CANCELLED,
           message: CustomErrorTaxTypesResponseEnum.TAX_IS_CANCELLED,
+          console: logContext,
         })
 
       case InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT:
@@ -829,6 +875,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
         }).UnprocessableEntityException({
           errorEnum: CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
           message: CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
+          console: logContext,
         })
 
       case undefined:
@@ -838,6 +885,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
         }).UnprocessableEntityException({
           errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
           message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+          console: logContext,
         })
     }
   }
@@ -853,6 +901,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     }).InternalServerErrorException({
       errorEnum: CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
       message: CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+      console: logContext,
     })
   }
   // Create description based on the installment status

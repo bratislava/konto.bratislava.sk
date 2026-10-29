@@ -189,8 +189,9 @@ export class EdeskBatchUpdateService {
       take: limit,
       select: {
         uri: true,
+        norisId: true,
       },
     })
-    return externalItems as { uri: string }[]
+    return externalItems as { uri: string; norisId: number }[]
   }
 }

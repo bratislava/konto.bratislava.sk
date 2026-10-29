@@ -13,11 +13,7 @@ import { AxiosError, AxiosResponse } from 'axios'
 import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 
 import prismaMock from '../../test/singleton'
-import {
-  expectArrayContaining,
-  expectObjectContaining,
-  expectStringContaining,
-} from '../__tests__/matchers'
+import { expectArrayContaining, expectObjectContaining } from '../__tests__/matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
@@ -228,12 +224,16 @@ describe('NasesService', () => {
         message: 'Must provide between 1 and 10 URIs to validate',
       }
 
-      await expect(service.getIdentitiesByUris([])).rejects.toThrowEqualLogNestError(expectedError)
+      await expect(service.getIdentitiesByUris([])).rejects.toThrowEqualLogNestError({
+        ...expectedError,
+        console: { inputCount: 0, uniqueInputCount: 0, norisIds: [], physicalEntityIds: [] },
+      })
 
       const tooManyInputs = Array.from({ length: 11 }, (_, i) => ({ uri: `uri-${i}` }))
-      await expect(service.getIdentitiesByUris(tooManyInputs)).rejects.toThrowEqualLogNestError(
-        expectedError
-      )
+      await expect(service.getIdentitiesByUris(tooManyInputs)).rejects.toThrowEqualLogNestError({
+        ...expectedError,
+        console: { inputCount: 11, uniqueInputCount: 11, norisIds: [], physicalEntityIds: [] },
+      })
     })
 
     it('should deduplicate inputs by URI', async () => {
@@ -271,7 +271,11 @@ describe('NasesService', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-        console: expectStringContaining('not an instance of AxiosError'),
+        console: {
+          message: 'Error is not an instance of AxiosError',
+          norisIds: [],
+          physicalEntityIds: ['entity-1'],
+        },
         alert: true,
         error: upvsError,
       })
@@ -329,7 +333,11 @@ describe('NasesService', () => {
         errorName: VerificationErrorsEnum.IDENTITY_LOOKUP_REJECTED,
         expected: {
           message: VerificationErrorsResponseEnum.IDENTITY_LOOKUP_REJECTED,
-          console: expectStringContaining(`code=${iamFault.code} reason=${iamFault.reason}`),
+          console: {
+            message: `UPVS IAM fault: code=${iamFault.code} reason=${iamFault.reason}`,
+            physicalEntityId: 'entity-1',
+            upvsFaultCode: iamFault.code,
+          },
         },
         persistsRejection: true,
       },
@@ -340,7 +348,10 @@ describe('NasesService', () => {
         errorName: ErrorEnum.INTERNAL_SERVER_ERROR,
         expected: {
           message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-          console: expectStringContaining('failed slovensko-sk container validation'),
+          console: {
+            message: 'Identity lookup parameters failed slovensko-sk container validation.',
+            physicalEntityId: 'entity-1',
+          },
           alert: true,
         },
         persistsRejection: false,
@@ -393,7 +404,10 @@ describe('NasesService', () => {
         errorName: ErrorEnum.INTERNAL_SERVER_ERROR,
         expected: {
           message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-          console: expectStringContaining('not an instance of AxiosError'),
+          console: {
+            message: 'Error is not an instance of AxiosError',
+            physicalEntityId: 'entity-1',
+          },
           alert: true,
         },
         persistsRejection: false,
@@ -421,6 +435,7 @@ describe('NasesService', () => {
           status,
           errorEnum: errorName,
           error: rejection,
+          console: { physicalEntityId: 'entity-1' },
           ...expected,
         })
         if (persistsRejection) {

@@ -142,6 +142,7 @@ describe('NorisConnectionService', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: errorMessage,
+        console: { database: 'testdb' },
         alert: true,
         error: opError,
       })
@@ -162,6 +163,7 @@ describe('NorisConnectionService', () => {
         status: HttpStatus.BAD_REQUEST,
         errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
         message: `${errorMessage}: ${JSON.stringify({ code: mssqlError.code, name: mssqlError.name })}`,
+        console: { database: 'testdb', mssqlCode: 'ETIMEOUT' },
         error: mssqlError,
       })
       expect(prismaMock.$executeRaw).toHaveBeenCalled()

@@ -118,12 +118,19 @@ describe('UrgentLookupService', () => {
     vi.mocked(cognitoSubservice.getDataFromCognito).mockResolvedValue(
       cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' })
     )
-    vi.mocked(nasesService.lookupIdentityFO).mockRejectedValue(new Error('upstream down'))
+    const lookupError = new Error('upstream down')
+    vi.mocked(nasesService.lookupIdentityFO).mockRejectedValue(lookupError)
+    const warnSpy = vi.mocked(logger.warn)
 
     const result = await service.processUrgentItems()
 
     expect(result.rateLimited).toBe(false)
     expect(result.failures).toEqual([expect.objectContaining({ reason: 'Lookup failed' })])
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Urgent UPVS identity lookup failed',
+      expect.objectContaining({ physicalEntityId: urgentEntity().entityId }),
+      lookupError
+    )
   })
 
   it('stops the run, logs an alert, and persists nothing further on HTTP 429', async () => {

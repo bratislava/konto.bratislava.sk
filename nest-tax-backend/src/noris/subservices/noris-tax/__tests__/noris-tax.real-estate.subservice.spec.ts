@@ -721,6 +721,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
         message: 'Failed to get taxes from Noris',
+        console: { year: 2023, taxType: TaxType.DZN, batchSize: 1 },
         alert: true,
         error: mockError,
       })
@@ -1346,6 +1347,7 @@ describe('NorisTaxRealEstateSubservice', () => {
             error: expect.toMatchLogNestError({
               errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
               message: `Error in send Tax data to Bloomreach for tax payer with ID ${taxPayerId} and year ${year}`,
+              console: { taxId: 1, taxType: TaxType.DZN },
             }),
           }),
         )

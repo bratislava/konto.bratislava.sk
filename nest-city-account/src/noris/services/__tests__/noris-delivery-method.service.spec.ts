@@ -159,6 +159,7 @@ describe('NorisDeliveryMethodService', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Date must be provided when delivery method is CITY_ACCOUNT',
+        console: { deliveryMethod: 'O', entryCount: 1 },
         alert: true,
       })
     })

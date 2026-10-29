@@ -521,7 +521,11 @@ describe('NotificationsEventsSubservice', () => {
 
       expect(
         cityAccountSubservice.getUserDataAdminBatchOptional,
-      ).toHaveBeenCalledWith([birth1, birth2])
+      ).toHaveBeenCalledWith([birth1, birth2], {
+        dueDateType: INSTALLMENT_DUE_DATE_TYPE.NEXT,
+        year,
+        taxIds: [1, 2],
+      })
     })
   })
 
@@ -1002,7 +1006,10 @@ describe('NotificationsEventsSubservice', () => {
       await service.resendBloomreachEvents()
 
       expect(trackPaymentInBloomreachSpy).toHaveBeenCalledTimes(2)
-      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(error)
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        { taxPaymentId: 2, taxId: 1, taxPayerId: 1 },
+        error,
+      )
       expect(vi.mocked(logger.log)).toHaveBeenCalledWith(
         expect.stringContaining('1'),
       )
@@ -1060,8 +1067,14 @@ describe('NotificationsEventsSubservice', () => {
       await service.resendBloomreachEvents()
 
       expect(trackPaymentInBloomreachSpy).toHaveBeenCalledTimes(2)
-      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(error1)
-      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(error2)
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        { taxPaymentId: 1, taxId: 1, taxPayerId: 1 },
+        error1,
+      )
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        { taxPaymentId: 2, taxId: 1, taxPayerId: 1 },
+        error2,
+      )
       expect(vi.mocked(logger.log)).toHaveBeenCalledWith(
         expect.stringContaining('0'),
       )

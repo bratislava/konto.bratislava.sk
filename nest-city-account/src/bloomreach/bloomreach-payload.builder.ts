@@ -115,7 +115,7 @@ export class BloomreachPayloadBuilder {
       return undefined
     }
 
-    return this.bloomreachContactDatabaseService.upsert(email, birthNumber, ico)
+    return this.bloomreachContactDatabaseService.upsert(email, birthNumber, ico, externalId)
   }
 
   buildAnonymizeCommand(externalId: string, timestamp: number): BloomreachCustomerCommand {

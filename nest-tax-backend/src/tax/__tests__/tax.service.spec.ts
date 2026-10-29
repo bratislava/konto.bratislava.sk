@@ -134,6 +134,7 @@ describe('TaxService', () => {
         status: HttpStatus.FORBIDDEN,
         errorEnum: CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
         message: CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+        console: { type: TaxType.DZN },
         alert: true,
       })
     })
@@ -258,6 +259,7 @@ describe('TaxService', () => {
         status: HttpStatus.FORBIDDEN,
         errorEnum: CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
         message: CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+        console: { type: TaxType.KO },
         alert: true,
       })
     })
@@ -1448,6 +1450,7 @@ describe('TaxService', () => {
           status: HttpStatus.NOT_FOUND,
           errorEnum: CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
           message: CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
+          console: { year: 2023, type: TaxType.DZN, order: 1 },
         })
       })
 
@@ -1469,6 +1472,7 @@ describe('TaxService', () => {
           status: HttpStatus.NOT_FOUND,
           errorEnum: CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
           message: CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+          console: { taxPayerId: 1, year: 2023, type: TaxType.DZN, order: 1 },
         })
       })
 

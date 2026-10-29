@@ -98,7 +98,6 @@ describe('EdeskTasksSubservice', () => {
         where: { activeEdeskUpdateFailCount: { gte: 7 } },
         select: {
           id: true,
-          birthNumber: true,
           activeEdeskUpdateFailCount: true,
         },
       })
@@ -106,6 +105,7 @@ describe('EdeskTasksSubservice', () => {
         'Entities that failed to update at least 7 times in a row: ',
         {
           entities: mockFailedEntities,
+          entityCount: mockFailedEntities.length,
           alert: 1,
         }
       )

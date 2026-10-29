@@ -292,6 +292,16 @@ describe('PaymentService', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Failed to track payment in Bloomreach.',
+        console: {
+          taxPaymentId: mockTaxPayment.id,
+          taxId: mockTaxPayment.taxId,
+          externalId,
+          year: mockTaxPayment.tax.year,
+          taxType: mockTaxPayment.tax.type,
+          order: mockTaxPayment.tax.order,
+          amount: mockTaxPayment.amount,
+          isFullyPaid: true,
+        },
         alert: true,
       })
 
@@ -362,6 +372,7 @@ describe('PaymentService', () => {
         status: HttpStatus.NOT_FOUND,
         errorEnum: ErrorEnum.NOT_FOUND_ERROR,
         message: `Tax with id ${mockTaxPayment.taxId} not found.`,
+        console: { taxPaymentId: mockTaxPayment.id },
       })
 
       expect(bloomreachService.trackEventTaxPayment).not.toHaveBeenCalled()
@@ -738,6 +749,13 @@ describe('PaymentService', () => {
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,
         message: 'Error to redirect to response',
+        console: {
+          orderId: mockQuery.ORDERNUMBER,
+          taxType: TaxType.DZN,
+          OPERATION: mockQuery.OPERATION,
+          PRCODE: mockQuery.PRCODE,
+          SRCODE: mockQuery.SRCODE,
+        },
         alert: true,
         error: unexpectedError,
       })

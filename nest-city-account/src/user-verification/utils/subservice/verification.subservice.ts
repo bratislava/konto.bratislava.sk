@@ -7,7 +7,10 @@ import { MagproxyService } from '../../../magproxy/magproxy.service'
 import { PhysicalEntityService } from '../../../physical-entity/physical-entity.service'
 import { RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
 import { isValidBirthNumber } from '../../../utils/birthNumbers'
-import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
+import {
+  CognitoGetUserData,
+  CognitoUserAttributesEnum,
+} from '../../../utils/global-dtos/cognito.dto'
 import {
   RequestBodyVerifyIdentityCardDto,
   RequestBodyVerifyWithRpoDto,
@@ -71,7 +74,8 @@ export class VerificationSubservice {
 
   private verifyRpoStatutory(
     legalEntity: ResponseRpoLegalPersonDto,
-    birthNumber: string
+    birthNumber: string,
+    userSub: string
   ): VerificationReturnType {
     const statutoryBodies = legalEntity.statutarneOrgany
 
@@ -89,7 +93,8 @@ export class VerificationSubservice {
     this.logger.warn({
       message: 'Could not match birthnumber with statutory organ from RPO',
       ico: legalEntity.ico,
-      birthNumber,
+      userSub,
+      statutoryBodyCount: statutoryBodies?.length ?? 0,
     })
     return {
       success: false,
@@ -238,7 +243,11 @@ export class VerificationSubservice {
       if (!ico && !this.validatePersonName(rfoDataSingle, user.given_name, user.family_name)) {
         this.logger.warn('We refused validation based on names not matching.', {
           cognitoID: user.sub,
-          providedName: { name: user.given_name, surname: user.family_name },
+          hasGivenName: !!user.given_name,
+          hasFamilyName: !!user.family_name,
+          source: 'RFO_LIST',
+          rfoEntryCount: rfoEntries.length,
+          tier: user[CognitoUserAttributesEnum.TIER],
         })
         continue
       }
@@ -312,7 +321,10 @@ export class VerificationSubservice {
     if (!ico && !this.validatePersonName(rfoDataDcom.data, user.given_name, user.family_name)) {
       this.logger.warn('We refused validation based on names not matching.', {
         cognitoID: user.sub,
-        providedName: { name: user.given_name, surname: user.family_name },
+        hasGivenName: !!user.given_name,
+        hasFamilyName: !!user.family_name,
+        source: 'DCOM',
+        tier: user[CognitoUserAttributesEnum.TIER],
       })
       return { success: false, reason: VerificationErrorsEnum.NAMES_NOT_MATCHING }
     }
@@ -349,7 +361,7 @@ export class VerificationSubservice {
       return rpoData
     }
 
-    const verifyStatutory = this.verifyRpoStatutory(rpoData.data, data.birthNumber)
+    const verifyStatutory = this.verifyRpoStatutory(rpoData.data, data.birthNumber, user.sub)
     if (!verifyStatutory.success) {
       return verifyStatutory
     }

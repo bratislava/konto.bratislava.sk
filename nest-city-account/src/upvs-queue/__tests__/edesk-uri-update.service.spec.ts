@@ -90,6 +90,12 @@ describe('EdeskUriUpdateService', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: `Failed to update URI for physical entity id ${input.id}`,
+        console: {
+          physicalEntityId: input.id,
+          confirmedFailed: true,
+          successCount: 0,
+          failedCount: 1,
+        },
         alert: true,
       })
 
@@ -114,6 +120,12 @@ describe('EdeskUriUpdateService', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: `Failed to update URI for physical entity id ${input.id}`,
+        console: {
+          physicalEntityId: input.id,
+          confirmedFailed: false,
+          successCount: 0,
+          failedCount: 1,
+        },
         alert: true,
       })
 

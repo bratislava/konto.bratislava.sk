@@ -145,7 +145,7 @@ describe('RetryService', () => {
       expect(result).toBe('success')
       expect(mockFn).toHaveBeenCalledTimes(2)
       expect(logMock).toHaveBeenCalledWith(
-        `Retry attempt failed for function ${functionName}. Retrying in 0.10 seconds. Remaining retries: 1`,
+        `Retry attempt failed for function ${functionName}. Retrying in 0.10 seconds. Remaining retries: 1, attempt: 1`,
         expect.any(String),
       )
     })

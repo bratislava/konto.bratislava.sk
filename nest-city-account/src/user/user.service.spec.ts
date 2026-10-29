@@ -258,6 +258,11 @@ describe('UserService', () => {
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
         message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        console: {
+          userSub: cognitoUserData.sub,
+          accountType: 'unknown',
+          consentType: ConsentEnum.MARKETING,
+        },
         alert: true,
       })
 
@@ -302,6 +307,11 @@ describe('UserService', () => {
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
         message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+        console: {
+          userSub: cognitoUserData.sub,
+          accountType,
+          deliveryMethod: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
+        },
         alert: true,
       })
 

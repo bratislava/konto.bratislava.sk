@@ -65,14 +65,16 @@ export default class EmailSubservice {
 
       const info = await this.transporter.sendMail(emailOptions)
 
-      this.logger.log(
-        `Report email sent successfully to ${to.join(', ')}: ${info.messageId}`,
-        { emailOptions },
-      )
+      this.logger.log(`Report email sent successfully: ${info.messageId}`, {
+        subject,
+        recipients: to.length,
+        attachments: attachments?.map((attachment) => attachment.filename),
+      })
     } catch (error) {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Failed to send daily payment email report.',
+        console: { subject, recipients: to.length },
         error,
       })
     }

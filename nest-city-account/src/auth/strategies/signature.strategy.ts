@@ -71,7 +71,9 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       throw this.errorFactoryService.UnauthorizedException({
         errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
         message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
-        console: 'Server configuration error: Invalid public key format',
+        console: {
+          reason: 'Server configuration error: Invalid public key format',
+        },
       })
     }
 
@@ -82,7 +84,9 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       throw this.errorFactoryService.UnauthorizedException({
         errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
         message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
-        console: 'Missing X-Signature header',
+        console: {
+          reason: 'Missing X-Signature header',
+        },
       })
     }
 
@@ -90,7 +94,9 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       throw this.errorFactoryService.UnauthorizedException({
         errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
         message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
-        console: 'Missing X-Timestamp header',
+        console: {
+          reason: 'Missing X-Timestamp header',
+        },
       })
     }
 
@@ -100,8 +106,11 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       throw this.errorFactoryService.UnauthorizedException({
         errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
         message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
-        console:
-          'Invalid X-Timestamp format. Must be Unix timestamp in seconds or milliseconds (10 or 13 digits)',
+        console: {
+          reason:
+            'Invalid X-Timestamp format. Must be Unix timestamp in seconds or milliseconds (10 or 13 digits)',
+          timestamp,
+        },
       })
     }
 
@@ -110,7 +119,9 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       throw this.errorFactoryService.UnauthorizedException({
         errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
         message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
-        console: 'Invalid X-Timestamp format. Must be Unix timestamp in milliseconds',
+        console: {
+          reason: 'Invalid X-Timestamp format. Must be Unix timestamp in milliseconds',
+        },
       })
     }
 
@@ -121,7 +132,9 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       throw this.errorFactoryService.UnauthorizedException({
         errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
         message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
-        console: `Request timestamp too old. Age: ${age}ms, Max: ${this.maxTimestampAge}ms`,
+        console: {
+          reason: `Request timestamp too old. Age: ${age}ms, Max: ${this.maxTimestampAge}ms`,
+        },
       })
     }
 
@@ -129,7 +142,11 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       throw this.errorFactoryService.UnauthorizedException({
         errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
         message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
-        console: 'Request timestamp is in the future. Check your system clock.',
+        console: {
+          reason: 'Request timestamp is in the future. Check your system clock.',
+          ageMs: age,
+          maxClockSkewMs: this.maxClockSkew,
+        },
       })
     }
 
@@ -155,7 +172,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
         throw this.errorFactoryService.UnauthorizedException({
           errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
           message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
-          console: 'Invalid signature',
+          console: { reason: 'Invalid signature' },
         })
       }
 
@@ -172,7 +189,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       throw this.errorFactoryService.UnauthorizedException({
         errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
         message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
-        console: 'Signature verification failed',
+        console: { reason: 'Signature verification failed' },
         error: error instanceof Error ? error : undefined,
       })
     }
@@ -189,8 +206,11 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       throw this.errorFactoryService.UnauthorizedException({
         errorEnum: ErrorEnum.UNAUTHORIZED_ERROR,
         message: ErrorResponseEnum.UNAUTHORIZED_ERROR,
-        console:
-          'Missing X-Nonce header or header is not string. This endpoint requires nonce-based replay protection.',
+        console: {
+          reason:
+            'Missing X-Nonce header or header is not string. This endpoint requires nonce-based replay protection.',
+          nonceType: typeof nonce,
+        },
       })
     }
 

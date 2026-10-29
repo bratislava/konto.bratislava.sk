@@ -15,7 +15,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { chromium } from 'playwright'
 import type { Mock } from 'vitest'
 
-import { expectStringContaining } from '../__tests__/matchers'
+import { expectAny } from '../__tests__/matchers'
 import BaConfig from '../config/ba-config'
 import BaConfigService from '../config/ba-config.service'
 import EnvironmentVariables from '../config/environment-variables'
@@ -123,7 +123,13 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-        console: expectStringContaining('Error generating PDF'),
+        console: {
+          reason: 'Error generating PDF from Mailgun template',
+          templateName: templateArgs[0],
+          filename: templateArgs[1],
+          sharedBrowserRefCount: 2,
+          elapsedMs: expectAny<number>(Number),
+        },
         alert: true,
         error: pdfError,
       })

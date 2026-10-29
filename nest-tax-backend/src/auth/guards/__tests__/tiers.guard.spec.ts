@@ -168,7 +168,14 @@ describe('TiersGuard', () => {
 
       await expect(
         guard.canActivate(makeMockContext()),
-      ).rejects.toThrowEqualLogNestError(forbiddenTierError)
+      ).rejects.toThrowEqualLogNestError({
+        ...forbiddenTierError,
+        console: {
+          cognitoId: USER_SUB,
+          tier: CognitoUserAttributesTierEnum.New,
+          requiredTiers: [CognitoUserAttributesTierEnum.IdentityCard],
+        },
+      })
     })
 
     it('should throw a 403 ForbiddenException when user tier matches none of multiple required tiers', async () => {
@@ -182,7 +189,17 @@ describe('TiersGuard', () => {
 
       await expect(
         guard.canActivate(makeMockContext()),
-      ).rejects.toThrowEqualLogNestError(forbiddenTierError)
+      ).rejects.toThrowEqualLogNestError({
+        ...forbiddenTierError,
+        console: {
+          cognitoId: USER_SUB,
+          tier: CognitoUserAttributesTierEnum.New,
+          requiredTiers: [
+            CognitoUserAttributesTierEnum.IdentityCard,
+            CognitoUserAttributesTierEnum.Eid,
+          ],
+        },
+      })
     })
   })
 

@@ -30,6 +30,7 @@ const expectValidationError = (messagePart?: string): LogNestErrorEqualExpectati
   status: HttpStatus.BAD_REQUEST,
   errorEnum: CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
   message: messagePart ? expectStringContaining(messagePart) : expectAny<string>(String),
+  console: { issues: expectAny<unknown[]>(Array) },
   error: expectAny<z.ZodError>(z.ZodError),
 })
 
@@ -137,7 +138,8 @@ describe('NorisValidatorService', () => {
         expect(result).toContainEqual(testEdeskRecord2)
         expect(vi.mocked(logger.error)).toHaveBeenCalledTimes(invalidEdeskRecords.length)
         expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
-          expect.toMatchLogNestError(expectValidationError())
+          expect.toMatchLogNestError(expectValidationError()),
+          { index: expectAny<number>(Number), itemCount: expectAny<number>(Number) }
         )
       })
 
@@ -146,7 +148,8 @@ describe('NorisValidatorService', () => {
         expect(result).toHaveLength(0)
         expect(vi.mocked(logger.error)).toHaveBeenCalledTimes(invalidEdeskRecords.length)
         expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
-          expect.toMatchLogNestError(expectValidationError())
+          expect.toMatchLogNestError(expectValidationError()),
+          { index: expectAny<number>(Number), itemCount: expectAny<number>(Number) }
         )
       })
 

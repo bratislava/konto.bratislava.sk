@@ -435,7 +435,7 @@ export default class SharepointService {
   private async getAccessToken(): Promise<string> {
     const url = `https://login.microsoftonline.com/${this.baConfigService.sharepoint.tenantId}/oauth2/v2.0/token`
     const result = await axios
-      .post(
+      .post<{ access_token: string }>(
         url,
         {
           grant_type: 'client_credentials',
@@ -445,10 +445,7 @@ export default class SharepointService {
         },
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
       )
-      .then(
-        (response: AxiosResponse<{ access_token: string }, object>) =>
-          response.data.access_token,
-      )
+      .then((response) => response.data.access_token)
       .catch((error: unknown) => {
         if (!isAxiosError(error)) {
           throw this.errorFactoryService.InternalServerErrorException({

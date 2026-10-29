@@ -199,6 +199,7 @@ describe('NorisDeliveryMethodService', () => {
     it('should filter out invalid delivery methods', async () => {
       const mockData = {
         '010366/4554': { deliveryMethod: DeliveryMethod.EDESK },
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment -- deliberately invalid delivery method
         '010366/554': { deliveryMethod: 'INVALID_METHOD' as DeliveryMethod },
       } as unknown as UpdateNorisDeliveryMethodsData
 

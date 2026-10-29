@@ -109,7 +109,7 @@
     "@svgr/webpack": "8.1.0",
     "@tailwindcss/postcss": "4.3.3",
     "@types/js-cookie": "3.0.6",
-    "@types/lodash": "4.17.26",
+    "@types/lodash": "4.17.27",
     "@types/mime-types": "3.0.1",
     "@types/node": "catalog:",
     "@types/object-hash": "3.0.6",

@@ -7,7 +7,7 @@ import { formatDate } from '@/src/components/formatting/FormatDate'
 import { formatMarkdownLink } from '@/src/components/formatting/formatMarkdownLink'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
-import MyApplicationDetailsHeader from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetailsHeader'
+import MyApplicationDetailsHeader from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails/MyApplicationDetailsHeader'
 
 type Props = {
   formDefinitionTitle: string
@@ -26,13 +26,14 @@ const MyApplicationDetails = ({
 }: Props) => {
   const { t } = useTranslation()
 
-  const { id, dossierId, ownerName, ownerEmail, ownerPhone, documentHistory } =
+  const { id, referenceNumber, dossierId, ownerName, ownerEmail, ownerPhone, documentHistory } =
     myApplicationGinisData ?? {}
 
   const detailsRows: LabelValueRowProps[] = [
-    { label: t('MyApplicationDetails.recordNumber'), value: id },
-    // TODO Add 'Názov projektu' when more information is availible from product (we will display this only for some forms)
-    { label: t('MyApplicationDetails.fileNumber'), value: dossierId },
+    { label: t('MyApplicationDetails.recordReferenceNumber'), value: referenceNumber },
+    { label: t('MyApplicationDetails.recordIdentifier'), value: id },
+    // TODO Add 'Názov projektu' when more information is available from product (we will display this only for some forms)
+    { label: t('MyApplicationDetails.fileIdentifier'), value: dossierId },
     { label: t('MyApplicationDetails.ownerName'), value: ownerName },
     {
       label: t('MyApplicationDetails.ownerContact'),

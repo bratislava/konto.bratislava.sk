@@ -1,73 +1,74 @@
-import { useRouter } from 'next/router'
+import { Button, Typography } from '@bratislava/component-library'
+import { useTranslation } from 'next-i18next/pages'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
 
-import MyApplicationsBanner from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsBanner'
-import MyApplicationsCard from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard'
+import RowGroupWrapper from '@/src/components/common/RowGroupWrapper'
+import MyApplicationsCard from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard/MyApplicationsCard'
+import { useMyApplicationsFilters } from '@/src/components/page-contents/MyApplicationsPageContent/useMyApplicationsFilters'
 import Pagination from '@/src/components/simple-components/Pagination/Pagination'
-import { useRefreshServerSideProps } from '@/src/frontend/hooks/useRefreshServerSideProps'
+import Spinner from '@/src/components/simple-components/Spinner'
+import { isDefined } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
-import { ApplicationsListVariant } from '@/src/pages/moje-ziadosti'
 
 type Props = {
-  variant: ApplicationsListVariant
   applications?: GetFormsResponseDto
-  refetchApplicationsCount: () => Promise<void>
-  formDefinitionSlugTitleMap: Record<string, string>
+  isPending: boolean
+  isError: boolean
+  refreshListData: () => Promise<void>
 }
 
-const MyApplicationsList = ({
-  variant,
-  applications,
-  refetchApplicationsCount,
-  formDefinitionSlugTitleMap,
-}: Props) => {
-  const router = useRouter()
+const MyApplicationsList = ({ applications, isPending, isError, refreshListData }: Props) => {
+  const { t } = useTranslation()
+  const { page, setPage } = useMyApplicationsFilters()
 
-  const currentPage = parseInt(router.query.strana as string, 10) || 1
+  if (isPending) {
+    return (
+      <div className="flex justify-center py-8 lg:py-12">
+        <Spinner size="lg" />
+        <span className="sr-only">{t('MyApplicationsList.loading')}</span>
+      </div>
+    )
+  }
 
-  const { refreshData } = useRefreshServerSideProps(applications)
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center gap-4 py-8 text-center lg:py-12">
+        <Typography variant="p-default">{t('MyApplicationsList.error')}</Typography>
+        <Button
+          variant="outline"
+          onPress={() => {
+            refreshListData().catch((error) => logger.error(error))
+          }}
+        >
+          {t('MyApplicationsList.retry')}
+        </Button>
+      </div>
+    )
+  }
 
-  const refreshListData = () => Promise.all([refetchApplicationsCount(), refreshData()])
+  const filteredApplications = applications?.items.filter(isDefined) ?? []
 
-  const totalPagesCount = applications?.countPages ?? 0
-
-  return applications?.items.length ? (
+  return filteredApplications.length ? (
     <>
-      <ul className="flex flex-col gap-2 lg:gap-4">
-        {applications.items.map((form) => {
-          return (
-            <li key={form.id}>
-              <MyApplicationsCard
-                form={form}
-                refreshListData={refreshListData}
-                variant={variant}
-                formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-              />
-            </li>
-          )
+      <Typography variant="h2" className="sr-only">
+        {t('MyApplicationsList.applicationsList.aria')}
+      </Typography>
+      <RowGroupWrapper
+        asList
+        className="flex flex-col"
+        items={filteredApplications.map((form) => {
+          return <MyApplicationsCard key={form.id} form={form} refreshListData={refreshListData} />
         })}
-      </ul>
+      />
       <div className="py-4 lg:py-8">
         <Pagination
-          totalCount={totalPagesCount}
-          currentPage={currentPage}
-          onPageChange={(page) =>
-            router
-              .push(
-                {
-                  pathname: router.pathname,
-                  query: { ...router.query, strana: page },
-                },
-                undefined,
-              )
-              .catch((error) => logger.error(error))
-          }
+          totalCount={applications?.countPages ?? 0}
+          currentPage={page}
+          onPageChange={(page) => setPage(page)}
         />
       </div>
     </>
-  ) : (
-    <MyApplicationsBanner variant="no-applications" />
-  )
+  ) : null
 }
 
 export default MyApplicationsList

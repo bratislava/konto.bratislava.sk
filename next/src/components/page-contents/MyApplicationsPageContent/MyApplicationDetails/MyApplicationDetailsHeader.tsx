@@ -6,7 +6,7 @@ import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clie
 import FormatDate from '@/src/components/formatting/FormatDate'
 import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import useExportFormPdf from '@/src/components/page-contents/MyApplicationsPageContent/useExportFormPdf'
+import { useExportFormToPdf } from '@/src/frontend/hooks/useExportFormToPdf'
 
 type Props = {
   formDefinitionTitle: string
@@ -25,7 +25,7 @@ const MyApplicationDetailsHeader = ({
 }: Props) => {
   const { t } = useTranslation()
   const router = useRouter()
-  const exportFormPdf = useExportFormPdf({ myApplicationFormData })
+  const { exportFormToPdf } = useExportFormToPdf()
 
   const firstGinisChangeDate =
     myApplicationGinisData?.documentHistory?.[
@@ -58,12 +58,17 @@ const MyApplicationDetailsHeader = ({
             ) : null}
           </div>
         </div>
-        {exportFormPdf ? (
+        {myApplicationFormData ? (
           <Button
             variant="solid"
             fullWidthMobile
             startIcon={<Icon name="download" />}
-            onPress={exportFormPdf}
+            onPress={() =>
+              exportFormToPdf({
+                formId: myApplicationFormData.id,
+                formSlug: myApplicationFormData.formDefinitionSlug,
+              })
+            }
           >
             {t('MyApplicationDetailsHeader.downloadPdf')}
           </Button>

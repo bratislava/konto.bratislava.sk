@@ -1,61 +1,75 @@
+import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 import { useTranslation } from 'next-i18next/pages'
-import { GetFormsResponseDto } from 'openapi-clients/forms'
 
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import { GeneralQuery } from '@/src/clients/graphql-strapi/api'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
-import { getDraftApplications } from '@/src/components/page-contents/MyApplicationsPageContent/getDraftApplications'
+import {
+  getMyApplicationsCountQueryKey,
+  myApplicationsCountFetcher,
+} from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationsCountFetcher'
+import {
+  getMyApplicationsFilters,
+  getMyApplicationsQueryKey,
+  myApplicationsFetcher,
+} from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationsFetcher'
 import MyApplicationsPageContent from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsPageContent'
-import { getEmailFormSlugs } from '@/src/components/page-contents/MyApplicationsPageContent/patchApplicationFormIfNeededServer'
+import { parseMyApplicationsFiltersFromServerUrlQuery } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsUrlQuery'
+import {
+  FormDefinitionSlugTitleMap,
+  FormDefinitionSlugTitleMapProvider,
+} from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionSlugTitleMap'
 import SeoHead from '@/src/components/simple-components/SeoHead'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
-type AccountMyApplicationsPageProps = {
+type MyApplicationsPageProps = {
   general: GeneralQuery
-  applications: GetFormsResponseDto
-  selectedSection: ApplicationsListVariant
-  formDefinitionSlugTitleMap: Record<string, string>
-  emailFormSlugs: string[]
-}
-export const sections = ['SENT', 'SENDING', 'DRAFT'] as const
-
-export type ApplicationsListVariant = (typeof sections)[number]
-
-const slovakToEnglishSectionNames: Record<string, ApplicationsListVariant> = {
-  odoslane: 'SENT',
-  'odosiela-sa': 'SENDING',
-  koncepty: 'DRAFT',
+  formDefinitionSlugTitleMap: FormDefinitionSlugTitleMap
+  dehydratedState: DehydratedState
 }
 
-const getFormDefinitionSlugTitleMap = () =>
+const getFormDefinitionSlugTitleMap = (): FormDefinitionSlugTitleMap =>
   Object.fromEntries(
     formDefinitions.map((formDefinition) => [formDefinition.slug, formDefinition.title]),
   )
 
-export const getServerSideProps = amplifyGetServerSideProps(
+export const getServerSideProps = amplifyGetServerSideProps<MyApplicationsPageProps>(
   async ({ context, fetchAuthSession }) => {
-    const selectedSection = context.query.sekcia
-      ? slovakToEnglishSectionNames[context.query.sekcia as ApplicationsListVariant]
-      : 'SENT'
-    const currentPage = parseInt(context.query.strana as string, 10) || 1
-    const emailFormSlugs = getEmailFormSlugs()
+    const { selectedMyApplicationState, page } = parseMyApplicationsFiltersFromServerUrlQuery(
+      context.query,
+    )
+    const filters = getMyApplicationsFilters({
+      myApplicationState: selectedMyApplicationState,
+      page,
+    })
 
-    const [general, applications] = await Promise.all([
+    const queryClient = new QueryClient()
+
+    const [general] = await Promise.all([
       strapiClient.General(),
-      getDraftApplications(selectedSection, currentPage, emailFormSlugs, fetchAuthSession),
+      // Auth session is request scoped, so it deliberately isn't part of the query keys
+      // - they have to match the ones used on the client.
+      // eslint-disable-next-line @tanstack/query/exhaustive-deps
+      queryClient.prefetchQuery({
+        queryKey: getMyApplicationsQueryKey(filters),
+        queryFn: () => myApplicationsFetcher(filters, fetchAuthSession),
+      }),
+      // eslint-disable-next-line @tanstack/query/exhaustive-deps
+      queryClient.prefetchQuery({
+        queryKey: getMyApplicationsCountQueryKey(),
+        queryFn: () => myApplicationsCountFetcher(fetchAuthSession),
+      }),
     ])
 
     return {
       props: {
         general,
-        applications,
-        selectedSection,
         formDefinitionSlugTitleMap: getFormDefinitionSlugTitleMap(),
-        emailFormSlugs: getEmailFormSlugs(),
+        dehydratedState: dehydrate(queryClient),
         ...(await slovakServerSideTranslations()),
       },
     }
@@ -63,31 +77,27 @@ export const getServerSideProps = amplifyGetServerSideProps(
   { requiresSignIn: true },
 )
 
-const AccountMyApplicationsPage = ({
+const MyApplicationsPage = ({
   general,
-  selectedSection,
-  applications,
   formDefinitionSlugTitleMap,
-  emailFormSlugs,
-}: AccountMyApplicationsPageProps) => {
+  dehydratedState,
+}: MyApplicationsPageProps) => {
   const { t } = useTranslation()
 
   return (
-    <GeneralContextProvider general={general}>
-      <>
+    <HydrationBoundary state={dehydratedState}>
+      <GeneralContextProvider general={general}>
         <SeoHead title={t('MyApplicationsPageContent.title')} />
-
         <PageLayout>
-          <MyApplicationsPageContent
-            selectedSection={selectedSection}
-            applications={applications}
+          <FormDefinitionSlugTitleMapProvider
             formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-            emailFormSlugs={emailFormSlugs}
-          />
+          >
+            <MyApplicationsPageContent />
+          </FormDefinitionSlugTitleMapProvider>
         </PageLayout>
-      </>
-    </GeneralContextProvider>
+      </GeneralContextProvider>
+    </HydrationBoundary>
   )
 }
 
-export default SsrAuthProviderHOC(AccountMyApplicationsPage)
+export default SsrAuthProviderHOC(MyApplicationsPage)

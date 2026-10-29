@@ -618,8 +618,8 @@ export class VerificationService {
     const icoEncrypted = encryptData(data.ico)
 
     // TODO this should not be undefined at this point
-    const givenNameEncrypted = encryptData(user.given_name ?? 'not-set')
-    const familyNameEncrypted = encryptData(user.family_name ?? 'not-set')
+    const givenNameEncrypted = encryptData(user.given_name ?? NAME_NOT_SET)
+    const familyNameEncrypted = encryptData(user.family_name ?? NAME_NOT_SET)
 
     await this.prisma.legalPersonIcoIdCardVerify.create({
       data: {

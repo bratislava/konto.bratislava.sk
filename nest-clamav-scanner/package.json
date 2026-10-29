@@ -6,7 +6,6 @@
   "private": false,
   "license": "LICENSED",
   "scripts": {
-    "prebuild": "rimraf dist",
     "build": "nest build",
     "build:dependencies": "pnpm -w exec turbo run build --filter=nest-clamav-scanner... --filter=!nest-clamav-scanner",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -69,7 +68,6 @@
     "eslint": "9.39.4",
     "path": "0.12.7",
     "prettier": "3.6.2",
-    "rimraf": "6.0.1",
     "source-map-support": "0.5.21",
     "typescript": "6.0.3",
     "typescript-eslint": "8.68.0",

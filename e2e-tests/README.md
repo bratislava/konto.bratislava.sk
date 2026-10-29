@@ -51,6 +51,17 @@ pnpm run test
 Useful flags: `--project=smoke|desktop|mobile`, `--grep <pattern>`, `--headed`, `--debug`,
 `--ui`, and `--last-failed`.
 
+Tests tagged `@desktop-only` cover behaviour that does not depend on the viewport, so the `mobile`
+project leaves them out.
+
+## Guest identity specs
+
+`src/auth/` covers the guest identity ID Amplify keeps in a cookie, and what the app adds on top of
+Amplify: healing a cookie Cognito rejects, and logging the guest identity ID with the user at
+sign-in. The specs plant cookies and then ask Cognito directly whether an identity ID is still
+usable as a guest, so the machine running them needs to reach
+`cognito-identity.<region>.amazonaws.com`.
+
 ## What a run does to staging
 
 Every test that needs an account registers its own, so there is no shared account and no ordering
@@ -62,7 +73,8 @@ and `globalSetup` prints the run id, so one run's leftovers are identifiable.
 ## The Cypress migration
 
 This package replaces the Cypress suite that lived in `../tests`. All fourteen of its specs have a
-counterpart here, in `src/legacy/specs/`, tagged `@legacy`.
+counterpart here, in `src/legacy/specs/`, tagged `@legacy`, except the form registration redirect,
+which `src/forms/form-migration.spec.ts` covers together with signing in.
 
 Every spec header links the Cypress file it replaces, pinned at tag `prod3.30.3` so the original
 stays reachable now that `../tests` is deleted:

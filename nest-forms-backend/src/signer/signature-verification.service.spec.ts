@@ -348,14 +348,16 @@ describe('SignatureVerificationService', () => {
       })
     })
 
-    it('does not reject right after signing when Slovensko.sk is unavailable', async () => {
+    it('fails right after signing when Slovensko.sk is unavailable', async () => {
       apiCepVerifyPost.mockRejectedValue(upstreamError())
 
       await expect(
         service.verifyFormSignature(SIGNATURE, CONTEXT),
-      ).resolves.toEqual({
-        accepted: true,
-        verified: false,
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.SERVICE_UNAVAILABLE,
+        errorEnum: SignerErrorsEnum.SIGNATURE_VERIFICATION_UNAVAILABLE,
+        message: SignerErrorsResponseEnum.SIGNATURE_VERIFICATION_UNAVAILABLE,
+        console: CONTEXT,
       })
     })
 
@@ -369,7 +371,6 @@ describe('SignatureVerificationService', () => {
         errorEnum: SignerErrorsEnum.SIGNATURE_VERIFICATION_UNAVAILABLE,
         message: SignerErrorsResponseEnum.SIGNATURE_VERIFICATION_UNAVAILABLE,
         console: CONTEXT,
-        alert: true,
       })
     })
   })
@@ -441,7 +442,9 @@ describe('SignatureVerificationService', () => {
     it('stores nothing when Slovensko.sk is unavailable', async () => {
       apiCepVerifyPost.mockRejectedValue(upstreamError())
 
-      await service.verifyFormSignature(SIGNATURE, CONTEXT)
+      await expect(
+        service.verifyFormSignature(SIGNATURE, CONTEXT),
+      ).rejects.toThrowLogNestError()
 
       expect(verdictCache.set).not.toHaveBeenCalled()
     })

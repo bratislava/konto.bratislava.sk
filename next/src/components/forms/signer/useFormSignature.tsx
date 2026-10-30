@@ -47,11 +47,11 @@ declare global {
  * - `outdated`: the signature was created for different form data or a different form version.
  * - `verifying`: the signature is being verified with Slovensko.sk (via forms backend, see
  *   `SignatureVerificationService` in nest-forms-backend). The first verification of a certificate can take ~20 s.
- * - `verificationFailed`: the verification request failed (e.g. network error). The form cannot be sent until the
- *   verification succeeds, the user can retry it.
+ * - `verificationFailed`: the verification request failed (e.g. network error, Slovensko.sk unavailable). The form
+ *   cannot be sent until the verification succeeds, the user can retry it.
  * - `rejected`: the signature will not be accepted, the user has to sign again.
  * - `valid`: the signature can be sent. Also when the backend accepted it without verifying (verification disabled or
- *   Slovensko.sk unavailable), the backend then verifies it again when the form is sent.
+ *   only logged), the backend then verifies it again when the form is sent.
  */
 export type SignatureState =
   | { kind: 'notRequired' | 'missing' | 'outdated' | 'verifying' | 'verificationFailed' | 'valid' }

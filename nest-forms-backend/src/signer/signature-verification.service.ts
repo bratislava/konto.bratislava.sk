@@ -173,6 +173,14 @@ export default class SignatureVerificationService {
     return { status: 'verified', verdict }
   }
 
+  private unavailableException(context: VerificationContext) {
+    return this.errorFactoryService.ServiceUnavailableException({
+      errorEnum: SignerErrorsEnum.SIGNATURE_VERIFICATION_UNAVAILABLE,
+      message: SignerErrorsResponseEnum.SIGNATURE_VERIFICATION_UNAVAILABLE,
+      console: { ...context },
+    })
+  }
+
   /** `log` mode: the user does not wait for a result that is only logged. */
   private checkInBackground(
     signatureBase64: string,
@@ -189,7 +197,7 @@ export default class SignatureVerificationService {
 
   /**
    * Verification requested by the frontend right after signing, so the user learns about a wrong certificate before
-   * sending. Never throws because of an unavailable CEP, the signature is then verified again when the form is sent.
+   * sending. In `enforce` mode throws when CEP is unavailable, the form could not be sent anyway.
    */
   async verifyFormSignature(
     signatureBase64: string,
@@ -207,7 +215,7 @@ export default class SignatureVerificationService {
 
     const result = await this.check(signatureBase64, context)
     if (result.status === 'unavailable') {
-      return { accepted: true, verified: false }
+      throw this.unavailableException(context)
     }
 
     const { verdict } = result
@@ -238,11 +246,7 @@ export default class SignatureVerificationService {
 
     const result = await this.check(signatureBase64, context)
     if (result.status === 'unavailable') {
-      throw this.errorFactoryService.ServiceUnavailableException({
-        errorEnum: SignerErrorsEnum.SIGNATURE_VERIFICATION_UNAVAILABLE,
-        message: SignerErrorsResponseEnum.SIGNATURE_VERIFICATION_UNAVAILABLE,
-        console: { ...context },
-      })
+      throw this.unavailableException(context)
     }
 
     const { verdict } = result

@@ -1,13 +1,15 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import { PropsWithChildren, useMemo } from 'react'
+import { PropsWithChildren, ReactNode, useMemo } from 'react'
+import { FileTrigger } from 'react-aria-components/FileTrigger'
 
 import { useFormSignature } from '@/src/components/forms/signer/useFormSignature'
 import { useFormSignerLoader } from '@/src/components/forms/signer/useFormSignerLoader'
+import { useSignatureRejectionMessage } from '@/src/components/forms/signer/useSignatureRejectionMessage'
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import Icon from '@/src/components/icon-components/Icon'
-import Alert from '@/src/components/simple-components/Alert'
+import Alert, { AlertProps } from '@/src/components/simple-components/Alert'
 import DropdownMenu from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
 
@@ -15,19 +17,14 @@ import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
  * TODO: MenuDropdown position fix
  */
 
-const SummaryFormSignature = () => {
+const SignatureAlertContent = ({
+  signAgainDisabled,
+  children,
+}: PropsWithChildren<{ signAgainDisabled: boolean }>) => {
   const { t } = useTranslation()
+  const { sign, remove } = useFormSignature()
 
-  const { isReadonly } = useFormContext()
-  const { isLoading, isReady, isError, isNotSupported, retry } = useFormSignerLoader()
-  const { signature, sign, isValidSignature, remove, getSingerDataIsPending } = useFormSignature()
-  const { getValidatedSummary } = useFormSummary()
-
-  const validSignature = useMemo(() => isValidSignature(), [isValidSignature])
-  const signerButtonDisabled =
-    isReadonly || !isReady || getSingerDataIsPending || isFormSigningDisabled(getValidatedSummary())
-
-  const AlertContent = ({ children }: PropsWithChildren) => (
+  return (
     <div className="flex w-full">
       <span className="grow">{children}</span>
       <div className="ml-2 shrink-0">
@@ -45,6 +42,7 @@ const SummaryFormSignature = () => {
               title: t('SummaryFormSignature.menu.signAgain'),
               icon: <Icon name="edit" className="size-6" />,
               onPress: () => sign(),
+              isDisabled: signAgainDisabled,
             },
             {
               title: t('SummaryFormSignature.menu.remove'),
@@ -57,6 +55,110 @@ const SummaryFormSignature = () => {
       </div>
     </div>
   )
+}
+
+const SummaryFormSignature = () => {
+  const { t } = useTranslation()
+
+  const { isReadonly } = useFormContext()
+  const {
+    isLoading: signerIsLoading,
+    isReady: signerIsReady,
+    isError: signerLoadingFailed,
+    isNotSupported: signerIsNotSupported,
+    retry: retrySignerLoading,
+  } = useFormSignerLoader()
+  const {
+    sign,
+    signWithFile,
+    signatureUploadAllowed,
+    getSignatureState,
+    retrySignatureVerification,
+    getSingerDataIsPending,
+  } = useFormSignature()
+  const { getValidatedSummary } = useFormSummary()
+  const getSignatureRejectionMessage = useSignatureRejectionMessage()
+
+  const signatureState = useMemo(() => getSignatureState(), [getSignatureState])
+  const signerButtonDisabled =
+    isReadonly ||
+    !signerIsReady ||
+    getSingerDataIsPending ||
+    isFormSigningDisabled(getValidatedSummary())
+
+  const signAgainButton = (
+    <Button
+      variant="link"
+      isLoading={signerIsLoading}
+      isDisabled={signerButtonDisabled}
+      onPress={() => sign()}
+    >
+      {t('SummaryFormSignature.signAgain')}
+    </Button>
+  )
+
+  const signatureAlert = (type: AlertProps['type'], message: ReactNode) => (
+    <Alert
+      type={type}
+      message={
+        <SignatureAlertContent signAgainDisabled={signerButtonDisabled}>
+          {message}
+        </SignatureAlertContent>
+      }
+      className="min-w-full"
+    />
+  )
+
+  const renderSignatureState = () => {
+    switch (signatureState.kind) {
+      case 'notRequired':
+        // The component is rendered only for signed forms.
+        return null
+      case 'missing':
+        return (
+          <Button
+            variant="outline"
+            isLoading={signerIsLoading}
+            isDisabled={signerButtonDisabled}
+            onPress={() => sign()}
+          >
+            {t('SummaryFormSignature.signDocument')}
+          </Button>
+        )
+      case 'outdated':
+        return signatureAlert(
+          'warning',
+          <>
+            {t('SummaryFormSignature.outdated')} {signAgainButton}
+          </>,
+        )
+      case 'verifying':
+        return signatureAlert('info', t('SummaryFormSignature.verificationPending'))
+      case 'verificationFailed':
+        return signatureAlert(
+          'error',
+          <>
+            {t('SummaryFormSignature.verificationFailed')}{' '}
+            <Button variant="link" onPress={() => retrySignatureVerification()}>
+              {t('SummaryFormSignature.retry')}
+            </Button>
+          </>,
+        )
+      case 'rejected':
+        return signatureAlert(
+          'error',
+          <>
+            {getSignatureRejectionMessage(signatureState.reason)} {signAgainButton}
+          </>,
+        )
+      case 'valid':
+        return signatureAlert('success', t('SummaryFormSignature.success'))
+      default: {
+        const unhandled: never = signatureState
+        throw new Error(`Unhandled signature state: ${JSON.stringify(unhandled)}`)
+      }
+    }
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -64,7 +166,7 @@ const SummaryFormSignature = () => {
         <Typography variant="h3">{t('SummaryFormSignature.title')}</Typography>
         <Typography variant="p-small">{t('SummaryFormSignature.description')}</Typography>
       </div>
-      {isNotSupported && (
+      {signerIsNotSupported && (
         <Alert
           type="error"
           message={
@@ -78,13 +180,13 @@ const SummaryFormSignature = () => {
           className="min-w-full"
         />
       )}
-      {isError && (
+      {signerLoadingFailed && (
         <Alert
           type="error"
           message={
             <>
               {t('SummaryFormSignature.loaderError')}{' '}
-              <Button variant="link" onPress={() => retry()}>
+              <Button variant="link" onPress={() => retrySignerLoading()}>
                 {t('SummaryFormSignature.retry')}
               </Button>
             </>
@@ -92,41 +194,13 @@ const SummaryFormSignature = () => {
           className="min-w-full"
         />
       )}
-      {signature &&
-        (validSignature ? (
-          <Alert
-            message={<AlertContent>{t('SummaryFormSignature.success')}</AlertContent>}
-            type="success"
-            className="min-w-full"
-          />
-        ) : (
-          <Alert
-            message={
-              <AlertContent>
-                {t('SummaryFormSignature.outdated')}{' '}
-                <Button
-                  variant="link"
-                  isLoading={isLoading}
-                  isDisabled={signerButtonDisabled}
-                  onPress={() => sign()}
-                >
-                  {t('SummaryFormSignature.signAgain')}
-                </Button>
-              </AlertContent>
-            }
-            type="warning"
-            className="min-w-full"
-          />
-        ))}
-      {!signature && (
-        <Button
-          variant="outline"
-          isLoading={isLoading}
-          isDisabled={signerButtonDisabled}
-          onPress={() => sign()}
-        >
-          {t('SummaryFormSignature.signDocument')}
-        </Button>
+      {renderSignatureState()}
+      {signatureUploadAllowed && (
+        <FileTrigger onSelect={signWithFile} acceptedFileTypes={['.asice']} allowsMultiple={false}>
+          <Button variant="outline" isDisabled={isReadonly}>
+            {t('SummaryFormSignature.devUploadSignature')}
+          </Button>
+        </FileTrigger>
       )}
     </div>
   )

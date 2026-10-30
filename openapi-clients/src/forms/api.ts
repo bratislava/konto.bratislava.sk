@@ -639,6 +639,23 @@ export interface ServiceRunningDto {
    */
   running: boolean
 }
+/**
+ * Why the signature was rejected, present when `accepted` is false.
+ */
+
+export const SignatureRejectionReason = {
+  UntrustedCertificate: 'UntrustedCertificate',
+  CertificateExpired: 'CertificateExpired',
+  CertificateRevoked: 'CertificateRevoked',
+  SignatureInvalid: 'SignatureInvalid',
+  NotSigned: 'NotSigned',
+  MultipleSignatures: 'MultipleSignatures',
+  Unexpected: 'Unexpected',
+} as const
+
+export type SignatureRejectionReason =
+  (typeof SignatureRejectionReason)[keyof typeof SignatureRejectionReason]
+
 export interface SignerDataRequestDto {
   /**
    * Form values in JSON
@@ -933,6 +950,27 @@ export interface ValidateFormRegistrationsResultDto {
    */
   valid: Array<ValidateFormRegistrationDto>
 }
+export interface VerifyFormSignatureRequestDto {
+  /**
+   * Base64 encoded signed ASiC-E container, as returned by the signer.
+   */
+  signatureBase64: string
+}
+export interface VerifyFormSignatureResponseDto {
+  /**
+   * Whether the signature can be used to send the form. `true` also when the signature was not verified (verification disabled, or only logged).
+   */
+  accepted: boolean
+  /**
+   * Whether the signature was actually verified by Slovensko.sk. `false` when verification is disabled.
+   */
+  verified: boolean
+  /**
+   * Why the signature was rejected, present when `accepted` is false.
+   */
+  reason?: SignatureRejectionReason
+}
+
 export interface WebhookDto {
   /**
    * UUID of the form
@@ -4077,6 +4115,70 @@ export const SignerApiAxiosParamCreator = function (configuration?: Configuratio
         options: localVarRequestOptions,
       }
     },
+    /**
+     * Verifies a signature created for the form with the Slovensko.sk CEP service, so the user can be told right after signing that the signature will be rejected (e.g. signed with a wrong certificate). The signature is verified again when the form is sent.
+     * @summary Verify form signature
+     * @param {string} formId
+     * @param {VerifyFormSignatureRequestDto} verifyFormSignatureRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    signerControllerVerifyFormSignature: async (
+      formId: string,
+      verifyFormSignatureRequestDto: VerifyFormSignatureRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('signerControllerVerifyFormSignature', 'formId', formId)
+      // verify required parameter 'verifyFormSignatureRequestDto' is not null or undefined
+      assertParamExists(
+        'signerControllerVerifyFormSignature',
+        'verifyFormSignatureRequestDto',
+        verifyFormSignatureRequestDto,
+      )
+      const localVarPath = `/signer/verify-signature/{formId}`.replace(
+        '{formId}',
+        encodeURIComponent(String(formId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        verifyFormSignatureRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -4117,6 +4219,39 @@ export const SignerApiFp = function (configuration?: Configuration) {
           configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
+    /**
+     * Verifies a signature created for the form with the Slovensko.sk CEP service, so the user can be told right after signing that the signature will be rejected (e.g. signed with a wrong certificate). The signature is verified again when the form is sent.
+     * @summary Verify form signature
+     * @param {string} formId
+     * @param {VerifyFormSignatureRequestDto} verifyFormSignatureRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async signerControllerVerifyFormSignature(
+      formId: string,
+      verifyFormSignatureRequestDto: VerifyFormSignatureRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<VerifyFormSignatureResponseDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.signerControllerVerifyFormSignature(
+        formId,
+        verifyFormSignatureRequestDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['SignerApi.signerControllerVerifyFormSignature']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
   }
 }
 
@@ -4147,6 +4282,23 @@ export const SignerApiFactory = function (
         .signerControllerGetSignerData(formId, signerDataRequestDto, options)
         .then((request) => request(axios, basePath))
     },
+    /**
+     * Verifies a signature created for the form with the Slovensko.sk CEP service, so the user can be told right after signing that the signature will be rejected (e.g. signed with a wrong certificate). The signature is verified again when the form is sent.
+     * @summary Verify form signature
+     * @param {string} formId
+     * @param {VerifyFormSignatureRequestDto} verifyFormSignatureRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    signerControllerVerifyFormSignature(
+      formId: string,
+      verifyFormSignatureRequestDto: VerifyFormSignatureRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<VerifyFormSignatureResponseDto> {
+      return localVarFp
+        .signerControllerVerifyFormSignature(formId, verifyFormSignatureRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
   }
 }
 
@@ -4169,6 +4321,24 @@ export class SignerApi extends BaseAPI {
   ) {
     return SignerApiFp(this.configuration)
       .signerControllerGetSignerData(formId, signerDataRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Verifies a signature created for the form with the Slovensko.sk CEP service, so the user can be told right after signing that the signature will be rejected (e.g. signed with a wrong certificate). The signature is verified again when the form is sent.
+   * @summary Verify form signature
+   * @param {string} formId
+   * @param {VerifyFormSignatureRequestDto} verifyFormSignatureRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public signerControllerVerifyFormSignature(
+    formId: string,
+    verifyFormSignatureRequestDto: VerifyFormSignatureRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return SignerApiFp(this.configuration)
+      .signerControllerVerifyFormSignature(formId, verifyFormSignatureRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

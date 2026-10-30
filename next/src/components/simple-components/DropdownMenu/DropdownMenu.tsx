@@ -12,6 +12,7 @@ export type DropdownMenuItemProps = {
   onPress?: () => Promise<void> | void
   url?: string
   itemClassName?: string
+  isDisabled?: boolean
 }
 
 type DropdownMenuProps = {
@@ -47,6 +48,7 @@ const DropdownMenu = ({
                 title={item.title}
                 url={item.url}
                 onPress={item.onPress}
+                isDisabled={item.isDisabled}
               />
             ))}
           {itemVariant === 'header' &&
@@ -58,6 +60,7 @@ const DropdownMenu = ({
                 title={item.title}
                 url={item.url}
                 onPress={item.onPress}
+                isDisabled={item.isDisabled}
               />
             ))}
         </RadixDropdownMenu.Content>

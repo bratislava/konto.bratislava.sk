@@ -1,5 +1,5 @@
 import { GenericObjectType } from '@rjsf/utils'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import {
   createFormSignature,
@@ -8,8 +8,20 @@ import {
 } from 'forms-shared/signer/signature'
 import isEqual from 'lodash/isEqual'
 import { useTranslation } from 'next-i18next/pages'
-import { SignerDataResponseDto } from 'openapi-clients/forms'
-import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
+import {
+  SignatureRejectionReason,
+  SignerDataResponseDto,
+  VerifyFormSignatureResponseDto,
+} from 'openapi-clients/forms'
+import React, {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
+import { useIsSSR } from 'react-aria/SSRProvider'
 import { useIsMounted } from 'usehooks-ts'
 
 import { formsClient } from '@/src/clients/forms'
@@ -21,6 +33,35 @@ import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormLeaveProtection } from '@/src/components/forms/useFormLeaveProtection'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import useToast from '@/src/components/simple-components/Toast/useToast'
+
+declare global {
+  interface Window {
+    __DEV_ALLOW_SIGNATURE_UPLOAD?: () => void
+  }
+}
+
+/**
+ * State of the form signature, the single source for the summary and for whether the form can be sent.
+ * - `notRequired`: the form is not signed.
+ * - `missing`: the form has to be signed, but is not yet.
+ * - `outdated`: the signature was created for different form data or a different form version.
+ * - `verifying`: the signature is being verified with Slovensko.sk (via forms backend, see
+ *   `SignatureVerificationService` in nest-forms-backend). The first verification of a certificate can take ~20 s.
+ * - `verificationFailed`: the verification request failed (e.g. network error, Slovensko.sk unavailable). The form
+ *   cannot be sent until the verification succeeds, the user can retry it.
+ * - `rejected`: the signature will not be accepted, the user has to sign again.
+ * - `valid`: the signature can be sent. Also when the backend accepted it without verifying (verification disabled or
+ *   only logged), the backend then verifies it again when the form is sent.
+ */
+export type SignatureState =
+  | { kind: 'notRequired' | 'missing' | 'outdated' | 'verifying' | 'verificationFailed' | 'valid' }
+  | { kind: 'rejected'; reason: SignatureRejectionReason }
+
+const getSignatureVerificationQueryKey = (formId: string, signatureBase64: string | undefined) => [
+  'formSignatureVerification',
+  formId,
+  signatureBase64,
+]
 
 const useGetContext = () => {
   const { t } = useTranslation()
@@ -52,6 +93,60 @@ const useGetContext = () => {
   })
   const [signature, setSignature] = useState<FormSignature | null>(initialSignature ?? null)
   const isMounted = useIsMounted()
+  const queryClient = useQueryClient()
+  const isSSR = useIsSSR()
+  const [signatureUploadAllowed, setSignatureUploadAllowed] = useState(false)
+
+  useEffect(() => {
+    // Dev only debugging feature, allows testing the signature verification without the signer.
+    if (!isSSR) {
+      // eslint-disable-next-line no-underscore-dangle
+      window.__DEV_ALLOW_SIGNATURE_UPLOAD = () => setSignatureUploadAllowed(true)
+    }
+  }, [isSSR])
+
+  // Runs for every signature: right after signing and for a signature restored from the server (signed earlier,
+  // possibly with a wrong certificate), so the user learns about a rejection before going through the eID login.
+  const signatureBase64 = signature?.signatureBase64
+  const signatureVerificationQuery = useQuery({
+    queryKey: getSignatureVerificationQueryKey(formId, signatureBase64),
+    queryFn: async () => {
+      if (!signatureBase64) {
+        throw new Error('Signature verification requested without a signature.')
+      }
+      const response = await formsClient.signerControllerVerifyFormSignature(
+        formId,
+        { signatureBase64 },
+        { authStrategy: 'authOrGuestWithToken' },
+      )
+
+      return response.data
+    },
+    enabled: isSigned && !!signatureBase64,
+    // The verdict for a given signature does not change while the user is on the page.
+    staleTime: Infinity,
+    retry: 1,
+    networkMode: 'always',
+  })
+
+  const {
+    status: verificationStatus,
+    fetchStatus: verificationFetchStatus,
+    data: verificationData,
+    refetch: retrySignatureVerification,
+  } = signatureVerificationQuery
+
+  /** Used when the backend rejects the signature while sending, so the summary shows why. */
+  const setSignatureRejected = (reason: SignatureRejectionReason) => {
+    queryClient.setQueryData<VerifyFormSignatureResponseDto>(
+      getSignatureVerificationQueryKey(formId, signatureBase64),
+      {
+        accepted: false,
+        verified: true,
+        reason,
+      },
+    )
+  }
 
   const handleSignatureChange = (newSignature: FormSignature | null) => {
     setSignature(newSignature)
@@ -123,35 +218,88 @@ const useGetContext = () => {
     getSingerDataMutate(formData)
   }
 
-  const remove = () => {
-    handleSignatureChange(null)
-  }
-
-  // This is an expensive calculation, therefore it's exposed as useCallback (not useMemo), therefore it's called only
-  // when needed. useMemo would be recalculated on each formData change as this provider is global for the page.
-  const isValidSignature = useCallback(() => {
-    if (!isSigned) {
-      return true
+  /** Dev only: uses an uploaded .asice file as the signature of the current form data, instead of the signer. */
+  const signWithFile = async (files: FileList | null) => {
+    const file = files?.[0]
+    if (!file) {
+      return
     }
-
-    if (!signature) {
-      return false
-    }
-
     if (!isClientSlovenskoSkFormDefinition(formDefinition)) {
       throw new Error('Unsupported form definition')
     }
 
+    const bytes = new Uint8Array(await file.arrayBuffer())
+    const base64 = btoa(Array.from(bytes, (byte) => String.fromCharCode(byte)).join(''))
+    handleSignatureChange(createFormSignature(formDefinition, base64, formDataRef.current))
+  }
+
+  const remove = () => {
+    handleSignatureChange(null)
+  }
+
+  // Checking the signature against the current form data is expensive, therefore this is exposed as useCallback (not
+  // useMemo) and called only when needed. useMemo would be recalculated on each formData change as this provider is
+  // global for the page.
+  const getSignatureState = useCallback((): SignatureState => {
+    if (!isSigned) {
+      return { kind: 'notRequired' }
+    }
+    if (!signature) {
+      return { kind: 'missing' }
+    }
+    if (!isClientSlovenskoSkFormDefinition(formDefinition)) {
+      throw new Error('Unsupported form definition')
+    }
     try {
       verifyFormSignature(formDefinition, formData, signature)
-
-      return true
-    } catch (error) {
-      return false
+    } catch {
+      return { kind: 'outdated' }
     }
-  }, [isSigned, signature, formDefinition, formData])
 
-  return { signature, sign, remove, isValidSignature, getSingerDataIsPending }
+    // `fetching` also covers a retry after a failed verification.
+    if (verificationStatus === 'pending' || verificationFetchStatus === 'fetching') {
+      return { kind: 'verifying' }
+    }
+    if (verificationStatus === 'error') {
+      return { kind: 'verificationFailed' }
+    }
+    if (verificationData.accepted) {
+      return { kind: 'valid' }
+    }
+
+    return {
+      kind: 'rejected',
+      reason: verificationData.reason ?? SignatureRejectionReason.Unexpected,
+    }
+  }, [
+    isSigned,
+    signature,
+    formDefinition,
+    formData,
+    verificationStatus,
+    verificationFetchStatus,
+    verificationData,
+  ])
+
+  /** Whether the form can be sent with the current signature (or without one, if the form is not signed). */
+  const isValidSignature = useCallback(() => {
+    const { kind } = getSignatureState()
+
+    return kind === 'valid' || kind === 'notRequired'
+  }, [getSignatureState])
+
+  return {
+    signature,
+    sign,
+    signWithFile,
+    signatureUploadAllowed,
+    remove,
+    isValidSignature,
+    getSignatureState,
+    retrySignatureVerification,
+    setSignatureRejected,
+    getSingerDataIsPending,
+  }
 }
 
 const FormSignatureContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)

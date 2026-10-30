@@ -1,6 +1,6 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
-import { HttpStatus } from '@nestjs/common'
+import { HttpStatus, UnprocessableEntityException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import {
   FormDefinition,
@@ -13,6 +13,7 @@ import {
   evaluateFormSendPolicy,
   FormSendPolicy,
 } from 'forms-shared/send-policy/sendPolicy'
+import { createFormSignature } from 'forms-shared/signer/signature'
 import { FormSummary, getFormSummary } from 'forms-shared/summary/summary'
 import type { Mock } from 'vitest'
 
@@ -45,6 +46,8 @@ import {
 import NasesSenderService from '../nases/services/nases.sender.service'
 import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
+import SignatureVerificationService from '../signer/signature-verification.service'
+import { SignerErrorsResponseEnum } from '../signer/signer.errors.enum'
 import alertReporting from '../utils/constants/error.alerts'
 import {
   FormSenderErrorsEnum,
@@ -120,6 +123,10 @@ describe('FormSenderService', () => {
         {
           provide: ConvertPdfService,
           useValue: createMock<ConvertPdfService>(),
+        },
+        {
+          provide: SignatureVerificationService,
+          useValue: createMock<SignatureVerificationService>(),
         },
       ],
     }).compile()
@@ -508,6 +515,108 @@ describe('FormSenderService', () => {
           state: FormState.DELIVERED_NASES,
         }),
       )
+    })
+
+    describe('signed form', () => {
+      const signedFormDefinition = {
+        slug: 'test-slug',
+        type: FormDefinitionType.SlovenskoSkTax,
+        sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
+        isSigned: true,
+        pospID: 'test.pospId',
+        pospVersion: '1.0',
+        jsonVersion: '1.0.0',
+      } as FormDefinitionSlovenskoSkTax
+      const formSignature = createFormSignature(
+        signedFormDefinition,
+        'c2lnbmF0dXJl',
+        {},
+      )
+      const mockUser = {
+        sub: 'user-sub',
+        actor: { sub: 'actor-sub' },
+      } as JwtNasesPayload
+
+      beforeEach(() => {
+        vi.mocked(
+          service['formsService'].checkFormBeforeSending,
+        ).mockResolvedValue({
+          id: '1',
+          formDefinitionSlug: 'test-slug',
+          formDataJson: {},
+          formSignature,
+        } as unknown as Forms)
+        vi.mocked(evaluateFormSendPolicy).mockReturnValue({
+          eidSendPossible: true,
+        } as ReturnType<typeof evaluateFormSendPolicy>)
+        vi.mocked(getFormDefinitionBySlug).mockReturnValue(signedFormDefinition)
+        vi.mocked(service['nasesSenderService'].send).mockResolvedValue({
+          status: 200,
+          data: {},
+        })
+      })
+
+      it('verifies the signature with Slovensko.sk before sending', async () => {
+        const assertSignatureAccepted = vi.mocked(
+          service['signatureVerificationService'].assertSignatureAccepted,
+        )
+        assertSignatureAccepted.mockResolvedValue()
+
+        const result = await service.sendFormEid(
+          '1',
+          'mock-obo-token',
+          mockUser,
+          authUser.user,
+        )
+
+        expect(assertSignatureAccepted).toHaveBeenCalledWith(
+          formSignature.signatureBase64,
+          { formId: '1' },
+        )
+        expect(vi.mocked(service['nasesSenderService'].send)).toHaveBeenCalled()
+        expect(result).toEqual(
+          expectObjectContaining({ state: FormState.DELIVERED_NASES }),
+        )
+      })
+
+      it('does not send when the signature is rejected', async () => {
+        const rejection = new UnprocessableEntityException(
+          SignerErrorsResponseEnum.SIGNATURE_UNTRUSTED_CERTIFICATE,
+        )
+        vi.mocked(
+          service['signatureVerificationService'].assertSignatureAccepted,
+        ).mockRejectedValue(rejection)
+
+        await expect(
+          service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user),
+        ).rejects.toBe(rejection)
+        expect(
+          vi.mocked(service['nasesSenderService'].send),
+        ).not.toHaveBeenCalled()
+        expect(
+          vi.mocked(service['formsService'].updateForm),
+        ).not.toHaveBeenCalled()
+      })
+
+      it('does not verify with Slovensko.sk when the local signature check fails', async () => {
+        vi.mocked(getFormDefinitionBySlug).mockReturnValue({
+          ...signedFormDefinition,
+          pospVersion: '2.0',
+        })
+
+        await expect(
+          service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user),
+        ).rejects.toThrowEqualLogNestError({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errorEnum: NasesErrorsEnum.SIGNATURE_FORM_DEFINITION_MISMATCH,
+          message: NasesErrorsResponseEnum.SIGNATURE_FORM_DEFINITION_MISMATCH,
+        })
+        expect(
+          vi.mocked(
+            service['signatureVerificationService'].assertSignatureAccepted,
+          ),
+        ).not.toHaveBeenCalled()
+      })
     })
   })
 

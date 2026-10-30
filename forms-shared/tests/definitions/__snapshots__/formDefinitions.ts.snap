@@ -43716,9 +43716,102 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                 "type": "object",
               },
               "then": {
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "maRodneCislo": {
+                          "const": true,
+                        },
+                      },
+                      "required": [
+                        "maRodneCislo",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "rodneCislo": {
+                          "baOrder": 6,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "format": "ba-rodne-cislo",
+                          "title": "Rodné číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "rodneCislo",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "maRodneCislo": {
+                          "const": false,
+                        },
+                      },
+                      "required": [
+                        "maRodneCislo",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "datumNarodenia": {
+                          "baOrder": 7,
+                          "baUiSchema": {
+                            "ui:options": {},
+                            "ui:widget": "DatePicker",
+                          },
+                          "format": "date",
+                          "title": "Dátum narodenia",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "datumNarodenia",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                ],
                 "properties": {
+                  "maRodneCislo": {
+                    "baOrder": 5,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "enumMetadata": [
+                          {
+                            "label": "Áno",
+                            "value": true,
+                          },
+                          {
+                            "label": "Nie",
+                            "value": false,
+                          },
+                        ],
+                        "orientations": "row",
+                        "variant": "boxed",
+                      },
+                      "ui:widget": "RadioGroup",
+                    },
+                    "default": true,
+                    "enum": [
+                      true,
+                      false,
+                    ],
+                    "title": "Máte rodné číslo?",
+                    "type": "boolean",
+                  },
                   "menoTitul": {
-                    "baOrder": 7,
+                    "baOrder": 9,
                     "properties": {
                       "meno": {
                         "baOrder": 1,
@@ -43751,7 +43844,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                     "type": "object",
                   },
                   "priezvisko": {
-                    "baOrder": 6,
+                    "baOrder": 8,
                     "baUiSchema": {
                       "ui:options": {
                         "inputType": "text",
@@ -43761,20 +43854,8 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                     "title": "Priezvisko",
                     "type": "string",
                   },
-                  "rodneCislo": {
-                    "baOrder": 5,
-                    "baUiSchema": {
-                      "ui:options": {
-                        "helptextFooter": "Rodné číslo zadávajte s lomítkom. V prípade, že nemáte rodné číslo, uveďte dátum narodenia v tvare DD.MM.YYYY.",
-                        "inputType": "text",
-                      },
-                      "ui:widget": "Input",
-                    },
-                    "title": "Rodné číslo",
-                    "type": "string",
-                  },
                   "ulicaCisloFyzickaOsoba": {
-                    "baOrder": 8,
+                    "baOrder": 10,
                     "properties": {
                       "cislo": {
                         "baOrder": 2,
@@ -43812,7 +43893,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                   },
                 },
                 "required": [
-                  "rodneCislo",
+                  "maRodneCislo",
                   "priezvisko",
                   "menoTitul",
                   "ulicaCisloFyzickaOsoba",
@@ -43838,7 +43919,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
               "then": {
                 "properties": {
                   "ico": {
-                    "baOrder": 9,
+                    "baOrder": 11,
                     "baUiSchema": {
                       "ui:options": {
                         "inputType": "text",
@@ -43871,7 +43952,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
               "then": {
                 "properties": {
                   "pravnaForma": {
-                    "baOrder": 10,
+                    "baOrder": 12,
                     "baUiSchema": {
                       "ui:options": {
                         "enumMetadata": [
@@ -44049,7 +44130,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
               "then": {
                 "properties": {
                   "obchodneMenoAleboNazov": {
-                    "baOrder": 11,
+                    "baOrder": 13,
                     "baUiSchema": {
                       "ui:options": {
                         "inputType": "text",
@@ -44081,7 +44162,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
               "then": {
                 "properties": {
                   "ulicaCisloFyzickaOsobaPodnikatel": {
-                    "baOrder": 12,
+                    "baOrder": 14,
                     "properties": {
                       "cislo": {
                         "baOrder": 2,
@@ -44139,7 +44220,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
               "then": {
                 "properties": {
                   "ulicaCisloPravnickaOsoba": {
-                    "baOrder": 13,
+                    "baOrder": 15,
                     "properties": {
                       "cislo": {
                         "baOrder": 2,
@@ -44201,7 +44282,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
               "then": {
                 "properties": {
                   "udajeOOpravnenejOsobeNaPodaniePriznania": {
-                    "baOrder": 16,
+                    "baOrder": 18,
                     "baUiSchema": {
                       "ui:options": {
                         "objectDisplay": "boxed",
@@ -47073,7 +47154,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                         },
                       },
                     ],
-                    "baOrder": 17,
+                    "baOrder": 19,
                     "baUiSchema": {
                       "ui:options": {
                         "objectDisplay": "boxed",
@@ -47130,7 +47211,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
           },
           "properties": {
             "email": {
-              "baOrder": 18,
+              "baOrder": 20,
               "baUiSchema": {
                 "ui:options": {
                   "helptextFooter": "E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.",
@@ -47143,7 +47224,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
               "type": "string",
             },
             "obecPsc": {
-              "baOrder": 14,
+              "baOrder": 16,
               "properties": {
                 "obec": {
                   "baOrder": 1,
@@ -47213,7 +47294,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
               "type": "string",
             },
             "stat": {
-              "baOrder": 15,
+              "baOrder": 17,
               "baUiSchema": {
                 "ui:options": {
                   "enumMetadata": [
@@ -48493,7 +48574,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
               "type": "string",
             },
             "telefon": {
-              "baOrder": 19,
+              "baOrder": 21,
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
@@ -55129,6 +55210,70 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               {
                 "if": {
                   "properties": {
+                    "maRodneCislo": {
+                      "const": true,
+                    },
+                  },
+                  "required": [
+                    "maRodneCislo",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "rodneCislo": {
+                      "baOrder": 2,
+                      "baUiSchema": {
+                        "ui:options": {
+                          "inputType": "text",
+                        },
+                        "ui:widget": "Input",
+                      },
+                      "format": "ba-rodne-cislo",
+                      "title": "Rodné číslo",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "rodneCislo",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "maRodneCislo": {
+                      "const": false,
+                    },
+                  },
+                  "required": [
+                    "maRodneCislo",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "datumNarodenia": {
+                      "baOrder": 3,
+                      "baUiSchema": {
+                        "ui:options": {},
+                        "ui:widget": "DatePicker",
+                      },
+                      "format": "date",
+                      "title": "Dátum narodenia",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "datumNarodenia",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
                     "rovnakaAdresa": {
                       "const": false,
                     },
@@ -55141,7 +55286,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "then": {
                   "properties": {
                     "obecPsc": {
-                      "baOrder": 6,
+                      "baOrder": 8,
                       "properties": {
                         "obec": {
                           "baOrder": 1,
@@ -55177,7 +55322,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                       "type": "object",
                     },
                     "stat": {
-                      "baOrder": 7,
+                      "baOrder": 9,
                       "baUiSchema": {
                         "ui:options": {
                           "enumMetadata": [
@@ -56457,7 +56602,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                       "type": "string",
                     },
                     "ulicaCisloBezpodieloveSpoluvlastnictvoManzelov": {
-                      "baOrder": 5,
+                      "baOrder": 7,
                       "properties": {
                         "cislo": {
                           "baOrder": 2,
@@ -56511,7 +56656,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
             },
             "properties": {
               "email": {
-                "baOrder": 8,
+                "baOrder": 10,
                 "baUiSchema": {
                   "ui:options": {
                     "helptextFooter": "E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.",
@@ -56523,8 +56668,35 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "title": "E-mail",
                 "type": "string",
               },
+              "maRodneCislo": {
+                "baOrder": 1,
+                "baUiSchema": {
+                  "ui:options": {
+                    "enumMetadata": [
+                      {
+                        "label": "Áno",
+                        "value": true,
+                      },
+                      {
+                        "label": "Nie",
+                        "value": false,
+                      },
+                    ],
+                    "orientations": "row",
+                    "variant": "boxed",
+                  },
+                  "ui:widget": "RadioGroup",
+                },
+                "default": true,
+                "enum": [
+                  true,
+                  false,
+                ],
+                "title": "Má rodné číslo?",
+                "type": "boolean",
+              },
               "menoTitul": {
-                "baOrder": 3,
+                "baOrder": 5,
                 "properties": {
                   "meno": {
                     "baOrder": 1,
@@ -56557,7 +56729,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "type": "object",
               },
               "priezvisko": {
-                "baOrder": 2,
+                "baOrder": 4,
                 "baUiSchema": {
                   "ui:options": {
                     "inputType": "text",
@@ -56567,20 +56739,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "title": "Priezvisko",
                 "type": "string",
               },
-              "rodneCislo": {
-                "baOrder": 1,
-                "baUiSchema": {
-                  "ui:options": {
-                    "helptextFooter": "Rodné číslo zadávajte s lomítkom. V prípade, že nemáte rodné číslo, uveďte dátum narodenia v tvare DD.MM.YYYY.",
-                    "inputType": "text",
-                  },
-                  "ui:widget": "Input",
-                },
-                "title": "Rodné číslo",
-                "type": "string",
-              },
               "rovnakaAdresa": {
-                "baOrder": 4,
+                "baOrder": 6,
                 "baUiSchema": {
                   "ui:options": {
                     "enumMetadata": [
@@ -56607,7 +56767,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "type": "boolean",
               },
               "telefon": {
-                "baOrder": 9,
+                "baOrder": 11,
                 "baUiSchema": {
                   "ui:options": {
                     "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
@@ -56623,7 +56783,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               },
             },
             "required": [
-              "rodneCislo",
+              "maRodneCislo",
               "priezvisko",
               "menoTitul",
               "rovnakaAdresa",
@@ -58587,9 +58747,102 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                 "type": "object",
               },
               "then": {
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "maRodneCislo": {
+                          "const": true,
+                        },
+                      },
+                      "required": [
+                        "maRodneCislo",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "rodneCislo": {
+                          "baOrder": 6,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "format": "ba-rodne-cislo",
+                          "title": "Rodné číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "rodneCislo",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "maRodneCislo": {
+                          "const": false,
+                        },
+                      },
+                      "required": [
+                        "maRodneCislo",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "datumNarodenia": {
+                          "baOrder": 7,
+                          "baUiSchema": {
+                            "ui:options": {},
+                            "ui:widget": "DatePicker",
+                          },
+                          "format": "date",
+                          "title": "Dátum narodenia",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "datumNarodenia",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                ],
                 "properties": {
+                  "maRodneCislo": {
+                    "baOrder": 5,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "enumMetadata": [
+                          {
+                            "label": "Áno",
+                            "value": true,
+                          },
+                          {
+                            "label": "Nie",
+                            "value": false,
+                          },
+                        ],
+                        "orientations": "row",
+                        "variant": "boxed",
+                      },
+                      "ui:widget": "RadioGroup",
+                    },
+                    "default": true,
+                    "enum": [
+                      true,
+                      false,
+                    ],
+                    "title": "Máte rodné číslo?",
+                    "type": "boolean",
+                  },
                   "menoTitul": {
-                    "baOrder": 7,
+                    "baOrder": 9,
                     "properties": {
                       "meno": {
                         "baOrder": 1,
@@ -58622,7 +58875,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                     "type": "object",
                   },
                   "priezvisko": {
-                    "baOrder": 6,
+                    "baOrder": 8,
                     "baUiSchema": {
                       "ui:options": {
                         "inputType": "text",
@@ -58632,20 +58885,8 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                     "title": "Priezvisko",
                     "type": "string",
                   },
-                  "rodneCislo": {
-                    "baOrder": 5,
-                    "baUiSchema": {
-                      "ui:options": {
-                        "helptextFooter": "Rodné číslo zadávajte s lomítkom. V prípade, že nemáte rodné číslo, uveďte dátum narodenia v tvare DD.MM.YYYY.",
-                        "inputType": "text",
-                      },
-                      "ui:widget": "Input",
-                    },
-                    "title": "Rodné číslo",
-                    "type": "string",
-                  },
                   "ulicaCisloFyzickaOsoba": {
-                    "baOrder": 8,
+                    "baOrder": 10,
                     "properties": {
                       "cislo": {
                         "baOrder": 2,
@@ -58683,7 +58924,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                   },
                 },
                 "required": [
-                  "rodneCislo",
+                  "maRodneCislo",
                   "priezvisko",
                   "menoTitul",
                   "ulicaCisloFyzickaOsoba",
@@ -58709,7 +58950,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
               "then": {
                 "properties": {
                   "ico": {
-                    "baOrder": 9,
+                    "baOrder": 11,
                     "baUiSchema": {
                       "ui:options": {
                         "inputType": "text",
@@ -58742,7 +58983,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
               "then": {
                 "properties": {
                   "pravnaForma": {
-                    "baOrder": 10,
+                    "baOrder": 12,
                     "baUiSchema": {
                       "ui:options": {
                         "enumMetadata": [
@@ -58920,7 +59161,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
               "then": {
                 "properties": {
                   "obchodneMenoAleboNazov": {
-                    "baOrder": 11,
+                    "baOrder": 13,
                     "baUiSchema": {
                       "ui:options": {
                         "inputType": "text",
@@ -58952,7 +59193,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
               "then": {
                 "properties": {
                   "ulicaCisloFyzickaOsobaPodnikatel": {
-                    "baOrder": 12,
+                    "baOrder": 14,
                     "properties": {
                       "cislo": {
                         "baOrder": 2,
@@ -59010,7 +59251,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
               "then": {
                 "properties": {
                   "ulicaCisloPravnickaOsoba": {
-                    "baOrder": 13,
+                    "baOrder": 15,
                     "properties": {
                       "cislo": {
                         "baOrder": 2,
@@ -59072,7 +59313,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
               "then": {
                 "properties": {
                   "udajeOOpravnenejOsobeNaPodaniePriznania": {
-                    "baOrder": 16,
+                    "baOrder": 18,
                     "baUiSchema": {
                       "ui:options": {
                         "objectDisplay": "boxed",
@@ -61944,7 +62185,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                         },
                       },
                     ],
-                    "baOrder": 17,
+                    "baOrder": 19,
                     "baUiSchema": {
                       "ui:options": {
                         "objectDisplay": "boxed",
@@ -62001,7 +62242,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
           },
           "properties": {
             "email": {
-              "baOrder": 18,
+              "baOrder": 20,
               "baUiSchema": {
                 "ui:options": {
                   "helptextFooter": "E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.",
@@ -62014,7 +62255,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
               "type": "string",
             },
             "obecPsc": {
-              "baOrder": 14,
+              "baOrder": 16,
               "properties": {
                 "obec": {
                   "baOrder": 1,
@@ -62084,7 +62325,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
               "type": "string",
             },
             "stat": {
-              "baOrder": 15,
+              "baOrder": 17,
               "baUiSchema": {
                 "ui:options": {
                   "enumMetadata": [
@@ -63364,7 +63605,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
               "type": "string",
             },
             "telefon": {
-              "baOrder": 19,
+              "baOrder": 21,
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
@@ -70000,6 +70241,70 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               {
                 "if": {
                   "properties": {
+                    "maRodneCislo": {
+                      "const": true,
+                    },
+                  },
+                  "required": [
+                    "maRodneCislo",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "rodneCislo": {
+                      "baOrder": 2,
+                      "baUiSchema": {
+                        "ui:options": {
+                          "inputType": "text",
+                        },
+                        "ui:widget": "Input",
+                      },
+                      "format": "ba-rodne-cislo",
+                      "title": "Rodné číslo",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "rodneCislo",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "maRodneCislo": {
+                      "const": false,
+                    },
+                  },
+                  "required": [
+                    "maRodneCislo",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "datumNarodenia": {
+                      "baOrder": 3,
+                      "baUiSchema": {
+                        "ui:options": {},
+                        "ui:widget": "DatePicker",
+                      },
+                      "format": "date",
+                      "title": "Dátum narodenia",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "datumNarodenia",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
                     "rovnakaAdresa": {
                       "const": false,
                     },
@@ -70012,7 +70317,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "then": {
                   "properties": {
                     "obecPsc": {
-                      "baOrder": 6,
+                      "baOrder": 8,
                       "properties": {
                         "obec": {
                           "baOrder": 1,
@@ -70048,7 +70353,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                       "type": "object",
                     },
                     "stat": {
-                      "baOrder": 7,
+                      "baOrder": 9,
                       "baUiSchema": {
                         "ui:options": {
                           "enumMetadata": [
@@ -71328,7 +71633,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                       "type": "string",
                     },
                     "ulicaCisloBezpodieloveSpoluvlastnictvoManzelov": {
-                      "baOrder": 5,
+                      "baOrder": 7,
                       "properties": {
                         "cislo": {
                           "baOrder": 2,
@@ -71382,7 +71687,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
             },
             "properties": {
               "email": {
-                "baOrder": 8,
+                "baOrder": 10,
                 "baUiSchema": {
                   "ui:options": {
                     "helptextFooter": "E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.",
@@ -71394,8 +71699,35 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "title": "E-mail",
                 "type": "string",
               },
+              "maRodneCislo": {
+                "baOrder": 1,
+                "baUiSchema": {
+                  "ui:options": {
+                    "enumMetadata": [
+                      {
+                        "label": "Áno",
+                        "value": true,
+                      },
+                      {
+                        "label": "Nie",
+                        "value": false,
+                      },
+                    ],
+                    "orientations": "row",
+                    "variant": "boxed",
+                  },
+                  "ui:widget": "RadioGroup",
+                },
+                "default": true,
+                "enum": [
+                  true,
+                  false,
+                ],
+                "title": "Má rodné číslo?",
+                "type": "boolean",
+              },
               "menoTitul": {
-                "baOrder": 3,
+                "baOrder": 5,
                 "properties": {
                   "meno": {
                     "baOrder": 1,
@@ -71428,7 +71760,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "type": "object",
               },
               "priezvisko": {
-                "baOrder": 2,
+                "baOrder": 4,
                 "baUiSchema": {
                   "ui:options": {
                     "inputType": "text",
@@ -71438,20 +71770,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "title": "Priezvisko",
                 "type": "string",
               },
-              "rodneCislo": {
-                "baOrder": 1,
-                "baUiSchema": {
-                  "ui:options": {
-                    "helptextFooter": "Rodné číslo zadávajte s lomítkom. V prípade, že nemáte rodné číslo, uveďte dátum narodenia v tvare DD.MM.YYYY.",
-                    "inputType": "text",
-                  },
-                  "ui:widget": "Input",
-                },
-                "title": "Rodné číslo",
-                "type": "string",
-              },
               "rovnakaAdresa": {
-                "baOrder": 4,
+                "baOrder": 6,
                 "baUiSchema": {
                   "ui:options": {
                     "enumMetadata": [
@@ -71478,7 +71798,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "type": "boolean",
               },
               "telefon": {
-                "baOrder": 9,
+                "baOrder": 11,
                 "baUiSchema": {
                   "ui:options": {
                     "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
@@ -71494,7 +71814,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               },
             },
             "required": [
-              "rodneCislo",
+              "maRodneCislo",
               "priezvisko",
               "menoTitul",
               "rovnakaAdresa",

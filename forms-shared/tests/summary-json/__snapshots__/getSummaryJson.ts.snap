@@ -5460,6 +5460,18 @@ exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample1 summary JSON shou
           "displayValues": [
             {
               "type": "String",
+              "value": "Áno",
+            },
+          ],
+          "id": "root_udajeODanovnikovi_maRodneCislo",
+          "label": "Máte rodné číslo?",
+          "type": "Field",
+          "value": true,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
               "value": "920314/6326",
             },
           ],
@@ -5996,13 +6008,25 @@ exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample2 summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "1.1.1993",
+              "value": "Nie",
             },
           ],
-          "id": "root_udajeODanovnikovi_rodneCislo",
-          "label": "Rodné číslo",
+          "id": "root_udajeODanovnikovi_maRodneCislo",
+          "label": "Máte rodné číslo?",
           "type": "Field",
-          "value": "1.1.1993",
+          "value": false,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "1. 1. 1993",
+            },
+          ],
+          "id": "root_udajeODanovnikovi_datumNarodenia",
+          "label": "Dátum narodenia",
+          "type": "Field",
+          "value": "1993-01-01",
         },
         {
           "displayValues": [
@@ -6578,13 +6602,25 @@ exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample2 summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "123232/1234",
+              "value": "Nie",
             },
           ],
-          "id": "root_bezpodieloveSpoluvlastnictvoManzelov_rodneCislo",
-          "label": "Rodné číslo",
+          "id": "root_bezpodieloveSpoluvlastnictvoManzelov_maRodneCislo",
+          "label": "Má rodné číslo?",
           "type": "Field",
-          "value": "123232/1234",
+          "value": false,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "12. 5. 1990",
+            },
+          ],
+          "id": "root_bezpodieloveSpoluvlastnictvoManzelov_datumNarodenia",
+          "label": "Dátum narodenia",
+          "type": "Field",
+          "value": "1990-05-12",
         },
         {
           "displayValues": [
@@ -6784,13 +6820,25 @@ exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample3 summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "910101/1111",
+              "value": "Áno",
+            },
+          ],
+          "id": "root_udajeODanovnikovi_maRodneCislo",
+          "label": "Máte rodné číslo?",
+          "type": "Field",
+          "value": true,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "910101/0006",
             },
           ],
           "id": "root_udajeODanovnikovi_rodneCislo",
           "label": "Rodné číslo",
           "type": "Field",
-          "value": "910101/1111",
+          "value": "910101/0006",
         },
         {
           "displayValues": [
@@ -7381,13 +7429,25 @@ exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample4 summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "93823741111",
+              "value": "Áno",
+            },
+          ],
+          "id": "root_udajeODanovnikovi_maRodneCislo",
+          "label": "Máte rodné číslo?",
+          "type": "Field",
+          "value": true,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "8501010001",
             },
           ],
           "id": "root_udajeODanovnikovi_rodneCislo",
           "label": "Rodné číslo",
           "type": "Field",
-          "value": "93823741111",
+          "value": "8501010001",
         },
         {
           "displayValues": [
@@ -7716,6 +7776,18 @@ exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample5 summary JSON shou
           "label": "Podávate priznanie ako",
           "type": "Field",
           "value": "fyzickaOsoba",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Áno",
+            },
+          ],
+          "id": "root_udajeODanovnikovi_maRodneCislo",
+          "label": "Máte rodné číslo?",
+          "type": "Field",
+          "value": true,
         },
         {
           "displayValues": [
@@ -9061,13 +9133,25 @@ exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample5 summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "920314/2634",
+              "value": "Áno",
+            },
+          ],
+          "id": "root_bezpodieloveSpoluvlastnictvoManzelov_maRodneCislo",
+          "label": "Má rodné číslo?",
+          "type": "Field",
+          "value": true,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "925314/0006",
             },
           ],
           "id": "root_bezpodieloveSpoluvlastnictvoManzelov_rodneCislo",
           "label": "Rodné číslo",
           "type": "Field",
-          "value": "920314/2634",
+          "value": "925314/0006",
         },
         {
           "displayValues": [
@@ -9363,6 +9447,18 @@ exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample5NoCalculators summ
           "label": "Podávate priznanie ako",
           "type": "Field",
           "value": "fyzickaOsoba",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Áno",
+            },
+          ],
+          "id": "root_udajeODanovnikovi_maRodneCislo",
+          "label": "Máte rodné číslo?",
+          "type": "Field",
+          "value": true,
         },
         {
           "displayValues": [
@@ -10656,13 +10752,25 @@ exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample5NoCalculators summ
           "displayValues": [
             {
               "type": "String",
-              "value": "920314/2634",
+              "value": "Áno",
+            },
+          ],
+          "id": "root_bezpodieloveSpoluvlastnictvoManzelov_maRodneCislo",
+          "label": "Má rodné číslo?",
+          "type": "Field",
+          "value": true,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "925314/0006",
             },
           ],
           "id": "root_bezpodieloveSpoluvlastnictvoManzelov_rodneCislo",
           "label": "Rodné číslo",
           "type": "Field",
-          "value": "920314/2634",
+          "value": "925314/0006",
         },
         {
           "displayValues": [

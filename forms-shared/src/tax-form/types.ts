@@ -257,7 +257,9 @@ export type UdajeODanovnikovi = {
   opravnenaOsoba?: OpravnenaOsoba
   priznanieAko?: PriznanieAko
   pravnyVztahKPO?: PravnyVztahKPO
+  maRodneCislo?: boolean
   rodneCislo?: string
+  datumNarodenia?: string
   priezvisko?: string
   menoTitul?: MenoTitul
   ulicaCisloFyzickaOsoba?: UlicaCislo
@@ -333,7 +335,9 @@ export enum Spoluvlastnictvo {
 }
 
 export interface BezpodieloveSpoluvlastnictvoManzelov {
+  maRodneCislo?: boolean
   rodneCislo?: string
+  datumNarodenia?: string
   priezvisko?: string
   menoTitul?: MenoTitul
   rovnakaAdresa?: boolean

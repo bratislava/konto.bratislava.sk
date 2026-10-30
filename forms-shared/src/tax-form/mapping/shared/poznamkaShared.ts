@@ -2,6 +2,7 @@ import { safeBoolean, safeString } from '../../../form-utils/safeData'
 import { TaxFormData } from '../../types'
 import { getTitleFromStatCiselnik } from '../pdf/statCiselnik'
 import { formatDatePdf } from './dates'
+import { parseDateFieldDate } from './functions'
 import { oddiel2Shared } from './oddiel2Shared'
 import { oddiel3JedenUcelShared } from './oddiel3JedenUcelShared'
 import { oddiel3ViacereUcelyShared } from './oddiel3ViacereUcelyShared'
@@ -49,7 +50,14 @@ const bezpodieloveSpoluvlastnictvoManzelovPoznamka = (data: TaxFormData) => {
   ] as KeyValueArray
 
   const formatted = formatKeyValueArray([
-    ['Rodné číslo', data.bezpodieloveSpoluvlastnictvoManzelov?.rodneCislo],
+    safeBoolean(data.bezpodieloveSpoluvlastnictvoManzelov?.maRodneCislo) === true
+      ? ['Rodné číslo', data.bezpodieloveSpoluvlastnictvoManzelov?.rodneCislo]
+      : [
+          'Dátum narodenia',
+          formatDatePdf(
+            parseDateFieldDate(data.bezpodieloveSpoluvlastnictvoManzelov?.datumNarodenia),
+          ),
+        ],
     ['Titul', data.bezpodieloveSpoluvlastnictvoManzelov?.menoTitul?.titul],
     ['Meno', data.bezpodieloveSpoluvlastnictvoManzelov?.menoTitul?.meno],
     ['Priezvisko', data.bezpodieloveSpoluvlastnictvoManzelov?.priezvisko],
@@ -67,22 +75,15 @@ const bezpodieloveSpoluvlastnictvoManzelovPoznamka = (data: TaxFormData) => {
   return `Údaje o manželovi/manželke:\n${formatted}`
 }
 
-const rodneCisloDatumNarodeniaPoznamka = (data: TaxFormData) => {
+// The PDF has no date of birth field.
+const datumNarodeniaPoznamka = (data: TaxFormData) => {
   const { rodneCislo, datumNarodenia } = udajeODanovnikoviShared(data)
 
-  if (rodneCislo?.isValid) {
+  if (rodneCislo?.isValid || datumNarodenia == null) {
     return null
   }
 
-  if (datumNarodenia != null) {
-    return `Dátum narodenia: ${formatDatePdf(datumNarodenia)}`
-  }
-
-  if (rodneCislo?.value != null) {
-    return `Rodné číslo: ${rodneCislo.value}`
-  }
-
-  return null
+  return `Dátum narodenia: ${formatDatePdf(datumNarodenia)}`
 }
 
 const korespondencnaAdresaPoznamka = (data: TaxFormData) => {
@@ -116,7 +117,7 @@ export const poznamkaShared = (data: TaxFormData, formId?: string) => {
     .join('\n')
 
   const poznamkaString = [
-    rodneCisloDatumNarodeniaPoznamka(data),
+    datumNarodeniaPoznamka(data),
     korespondencnaAdresaPoznamka(data),
     bezpodieloveSpoluvlastnictvoManzelovPoznamka(data),
     generated,

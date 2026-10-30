@@ -1,4 +1,5 @@
 import { electronicFormatIBAN, validateIBAN } from 'ibantools'
+import { rodnecislo } from 'rodnecislo'
 import { validate as validateUuid, version as uuidVersion } from 'uuid'
 // https://stackoverflow.com/a/51177696
 export const baTimeRegex = /^(\d|0\d|1\d|2[0-3]):[0-5]\d$/
@@ -53,6 +54,10 @@ const baAjvInputFormats = {
     validate: (value: string) => parseRatio(value).isValid,
   },
   'ba-ico': /^\d{6,8}$/,
+  'ba-rodne-cislo': {
+    // With or without the slash, the date part and the checksum must be valid.
+    validate: (value: string) => rodnecislo(value).isValid(),
+  },
   'ba-iban': {
     validate: (value: string) => {
       const electronicFormat = electronicFormatIBAN(value)

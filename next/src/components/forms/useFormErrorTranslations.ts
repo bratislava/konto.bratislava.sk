@@ -37,6 +37,7 @@ export const useFormErrorTranslations = () => {
     date: t('useFormErrorTranslations.formats.date'),
     'ba-iban': t('useFormErrorTranslations.formats.ba-iban'),
     'ba-ico': t('useFormErrorTranslations.formats.ba-ico'),
+    'ba-rodne-cislo': t('useFormErrorTranslations.formats.ba-rodne-cislo'),
     'ba-phone-number': t('useFormErrorTranslations.formats.ba-phone-number'),
     'ba-slovak-phone-number': t('useFormErrorTranslations.formats.ba-slovak-phone-number'),
     'ba-slovak-zip': t('useFormErrorTranslations.formats.ba-slovak-zip'),

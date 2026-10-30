@@ -47,8 +47,8 @@ export type ParsedRodneCislo =
       value: string | undefined
     }
 
-export function parseRodneCislo(rodneCisloOrBirthDate: string | undefined): ParsedRodneCislo {
-  const value = safeString(rodneCisloOrBirthDate)
+export function parseRodneCislo(rodneCislo: string | undefined): ParsedRodneCislo {
+  const value = safeString(rodneCislo)
   if (!value) {
     return {
       isValid: false,
@@ -81,18 +81,29 @@ export function parseRodneCislo(rodneCisloOrBirthDate: string | undefined): Pars
   }
 }
 
-export function parseBirthDate(rodneCisloOrBirthDate: string | any) {
-  if (typeof rodneCisloOrBirthDate !== 'string') {
+export const parseRodneCisloOrDatumNarodenia = (
+  person: { maRodneCislo?: boolean; rodneCislo?: string; datumNarodenia?: string } | undefined,
+): { rodneCislo: ParsedRodneCislo; datumNarodenia: Date | undefined } => {
+  if (safeBoolean(person?.maRodneCislo) === true) {
+    return {
+      rodneCislo: parseRodneCislo(person?.rodneCislo),
+      datumNarodenia: getBirthDateFromRodneCislo(person?.rodneCislo),
+    }
+  }
+
+  return {
+    rodneCislo: parseRodneCislo(undefined),
+    datumNarodenia: parseDateFieldDate(person?.datumNarodenia),
+  }
+}
+
+export function getBirthDateFromRodneCislo(rodneCislo: string | undefined) {
+  if (typeof rodneCislo !== 'string') {
     return
   }
 
-  const rodneCisloParsed = rodnecislo(rodneCisloOrBirthDate)
+  const rodneCisloParsed = rodnecislo(rodneCislo)
   if (rodneCisloParsed.isValid()) {
     return fixDate(rodneCisloParsed.birthDate())
-  }
-
-  const dateParsed = parseDate(rodneCisloOrBirthDate, 'DD.MM.YYYY')
-  if (dateParsed) {
-    return dateParsed
   }
 }

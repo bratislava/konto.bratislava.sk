@@ -152,8 +152,11 @@ const SummaryFormSignature = () => {
           </>,
         )
       case 'valid':
-      default:
         return signatureAlert('success', t('SummaryFormSignature.success'))
+      default: {
+        const unhandled: never = signatureState
+        throw new Error(`Unhandled signature state: ${JSON.stringify(unhandled)}`)
+      }
     }
   }
 

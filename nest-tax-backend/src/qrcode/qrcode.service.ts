@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
-import { CurrencyCode, DataModel, encode, PaymentOptions } from 'bysquare/pay'
+import { CurrencyCode, DataModel, encode, PaymentOptions } from 'bysquare'
 import * as qrCode from 'qrcode'
 
 import BaConfigService from '../config/ba-config.service'

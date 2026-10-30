@@ -1,3 +1,4 @@
+import { UserStatusType } from '@aws-sdk/client-cognito-identity-provider'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IsDefined, IsEnum, IsOptional, IsString } from 'class-validator'
 
@@ -18,16 +19,6 @@ export enum CognitoUserAttributesEnum {
   ACCOUNT_TYPE = 'custom:account_type',
   OAUTH_ORIGIN_CLIENT_ID = 'custom:origin_client_id',
   OAUTH_ORIGIN_CLIENT_NAME = 'custom:origin_client_name',
-}
-
-export enum CognitoUserStatusEnum {
-  ARCHIVED = 'ARCHIVED',
-  COMPROMISED = 'COMPROMISED',
-  CONFIRMED = 'CONFIRMED',
-  FORCE_CHANGE_PASSWORD = 'FORCE_CHANGE_PASSWORD',
-  RESET_REQUIRED = 'RESET_REQUIRED',
-  UNCONFIRMED = 'UNCONFIRMED',
-  UNKNOWN = 'UNKNOWN',
 }
 
 export class CognitoGetUserAttributesData {
@@ -141,11 +132,11 @@ export class CognitoGetUserData extends CognitoGetUserAttributesData {
 
   @ApiPropertyOptional({
     description: 'Cognito confirmation statue',
-    enum: CognitoUserStatusEnum,
+    enum: UserStatusType,
     enumName: 'CognitoUserStatusEnum',
-    default: CognitoUserStatusEnum.CONFIRMED,
+    default: UserStatusType.CONFIRMED,
   })
-  UserStatus?: CognitoUserStatusEnum
+  UserStatus?: UserStatusType
 }
 
 export interface CognitoAccessTokenDto {

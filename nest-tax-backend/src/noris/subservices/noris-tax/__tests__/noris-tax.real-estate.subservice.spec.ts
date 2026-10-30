@@ -45,7 +45,17 @@ vi.mock('../../../../tax-definitions/getTaxDefinitionByType', () => ({
 }))
 
 const { mockPLimitFn } = vi.hoisted(() => ({
-  mockPLimitFn: vi.fn((fn: () => unknown) => fn()),
+  mockPLimitFn: Object.assign(
+    vi.fn((fn: () => unknown) => fn()),
+    {
+      map: vi.fn(
+        async (
+          items: Iterable<unknown>,
+          fn: (item: unknown, index: number) => unknown,
+        ) => Promise.all(Array.from(items, fn)),
+      ),
+    },
+  ),
 }))
 vi.mock('p-limit', () => ({ default: () => mockPLimitFn }))
 
@@ -825,7 +835,10 @@ describe('NorisTaxRealEstateSubservice', () => {
         suppressEmail: true,
       })
 
-      expect(mockPLimitFn).toHaveBeenCalled()
+      expect(mockPLimitFn.map).toHaveBeenCalledWith(
+        mockNorisData,
+        expect.any(Function),
+      )
     })
   })
 

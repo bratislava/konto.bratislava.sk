@@ -5,7 +5,7 @@ import {
   ErrorFactoryService,
   LineLoggerService,
 } from '@bratislava/log-nest'
-import { Injectable } from '@nestjs/common'
+import { HttpStatus, Injectable } from '@nestjs/common'
 import { isAxiosError } from 'axios'
 import {
   FormDefinitionSlovenskoSk,
@@ -349,7 +349,7 @@ export default class NasesSenderService {
       message = await this.createEnvelopeSendMessage(data, senderUri)
     } catch (error) {
       return {
-        status: 500,
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         data: {
           message: `Failed to create envelope for nases message: ${(error as Error).message || 'Unknown error'}. Details: ${JSON.stringify(error)}`,
         },
@@ -376,7 +376,7 @@ export default class NasesSenderService {
         )
 
         return {
-          status: 422,
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
           data: {
             message:
               'Server error in response data, please contact administrator',
@@ -393,17 +393,18 @@ export default class NasesSenderService {
         )
 
         return {
-          status: 422,
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
           data: {
             message: this.getNasesError(response.data.receive_result),
           },
         }
       }
 
-      return { status: 200, data: response.data }
+      return { status: HttpStatus.OK, data: response.data }
     } catch (error) {
       if (isAxiosError(error) && error.response?.data) {
         this.logger.error(this.errorFactoryService.fromAxiosError(error, {}))
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment -- passes through the HTTP status slovensko.sk responded with
         return { status: error.response.status, data: error.response.data }
       }
 
@@ -416,7 +417,7 @@ export default class NasesSenderService {
       )
 
       return {
-        status: 400,
+        status: HttpStatus.BAD_REQUEST,
         data: {
           message: 'Other server error, please contact administrator',
         },

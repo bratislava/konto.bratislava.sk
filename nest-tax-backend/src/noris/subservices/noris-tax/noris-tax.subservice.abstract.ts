@@ -271,20 +271,16 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         recordsToProcess.map((norisRecord) => norisRecord.ICO_RC),
       )
 
-    await Promise.all(
-      recordsToProcess.map(async (norisItem) =>
-        this.concurrencyLimit(async () => {
-          await this.processTaxRecordFromNoris(
-            taxDefinition,
-            birthNumbersResult,
-            norisItem,
-            userDataFromCityAccount,
-            year,
-            suppressEmail,
-          )
-        }),
-      ),
-    )
+    await this.concurrencyLimit.map(recordsToProcess, async (norisItem) => {
+      await this.processTaxRecordFromNoris(
+        taxDefinition,
+        birthNumbersResult,
+        norisItem,
+        userDataFromCityAccount,
+        year,
+        suppressEmail,
+      )
+    })
 
     const withoutCityAccountUser = recordsToProcess.filter(
       (norisRecord) => !userDataFromCityAccount[norisRecord.ICO_RC],

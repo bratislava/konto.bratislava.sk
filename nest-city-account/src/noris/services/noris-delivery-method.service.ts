@@ -159,17 +159,17 @@ export class NorisDeliveryMethodService {
       })
     })
 
-    const updates: UpdateNorisDeliveryMethods[] = Object.entries(deliveryGroups)
+    const updates: UpdateNorisDeliveryMethods[] = Object.values(DeliveryMethod)
       .filter(
-        ([deliveryMethod, birthNumbers]) =>
-          birthNumbers.length > 0 &&
-          (deliveryMethod as DeliveryMethod) !== DeliveryMethod.CITY_ACCOUNT
+        (deliveryMethod) =>
+          deliveryGroups[deliveryMethod].length > 0 &&
+          deliveryMethod !== DeliveryMethod.CITY_ACCOUNT
       )
-      .map(([deliveryMethod, birthNumbers]) => {
+      .map((deliveryMethod) => {
         return {
-          birthNumbers: birthNumbers.map((item) => item.birthNumber),
+          birthNumbers: deliveryGroups[deliveryMethod].map((item) => item.birthNumber),
           inCityAccount: IsInCityAccount.YES,
-          deliveryMethod: deliveryMethod as DeliveryMethod,
+          deliveryMethod,
           date: null, // date of confirmation of delivery method should be set only for city account notification
         }
       })

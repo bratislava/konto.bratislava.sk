@@ -260,20 +260,15 @@ export class NorisPaymentSubservice {
       suppressEmail?: boolean
     },
   ) {
-    // Step 1: Process each payment separately with a concurrency limit
-    const paymentProcesses = norisPaymentData.map(async (norisPayment) =>
-      this.concurrencyLimit(async () =>
-        this.processIndividualPayment(
-          norisPayment,
-          taxesDataByVsMap,
-          userDataFromCityAccount,
-          bloomreachSettings,
-        ),
+    // Process each payment separately with a concurrency limit
+    return this.concurrencyLimit.map(norisPaymentData, async (norisPayment) =>
+      this.processIndividualPayment(
+        norisPayment,
+        taxesDataByVsMap,
+        userDataFromCityAccount,
+        bloomreachSettings,
       ),
     )
-
-    // Step 2: Execute all payment processes with limited concurrency
-    return Promise.all(paymentProcesses)
   }
 
   private async processIndividualPayment(

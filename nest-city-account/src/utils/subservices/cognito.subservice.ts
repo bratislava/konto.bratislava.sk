@@ -27,7 +27,6 @@ import {
   CognitoGetUserAttributesData,
   CognitoGetUserData,
   CognitoUserAttributesEnum,
-  CognitoUserStatusEnum,
 } from '../global-dtos/cognito.dto'
 
 /**
@@ -106,7 +105,7 @@ export class CognitoSubservice {
       UserCreateDate: result.UserCreateDate,
       UserLastModifiedDate: result.UserLastModifiedDate,
       Enabled: result.Enabled ?? false,
-      UserStatus: result.UserStatus as CognitoUserStatusEnum,
+      UserStatus: result.UserStatus,
     }
   }
 
@@ -232,7 +231,7 @@ export class CognitoSubservice {
       UserCreateDate: user.UserCreateDate,
       UserLastModifiedDate: user.UserLastModifiedDate,
       Enabled: user.Enabled ?? false,
-      UserStatus: user.UserStatus as CognitoUserStatusEnum,
+      UserStatus: user.UserStatus,
     }))
   }
 

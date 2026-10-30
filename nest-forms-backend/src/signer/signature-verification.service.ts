@@ -63,7 +63,6 @@ interface VerificationContext {
 }
 
 type CheckResult =
-  | { status: 'skipped' }
   | { status: 'unavailable' }
   | { status: 'verified'; verdict: CepVerificationVerdict }
 
@@ -119,10 +118,6 @@ export default class SignatureVerificationService {
     context: VerificationContext,
   ): Promise<CheckResult> {
     const { mode } = this
-    if (mode === SignatureVerificationMode.Off) {
-      return { status: 'skipped' }
-    }
-
     const startedAt = Date.now()
     // Signers may wrap the base64 output, Slovensko.sk cannot handle whitespace.
     const content = signatureBase64.replaceAll(/\s/g, '')
@@ -178,6 +173,20 @@ export default class SignatureVerificationService {
     return { status: 'verified', verdict }
   }
 
+  /** `log` mode: the user does not wait for a result that is only logged. */
+  private checkInBackground(
+    signatureBase64: string,
+    context: VerificationContext,
+  ): void {
+    void this.check(signatureBase64, context).catch((error: unknown) => {
+      // Only the message, an Axios error serializes its request config, which contains the signed form.
+      this.logger.error('Background signature verification failed', {
+        ...context,
+        error: error instanceof Error ? error.message : String(error),
+      })
+    })
+  }
+
   /**
    * Verification requested by the frontend right after signing, so the user learns about a wrong certificate before
    * sending. Never throws because of an unavailable CEP, the signature is then verified again when the form is sent.
@@ -186,13 +195,23 @@ export default class SignatureVerificationService {
     signatureBase64: string,
     context: VerificationContext,
   ): Promise<VerifyFormSignatureResponseDto> {
+    switch (this.mode) {
+      case SignatureVerificationMode.Off:
+        return { accepted: true, verified: false }
+      case SignatureVerificationMode.Log:
+        this.checkInBackground(signatureBase64, context)
+        return { accepted: true, verified: false }
+      case SignatureVerificationMode.Enforce:
+        break
+    }
+
     const result = await this.check(signatureBase64, context)
-    if (result.status !== 'verified') {
+    if (result.status === 'unavailable') {
       return { accepted: true, verified: false }
     }
 
     const { verdict } = result
-    if (verdict.accepted || this.mode === SignatureVerificationMode.Log) {
+    if (verdict.accepted) {
       return { accepted: true, verified: true }
     }
 
@@ -207,14 +226,17 @@ export default class SignatureVerificationService {
     signatureBase64: string,
     context: VerificationContext,
   ): Promise<void> {
-    const result = await this.check(signatureBase64, context)
-    if (
-      result.status === 'skipped' ||
-      this.mode !== SignatureVerificationMode.Enforce
-    ) {
-      return
+    switch (this.mode) {
+      case SignatureVerificationMode.Off:
+        return
+      case SignatureVerificationMode.Log:
+        this.checkInBackground(signatureBase64, context)
+        return
+      case SignatureVerificationMode.Enforce:
+        break
     }
 
+    const result = await this.check(signatureBase64, context)
     if (result.status === 'unavailable') {
       throw this.errorFactoryService.ServiceUnavailableException({
         errorEnum: SignerErrorsEnum.SIGNATURE_VERIFICATION_UNAVAILABLE,

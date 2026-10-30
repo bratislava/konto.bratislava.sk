@@ -215,22 +215,35 @@ describe('SignatureVerificationService', () => {
       config.signatureVerification = SignatureVerificationMode.Log
     })
 
-    it('verifies but accepts a rejected signature', async () => {
-      respondWith(RESPONSES.untrustedCertificate)
+    it('does not wait for Slovensko.sk', async () => {
+      // A Slovensko.sk call that never settles.
+      apiCepVerifyPost.mockReturnValue(new Promise<never>(vi.fn()))
 
       await expect(
         service.verifyFormSignature(SIGNATURE, CONTEXT),
       ).resolves.toEqual({
         accepted: true,
-        verified: true,
+        verified: false,
       })
       await expect(
         service.assertSignatureAccepted(SIGNATURE, CONTEXT),
       ).resolves.toBeUndefined()
-      expect(apiCepVerifyPost).toHaveBeenCalledTimes(2)
-      expect(loggedText()).toContain(
-        SignatureRejectionReason.UntrustedCertificate,
-      )
+      await vi.waitFor(() => {
+        expect(apiCepVerifyPost).toHaveBeenCalledTimes(2)
+      })
+    })
+
+    it('verifies in the background and only logs a rejection', async () => {
+      respondWith(RESPONSES.untrustedCertificate)
+
+      await expect(
+        service.assertSignatureAccepted(SIGNATURE, CONTEXT),
+      ).resolves.toBeUndefined()
+      await vi.waitFor(() => {
+        expect(loggedText()).toContain(
+          SignatureRejectionReason.UntrustedCertificate,
+        )
+      })
     })
 
     it('does not block sending when Slovensko.sk is unavailable', async () => {
@@ -239,6 +252,24 @@ describe('SignatureVerificationService', () => {
       await expect(
         service.assertSignatureAccepted(SIGNATURE, CONTEXT),
       ).resolves.toBeUndefined()
+      await vi.waitFor(() => {
+        expect(loggedText()).toContain('Signature verification unavailable')
+      })
+    })
+
+    it('logs an unexpected error of the background verification', async () => {
+      respondWith(RESPONSES.valid)
+      verdictCache.set.mockRejectedValue(new Error('unexpected'))
+
+      await expect(
+        service.assertSignatureAccepted(SIGNATURE, CONTEXT),
+      ).resolves.toBeUndefined()
+      await vi.waitFor(() => {
+        expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+          'Background signature verification failed',
+          { ...CONTEXT, error: 'unexpected' },
+        )
+      })
     })
   })
 

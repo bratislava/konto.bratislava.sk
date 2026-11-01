@@ -27,7 +27,7 @@
     "@aws-amplify/core": "6.19.2",
     "@bratislava/component-library": "1.1.4",
     "@grafana/faro-core": "2.12.1",
-    "@grafana/faro-web-sdk": "2.12.1",
+    "@grafana/faro-web-sdk": "2.13.0",
     "@hookform/resolvers": "6.0.0",
     "@iframe-resizer/child": "5.5.9",
     "@iframe-resizer/react": "5.5.9",

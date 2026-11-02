@@ -1,23 +1,15 @@
 {
+  "extends": "@tsconfig/node26/tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
-    "resolveJsonModule": true,
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es2022",
-    "lib": [
-      "es2022"
-    ],
     "sourceMap": true,
     "outDir": "./dist",
     "incremental": true,
-    "skipLibCheck": true,
-    "strict": true,
     "strictPropertyInitialization": false,
-    "esModuleInterop": true,
     "types": ["vitest/globals", "node"]
   }
 }

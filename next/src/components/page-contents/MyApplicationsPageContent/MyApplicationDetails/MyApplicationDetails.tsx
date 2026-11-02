@@ -1,5 +1,9 @@
 import { useTranslation } from 'next-i18next/pages'
-import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
+import {
+  GetFormResponseDto,
+  GetFormsResponseDtoItemsInner,
+  GinisDocumentDetailResponseDto,
+} from 'openapi-clients/forms'
 
 import { LabelValueRowProps } from '@/src/components/common/LabelValueRowGroup/LabelValueRow'
 import LabelValueRowGroup from '@/src/components/common/LabelValueRowGroup/LabelValueRowGroup'
@@ -9,9 +13,13 @@ import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
 import MyApplicationDetailsHeader from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails/MyApplicationDetailsHeader'
 
+// TODO Remove when `formSentAt` is added to `GetFormResponseDto` - BE already returns it, it's just not in the DTO yet
+export type MyApplicationFormData = GetFormResponseDto &
+  Pick<GetFormsResponseDtoItemsInner, 'formSentAt'>
+
 type Props = {
   formDefinitionTitle: string
-  myApplicationFormData: GetFormResponseDto
+  myApplicationFormData: MyApplicationFormData
   myApplicationGinisData: GinisDocumentDetailResponseDto | null
 }
 
@@ -26,7 +34,7 @@ const MyApplicationDetails = ({
 }: Props) => {
   const { t } = useTranslation()
 
-  const { id, referenceNumber, dossierId, ownerName, ownerEmail, ownerPhone, documentHistory } =
+  const { id, referenceNumber, dossierId, ownerName, ownerEmail, ownerPhone } =
     myApplicationGinisData ?? {}
 
   const detailsRows: LabelValueRowProps[] = [
@@ -47,30 +55,22 @@ const MyApplicationDetails = ({
     },
   ].filter((row) => Boolean(row.value))
 
-  /**
-   * TODO History is broken, check with BE
-   * - history data needs changes in process and on BE
-   * - until then, we just take 1 instance and present it as 'document created'
-   *   (all the instances are interpreted as document created)
-   * - fix the types in OpenAPI (BE)
-   */
-  const historyLabelMap = {
-    DOCUMENT_CREATED: t('MyApplicationHistory.states.DOCUMENT_CREATED'),
-    UNKNOWN: t('MyApplicationHistory.states.UNKNOWN'),
-  }
-
-  const historyRows: LabelValueRowProps[] =
-    documentHistory?.slice(-1).map((row) => ({
-      label: formatDate(row['Datum-zmeny']),
-      value: historyLabelMap[row.assignedCategory],
-    })) ?? []
+  // For now, the only history entry we show is the date the form was sent
+  const { formSentAt } = myApplicationFormData
+  const historyRows: LabelValueRowProps[] = formSentAt
+    ? [
+        {
+          label: formatDate(formSentAt),
+          value: t('MyApplicationHistory.states.DOCUMENT_CREATED'),
+        },
+      ]
+    : []
 
   return (
     <div className="flex flex-col">
       <MyApplicationDetailsHeader
         formDefinitionTitle={formDefinitionTitle}
         myApplicationFormData={myApplicationFormData}
-        myApplicationGinisData={myApplicationGinisData}
       />
       <SectionContainer className="py-6 lg:pt-8 lg:pb-18">
         <div className="flex flex-col gap-6 lg:gap-8">

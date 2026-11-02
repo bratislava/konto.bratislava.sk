@@ -9,6 +9,7 @@ import {
   GinisDocumentDetailResponseDto,
 } from 'openapi-clients/forms'
 
+import { MyApplicationFormData } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails/MyApplicationDetails'
 import { getMyApplicationsCountQueryKey } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationsCountFetcher'
 import {
   getMyApplicationsQueryKey,
@@ -244,7 +245,7 @@ export const MOCK_FORM_DEFINITION_TITLE = MOCK_FORM_CATEGORY
 
 export const createMockMyApplicationFormData = (
   state: GetFormResponseDtoStateEnum,
-): GetFormResponseDto => ({
+): MyApplicationFormData => ({
   email: 'test@example.com',
   id: 'mock-application-detail',
   createdAt: '2024-04-15T08:48:15.346Z',
@@ -264,6 +265,7 @@ export const createMockMyApplicationFormData = (
   formDefinitionSlug: MOCK_FORM_SLUG,
   jsonVersion: '1.0.0',
   formSubject: 'Záväzné stanovisko – Vymyslená 1',
+  formSentAt: '2024-04-15T09:02:41.512Z',
   requiresMigration: false,
 })
 

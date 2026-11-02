@@ -28,6 +28,7 @@ import {
   OneTimePaymentTypeEnum,
 } from '../../dtos/response.tax.dto'
 import {
+  calculateDueDate,
   calculateInstallmentAmounts,
   getTaxDetailPure,
   getTaxDetailPureForInstallmentGenerator,
@@ -393,6 +394,57 @@ describe('UnifiedTaxUtil', () => {
     ;(getTaxDefinitionByType as Mock).mockImplementation(
       actualModule.getTaxDefinitionByType,
     )
+  })
+
+  describe('calculateDueDate', () => {
+    it.each([
+      {
+        case: 'keeps midnight in Bratislava when the offset crosses the switch to summer time',
+        deliveryMethod: DeliveryMethodNamed.CITY_ACCOUNT,
+        dateOfValidity: null,
+        createdAt: new Date('2025-03-20T10:00:00.000Z'),
+        expected: '2025-04-04T00:00:00+02:00[Europe/Bratislava]',
+      },
+      {
+        case: 'keeps midnight in Bratislava when the offset crosses the switch to winter time',
+        deliveryMethod: DeliveryMethodNamed.POSTAL,
+        dateOfValidity: new Date('2025-10-20T10:00:00.000Z'),
+        createdAt: new Date('2025-01-01T00:00:00.000Z'),
+        expected: '2025-11-04T00:00:00+01:00[Europe/Bratislava]',
+      },
+      {
+        case: 'uses the Bratislava date of a validity set just before midnight UTC',
+        deliveryMethod: DeliveryMethodNamed.POSTAL,
+        dateOfValidity: new Date('2025-06-10T22:30:00.000Z'),
+        createdAt: new Date('2025-01-01T00:00:00.000Z'),
+        expected: '2025-06-26T00:00:00+02:00[Europe/Bratislava]',
+      },
+      {
+        case: 'moves past state holidays and the weekend after them',
+        deliveryMethod: DeliveryMethodNamed.POSTAL,
+        dateOfValidity: new Date('2025-12-09T10:00:00.000Z'),
+        createdAt: new Date('2025-01-01T00:00:00.000Z'),
+        expected: '2025-12-29T00:00:00+01:00[Europe/Bratislava]',
+      },
+    ])('$case', ({ deliveryMethod, dateOfValidity, createdAt, expected }) => {
+      const dueDate = calculateDueDate(
+        dateOfValidity,
+        deliveryMethod,
+        createdAt,
+      )
+
+      expect(dueDate?.toString()).toBe(expected)
+    })
+
+    it('returns undefined without a date of validity outside of the city account', () => {
+      const dueDate = calculateDueDate(
+        null,
+        DeliveryMethodNamed.POSTAL,
+        new Date('2025-03-20T10:00:00.000Z'),
+      )
+
+      expect(dueDate).toBeUndefined()
+    })
   })
 
   describe('calculateInstallmentAmounts', () => {

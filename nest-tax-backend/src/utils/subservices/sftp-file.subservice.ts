@@ -2,17 +2,47 @@ import path from 'node:path'
 
 import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
-import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
 import SFTPClient, { FileInfo } from 'ssh2-sftp-client'
 
 import BaConfigService from '../../config/ba-config.service'
 import { TaxType } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
+import { isBefore, toBratislavaDateTime } from '../functions/temporal'
 
-dayjs.extend(utc)
-dayjs.extend(timezone)
+const SFTP_FILE_NAME_CENTURY_START = 2000
+
+const SFTP_FILE_NAME_DATE_PATTERN = /^(\d{2})(\d{2})(\d{2})$/
+
+/**
+ * Bank report files on the SFTP server end with `_YYMMDD` followed by a
+ * sequence number, e.g. `..._15_25012434.csv` is from 2025-01-24.
+ */
+export const parseSftpFileNameDate = (
+  fileName: string,
+): Temporal.PlainDate | null => {
+  const match = fileName
+    .split('_')
+    .pop()
+    ?.slice(0, 6)
+    .match(SFTP_FILE_NAME_DATE_PATTERN)
+  if (!match) {
+    return null
+  }
+
+  const [, year, month, day] = match
+  try {
+    return Temporal.PlainDate.from(
+      {
+        year: SFTP_FILE_NAME_CENTURY_START + Number(year),
+        month: Number(month),
+        day: Number(day),
+      },
+      { overflow: 'reject' },
+    )
+  } catch {
+    return null
+  }
+}
 
 @Injectable()
 export default class SftpFileSubservice {
@@ -58,14 +88,11 @@ export default class SftpFileSubservice {
   }
 
   private filterFilesBeforeDate(sftpFiles: FileInfo[], from: Date) {
+    const fromDate = toBratislavaDateTime(from).toPlainDate()
     return sftpFiles
       .filter((file) => {
-        const fileDateMatches = file.name.split('_').pop()?.slice(0, 6)
-        if (!fileDateMatches || Number.isNaN(Number(fileDateMatches))) {
-          return false
-        }
-        const fileDate = dayjs(`20${fileDateMatches}`).tz('Europe/Bratislava')
-        return fileDate.add(1, 'day').isAfter(from, 'day')
+        const fileDate = parseSftpFileNameDate(file.name)
+        return fileDate !== null && !isBefore(fileDate, fromDate)
       })
       .map((file) => file.name)
   }

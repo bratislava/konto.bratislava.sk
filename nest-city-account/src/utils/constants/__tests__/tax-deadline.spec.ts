@@ -1,12 +1,15 @@
-import { DateTime } from 'luxon'
 import type { MockedFunction } from 'vitest'
 
 import getBaConfigInstance from '../../../config/ba-config.instance'
+import { toDate } from '../../functions/temporal'
 import { getTaxDeadlineDate } from '../tax-deadline'
 
 vi.mock('../../../config/ba-config.instance')
 
 const TIMEZONE = 'Europe/Bratislava'
+
+const dateInTimeZone = (fields: Temporal.DateTimeLikeObject, timeZone: string) =>
+  toDate(Temporal.ZonedDateTime.from({ ...fields, timeZone }))
 
 const mockGetBaConfigInstance = getBaConfigInstance as MockedFunction<typeof getBaConfigInstance>
 
@@ -22,9 +25,9 @@ describe('tax-deadline', () => {
       mockTaxDeadline({ month: 4, day: 1 })
     })
 
-    const year = DateTime.now().setZone(TIMEZONE).year
+    const { year } = Temporal.Now.zonedDateTimeISO(TIMEZONE)
     const afterDeadline = [
-      DateTime.fromObject(
+      dateInTimeZone(
         {
           year,
           month: 4,
@@ -33,9 +36,9 @@ describe('tax-deadline', () => {
           minute: 0,
           second: 10,
         },
-        { zone: TIMEZONE }
-      ).toJSDate(),
-      DateTime.fromObject(
+        TIMEZONE
+      ),
+      dateInTimeZone(
         {
           year,
           month: 4,
@@ -44,9 +47,9 @@ describe('tax-deadline', () => {
           minute: 0,
           second: 0,
         },
-        { zone: TIMEZONE }
-      ).toJSDate(),
-      DateTime.fromObject(
+        TIMEZONE
+      ),
+      dateInTimeZone(
         {
           year,
           month: 4,
@@ -55,26 +58,14 @@ describe('tax-deadline', () => {
           minute: 0,
           second: 0,
         },
-        { zone: TIMEZONE }
-      ).toJSDate(),
-      DateTime.fromObject(
-        { year, month: 12, day: 10, hour: 13, minute: 22, second: 0 },
-        { zone: TIMEZONE }
-      ).toJSDate(),
+        TIMEZONE
+      ),
+      dateInTimeZone({ year, month: 12, day: 10, hour: 13, minute: 22, second: 0 }, TIMEZONE),
     ]
     const beforeDeadline = [
-      DateTime.fromObject(
-        { year, month: 3, day: 31, hour: 0, minute: 0, second: 10 },
-        { zone: TIMEZONE }
-      ).toJSDate(),
-      DateTime.fromObject(
-        { year, month: 3, day: 31, hour: 23, minute: 59, second: 59 },
-        { zone: TIMEZONE }
-      ).toJSDate(),
-      DateTime.fromObject(
-        { year, month: 1, day: 4, hour: 10, minute: 0, second: 0 },
-        { zone: TIMEZONE }
-      ).toJSDate(),
+      dateInTimeZone({ year, month: 3, day: 31, hour: 0, minute: 0, second: 10 }, TIMEZONE),
+      dateInTimeZone({ year, month: 3, day: 31, hour: 23, minute: 59, second: 59 }, TIMEZONE),
+      dateInTimeZone({ year, month: 1, day: 4, hour: 10, minute: 0, second: 0 }, TIMEZONE),
     ]
     afterDeadline.forEach((date) => {
       it(`${date.toISOString()} should be after deadline`, () => {
@@ -93,9 +84,9 @@ describe('tax-deadline', () => {
       mockTaxDeadline({ month: 2, day: 1 })
     })
 
-    const year = DateTime.now().setZone(TIMEZONE).year
+    const { year } = Temporal.Now.zonedDateTimeISO(TIMEZONE)
     const afterDeadline = [
-      DateTime.fromObject(
+      dateInTimeZone(
         {
           year,
           month: 2,
@@ -104,9 +95,9 @@ describe('tax-deadline', () => {
           minute: 0,
           second: 10,
         },
-        { zone: TIMEZONE }
-      ).toJSDate(),
-      DateTime.fromObject(
+        TIMEZONE
+      ),
+      dateInTimeZone(
         {
           year,
           month: 2,
@@ -115,9 +106,9 @@ describe('tax-deadline', () => {
           minute: 0,
           second: 0,
         },
-        { zone: TIMEZONE }
-      ).toJSDate(),
-      DateTime.fromObject(
+        TIMEZONE
+      ),
+      dateInTimeZone(
         {
           year,
           month: 2,
@@ -126,34 +117,16 @@ describe('tax-deadline', () => {
           minute: 0,
           second: 0,
         },
-        { zone: TIMEZONE }
-      ).toJSDate(),
-      DateTime.fromObject(
-        { year, month: 12, day: 10, hour: 13, minute: 22, second: 0 },
-        { zone: TIMEZONE }
-      ).toJSDate(),
-      DateTime.fromObject(
-        { year, month: 2, day: 1, hour: 0, minute: 0, second: 1 },
-        { zone: 'America/New_York' }
-      ).toJSDate(),
+        TIMEZONE
+      ),
+      dateInTimeZone({ year, month: 12, day: 10, hour: 13, minute: 22, second: 0 }, TIMEZONE),
+      dateInTimeZone({ year, month: 2, day: 1, hour: 0, minute: 0, second: 1 }, 'America/New_York'),
     ]
     const beforeDeadline = [
-      DateTime.fromObject(
-        { year, month: 1, day: 31, hour: 0, minute: 0, second: 10 },
-        { zone: TIMEZONE }
-      ).toJSDate(),
-      DateTime.fromObject(
-        { year, month: 1, day: 31, hour: 23, minute: 59, second: 59 },
-        { zone: TIMEZONE }
-      ).toJSDate(),
-      DateTime.fromObject(
-        { year, month: 1, day: 2, hour: 10, minute: 0, second: 0 },
-        { zone: TIMEZONE }
-      ).toJSDate(),
-      DateTime.fromObject(
-        { year, month: 2, day: 1, hour: 0, minute: 0, second: 1 },
-        { zone: 'Asia/Tokyo' }
-      ).toJSDate(),
+      dateInTimeZone({ year, month: 1, day: 31, hour: 0, minute: 0, second: 10 }, TIMEZONE),
+      dateInTimeZone({ year, month: 1, day: 31, hour: 23, minute: 59, second: 59 }, TIMEZONE),
+      dateInTimeZone({ year, month: 1, day: 2, hour: 10, minute: 0, second: 0 }, TIMEZONE),
+      dateInTimeZone({ year, month: 2, day: 1, hour: 0, minute: 0, second: 1 }, 'Asia/Tokyo'),
     ]
     afterDeadline.forEach((date) => {
       it(`${date.toISOString()} should be after deadline`, () => {

@@ -1,7 +1,6 @@
 import { ErrorEnum, ErrorFactoryService, LineLoggerService, toLogfmt } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { isAxiosError } from 'axios'
-import dayjs from 'dayjs'
 
 import {
   BloomreachCommandName,
@@ -9,6 +8,7 @@ import {
   BloomreachOutboxStatus,
 } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
+import { toDate } from '../utils/functions/temporal'
 import {
   BloomreachConsentActionEnum,
   Consent,
@@ -259,9 +259,9 @@ export class BloomreachMergeConsentService {
       return null
     }
 
-    const recentlyCompletedCutoff = dayjs()
-      .subtract(BLOOMREACH_PROPAGATION_WINDOW_HOURS, 'hour')
-      .toDate()
+    const recentlyCompletedCutoff = toDate(
+      Temporal.Now.instant().subtract({ hours: BLOOMREACH_PROPAGATION_WINDOW_HOURS })
+    )
 
     //language=postgresql
     const rows = await this.prisma.$queryRaw<{ updateTimestamp: number }[]>`

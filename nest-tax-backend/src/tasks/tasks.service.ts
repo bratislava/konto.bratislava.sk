@@ -5,7 +5,6 @@ import {
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import dayjs from 'dayjs'
 
 import { PrismaService } from '../prisma/prisma.service'
 import {
@@ -70,7 +69,7 @@ export class TasksService {
   @Cron('0 9-17 1-23 12 1-5')
   @HandleErrors('Cron Error')
   sendAlertsIfHolidaysAreNotSet() {
-    const nextYear = dayjs().year() + 1
+    const nextYear = Temporal.Now.plainDateISO().year + 1
 
     const stateHolidaysForNextYear = Boolean(stateHolidays[nextYear])
 

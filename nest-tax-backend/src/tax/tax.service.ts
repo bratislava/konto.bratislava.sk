@@ -1,8 +1,5 @@
 import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
-import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
 
 import {
   PaymentStatus,
@@ -14,6 +11,7 @@ import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { QrCodeService } from '../qrcode/qrcode.service'
 import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
+import { nowInBratislava } from '../utils/functions/temporal'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -37,9 +35,6 @@ import {
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
 } from './utils/unified-tax.util'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
 
 const lookingForTaxDate = {
   from: { month: 2, day: 1 },
@@ -102,7 +97,7 @@ export class TaxService {
       })
     }
 
-    const currentTime = dayjs().tz('Europe/Bratislava')
+    const currentTime = nowInBratislava()
 
     const taxPayer = await this.prisma.taxPayer.findUnique({
       where: {
@@ -120,7 +115,7 @@ export class TaxService {
         taxImportAttempts: {
           where: {
             taxType: type,
-            year: currentTime.year(),
+            year: currentTime.year,
           },
           select: {
             status: true,
@@ -190,7 +185,7 @@ export class TaxService {
     })
 
     const currentYearTaxExists = items.some(
-      (item) => item.year === currentTime.year(),
+      (item) => item.year === currentTime.year,
     )
 
     if (
@@ -198,7 +193,7 @@ export class TaxService {
       (shouldAddCurrentYear || !currentYearTaxNotFound)
     ) {
       items.unshift({
-        year: currentTime.year(),
+        year: currentTime.year,
         status: TaxStatusEnum.AWAITING_PROCESSING,
         type,
         order: 1,
@@ -283,7 +278,7 @@ export class TaxService {
     order: number,
     logContext?: Record<string, unknown>,
   ): Promise<ResponseAnyTaxSummaryDetailDto> {
-    const today = dayjs().tz('Europe/Bratislava')
+    const today = new Date()
     const taxDefinition = getTaxDefinitionByType(type)
 
     const tax = await this.fetchTaxData(
@@ -323,7 +318,7 @@ export class TaxService {
       {
         type,
         taxYear: year,
-        today: today.toDate(),
+        today,
         overallAmount: tax.amount,
         paymentCalendarThreshold: taxDefinition.paymentCalendarThreshold,
         variableSymbol: tax.variableSymbol,
@@ -433,7 +428,7 @@ export class TaxService {
     taxType: TaxType,
     order: number,
   ): Promise<PaymentGateURLGeneratorDto> {
-    const today = dayjs().tz('Europe/Bratislava').toDate()
+    const today = new Date()
 
     const tax = await this.fetchTaxData(
       taxPayerWhereUniqueInput,

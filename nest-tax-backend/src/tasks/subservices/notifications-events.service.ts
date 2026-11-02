@@ -4,7 +4,6 @@ import {
   LineLoggerService,
 } from '@bratislava/log-nest'
 import { HttpException, Injectable } from '@nestjs/common'
-import dayjs, { Dayjs } from 'dayjs'
 import pLimit from 'p-limit'
 
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
@@ -19,12 +18,17 @@ import {
 import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import {
-  bratislavaTimeZone,
   calculateDueDate,
   DUE_DATE_OFFSET,
   parseInstallmentDueDate,
 } from '../../tax/utils/unified-tax.util'
 import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
+import {
+  endOfDay,
+  isAfter,
+  nowInBratislava,
+  toDate,
+} from '../../utils/functions/temporal'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxPaymentWithTaxAndTaxPayer } from '../../utils/types/types.prisma'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../utils/types'
@@ -47,8 +51,8 @@ export default class NotificationsEventsService {
     reminderSentFilter: UnpaidReminderSent[],
     year: number,
     window: {
-      start: Dayjs
-      end: Dayjs
+      start: Temporal.ZonedDateTime
+      end: Temporal.ZonedDateTime
     },
   ): Promise<{ taxId: number; dueDate: Date; order: number; id: number }[]> {
     const reminderSentFilterSql = Prisma.join(
@@ -78,7 +82,7 @@ export default class NotificationsEventsService {
       FROM "Tax" t
       JOIN "TaxInstallment" ti_check
         ON ti_check."taxId" = t.id
-        AND ti_check."dueDate" BETWEEN ${window.start.toDate()} AND ${window.end.toDate()}
+        AND ti_check."dueDate" BETWEEN ${toDate(window.start)} AND ${toDate(window.end)}
         AND ti_check."bloomreachUnpaidReminderSent" IN (${reminderSentFilterSql})
       LEFT JOIN paid p ON p."taxId" = t.id
       LEFT JOIN due d ON d."taxId" = t.id AND d.thru_order = ti_check."order"
@@ -100,13 +104,13 @@ export default class NotificationsEventsService {
         ? [UnpaidReminderSent.NONE]
         : [UnpaidReminderSent.NONE, UnpaidReminderSent.BEFORE_DUE]
 
-    const now = dayjs().tz(bratislavaTimeZone)
+    const now = nowInBratislava()
     const window =
       dueDateType === INSTALLMENT_DUE_DATE_TYPE.NEXT
-        ? { start: now.startOf('day'), end: now.endOf('day').add(1, 'week') }
+        ? { start: now.startOfDay(), end: endOfDay(now).add({ weeks: 1 }) }
         : {
-            start: now.startOf('day').subtract(1, 'week'),
-            end: now.endOf('day'),
+            start: now.startOfDay().subtract({ weeks: 1 }),
+            end: endOfDay(now),
           }
 
     const taxInstallmentInfo = await this.getTaxInstallmentsEligibleForReminder(
@@ -164,8 +168,8 @@ export default class NotificationsEventsService {
           order: tax.order!,
           installment_order: installmentInfo.order,
           due_date_type: dueDateType,
-          due_date_month: dueDate.month() + 1,
-          due_date_day: dueDate.date(),
+          due_date_month: dueDate.month,
+          due_date_day: dueDate.day,
           are_installments_possible: areInstallmentsPossible,
         }
         try {
@@ -247,7 +251,7 @@ export default class NotificationsEventsService {
   }
 
   async sendUnpaidTaxInstallmentReminders() {
-    const year = dayjs().year()
+    const { year } = Temporal.Now.plainDateISO()
 
     this.logger.log(
       `Starting sendUnpaidTaxInstallmentReminders task for year: ${year}`,
@@ -259,10 +263,9 @@ export default class NotificationsEventsService {
   }
 
   async sendUnpaidTaxReminders() {
-    const DUE_DATE_OFFSET_DATE = dayjs()
-      .tz('Europe/Bratislava')
-      .subtract(DUE_DATE_OFFSET, 'day')
-      .toDate()
+    const DUE_DATE_OFFSET_DATE = toDate(
+      nowInBratislava().subtract({ days: DUE_DATE_OFFSET }),
+    )
 
     // Raw query so that LIMIT applies after all eligibility filters.
     // Eligibility rules:
@@ -347,11 +350,14 @@ export default class NotificationsEventsService {
           return undefined
         }
         const dueDate = calculateDueDate(
-          tax.dateTaxRuling ? dayjs(tax.dateTaxRuling) : null,
+          tax.dateTaxRuling,
           tax.deliveryMethod,
-          dayjs(tax.createdAt),
+          tax.createdAt,
         )
-        if (!dueDate || dueDate.isAfter(dayjs().endOf('day'))) {
+        if (
+          !dueDate ||
+          isAfter(dueDate, endOfDay(Temporal.Now.zonedDateTimeISO()))
+        ) {
           return undefined
         }
         const taxDefinition = getTaxDefinitionByType(tax.type)
@@ -365,8 +371,8 @@ export default class NotificationsEventsService {
             order: tax.order!,
             installment_order: 1,
             due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,
-            due_date_month: dueDate.month() + 1,
-            due_date_day: dueDate.date(),
+            due_date_month: dueDate.month,
+            due_date_day: dueDate.day,
             are_installments_possible: areInstallmentsPossible,
           },
           userFromCityAccount.externalId,

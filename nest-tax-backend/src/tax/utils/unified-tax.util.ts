@@ -1,7 +1,4 @@
 import { ErrorFactoryService } from '@bratislava/log-nest'
-import dayjs, { Dayjs } from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
 
 import {
   DeliveryMethodNamed,
@@ -19,6 +16,12 @@ import {
 } from '../../tax-definitions/taxDefinitionsTypes'
 import alertReporting from '../../utils/constants/error.alerts'
 import {
+  isAfter,
+  isWeekend,
+  toBratislavaDateTime,
+  toDate,
+} from '../../utils/functions/temporal'
+import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../dtos/error.dto'
@@ -33,11 +36,6 @@ import {
   ResponseOneTimePaymentDetailsDto,
 } from '../dtos/response.tax.dto'
 
-dayjs.extend(utc)
-dayjs.extend(timezone)
-
-export const bratislavaTimeZone = 'Europe/Bratislava'
-
 const INSTALLMENT_TO_QR_NOTE: Record<number, QrPaymentNoteEnum> = {
   1: QrPaymentNoteEnum.QR_firstInstallment,
   2: QrPaymentNoteEnum.QR_secondInstallment,
@@ -45,179 +43,181 @@ const INSTALLMENT_TO_QR_NOTE: Record<number, QrPaymentNoteEnum> = {
   4: QrPaymentNoteEnum.QR_fourthInstallment,
 }
 
-export const stateHolidays: Partial<Record<number, { dates: Dayjs[] }>> = {
+export const stateHolidays: Partial<
+  Record<number, { dates: Temporal.PlainDate[] }>
+> = {
   2020: {
     dates: [
-      dayjs.tz('2020-01-01', bratislavaTimeZone),
-      dayjs.tz('2020-01-06', bratislavaTimeZone),
-      dayjs.tz('2020-04-10', bratislavaTimeZone),
-      dayjs.tz('2020-04-13', bratislavaTimeZone),
-      dayjs.tz('2020-05-01', bratislavaTimeZone),
-      dayjs.tz('2020-05-08', bratislavaTimeZone),
-      dayjs.tz('2020-07-05', bratislavaTimeZone),
-      dayjs.tz('2020-08-29', bratislavaTimeZone),
-      dayjs.tz('2020-09-01', bratislavaTimeZone),
-      dayjs.tz('2020-09-15', bratislavaTimeZone),
-      dayjs.tz('2020-11-01', bratislavaTimeZone),
-      dayjs.tz('2020-11-17', bratislavaTimeZone),
-      dayjs.tz('2020-12-24', bratislavaTimeZone),
-      dayjs.tz('2020-12-25', bratislavaTimeZone),
-      dayjs.tz('2020-12-26', bratislavaTimeZone),
+      Temporal.PlainDate.from('2020-01-01'),
+      Temporal.PlainDate.from('2020-01-06'),
+      Temporal.PlainDate.from('2020-04-10'),
+      Temporal.PlainDate.from('2020-04-13'),
+      Temporal.PlainDate.from('2020-05-01'),
+      Temporal.PlainDate.from('2020-05-08'),
+      Temporal.PlainDate.from('2020-07-05'),
+      Temporal.PlainDate.from('2020-08-29'),
+      Temporal.PlainDate.from('2020-09-01'),
+      Temporal.PlainDate.from('2020-09-15'),
+      Temporal.PlainDate.from('2020-11-01'),
+      Temporal.PlainDate.from('2020-11-17'),
+      Temporal.PlainDate.from('2020-12-24'),
+      Temporal.PlainDate.from('2020-12-25'),
+      Temporal.PlainDate.from('2020-12-26'),
     ],
   },
   2021: {
     dates: [
-      dayjs.tz('2021-01-01', bratislavaTimeZone),
-      dayjs.tz('2021-01-06', bratislavaTimeZone),
-      dayjs.tz('2021-04-02', bratislavaTimeZone),
-      dayjs.tz('2021-04-05', bratislavaTimeZone),
-      dayjs.tz('2021-05-01', bratislavaTimeZone),
-      dayjs.tz('2021-05-08', bratislavaTimeZone),
-      dayjs.tz('2021-07-05', bratislavaTimeZone),
-      dayjs.tz('2021-08-29', bratislavaTimeZone),
-      dayjs.tz('2021-09-01', bratislavaTimeZone),
-      dayjs.tz('2021-09-15', bratislavaTimeZone),
-      dayjs.tz('2021-11-01', bratislavaTimeZone),
-      dayjs.tz('2021-11-17', bratislavaTimeZone),
-      dayjs.tz('2021-12-24', bratislavaTimeZone),
-      dayjs.tz('2021-12-25', bratislavaTimeZone),
-      dayjs.tz('2021-12-26', bratislavaTimeZone),
+      Temporal.PlainDate.from('2021-01-01'),
+      Temporal.PlainDate.from('2021-01-06'),
+      Temporal.PlainDate.from('2021-04-02'),
+      Temporal.PlainDate.from('2021-04-05'),
+      Temporal.PlainDate.from('2021-05-01'),
+      Temporal.PlainDate.from('2021-05-08'),
+      Temporal.PlainDate.from('2021-07-05'),
+      Temporal.PlainDate.from('2021-08-29'),
+      Temporal.PlainDate.from('2021-09-01'),
+      Temporal.PlainDate.from('2021-09-15'),
+      Temporal.PlainDate.from('2021-11-01'),
+      Temporal.PlainDate.from('2021-11-17'),
+      Temporal.PlainDate.from('2021-12-24'),
+      Temporal.PlainDate.from('2021-12-25'),
+      Temporal.PlainDate.from('2021-12-26'),
     ],
   },
   2022: {
     dates: [
-      dayjs.tz('2022-01-01', bratislavaTimeZone),
-      dayjs.tz('2022-01-06', bratislavaTimeZone),
-      dayjs.tz('2022-04-15', bratislavaTimeZone),
-      dayjs.tz('2022-04-18', bratislavaTimeZone),
-      dayjs.tz('2022-05-01', bratislavaTimeZone),
-      dayjs.tz('2022-05-08', bratislavaTimeZone),
-      dayjs.tz('2022-07-05', bratislavaTimeZone),
-      dayjs.tz('2022-08-29', bratislavaTimeZone),
-      dayjs.tz('2022-09-01', bratislavaTimeZone),
-      dayjs.tz('2022-09-15', bratislavaTimeZone),
-      dayjs.tz('2022-11-01', bratislavaTimeZone),
-      dayjs.tz('2022-11-17', bratislavaTimeZone),
-      dayjs.tz('2022-12-24', bratislavaTimeZone),
-      dayjs.tz('2022-12-25', bratislavaTimeZone),
-      dayjs.tz('2022-12-26', bratislavaTimeZone),
+      Temporal.PlainDate.from('2022-01-01'),
+      Temporal.PlainDate.from('2022-01-06'),
+      Temporal.PlainDate.from('2022-04-15'),
+      Temporal.PlainDate.from('2022-04-18'),
+      Temporal.PlainDate.from('2022-05-01'),
+      Temporal.PlainDate.from('2022-05-08'),
+      Temporal.PlainDate.from('2022-07-05'),
+      Temporal.PlainDate.from('2022-08-29'),
+      Temporal.PlainDate.from('2022-09-01'),
+      Temporal.PlainDate.from('2022-09-15'),
+      Temporal.PlainDate.from('2022-11-01'),
+      Temporal.PlainDate.from('2022-11-17'),
+      Temporal.PlainDate.from('2022-12-24'),
+      Temporal.PlainDate.from('2022-12-25'),
+      Temporal.PlainDate.from('2022-12-26'),
     ],
   },
   2023: {
     dates: [
-      dayjs.tz('2023-01-01', bratislavaTimeZone),
-      dayjs.tz('2023-01-06', bratislavaTimeZone),
-      dayjs.tz('2023-04-07', bratislavaTimeZone),
-      dayjs.tz('2023-04-10', bratislavaTimeZone),
-      dayjs.tz('2023-05-01', bratislavaTimeZone),
-      dayjs.tz('2023-05-08', bratislavaTimeZone),
-      dayjs.tz('2023-07-05', bratislavaTimeZone),
-      dayjs.tz('2023-08-29', bratislavaTimeZone),
-      dayjs.tz('2023-09-01', bratislavaTimeZone),
-      dayjs.tz('2023-09-15', bratislavaTimeZone),
-      dayjs.tz('2023-11-01', bratislavaTimeZone),
-      dayjs.tz('2023-11-17', bratislavaTimeZone),
-      dayjs.tz('2023-12-24', bratislavaTimeZone),
-      dayjs.tz('2023-12-25', bratislavaTimeZone),
-      dayjs.tz('2023-12-26', bratislavaTimeZone),
+      Temporal.PlainDate.from('2023-01-01'),
+      Temporal.PlainDate.from('2023-01-06'),
+      Temporal.PlainDate.from('2023-04-07'),
+      Temporal.PlainDate.from('2023-04-10'),
+      Temporal.PlainDate.from('2023-05-01'),
+      Temporal.PlainDate.from('2023-05-08'),
+      Temporal.PlainDate.from('2023-07-05'),
+      Temporal.PlainDate.from('2023-08-29'),
+      Temporal.PlainDate.from('2023-09-01'),
+      Temporal.PlainDate.from('2023-09-15'),
+      Temporal.PlainDate.from('2023-11-01'),
+      Temporal.PlainDate.from('2023-11-17'),
+      Temporal.PlainDate.from('2023-12-24'),
+      Temporal.PlainDate.from('2023-12-25'),
+      Temporal.PlainDate.from('2023-12-26'),
     ],
   },
   2024: {
     dates: [
-      dayjs.tz('2024-01-01', bratislavaTimeZone),
-      dayjs.tz('2024-01-06', bratislavaTimeZone),
-      dayjs.tz('2024-03-29', bratislavaTimeZone),
-      dayjs.tz('2024-04-01', bratislavaTimeZone),
-      dayjs.tz('2024-05-01', bratislavaTimeZone),
-      dayjs.tz('2024-05-08', bratislavaTimeZone),
-      dayjs.tz('2024-07-05', bratislavaTimeZone),
-      dayjs.tz('2024-08-29', bratislavaTimeZone),
-      dayjs.tz('2024-09-15', bratislavaTimeZone),
-      dayjs.tz('2024-11-01', bratislavaTimeZone),
-      dayjs.tz('2024-11-17', bratislavaTimeZone),
-      dayjs.tz('2024-12-24', bratislavaTimeZone),
-      dayjs.tz('2024-12-25', bratislavaTimeZone),
-      dayjs.tz('2024-12-26', bratislavaTimeZone),
+      Temporal.PlainDate.from('2024-01-01'),
+      Temporal.PlainDate.from('2024-01-06'),
+      Temporal.PlainDate.from('2024-03-29'),
+      Temporal.PlainDate.from('2024-04-01'),
+      Temporal.PlainDate.from('2024-05-01'),
+      Temporal.PlainDate.from('2024-05-08'),
+      Temporal.PlainDate.from('2024-07-05'),
+      Temporal.PlainDate.from('2024-08-29'),
+      Temporal.PlainDate.from('2024-09-15'),
+      Temporal.PlainDate.from('2024-11-01'),
+      Temporal.PlainDate.from('2024-11-17'),
+      Temporal.PlainDate.from('2024-12-24'),
+      Temporal.PlainDate.from('2024-12-25'),
+      Temporal.PlainDate.from('2024-12-26'),
     ],
   },
   2025: {
     dates: [
-      dayjs.tz('2025-01-01', bratislavaTimeZone),
-      dayjs.tz('2025-01-06', bratislavaTimeZone),
-      dayjs.tz('2025-04-18', bratislavaTimeZone),
-      dayjs.tz('2025-04-21', bratislavaTimeZone),
-      dayjs.tz('2025-05-01', bratislavaTimeZone),
-      dayjs.tz('2025-05-08', bratislavaTimeZone),
-      dayjs.tz('2025-07-05', bratislavaTimeZone),
-      dayjs.tz('2025-08-29', bratislavaTimeZone),
-      dayjs.tz('2025-09-15', bratislavaTimeZone),
-      dayjs.tz('2025-11-01', bratislavaTimeZone),
-      dayjs.tz('2025-11-17', bratislavaTimeZone),
-      dayjs.tz('2025-12-24', bratislavaTimeZone),
-      dayjs.tz('2025-12-25', bratislavaTimeZone),
-      dayjs.tz('2025-12-26', bratislavaTimeZone),
+      Temporal.PlainDate.from('2025-01-01'),
+      Temporal.PlainDate.from('2025-01-06'),
+      Temporal.PlainDate.from('2025-04-18'),
+      Temporal.PlainDate.from('2025-04-21'),
+      Temporal.PlainDate.from('2025-05-01'),
+      Temporal.PlainDate.from('2025-05-08'),
+      Temporal.PlainDate.from('2025-07-05'),
+      Temporal.PlainDate.from('2025-08-29'),
+      Temporal.PlainDate.from('2025-09-15'),
+      Temporal.PlainDate.from('2025-11-01'),
+      Temporal.PlainDate.from('2025-11-17'),
+      Temporal.PlainDate.from('2025-12-24'),
+      Temporal.PlainDate.from('2025-12-25'),
+      Temporal.PlainDate.from('2025-12-26'),
     ],
   },
   2026: {
     dates: [
-      dayjs.tz('2026-01-01', bratislavaTimeZone),
-      dayjs.tz('2026-01-06', bratislavaTimeZone),
-      dayjs.tz('2026-04-02', bratislavaTimeZone),
-      dayjs.tz('2026-04-06', bratislavaTimeZone),
-      dayjs.tz('2026-05-01', bratislavaTimeZone),
-      dayjs.tz('2026-05-08', bratislavaTimeZone),
-      dayjs.tz('2026-07-05', bratislavaTimeZone),
-      dayjs.tz('2026-08-29', bratislavaTimeZone),
-      dayjs.tz('2026-09-15', bratislavaTimeZone),
-      dayjs.tz('2026-11-01', bratislavaTimeZone),
-      dayjs.tz('2026-11-17', bratislavaTimeZone),
-      dayjs.tz('2026-12-24', bratislavaTimeZone),
-      dayjs.tz('2026-12-25', bratislavaTimeZone),
-      dayjs.tz('2026-12-26', bratislavaTimeZone),
+      Temporal.PlainDate.from('2026-01-01'),
+      Temporal.PlainDate.from('2026-01-06'),
+      Temporal.PlainDate.from('2026-04-02'),
+      Temporal.PlainDate.from('2026-04-06'),
+      Temporal.PlainDate.from('2026-05-01'),
+      Temporal.PlainDate.from('2026-05-08'),
+      Temporal.PlainDate.from('2026-07-05'),
+      Temporal.PlainDate.from('2026-08-29'),
+      Temporal.PlainDate.from('2026-09-15'),
+      Temporal.PlainDate.from('2026-11-01'),
+      Temporal.PlainDate.from('2026-11-17'),
+      Temporal.PlainDate.from('2026-12-24'),
+      Temporal.PlainDate.from('2026-12-25'),
+      Temporal.PlainDate.from('2026-12-26'),
     ],
   },
   2027: {
     dates: [
-      dayjs.tz('2027-01-01', bratislavaTimeZone),
-      dayjs.tz('2027-01-06', bratislavaTimeZone),
-      dayjs.tz('2027-04-26', bratislavaTimeZone),
-      dayjs.tz('2027-04-29', bratislavaTimeZone),
-      dayjs.tz('2027-05-01', bratislavaTimeZone),
-      dayjs.tz('2027-05-08', bratislavaTimeZone),
-      dayjs.tz('2027-07-05', bratislavaTimeZone),
-      dayjs.tz('2027-08-29', bratislavaTimeZone),
-      dayjs.tz('2027-09-15', bratislavaTimeZone),
-      dayjs.tz('2027-11-01', bratislavaTimeZone),
-      dayjs.tz('2027-11-17', bratislavaTimeZone),
-      dayjs.tz('2027-12-24', bratislavaTimeZone),
-      dayjs.tz('2027-12-25', bratislavaTimeZone),
-      dayjs.tz('2027-12-26', bratislavaTimeZone),
+      Temporal.PlainDate.from('2027-01-01'),
+      Temporal.PlainDate.from('2027-01-06'),
+      Temporal.PlainDate.from('2027-04-26'),
+      Temporal.PlainDate.from('2027-04-29'),
+      Temporal.PlainDate.from('2027-05-01'),
+      Temporal.PlainDate.from('2027-05-08'),
+      Temporal.PlainDate.from('2027-07-05'),
+      Temporal.PlainDate.from('2027-08-29'),
+      Temporal.PlainDate.from('2027-09-15'),
+      Temporal.PlainDate.from('2027-11-01'),
+      Temporal.PlainDate.from('2027-11-17'),
+      Temporal.PlainDate.from('2027-12-24'),
+      Temporal.PlainDate.from('2027-12-25'),
+      Temporal.PlainDate.from('2027-12-26'),
     ],
   },
   2028: {
     dates: [
-      dayjs.tz('2028-01-01', bratislavaTimeZone),
-      dayjs.tz('2028-01-06', bratislavaTimeZone),
-      dayjs.tz('2028-04-14', bratislavaTimeZone),
-      dayjs.tz('2028-04-17', bratislavaTimeZone),
-      dayjs.tz('2028-05-01', bratislavaTimeZone),
-      dayjs.tz('2028-05-08', bratislavaTimeZone),
-      dayjs.tz('2028-07-05', bratislavaTimeZone),
-      dayjs.tz('2028-08-29', bratislavaTimeZone),
-      dayjs.tz('2028-09-15', bratislavaTimeZone),
-      dayjs.tz('2028-11-01', bratislavaTimeZone),
-      dayjs.tz('2028-11-17', bratislavaTimeZone),
-      dayjs.tz('2028-12-24', bratislavaTimeZone),
-      dayjs.tz('2028-12-25', bratislavaTimeZone),
-      dayjs.tz('2028-12-26', bratislavaTimeZone),
+      Temporal.PlainDate.from('2028-01-01'),
+      Temporal.PlainDate.from('2028-01-06'),
+      Temporal.PlainDate.from('2028-04-14'),
+      Temporal.PlainDate.from('2028-04-17'),
+      Temporal.PlainDate.from('2028-05-01'),
+      Temporal.PlainDate.from('2028-05-08'),
+      Temporal.PlainDate.from('2028-07-05'),
+      Temporal.PlainDate.from('2028-08-29'),
+      Temporal.PlainDate.from('2028-09-15'),
+      Temporal.PlainDate.from('2028-11-01'),
+      Temporal.PlainDate.from('2028-11-17'),
+      Temporal.PlainDate.from('2028-12-24'),
+      Temporal.PlainDate.from('2028-12-25'),
+      Temporal.PlainDate.from('2028-12-26'),
     ],
   },
 }
 
 export const DUE_DATE_OFFSET = 15
 
-const isStateHoliday = (date: Dayjs): boolean => {
-  const year = date.year()
+const isStateHoliday = (date: Temporal.ZonedDateTime): boolean => {
+  const { year } = date
   const yearHolidays = stateHolidays[year]
 
   if (!yearHolidays) {
@@ -226,39 +226,35 @@ const isStateHoliday = (date: Dayjs): boolean => {
     }).InternalServerErrorException({
       errorEnum: CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
       message: CustomErrorTaxTypesResponseEnum.STATE_HOLIDAY_NOT_EXISTS,
-      console: { year, date: date.format('YYYY-MM-DD') },
+      console: { year, date: date.toString() },
     })
   }
 
-  return yearHolidays.dates.some((holiday) => holiday.isSame(date, 'day'))
+  const plainDate = date.toPlainDate()
+  return yearHolidays.dates.some((holiday) => holiday.equals(plainDate))
 }
 
-const ensureWorkingDay = (date: Dayjs): Dayjs => {
+const ensureWorkingDay = (
+  date: Temporal.ZonedDateTime,
+): Temporal.ZonedDateTime => {
   let workingDay = date
 
-  while (
-    // Check if it's a weekend or a state holiday
-    workingDay.day() === 6 || // Saturday
-    workingDay.day() === 0 || // Sunday
-    isStateHoliday(workingDay) // Holiday
-  ) {
-    // Move to the next day
-    workingDay = workingDay.add(1, 'day')
+  while (isWeekend(workingDay) || isStateHoliday(workingDay)) {
+    workingDay = workingDay.add({ days: 1 })
   }
 
   return workingDay
 }
 
 export const calculateDueDate = (
-  dateOfValidity: Dayjs | null,
+  dateOfValidity: Date | null,
   deliveryMethod: DeliveryMethodNamed | null,
-  createdAt: Dayjs,
-): Dayjs | undefined => {
+  createdAt: Date,
+): Temporal.ZonedDateTime | undefined => {
   if (deliveryMethod && deliveryMethod === DeliveryMethodNamed.CITY_ACCOUNT) {
-    const dueDateBase = createdAt
-      .tz(bratislavaTimeZone)
-      .startOf('day')
-      .add(DUE_DATE_OFFSET, 'day')
+    const dueDateBase = toBratislavaDateTime(createdAt)
+      .startOfDay()
+      .add({ days: DUE_DATE_OFFSET })
     return ensureWorkingDay(dueDateBase)
   }
 
@@ -268,10 +264,9 @@ export const calculateDueDate = (
   }
 
   // We add one more day to get midnight - start of the next day
-  const dueDateBase = dateOfValidity
-    .tz(bratislavaTimeZone)
-    .startOf('day')
-    .add(DUE_DATE_OFFSET, 'day')
+  const dueDateBase = toBratislavaDateTime(dateOfValidity)
+    .startOfDay()
+    .add({ days: DUE_DATE_OFFSET })
   return ensureWorkingDay(dueDateBase)
 }
 
@@ -368,7 +363,10 @@ export const calculateInstallmentAmounts = (
  * Due dates aligned with UI installment rows: index 0 = validity-based first due date;
  * further indices = NORIS due dates for installments with order 2, 3, … (order 1 is omitted).
  */
-type InstallmentDueDatesRow = [Dayjs | undefined, ...Dayjs[]]
+type InstallmentDueDatesRow = [
+  Temporal.ZonedDateTime | undefined,
+  ...Temporal.ZonedDateTime[],
+]
 
 /**
  * Determines installment statuses based on due dates and payment status.
@@ -397,8 +395,7 @@ const calculateInstallmentStatus = (
     const installmentDueDate = installmentDueDates[i]
     // If due date is undefined, we can't determine if it's late, so use the original status
     const isDueDateInFuture =
-      installmentDueDate === undefined ||
-      installmentDueDate.isAfter(dayjs(today))
+      installmentDueDate === undefined || isAfter(installmentDueDate, today)
     const isLateInstallment =
       !isDueDateInFuture &&
       installmentAmounts[i].status !== InstallmentPaidStatusEnum.PAID &&
@@ -415,8 +412,9 @@ const calculateInstallmentStatus = (
   return result
 }
 
-export const parseInstallmentDueDate = (dueDate: Date): Dayjs =>
-  dayjs.tz(dueDate, bratislavaTimeZone)
+export const parseInstallmentDueDate = (
+  dueDate: Date,
+): Temporal.ZonedDateTime => toBratislavaDateTime(dueDate)
 
 const findActiveInstallment = (
   installments: ResponseInstallmentItemDto[],
@@ -433,7 +431,7 @@ const calculateInstallmentPaymentDetails = (options: {
   overallPaid: number
   today: Date
   paymentCalendarThreshold: number
-  dueDate?: Dayjs
+  dueDate?: Temporal.ZonedDateTime
   installments: { order: number; amount: number; dueDate: Date }[]
   variableSymbol: string
   numberOfInstallments?: number
@@ -506,7 +504,7 @@ const calculateInstallmentPaymentDetails = (options: {
       isPossible: false,
       reasonNotPossible:
         InstallmentPaymentReasonNotPossibleEnum.TAX_IS_CANCELLED,
-      dueDateLastPayment: dueDateLastPayment.toDate(),
+      dueDateLastPayment: toDate(dueDateLastPayment),
     }
   }
 
@@ -514,15 +512,15 @@ const calculateInstallmentPaymentDetails = (options: {
     return {
       isPossible: false,
       reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
-      dueDateLastPayment: dueDateLastPayment.toDate(),
+      dueDateLastPayment: toDate(dueDateLastPayment),
     }
   }
 
-  if (dayjs(today).isAfter(dueDateLastPayment)) {
+  if (isAfter(today, dueDateLastPayment)) {
     return {
       isPossible: false,
       reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
-      dueDateLastPayment: dueDateLastPayment.toDate(),
+      dueDateLastPayment: toDate(dueDateLastPayment),
     }
   }
 
@@ -540,13 +538,16 @@ const calculateInstallmentPaymentDetails = (options: {
   )
 
   const installmentDetails: ResponseInstallmentItemDto[] =
-    installmentStatuses.map((statusInfo, index) => ({
-      installmentNumber: index + 1,
-      dueDate: installmentDueDatesParsed[index]?.toDate(),
-      status: statusInfo.status,
-      remainingAmount: statusInfo.remainingAmount,
-      totalInstallmentAmount: installmentAmounts[index].total,
-    }))
+    installmentStatuses.map((statusInfo, index) => {
+      const installmentDueDate = installmentDueDatesParsed[index]
+      return {
+        installmentNumber: index + 1,
+        dueDate: installmentDueDate && toDate(installmentDueDate),
+        status: statusInfo.status,
+        remainingAmount: statusInfo.remainingAmount,
+        totalInstallmentAmount: installmentAmounts[index].total,
+      }
+    })
 
   const active = findActiveInstallment(installmentDetails)
 
@@ -584,7 +585,7 @@ const calculateInstallmentPaymentDetails = (options: {
 
   return {
     isPossible: true,
-    dueDateLastPayment: dueDateLastPayment.toDate(),
+    dueDateLastPayment: toDate(dueDateLastPayment),
     installments: installmentDetails,
     activeInstallment,
   }
@@ -671,20 +672,14 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
 
   const overallBalance = Math.max(overallAmount - overallPaid, 0)
 
-  const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
-
-  const dueDate = calculateDueDate(
-    dateOfValidityDayjs,
-    deliveryMethod,
-    dayjs(createdAt),
-  )
+  const dueDate = calculateDueDate(dateOfValidity, deliveryMethod, createdAt)
 
   const taxDefinition = getTaxDefinitionByType(type)
 
   const oneTimePayment = calculateOneTimePaymentDetails({
     overallPaid,
     overallBalance,
-    dueDate: dueDate?.toDate(),
+    dueDate: dueDate && toDate(dueDate),
     variableSymbol,
     iban: taxDefinition.iban,
     isCancelled,
@@ -799,12 +794,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     }
   })
 
-  const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
-  const dueDate = calculateDueDate(
-    dateOfValidityDayjs,
-    deliveryMethod,
-    dayjs(createdAt),
-  )
+  const dueDate = calculateDueDate(dateOfValidity, deliveryMethod, createdAt)
 
   const installmentPayment = calculateInstallmentPaymentDetails({
     overallAmount,

@@ -1,7 +1,6 @@
 import { QueryClient } from '@tanstack/react-query'
 import {
   FormState,
-  GetFormResponseDto,
   GetFormResponseDtoErrorEnum,
   GetFormResponseDtoStateEnum,
   GetFormsResponseDto,
@@ -9,7 +8,6 @@ import {
   GinisDocumentDetailResponseDto,
 } from 'openapi-clients/forms'
 
-import { MyApplicationFormData } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails/MyApplicationDetails'
 import { getMyApplicationsCountQueryKey } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationsCountFetcher'
 import {
   getMyApplicationsQueryKey,
@@ -22,6 +20,7 @@ import {
   MyApplicationState,
   MyApplicationStateFilter,
 } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationStates'
+import { MyApplicationFormData } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationTypes'
 import { SelectOption } from '@/src/components/widget-components/SelectField/SelectField'
 
 // ─── Shared showcase data ───

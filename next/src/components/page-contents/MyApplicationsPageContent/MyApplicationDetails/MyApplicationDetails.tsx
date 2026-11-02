@@ -1,9 +1,5 @@
 import { useTranslation } from 'next-i18next/pages'
-import {
-  GetFormResponseDto,
-  GetFormsResponseDtoItemsInner,
-  GinisDocumentDetailResponseDto,
-} from 'openapi-clients/forms'
+import { GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import { LabelValueRowProps } from '@/src/components/common/LabelValueRowGroup/LabelValueRow'
 import LabelValueRowGroup from '@/src/components/common/LabelValueRowGroup/LabelValueRowGroup'
@@ -12,10 +8,7 @@ import { formatMarkdownLink } from '@/src/components/formatting/formatMarkdownLi
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
 import MyApplicationDetailsHeader from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails/MyApplicationDetailsHeader'
-
-// TODO Remove when `formSentAt` is added to `GetFormResponseDto` - BE already returns it, it's just not in the DTO yet
-export type MyApplicationFormData = GetFormResponseDto &
-  Pick<GetFormsResponseDtoItemsInner, 'formSentAt'>
+import { MyApplicationFormData } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationTypes'
 
 type Props = {
   formDefinitionTitle: string

@@ -7,9 +7,8 @@ import { GeneralQuery } from '@/src/clients/graphql-strapi/api'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
-import MyApplicationDetails, {
-  MyApplicationFormData,
-} from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails/MyApplicationDetails'
+import MyApplicationDetails from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails/MyApplicationDetails'
+import { MyApplicationFormData } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationTypes'
 import SeoHead from '@/src/components/simple-components/SeoHead'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { modifyGinisDataForSchemaSlug } from '@/src/frontend/utils/ginis'

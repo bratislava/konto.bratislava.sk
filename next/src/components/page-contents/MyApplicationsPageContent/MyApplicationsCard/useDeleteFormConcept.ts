@@ -1,12 +1,12 @@
 import { useTranslation } from 'next-i18next/pages'
-import { GetFormsResponseDtoItemsInner } from 'openapi-clients/forms'
 
 import { formsClient } from '@/src/clients/forms'
+import { MyApplicationListItem } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationTypes'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import logger from '@/src/frontend/utils/logger'
 
 type Props = {
-  form: GetFormsResponseDtoItemsInner
+  form: MyApplicationListItem
   refreshListData: () => Promise<void>
 }
 

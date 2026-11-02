@@ -1,6 +1,6 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import { FormState, GetFormsResponseDtoItemsInner } from 'openapi-clients/forms'
+import { FormState } from 'openapi-clients/forms'
 import { useState } from 'react'
 
 import { formatDate } from '@/src/components/formatting/FormatDate'
@@ -8,6 +8,7 @@ import Icon from '@/src/components/icon-components/Icon'
 import BottomSheetMenuModal from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuModal'
 import { useDeleteFormConcept } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard/useDeleteFormConcept'
 import { getMyApplicationStateByFormResponseState } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationStates'
+import { MyApplicationListItem } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationTypes'
 import { useFormDefinitionSlugTitleMap } from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionSlugTitleMap'
 import DropdownMenu, {
   DropdownMenuItemProps,
@@ -21,7 +22,7 @@ import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
-  form: GetFormsResponseDtoItemsInner
+  form: MyApplicationListItem
   refreshListData: () => Promise<void>
 }
 

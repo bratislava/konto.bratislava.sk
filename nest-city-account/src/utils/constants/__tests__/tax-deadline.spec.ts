@@ -1,12 +1,10 @@
 import type { MockedFunction } from 'vitest'
 
 import getBaConfigInstance from '../../../config/ba-config.instance'
-import { toDate } from '../../functions/temporal'
+import { BRATISLAVA_TIME_ZONE, toDate } from '../../functions/temporal'
 import { getTaxDeadlineDate } from '../tax-deadline'
 
 vi.mock('../../../config/ba-config.instance')
-
-const TIMEZONE = 'Europe/Bratislava'
 
 const dateInTimeZone = (fields: Temporal.DateTimeLikeObject, timeZone: string) =>
   toDate(Temporal.ZonedDateTime.from({ ...fields, timeZone }))
@@ -25,7 +23,7 @@ describe('tax-deadline', () => {
       mockTaxDeadline({ month: 4, day: 1 })
     })
 
-    const { year } = Temporal.Now.zonedDateTimeISO(TIMEZONE)
+    const { year } = Temporal.Now.zonedDateTimeISO(BRATISLAVA_TIME_ZONE)
     const afterDeadline = [
       dateInTimeZone(
         {
@@ -36,7 +34,7 @@ describe('tax-deadline', () => {
           minute: 0,
           second: 10,
         },
-        TIMEZONE
+        BRATISLAVA_TIME_ZONE
       ),
       dateInTimeZone(
         {
@@ -47,7 +45,7 @@ describe('tax-deadline', () => {
           minute: 0,
           second: 0,
         },
-        TIMEZONE
+        BRATISLAVA_TIME_ZONE
       ),
       dateInTimeZone(
         {
@@ -58,14 +56,26 @@ describe('tax-deadline', () => {
           minute: 0,
           second: 0,
         },
-        TIMEZONE
+        BRATISLAVA_TIME_ZONE
       ),
-      dateInTimeZone({ year, month: 12, day: 10, hour: 13, minute: 22, second: 0 }, TIMEZONE),
+      dateInTimeZone(
+        { year, month: 12, day: 10, hour: 13, minute: 22, second: 0 },
+        BRATISLAVA_TIME_ZONE
+      ),
     ]
     const beforeDeadline = [
-      dateInTimeZone({ year, month: 3, day: 31, hour: 0, minute: 0, second: 10 }, TIMEZONE),
-      dateInTimeZone({ year, month: 3, day: 31, hour: 23, minute: 59, second: 59 }, TIMEZONE),
-      dateInTimeZone({ year, month: 1, day: 4, hour: 10, minute: 0, second: 0 }, TIMEZONE),
+      dateInTimeZone(
+        { year, month: 3, day: 31, hour: 0, minute: 0, second: 10 },
+        BRATISLAVA_TIME_ZONE
+      ),
+      dateInTimeZone(
+        { year, month: 3, day: 31, hour: 23, minute: 59, second: 59 },
+        BRATISLAVA_TIME_ZONE
+      ),
+      dateInTimeZone(
+        { year, month: 1, day: 4, hour: 10, minute: 0, second: 0 },
+        BRATISLAVA_TIME_ZONE
+      ),
     ]
     afterDeadline.forEach((date) => {
       it(`${date.toISOString()} should be after deadline`, () => {
@@ -84,7 +94,7 @@ describe('tax-deadline', () => {
       mockTaxDeadline({ month: 2, day: 1 })
     })
 
-    const { year } = Temporal.Now.zonedDateTimeISO(TIMEZONE)
+    const { year } = Temporal.Now.zonedDateTimeISO(BRATISLAVA_TIME_ZONE)
     const afterDeadline = [
       dateInTimeZone(
         {
@@ -95,7 +105,7 @@ describe('tax-deadline', () => {
           minute: 0,
           second: 10,
         },
-        TIMEZONE
+        BRATISLAVA_TIME_ZONE
       ),
       dateInTimeZone(
         {
@@ -106,7 +116,7 @@ describe('tax-deadline', () => {
           minute: 0,
           second: 0,
         },
-        TIMEZONE
+        BRATISLAVA_TIME_ZONE
       ),
       dateInTimeZone(
         {
@@ -117,15 +127,27 @@ describe('tax-deadline', () => {
           minute: 0,
           second: 0,
         },
-        TIMEZONE
+        BRATISLAVA_TIME_ZONE
       ),
-      dateInTimeZone({ year, month: 12, day: 10, hour: 13, minute: 22, second: 0 }, TIMEZONE),
+      dateInTimeZone(
+        { year, month: 12, day: 10, hour: 13, minute: 22, second: 0 },
+        BRATISLAVA_TIME_ZONE
+      ),
       dateInTimeZone({ year, month: 2, day: 1, hour: 0, minute: 0, second: 1 }, 'America/New_York'),
     ]
     const beforeDeadline = [
-      dateInTimeZone({ year, month: 1, day: 31, hour: 0, minute: 0, second: 10 }, TIMEZONE),
-      dateInTimeZone({ year, month: 1, day: 31, hour: 23, minute: 59, second: 59 }, TIMEZONE),
-      dateInTimeZone({ year, month: 1, day: 2, hour: 10, minute: 0, second: 0 }, TIMEZONE),
+      dateInTimeZone(
+        { year, month: 1, day: 31, hour: 0, minute: 0, second: 10 },
+        BRATISLAVA_TIME_ZONE
+      ),
+      dateInTimeZone(
+        { year, month: 1, day: 31, hour: 23, minute: 59, second: 59 },
+        BRATISLAVA_TIME_ZONE
+      ),
+      dateInTimeZone(
+        { year, month: 1, day: 2, hour: 10, minute: 0, second: 0 },
+        BRATISLAVA_TIME_ZONE
+      ),
       dateInTimeZone({ year, month: 2, day: 1, hour: 0, minute: 0, second: 1 }, 'Asia/Tokyo'),
     ]
     afterDeadline.forEach((date) => {

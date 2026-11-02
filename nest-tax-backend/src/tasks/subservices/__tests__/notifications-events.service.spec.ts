@@ -1,9 +1,6 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
-import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import type { Mocked, MockInstance } from 'vitest'
 
@@ -26,9 +23,6 @@ import { PrismaService } from '../../../prisma/prisma.service'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../../utils/types'
 import NotificationsEventsService from '../notifications-events.service'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
 
 type TaxInstallmentUpdateManyFn = (
   args: Prisma.TaxInstallmentUpdateManyArgs,
@@ -109,7 +103,7 @@ describe('NotificationsEventsSubservice', () => {
   let cityAccountSubservice: Mocked<CityAccountSubservice>
   let logger: LineLoggerService
 
-  const currentYear = dayjs().year()
+  const currentYear = Temporal.Now.plainDateISO().year
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

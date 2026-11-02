@@ -1,21 +1,18 @@
 import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
-import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
 
 import { TaxImportStatus, TaxType } from '../../generated/prisma/client'
 import { NorisService } from '../../noris/noris.service'
 import { PrismaService } from '../../prisma/prisma.service'
+import {
+  endOfDay,
+  nowInBratislava,
+  toDate,
+} from '../../utils/functions/temporal'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
 
 @Injectable()
 export default class TaxImportHelperService {
-  private readonly BRATISLAVA_TIMEZONE = 'Europe/Bratislava'
-
   private readonly UPLOAD_BIRTHNUMBERS_BATCH = 100
 
   constructor(
@@ -40,18 +37,15 @@ export default class TaxImportHelperService {
   }
 
   async isWithinImportWindow(): Promise<boolean> {
-    const now = dayjs().tz(this.BRATISLAVA_TIMEZONE)
-    const hour = now.hour()
+    const { hour } = nowInBratislava()
     const { startHour, endHour } = await this.getImportWindowConfig()
     return hour >= startHour && hour < endHour
   }
 
   async getTodayTaxCount(year?: number): Promise<number> {
-    const todayStart = dayjs()
-      .tz(this.BRATISLAVA_TIMEZONE)
-      .startOf('day')
-      .toDate()
-    const todayEnd = dayjs().tz(this.BRATISLAVA_TIMEZONE).endOf('day').toDate()
+    const now = nowInBratislava()
+    const todayStart = toDate(now.startOfDay())
+    const todayEnd = toDate(endOfDay(now))
 
     return this.prismaService.tax.count({
       where: {

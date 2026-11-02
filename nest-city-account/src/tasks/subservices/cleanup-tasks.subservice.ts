@@ -1,8 +1,8 @@
 import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
-import { DateTime } from 'luxon'
 
 import { PrismaService } from '../../prisma/prisma.service'
+import { toDate } from '../../utils/functions/temporal'
 
 @Injectable()
 export class CleanupTasksSubservice {
@@ -40,7 +40,7 @@ export class CleanupTasksSubservice {
   }
 
   async cleanupExpiredAuthorizationCodes(): Promise<void> {
-    const fiveMinutesAgo = DateTime.now().minus({ minutes: 5 }).toJSDate()
+    const fiveMinutesAgo = toDate(Temporal.Now.instant().subtract({ minutes: 5 }))
 
     const expiredRecords = await this.prismaService.oAuth2Data.findMany({
       where: {
@@ -92,7 +92,7 @@ export class CleanupTasksSubservice {
   }
 
   async deleteOldOAuth2Data(): Promise<void> {
-    const oneMonthAgo = DateTime.now().minus({ months: 1 }).toJSDate()
+    const oneMonthAgo = toDate(Temporal.Now.zonedDateTimeISO().subtract({ months: 1 }))
 
     const oldRecords = await this.prismaService.oAuth2Data.findMany({
       where: {

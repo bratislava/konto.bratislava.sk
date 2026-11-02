@@ -5,7 +5,6 @@ import {
 } from '@bratislava/log-nest'
 import { Injectable, Logger } from '@nestjs/common'
 import currency from 'currency.js'
-import dayjs from 'dayjs'
 import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
@@ -19,6 +18,7 @@ import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import BaConfigService from '../../config/ba-config.service'
 import { PaymentStatus, TaxPayment } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
+import { isBefore } from '../../utils/functions/temporal'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../utils/types/types.prisma'
 import { ResponseCreatedAlreadyCreatedDto } from '../dtos/response.dto'
@@ -32,6 +32,8 @@ import {
 } from '../utils/noris.queries'
 import { NorisConnectionSubservice } from './noris-connection.subservice'
 import { NorisValidatorSubservice } from './noris-validator.subservice'
+
+const HISTORICAL_PAYMENT_AGE_DAYS = 180
 
 @Injectable()
 export class NorisPaymentSubservice {
@@ -354,7 +356,10 @@ export class NorisPaymentSubservice {
     if (!datum_posledni_platby) {
       return false
     }
-    return dayjs(datum_posledni_platby).isBefore(dayjs().subtract(180, 'day'))
+    const historicalBefore = Temporal.Now.zonedDateTimeISO().subtract({
+      days: HISTORICAL_PAYMENT_AGE_DAYS,
+    })
+    return isBefore(datum_posledni_platby, historicalBefore)
   }
 
   private formatAmount(amount: number | string) {

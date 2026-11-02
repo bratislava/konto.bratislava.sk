@@ -13,6 +13,7 @@ import {
 } from '../tax/dtos/error.dto'
 import { stateHolidays } from '../tax/utils/unified-tax.util'
 import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../utils/constants'
+import { BRATISLAVA_TIME_ZONE } from '../utils/functions/temporal'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import CityAccountIngestionTasksService from './subservices/city-account-ingestion.tasks.service'
 import NorisSyncTasksService from './subservices/noris-sync.tasks.service'
@@ -112,7 +113,7 @@ export class TasksService {
     await this.notificationsEventsService.resendBloomreachEvents()
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_9AM, { timeZone: 'Europe/Bratislava' })
+  @Cron(CronExpression.EVERY_DAY_AT_9AM, { timeZone: BRATISLAVA_TIME_ZONE })
   @HandleErrors('Cron Error')
   async alertSilentNorisConnectionErrors() {
     const numberOfErrorsValue = await this.databaseSubservice.getConfigByKeys([

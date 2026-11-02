@@ -20,6 +20,7 @@ import {
 } from '../../../generated/prisma/client'
 import { PaymentService } from '../../../payment/payment.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import { BRATISLAVA_TIME_ZONE, toDate } from '../../../utils/functions/temporal'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../../utils/types'
 import NotificationsEventsService from '../notifications-events.service'
@@ -55,8 +56,10 @@ function assertUpdateManyUsesReminderEnums(
   })
 }
 
-/** Calendar May 31, 2025 in the runner's local TZ — matches service's dueDate.getDate()/getMonth() (not UTC instant from Europe/Bratislava midnight, which is prior UTC day on CI). */
-const DEFAULT_ELIGIBLE_INSTALLMENT_DUE_DATE = new Date(2025, 4, 31)
+/** Midnight of 31 May 2025 in Bratislava, the way installment due dates are stored. */
+const DEFAULT_ELIGIBLE_INSTALLMENT_DUE_DATE = toDate(
+  Temporal.PlainDate.from('2025-05-31').toZonedDateTime(BRATISLAVA_TIME_ZONE),
+)
 
 function eligibleInstallmentRow(opts: {
   taxId: number

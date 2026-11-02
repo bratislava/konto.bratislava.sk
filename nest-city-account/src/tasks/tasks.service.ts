@@ -4,11 +4,11 @@ import { Cron, CronExpression, Interval } from '@nestjs/schedule'
 
 import { BloomreachOutboxProcessor } from '../bloomreach/bloomreach-outbox.processor'
 import getBaConfigInstance from '../config/ba-config.instance'
+import { BRATISLAVA_TIME_ZONE } from '../utils/functions/temporal'
 import { CleanupTasksSubservice } from './subservices/cleanup-tasks.subservice'
 import { EdeskTasksSubservice } from './subservices/edesk-tasks.subservice'
 import { TaxDeliveryMethodsTasksSubservice } from './subservices/tax-delivery-methods-tasks.subservice'
 
-const bratislavaTimezone = 'Europe/Bratislava'
 const { month: taxLockMonth, day: taxLockDay } = getBaConfigInstance().taxDeadline
 
 /**
@@ -39,7 +39,7 @@ export class TasksService {
    * Cleans up both UserIdCardVerify and LegalPersonIcoIdCardVerify records.
    * Runs daily at 1:02 AM.
    */
-  @Cron('2 01 * * *', { timeZone: bratislavaTimezone })
+  @Cron('2 01 * * *', { timeZone: BRATISLAVA_TIME_ZONE })
   @HandleErrors('Cron Error')
   async deleteOldUserVerificationData() {
     return this.cleanupTasksSubservice.deleteOldUserVerificationData()
@@ -51,7 +51,7 @@ export class TasksService {
    * Runs every 5 minutes from February 2nd onwards during tax season.
    */
   @Cron(`*/5 * 2-31 ${taxLockMonth}-12 *`, {
-    timeZone: bratislavaTimezone,
+    timeZone: BRATISLAVA_TIME_ZONE,
   })
   @HandleErrors('Cron Error')
   async updateDeliveryMethodsInNoris() {
@@ -64,7 +64,7 @@ export class TasksService {
    * keeps ticks from overlapping. See the upvs-queue README for the full flow.
    */
   @Cron(CronExpression.EVERY_30_SECONDS, {
-    timeZone: bratislavaTimezone,
+    timeZone: BRATISLAVA_TIME_ZONE,
     waitForCompletion: true,
   })
   @HandleErrors('CronError')
@@ -78,7 +78,7 @@ export class TasksService {
    * When no queued items exist, fetches new records from Noris and enqueues them for UPVS checking.
    * Runs every 30 minutes.
    */
-  @Cron(CronExpression.EVERY_30_MINUTES, { timeZone: bratislavaTimezone })
+  @Cron(CronExpression.EVERY_30_MINUTES, { timeZone: BRATISLAVA_TIME_ZONE })
   @HandleErrors('CronError')
   async updateEdeskInNoris(): Promise<void> {
     return this.edeskTasksSubservice.updateEdeskInNoris()
@@ -89,7 +89,7 @@ export class TasksService {
    * Logs error messages with entity details for monitoring.
    * Runs daily at 9:01 AM.
    */
-  @Cron('1 09 * * *', { timeZone: bratislavaTimezone })
+  @Cron('1 09 * * *', { timeZone: BRATISLAVA_TIME_ZONE })
   @HandleErrors('CronError')
   async alertFailingEdeskUpdate(): Promise<void> {
     return this.edeskTasksSubservice.alertFailingEdeskUpdate()
@@ -99,7 +99,7 @@ export class TasksService {
    * Weekly digest of identity lookups rejected by UPVS IAM in the last month.
    * Runs every Monday at 9:00 AM.
    */
-  @Cron('0 09 * * 1', { timeZone: bratislavaTimezone })
+  @Cron('0 09 * * 1', { timeZone: BRATISLAVA_TIME_ZONE })
   @HandleErrors('CronError')
   async alertIdentityLookupRejections(): Promise<void> {
     return this.edeskTasksSubservice.alertIdentityLookupRejections()
@@ -110,7 +110,7 @@ export class TasksService {
    * Removes access, ID, and refresh tokens from expired records.
    * Runs every 5 minutes, ensuring codes are at most 10 minutes old.
    */
-  @Cron(CronExpression.EVERY_5_MINUTES, { timeZone: bratislavaTimezone })
+  @Cron(CronExpression.EVERY_5_MINUTES, { timeZone: BRATISLAVA_TIME_ZONE })
   @HandleErrors('CronError')
   async cleanupExpiredAuthorizationCodes(): Promise<void> {
     return this.cleanupTasksSubservice.cleanupExpiredAuthorizationCodes()
@@ -121,7 +121,7 @@ export class TasksService {
    * Removes both expired authorization codes and stale records.
    * Runs on the 1st day of each month at midnight.
    */
-  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT, { timeZone: bratislavaTimezone })
+  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT, { timeZone: BRATISLAVA_TIME_ZONE })
   @HandleErrors('CronError')
   async deleteOldOAuth2Data(): Promise<void> {
     return this.cleanupTasksSubservice.deleteOldOAuth2Data()
@@ -134,7 +134,7 @@ export class TasksService {
    * Runs once per year on MUNICIPAL_TAX_LOCK_DAY/MUNICIPAL_TAX_LOCK_MONTH.
    */
   @Cron(`0 0 ${taxLockDay} ${taxLockMonth} *`, {
-    timeZone: bratislavaTimezone,
+    timeZone: BRATISLAVA_TIME_ZONE,
   })
   @HandleErrors('Cron')
   async lockDeliveryMethods(): Promise<void> {
@@ -147,7 +147,7 @@ export class TasksService {
    * Includes PDF attachments for city account activations.
    * Runs daily at 1:01 AM.
    */
-  @Cron('1 01 * * *', { timeZone: bratislavaTimezone })
+  @Cron('1 01 * * *', { timeZone: BRATISLAVA_TIME_ZONE })
   @HandleErrors('Cron')
   async sendDailyDeliveryMethodSummaries() {
     return this.taxDeliveryMethodsTasksSubservice.sendDailyDeliveryMethodSummaries()

@@ -10,8 +10,10 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "outDir": "./dist",
+    "strict": true,
     "incremental": true,
     "strictPropertyInitialization": false,
+    "resolveJsonModule": true,
     "types": ["vitest/globals", "node"]
   }
 }

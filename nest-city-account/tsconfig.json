@@ -2,6 +2,7 @@
   "extends": "@tsconfig/node26/tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
+    "resolveJsonModule": true,
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -9,6 +10,7 @@
     "sourceMap": true,
     "outDir": "./dist",
     "incremental": true,
+    "strict": true,
     "strictPropertyInitialization": false,
     "types": ["vitest/globals", "node"]
   }

@@ -25,7 +25,8 @@ const exampleForm: ExampleForm<TaxFormData> = {
         meno: 'Test',
       },
       priezvisko: 'Test ',
-      rodneCislo: '93823741111',
+      maRodneCislo: true,
+      rodneCislo: '8501010001',
       priznanieAko: PriznanieAko.FyzickaOsoba,
       voSvojomMene: true,
       korespondencnaAdresa: {

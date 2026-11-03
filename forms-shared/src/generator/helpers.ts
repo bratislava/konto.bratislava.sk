@@ -223,6 +223,7 @@ export const getInputTypeForAjvFormat = (format: BaAjvInputFormat): InputUiOptio
     'ba-phone-number': 'tel' as const,
     'ba-slovak-phone-number': 'tel' as const,
     'ba-ico': 'text' as const,
+    'ba-rodne-cislo': 'text' as const,
     'ba-iban': 'text' as const,
     'ba-ratio': 'text' as const,
   }[format]

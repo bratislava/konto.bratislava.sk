@@ -6,7 +6,7 @@ import {
   SplonomocnenecTyp,
   TaxFormData,
 } from '../../types'
-import { parseBirthDate, parseRodneCislo } from './functions'
+import { parseRodneCisloOrDatumNarodenia } from './functions'
 
 export const udajeODanovnikoviShared = (data: TaxFormData) => {
   const { udajeODanovnikovi: oddiel, druhPriznania } = data
@@ -27,6 +27,7 @@ export const udajeODanovnikoviShared = (data: TaxFormData) => {
       }
     : {}
 
+  const { rodneCislo, datumNarodenia } = parseRodneCisloOrDatumNarodenia(oddiel)
   const fyzickaOsobaFields = priznanieAkoFyzickaOsoba
     ? {
         priezvisko: safeString(oddiel?.priezvisko),
@@ -34,8 +35,8 @@ export const udajeODanovnikoviShared = (data: TaxFormData) => {
         titul: safeString(oddiel?.menoTitul?.titul),
         ulica: safeString(oddiel?.ulicaCisloFyzickaOsoba?.ulica),
         cislo: safeString(oddiel?.ulicaCisloFyzickaOsoba?.cislo),
-        rodneCislo: parseRodneCislo(oddiel?.rodneCislo),
-        datumNarodenia: parseBirthDate(oddiel?.rodneCislo),
+        rodneCislo,
+        datumNarodenia,
       }
     : {}
 

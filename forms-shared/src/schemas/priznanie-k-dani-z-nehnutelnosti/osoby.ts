@@ -1,4 +1,5 @@
 import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { datePicker } from '../../generator/functions/datePicker'
 import { input } from '../../generator/functions/input'
 import { radioGroup } from '../../generator/functions/radioGroup'
 import { select } from '../../generator/functions/select'
@@ -15,14 +16,27 @@ enum UlicaCisloTyp {
   KorespondencnaAdresa = 'KorespondencnaAdresa',
 }
 
-const rodneCisloField = input(
-  'rodneCislo',
-  { type: 'text', title: 'Rodné číslo', required: true },
-  {
-    helptextFooter:
-      'Rodné číslo zadávajte s lomítkom. V prípade, že nemáte rodné číslo, uveďte dátum narodenia v tvare DD.MM.YYYY.',
-  },
-)
+const rodneCisloFields = (maRodneCisloTitle: string) => [
+  radioGroup(
+    'maRodneCislo',
+    {
+      type: 'boolean',
+      title: maRodneCisloTitle,
+      required: true,
+      items: [
+        { value: true, label: 'Áno', isDefault: true },
+        { value: false, label: 'Nie' },
+      ],
+    },
+    { variant: 'boxed', orientations: 'row' },
+  ),
+  conditionalFields(createCondition([[['maRodneCislo'], { const: true }]]), [
+    input('rodneCislo', { type: 'ba-rodne-cislo', title: 'Rodné číslo', required: true }, {}),
+  ]),
+  conditionalFields(createCondition([[['maRodneCislo'], { const: false }]]), [
+    datePicker('datumNarodenia', { title: 'Dátum narodenia', required: true }, {}),
+  ]),
+]
 
 const priezviskoField = input(
   'priezvisko',
@@ -290,7 +304,7 @@ export const danovnik = [
     [pravnyVztahKPOField],
   ),
   conditionalFields(createCondition([[['priznanieAko'], { const: 'fyzickaOsoba' }]]), [
-    rodneCisloField,
+    ...rodneCisloFields('Máte rodné číslo?'),
     priezviskoField,
     menoTitulField,
     ulicaCisloFields(UlicaCisloTyp.FyzickaOsoba),
@@ -369,7 +383,7 @@ const rovnakaAdresaField = radioGroup(
 )
 
 export const bezpodieloveSpoluvlastnictvoManzelov = [
-  rodneCisloField,
+  ...rodneCisloFields('Má rodné číslo?'),
   priezviskoField,
   menoTitulField,
   rovnakaAdresaField,

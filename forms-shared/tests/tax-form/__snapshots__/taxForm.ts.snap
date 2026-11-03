@@ -138,10 +138,10 @@ exports[`taxForm > PDF > should return correct PDF mapping for priznanieKDaniZNe
   "2_Datum1": "01",
   "2_Datum2": "01",
   "2_Datum4": "24",
-  "2_Poznamka": "Rodné číslo: 1.1.1993
+  "2_Poznamka": "Dátum narodenia: 01.01.1993
 
 Údaje o manželovi/manželke:
-Rodné číslo: 123232/1234 | Titul: Ing | Meno: Test | Priezvisko: Test | Má trvalé bydlisko na rovnakej adrese ako žiadateľ?: Áno | E-mail: test@test.ts | Telefón: +42191111111
+Dátum narodenia: 12.05.1990 | Titul: Ing | Meno: Test | Priezvisko: Test | Má trvalé bydlisko na rovnakej adrese ako žiadateľ?: Áno | E-mail: test@test.ts | Telefón: +42191111111
 
 Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
   "2_Priloha1": "2",
@@ -245,8 +245,8 @@ exports[`taxForm > PDF > should return correct PDF mapping for priznanieKDaniZNe
 {
   "12_Ico": undefined,
   "12_Obec": "Bratislava",
-  "12_RodneCislo1": undefined,
-  "12_RodneCislo2": undefined,
+  "12_RodneCislo1": "910101",
+  "12_RodneCislo2": "0006",
   "12_chb1": false,
   "12_chb10": false,
   "12_chb11": false,
@@ -274,9 +274,7 @@ exports[`taxForm > PDF > should return correct PDF mapping for priznanieKDaniZNe
   "2_Datum1": "01",
   "2_Datum2": "01",
   "2_Datum4": "24",
-  "2_Poznamka": "Rodné číslo: 910101/1111
-
-Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
+  "2_Poznamka": "Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
   "2_Priloha1": undefined,
   "2_Priloha2": undefined,
   "2_Priloha3": "1",
@@ -293,8 +291,8 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
   "6_PopisBytu": undefined,
   "6_Poznamka": "Číslo LV: 3385",
   "6_Priloha": "1",
-  "6_RodneCislo1": undefined,
-  "6_RodneCislo2": undefined,
+  "6_RodneCislo1": "910101",
+  "6_RodneCislo2": "0006",
   "6_RodneCislo3": undefined,
   "6_RodneCislo4": undefined,
   "6_Ulica": "Jána Smreka 1",
@@ -321,8 +319,8 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
   "PravnaForma": undefined,
   "Priezvisko": "Test",
   "Priezvisko1": undefined,
-  "RodneCislo1": undefined,
-  "RodneCislo2": undefined,
+  "RodneCislo1": "910101",
+  "RodneCislo2": "0006",
   "Rok2": "24",
   "Stat": "Slovenská republika",
   "Stat1": undefined,
@@ -349,8 +347,8 @@ exports[`taxForm > PDF > should return correct PDF mapping for priznanieKDaniZNe
 {
   "12_Ico": undefined,
   "12_Obec": "Bratislava",
-  "12_RodneCislo1": undefined,
-  "12_RodneCislo2": undefined,
+  "12_RodneCislo1": "850101",
+  "12_RodneCislo2": "0001",
   "12_chb1": false,
   "12_chb10": false,
   "12_chb11": false,
@@ -378,9 +376,7 @@ exports[`taxForm > PDF > should return correct PDF mapping for priznanieKDaniZNe
   "2_Datum1": "01",
   "2_Datum2": "01",
   "2_Datum4": "24",
-  "2_Poznamka": "Rodné číslo: 93823741111
-
-Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
+  "2_Poznamka": "Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
   "2_Priloha1": undefined,
   "2_Priloha2": undefined,
   "2_Priloha3": undefined,
@@ -400,8 +396,8 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
   "PravnaForma": undefined,
   "Priezvisko": "Test ",
   "Priezvisko1": undefined,
-  "RodneCislo1": undefined,
-  "RodneCislo2": undefined,
+  "RodneCislo1": "850101",
+  "RodneCislo2": "0001",
   "Rok2": "24",
   "Stat": "Slovenská republika",
   "Stat1": undefined,
@@ -462,7 +458,7 @@ exports[`taxForm > PDF > should return correct PDF mapping for priznanieKDaniZNe
 Ulica: Prašivá | Číslo: 7 | Obec: Bratislava | PSČ: 83106 | Štát: Slovenská republika
 
 Údaje o manželovi/manželke:
-Rodné číslo: 920314/2634 | Titul: Bsc | Meno: Petra | Priezvisko: Príkladná | Ulica: Príkladná 35 | Číslo: 25 | Obec: Abelova | PSČ: 83106 | Štát: Slovenská republika | E-mail: test@test.com | Telefón: +421948417711
+Rodné číslo: 925314/0006 | Titul: Bsc | Meno: Petra | Priezvisko: Príkladná | Ulica: Príkladná 35 | Číslo: 25 | Obec: Abelova | PSČ: 83106 | Štát: Slovenská republika | E-mail: test@test.com | Telefón: +421948417711
 
 Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
   "2_Priloha1": "1",
@@ -548,8 +544,8 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
   "5_Priloha": "3",
   "5_RodneCislo1": "920314",
   "5_RodneCislo2": "6326",
-  "5_RodneCislo3": undefined,
-  "5_RodneCislo4": undefined,
+  "5_RodneCislo3": "925314",
+  "5_RodneCislo4": "0006",
   "5_Ulica": "Príkladná 35",
   "5_VymeraOslobodena": "26",
   "5_VymeraPloch2": "45",
@@ -672,7 +668,7 @@ exports[`taxForm > PDF > should return correct PDF mapping for priznanieKDaniZNe
 Ulica: Prašivá | Číslo: 7 | Obec: Bratislava | PSČ: 83106 | Štát: Slovenská republika
 
 Údaje o manželovi/manželke:
-Rodné číslo: 920314/2634 | Titul: Bsc | Meno: Petra | Priezvisko: Príkladná | Ulica: Príkladná 35 | Číslo: 25 | Obec: Abelova | PSČ: 83106 | Štát: Slovenská republika | E-mail: test@test.com | Telefón: +421948417711
+Rodné číslo: 925314/0006 | Titul: Bsc | Meno: Petra | Priezvisko: Príkladná | Ulica: Príkladná 35 | Číslo: 25 | Obec: Abelova | PSČ: 83106 | Štát: Slovenská republika | E-mail: test@test.com | Telefón: +421948417711
 
 Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
   "2_Priloha1": "1",
@@ -758,8 +754,8 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
   "5_Priloha": "3",
   "5_RodneCislo1": "920314",
   "5_RodneCislo2": "6326",
-  "5_RodneCislo3": undefined,
-  "5_RodneCislo4": undefined,
+  "5_RodneCislo3": "925314",
+  "5_RodneCislo4": "0006",
   "5_Ulica": "Príkladná 35",
   "5_VymeraOslobodena": "26",
   "5_VymeraPloch2": "45",
@@ -1060,6 +1056,7 @@ exports[`taxForm > XML > should match snapshot for generated XML for priznanieKD
       <IdentifikaciaOsoby>
         <Meno>Test</Meno>
         <Priezvisko>Test</Priezvisko>
+        <DatumNarodenia>1993-01-01+01:00</DatumNarodenia>
       </IdentifikaciaOsoby>
     </Danovnik>
     <AdresaDanovnika>
@@ -1266,10 +1263,10 @@ exports[`taxForm > XML > should match snapshot for generated XML for priznanieKD
       <PocetOddielovVI>0</PocetOddielovVI>
       <PocetOddielovVII>0</PocetOddielovVII>
       <PocetInych>0</PocetInych>
-      <Poznamka>Rodné číslo: 1.1.1993
+      <Poznamka>Dátum narodenia: 01.01.1993
 
 Údaje o manželovi/manželke:
-Rodné číslo: 123232/1234 | Titul: Ing | Meno: Test | Priezvisko: Test | Má trvalé bydlisko na rovnakej adrese ako žiadateľ?: Áno | E-mail: test@test.ts | Telefón: +42191111111
+Dátum narodenia: 12.05.1990 | Titul: Ing | Meno: Test | Priezvisko: Test | Má trvalé bydlisko na rovnakej adrese ako žiadateľ?: Áno | E-mail: test@test.ts | Telefón: +42191111111
 
 Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
     </SuhrnPriloh>
@@ -1332,6 +1329,8 @@ exports[`taxForm > XML > should match snapshot for generated XML for priznanieKD
         </TitulyPredMenom>
         <Meno>Test</Meno>
         <Priezvisko>Test</Priezvisko>
+        <DatumNarodenia>1991-01-01+01:00</DatumNarodenia>
+        <RodneCislo>9101010006</RodneCislo>
       </IdentifikaciaOsoby>
     </Danovnik>
     <AdresaDanovnika>
@@ -1362,6 +1361,7 @@ exports[`taxForm > XML > should match snapshot for generated XML for priznanieKD
     <DanZBytovANebytovychPriestorov>
       <DanZBytovANebytovychPriestorovZaznam>
         <PoradoveCislo>1</PoradoveCislo>
+        <RodneCislo>9101010006</RodneCislo>
         <AdresaBytu>
           <UlicaACislo>
             <Ulica>Jána Smreka</Ulica>
@@ -1438,9 +1438,7 @@ exports[`taxForm > XML > should match snapshot for generated XML for priznanieKD
       <PocetOddielovVI>0</PocetOddielovVI>
       <PocetOddielovVII>0</PocetOddielovVII>
       <PocetInych>0</PocetInych>
-      <Poznamka>Rodné číslo: 910101/1111
-
-Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
+      <Poznamka>Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
     </SuhrnPriloh>
     <DatumZadaniaPodania>2024-01-01T01:00:00.000+01:00</DatumZadaniaPodania>
     <ZakladneVyhlasenie>
@@ -1494,6 +1492,8 @@ exports[`taxForm > XML > should match snapshot for generated XML for priznanieKD
       <IdentifikaciaOsoby>
         <Meno>Test</Meno>
         <Priezvisko>Test </Priezvisko>
+        <DatumNarodenia>1985-01-01+01:00</DatumNarodenia>
+        <RodneCislo>8501010001</RodneCislo>
       </IdentifikaciaOsoby>
     </Danovnik>
     <AdresaDanovnika>
@@ -1555,9 +1555,7 @@ exports[`taxForm > XML > should match snapshot for generated XML for priznanieKD
       <PocetOddielovVI>0</PocetOddielovVI>
       <PocetOddielovVII>0</PocetOddielovVII>
       <PocetInych>0</PocetInych>
-      <Poznamka>Rodné číslo: 93823741111
-
-Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
+      <Poznamka>Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
     </SuhrnPriloh>
     <DatumZadaniaPodania>2024-01-01T01:00:00.000+01:00</DatumZadaniaPodania>
     <ZakladneVyhlasenie>
@@ -1810,6 +1808,7 @@ exports[`taxForm > XML > should match snapshot for generated XML for priznanieKD
           <Name>Bezpodielové</Name>
           <WsEnumCode>ICL0042</WsEnumCode>
         </Spoluvlastnictvo>
+        <RodneCisloManzelaAleboManzelky>9253140006</RodneCisloManzelaAleboManzelky>
         <PopisStavby>Príkladná stavba</PopisStavby>
         <DatumVznikuDanovejPovinnosti>2024-01-05+01:00</DatumVznikuDanovejPovinnosti>
         <DatumZanikuDanovejPovinnosti>2024-01-04+01:00</DatumZanikuDanovejPovinnosti>
@@ -1995,7 +1994,7 @@ exports[`taxForm > XML > should match snapshot for generated XML for priznanieKD
 Ulica: Prašivá | Číslo: 7 | Obec: Bratislava | PSČ: 83106 | Štát: Slovenská republika
 
 Údaje o manželovi/manželke:
-Rodné číslo: 920314/2634 | Titul: Bsc | Meno: Petra | Priezvisko: Príkladná | Ulica: Príkladná 35 | Číslo: 25 | Obec: Abelova | PSČ: 83106 | Štát: Slovenská republika | E-mail: test@test.com | Telefón: +421948417711
+Rodné číslo: 925314/0006 | Titul: Bsc | Meno: Petra | Priezvisko: Príkladná | Ulica: Príkladná 35 | Číslo: 25 | Obec: Abelova | PSČ: 83106 | Štát: Slovenská republika | E-mail: test@test.com | Telefón: +421948417711
 
 Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
     </SuhrnPriloh>
@@ -2250,6 +2249,7 @@ exports[`taxForm > XML > should match snapshot for generated XML for priznanieKD
           <Name>Bezpodielové</Name>
           <WsEnumCode>ICL0042</WsEnumCode>
         </Spoluvlastnictvo>
+        <RodneCisloManzelaAleboManzelky>9253140006</RodneCisloManzelaAleboManzelky>
         <PopisStavby>Príkladná stavba</PopisStavby>
         <DatumVznikuDanovejPovinnosti>2024-01-05+01:00</DatumVznikuDanovejPovinnosti>
         <DatumZanikuDanovejPovinnosti>2024-01-04+01:00</DatumZanikuDanovejPovinnosti>
@@ -2435,7 +2435,7 @@ exports[`taxForm > XML > should match snapshot for generated XML for priznanieKD
 Ulica: Prašivá | Číslo: 7 | Obec: Bratislava | PSČ: 83106 | Štát: Slovenská republika
 
 Údaje o manželovi/manželke:
-Rodné číslo: 920314/2634 | Titul: Bsc | Meno: Petra | Priezvisko: Príkladná | Ulica: Príkladná 35 | Číslo: 25 | Obec: Abelova | PSČ: 83106 | Štát: Slovenská republika | E-mail: test@test.com | Telefón: +421948417711
+Rodné číslo: 925314/0006 | Titul: Bsc | Meno: Petra | Priezvisko: Príkladná | Ulica: Príkladná 35 | Číslo: 25 | Obec: Abelova | PSČ: 83106 | Štát: Slovenská republika | E-mail: test@test.com | Telefón: +421948417711
 
 Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
     </SuhrnPriloh>

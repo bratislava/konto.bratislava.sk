@@ -23,7 +23,8 @@ const exampleForm: ExampleForm<TaxFormData> = {
         titul: 'Ing.',
       },
       priezvisko: 'Test',
-      rodneCislo: '910101/1111',
+      maRodneCislo: true,
+      rodneCislo: '910101/0006',
       ulicaCisloFyzickaOsoba: {
         cislo: '1',
         ulica: 'Test',

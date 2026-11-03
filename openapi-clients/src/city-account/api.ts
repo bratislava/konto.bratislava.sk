@@ -173,6 +173,7 @@ export const CognitoUserStatusEnum = {
   Archived: 'ARCHIVED',
   Compromised: 'COMPROMISED',
   Confirmed: 'CONFIRMED',
+  ExternalProvider: 'EXTERNAL_PROVIDER',
   ForceChangePassword: 'FORCE_CHANGE_PASSWORD',
   ResetRequired: 'RESET_REQUIRED',
   Unconfirmed: 'UNCONFIRMED',
@@ -522,24 +523,6 @@ export interface RequestBodyVerifyWithEidDto {
    * Token returned by https://fix.slovensko-sk-api.bratislava.sk/login
    */
   oboToken: string
-}
-export interface RequestBodyVerifyWithRpoDto {
-  /**
-   * ico
-   */
-  ico: string
-  /**
-   * Birth number of legal entity\'s executive
-   */
-  birthNumber: string
-  /**
-   * Identity card of legal entity\'s executive
-   */
-  identityCard: string
-  /**
-   * Token returned by turnstile captcha
-   */
-  turnstileToken: string
 }
 export interface ResponseConsentDto {
   /**
@@ -1164,9 +1147,13 @@ export interface VerificationDataForUser {
    */
   idCard: string
   /**
-   * Ico used for verification.
+   * Given name of the user at the time of verification.
    */
-  ico?: string
+  givenName: string
+  /**
+   * Family name of the user at the time of verification.
+   */
+  familyName: string
   /**
    * Created timestamp
    */
@@ -1192,9 +1179,7 @@ export interface VerificationDataForUserResponseDto {
 
 export const VerificationErrorsEnum = {
   RfoAccessError: 'RFO_ACCESS_ERROR',
-  RpoAccessError: 'RPO_ACCESS_ERROR',
   RfoNotResponding: 'RFO_NOT_RESPONDING',
-  RpoNotResponding: 'RPO_NOT_RESPONDING',
   DeadPerson: 'DEAD_PERSON',
   BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
   BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',
@@ -1206,12 +1191,11 @@ export const VerificationErrorsEnum = {
   VerifyEidError: 'VERIFY_EID_ERROR',
   IdentityLookupRejected: 'IDENTITY_LOOKUP_REJECTED',
   UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
   IcoNotProvided: 'ICO_NOT_PROVIDED',
   IfoNotProvided: 'IFO_NOT_PROVIDED',
   EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
-  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
   NamesNotMatching: 'NAMES_NOT_MATCHING',
+  IdentityCardVerificationNotAllowed: 'IDENTITY_CARD_VERIFICATION_NOT_ALLOWED',
 } as const
 
 export type VerificationErrorsEnum =
@@ -1315,7 +1299,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
+     * Returns data used for verification by identity card for given user in the last month.
      * @summary Get verification data for user.
      * @param {string} email
      * @param {*} [options] Override http request option.
@@ -1578,7 +1562,7 @@ export const ADMINApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
+     * Returns data used for verification by identity card for given user in the last month.
      * @summary Get verification data for user.
      * @param {string} email
      * @param {*} [options] Override http request option.
@@ -1735,7 +1719,7 @@ export const ADMINApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
+     * Returns data used for verification by identity card for given user in the last month.
      * @summary Get verification data for user.
      * @param {string} email
      * @param {*} [options] Override http request option.
@@ -1826,7 +1810,7 @@ export class ADMINApi extends BaseAPI {
   }
 
   /**
-   * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
+   * Returns data used for verification by identity card for given user in the last month.
    * @summary Get verification data for user.
    * @param {string} email
    * @param {*} [options] Override http request option.
@@ -4043,60 +4027,6 @@ export const UserVerificationsApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * This endpoint validates users via the register of legal entities
-     * @summary Validate user via rpo
-     * @param {RequestBodyVerifyWithRpoDto} requestBodyVerifyWithRpoDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    verificationControllerVerifyIcoBirthNumberAndIdentityCard: async (
-      requestBodyVerifyWithRpoDto: RequestBodyVerifyWithRpoDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'requestBodyVerifyWithRpoDto' is not null or undefined
-      assertParamExists(
-        'verificationControllerVerifyIcoBirthNumberAndIdentityCard',
-        'requestBodyVerifyWithRpoDto',
-        requestBodyVerifyWithRpoDto,
-      )
-      const localVarPath = `/user-verification/ico-rpo`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        requestBodyVerifyWithRpoDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * This endpoint validates users via eid by contacting slovensko.sk and returns user data upon successful validation.
      * @summary Validate user via eid
      * @param {RequestBodyVerifyWithEidDto} requestBodyVerifyWithEidDto
@@ -4194,37 +4124,6 @@ export const UserVerificationsApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * This endpoint validates users via the register of legal entities
-     * @summary Validate user via rpo
-     * @param {RequestBodyVerifyWithRpoDto} requestBodyVerifyWithRpoDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async verificationControllerVerifyIcoBirthNumberAndIdentityCard(
-      requestBodyVerifyWithRpoDto: RequestBodyVerifyWithRpoDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseVerificationDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.verificationControllerVerifyIcoBirthNumberAndIdentityCard(
-          requestBodyVerifyWithRpoDto,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap[
-          'UserVerificationsApi.verificationControllerVerifyIcoBirthNumberAndIdentityCard'
-        ]?.[localVarOperationServerIndex]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
      * This endpoint validates users via eid by contacting slovensko.sk and returns user data upon successful validation.
      * @summary Validate user via eid
      * @param {RequestBodyVerifyWithEidDto} requestBodyVerifyWithEidDto
@@ -4286,24 +4185,6 @@ export const UserVerificationsApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * This endpoint validates users via the register of legal entities
-     * @summary Validate user via rpo
-     * @param {RequestBodyVerifyWithRpoDto} requestBodyVerifyWithRpoDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    verificationControllerVerifyIcoBirthNumberAndIdentityCard(
-      requestBodyVerifyWithRpoDto: RequestBodyVerifyWithRpoDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseVerificationDto> {
-      return localVarFp
-        .verificationControllerVerifyIcoBirthNumberAndIdentityCard(
-          requestBodyVerifyWithRpoDto,
-          options,
-        )
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * This endpoint validates users via eid by contacting slovensko.sk and returns user data upon successful validation.
      * @summary Validate user via eid
      * @param {RequestBodyVerifyWithEidDto} requestBodyVerifyWithEidDto
@@ -4339,25 +4220,6 @@ export class UserVerificationsApi extends BaseAPI {
     return UserVerificationsApiFp(this.configuration)
       .verificationControllerVerifyBirthNumberAndIdentityCard(
         requestBodyVerifyIdentityCardDto,
-        options,
-      )
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * This endpoint validates users via the register of legal entities
-   * @summary Validate user via rpo
-   * @param {RequestBodyVerifyWithRpoDto} requestBodyVerifyWithRpoDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public verificationControllerVerifyIcoBirthNumberAndIdentityCard(
-    requestBodyVerifyWithRpoDto: RequestBodyVerifyWithRpoDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return UserVerificationsApiFp(this.configuration)
-      .verificationControllerVerifyIcoBirthNumberAndIdentityCard(
-        requestBodyVerifyWithRpoDto,
         options,
       )
       .then((request) => request(this.axios, this.basePath))

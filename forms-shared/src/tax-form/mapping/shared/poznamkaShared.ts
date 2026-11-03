@@ -2,7 +2,7 @@ import { safeBoolean, safeString } from '../../../form-utils/safeData'
 import { TaxFormData } from '../../types'
 import { getTitleFromStatCiselnik } from '../pdf/statCiselnik'
 import { formatDatePdf } from './dates'
-import { parseDateFieldDate } from './functions'
+import { parseRodneCisloOrDatumNarodenia } from './functions'
 import { oddiel2Shared } from './oddiel2Shared'
 import { oddiel3JedenUcelShared } from './oddiel3JedenUcelShared'
 import { oddiel3ViacereUcelyShared } from './oddiel3ViacereUcelyShared'
@@ -49,15 +49,14 @@ const bezpodieloveSpoluvlastnictvoManzelovPoznamka = (data: TaxFormData) => {
     ['Štát', getTitleFromStatCiselnik(data.bezpodieloveSpoluvlastnictvoManzelov?.stat)],
   ] as KeyValueArray
 
+  const { rodneCislo, datumNarodenia } = parseRodneCisloOrDatumNarodenia(
+    data.bezpodieloveSpoluvlastnictvoManzelov,
+  )
+
   const formatted = formatKeyValueArray([
-    safeBoolean(data.bezpodieloveSpoluvlastnictvoManzelov?.maRodneCislo) === true
-      ? ['Rodné číslo', data.bezpodieloveSpoluvlastnictvoManzelov?.rodneCislo]
-      : [
-          'Dátum narodenia',
-          formatDatePdf(
-            parseDateFieldDate(data.bezpodieloveSpoluvlastnictvoManzelov?.datumNarodenia),
-          ),
-        ],
+    rodneCislo.value == null
+      ? ['Dátum narodenia', formatDatePdf(datumNarodenia)]
+      : ['Rodné číslo', rodneCislo.value],
     ['Titul', data.bezpodieloveSpoluvlastnictvoManzelov?.menoTitul?.titul],
     ['Meno', data.bezpodieloveSpoluvlastnictvoManzelov?.menoTitul?.meno],
     ['Priezvisko', data.bezpodieloveSpoluvlastnictvoManzelov?.priezvisko],

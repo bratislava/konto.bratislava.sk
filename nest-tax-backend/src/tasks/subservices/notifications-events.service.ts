@@ -251,7 +251,7 @@ export default class NotificationsEventsService {
   }
 
   async sendUnpaidTaxInstallmentReminders() {
-    const { year } = Temporal.Now.plainDateISO()
+    const { year } = nowInBratislava()
 
     this.logger.log(
       `Starting sendUnpaidTaxInstallmentReminders task for year: ${year}`,
@@ -342,6 +342,7 @@ export default class NotificationsEventsService {
         { taxIds: taxes.map((tax) => tax.id) },
       )
 
+    const endOfToday = endOfDay(nowInBratislava())
     const sentResults = await Promise.all(
       taxes.map(async (tax) => {
         const userFromCityAccount =
@@ -354,10 +355,7 @@ export default class NotificationsEventsService {
           tax.deliveryMethod,
           tax.createdAt,
         )
-        if (
-          !dueDate ||
-          isAfter(dueDate, endOfDay(Temporal.Now.zonedDateTimeISO()))
-        ) {
+        if (!dueDate || isAfter(dueDate, endOfToday)) {
           return undefined
         }
         const taxDefinition = getTaxDefinitionByType(tax.type)

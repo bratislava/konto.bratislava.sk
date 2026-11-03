@@ -23,12 +23,9 @@ describe('CleanupTasksSubservice', () => {
   })
 
   describe('deleteOldUserVerificationData', () => {
-    it('should delete UserIdCardVerify and LegalPersonIcoIdCardVerify records older than 1 month', async () => {
+    it('should delete UserIdCardVerify records older than 1 month', async () => {
       const userIdCardVerifyDeleteSpy = vi
         .mocked(prismaMock.userIdCardVerify.deleteMany)
-        .mockResolvedValue({ count: 0 })
-      const legalPersonIcoIdCardVerifyDeleteSpy = vi
-        .mocked(prismaMock.legalPersonIcoIdCardVerify.deleteMany)
         .mockResolvedValue({ count: 0 })
 
       const mockDate = new Date('2024-01-15T00:00:00.000Z')
@@ -43,14 +40,6 @@ describe('CleanupTasksSubservice', () => {
       vi.useRealTimers()
 
       expect(userIdCardVerifyDeleteSpy).toHaveBeenCalledWith({
-        where: {
-          verifyStart: {
-            lt: oneMonthAgo,
-          },
-        },
-      })
-
-      expect(legalPersonIcoIdCardVerifyDeleteSpy).toHaveBeenCalledWith({
         where: {
           verifyStart: {
             lt: oneMonthAgo,

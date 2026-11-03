@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -38,14 +38,6 @@ export class VerificationDataForUser {
   })
   @IsString()
   idCard!: string
-
-  @ApiPropertyOptional({
-    description: 'Ico used for verification.',
-    example: '65451354',
-  })
-  @IsString()
-  @IsOptional()
-  ico?: string
 
   @ApiProperty({
     description: 'Given name of the user at the time of verification.',

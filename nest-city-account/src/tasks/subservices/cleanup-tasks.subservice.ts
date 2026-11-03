@@ -23,19 +23,9 @@ export class CleanupTasksSubservice {
       },
     })
 
-    const deletedLegalPersonVerifications =
-      await this.prismaService.legalPersonIcoIdCardVerify.deleteMany({
-        where: {
-          verifyStart: {
-            lt: oneMonthAgo,
-          },
-        },
-      })
-
     this.logger.log('Deleted old user verification data', {
       cutoff: oneMonthAgo,
       deletedUserIdCardVerifyCount: deletedUserVerifications.count,
-      deletedLegalPersonIcoIdCardVerifyCount: deletedLegalPersonVerifications.count,
     })
   }
 

@@ -99,7 +99,7 @@ export class VerificationService {
       await this.userTierService.changeTier(
         user.idUser,
         CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD,
-        user['custom:account_type']
+        CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
       )
       await this.bloomreachOutboxService.trackCustomer(user.idUser)
     } catch (error) {

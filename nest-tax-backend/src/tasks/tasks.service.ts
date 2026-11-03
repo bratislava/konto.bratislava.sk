@@ -13,7 +13,10 @@ import {
 } from '../tax/dtos/error.dto'
 import { stateHolidays } from '../tax/utils/unified-tax.util'
 import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../utils/constants'
-import { BRATISLAVA_TIME_ZONE } from '../utils/functions/temporal'
+import {
+  BRATISLAVA_TIME_ZONE,
+  nowInBratislava,
+} from '../utils/functions/temporal'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import CityAccountIngestionTasksService from './subservices/city-account-ingestion.tasks.service'
 import NorisSyncTasksService from './subservices/noris-sync.tasks.service'
@@ -70,7 +73,7 @@ export class TasksService {
   @Cron('0 9-17 1-23 12 1-5')
   @HandleErrors('Cron Error')
   sendAlertsIfHolidaysAreNotSet() {
-    const nextYear = Temporal.Now.plainDateISO().year + 1
+    const nextYear = nowInBratislava().year + 1
 
     const stateHolidaysForNextYear = Boolean(stateHolidays[nextYear])
 

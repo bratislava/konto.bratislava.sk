@@ -74,15 +74,23 @@ const bezpodieloveSpoluvlastnictvoManzelovPoznamka = (data: TaxFormData) => {
   return `Údaje o manželovi/manželke:\n${formatted}`
 }
 
-// The PDF has no date of birth field.
+// The PDF has no date of birth field and invalid rodne cislo doesn't fit to field.
 const datumNarodeniaPoznamka = (data: TaxFormData) => {
   const { rodneCislo, datumNarodenia } = udajeODanovnikoviShared(data)
 
-  if (rodneCislo?.isValid || datumNarodenia == null) {
+  if (rodneCislo?.isValid) {
     return null
   }
 
-  return `Dátum narodenia: ${formatDatePdf(datumNarodenia)}`
+  if (datumNarodenia != null) {
+    return `Dátum narodenia: ${formatDatePdf(datumNarodenia)}`
+  }
+
+  if (rodneCislo?.value != null) {
+    return `Rodné číslo (nevalidné): ${rodneCislo.value}`
+  }
+
+  return null
 }
 
 const korespondencnaAdresaPoznamka = (data: TaxFormData) => {

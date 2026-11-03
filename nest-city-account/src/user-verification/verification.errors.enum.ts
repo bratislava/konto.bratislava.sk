@@ -16,6 +16,7 @@ export enum VerificationErrorsEnum {
   IFO_NOT_PROVIDED = 'IFO_NOT_PROVIDED',
   EMPTY_RFO_RESPONSE = 'EMPTY_RFO_RESPONSE',
   NAMES_NOT_MATCHING = 'NAMES_NOT_MATCHING',
+  IDENTITY_CARD_VERIFICATION_NOT_ALLOWED = 'IDENTITY_CARD_VERIFICATION_NOT_ALLOWED',
 }
 
 export enum VerificationErrorsResponseEnum {
@@ -29,6 +30,7 @@ export enum VerificationErrorsResponseEnum {
   INVALID_CAPTCHA = 'Invalid captcha token. Please try again. If the problem persists and you are not robot, please contact support.',
   DATABASE_ERROR = 'Error to write or update or read from/to database',
   BIRTH_NUMBER_NOT_EXISTS = 'Birth number does not exists in registry.',
+  IDENTITY_CARD_VERIFICATION_NOT_ALLOWED = 'Only PHYSICAL_ENTITY can be verified by identity card, LEGAL_ENTITY and SELF_EMPLOYED_ENTITY must use eid.',
 }
 
 export enum SendToQueueErrorsEnum {

@@ -76,6 +76,16 @@ export class VerificationService {
     data: RequestBodyVerifyIdentityCardDto
   ): Promise<ResponseVerificationIdentityCardToQueueDto> {
     if (
+      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] !== CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
+    ) {
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: VerificationErrorsEnum.IDENTITY_CARD_VERIFICATION_NOT_ALLOWED,
+        message: VerificationErrorsResponseEnum.IDENTITY_CARD_VERIFICATION_NOT_ALLOWED,
+        console: { userSub: user.sub, accountType: user[CognitoUserAttributesEnum.ACCOUNT_TYPE] },
+      })
+    }
+
+    if (
       user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.EID ||
       user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.IDENTITY_CARD
     ) {
@@ -98,7 +108,6 @@ export class VerificationService {
         message: SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
         console: {
           userSub: user.sub,
-          accountType: user[CognitoUserAttributesEnum.ACCOUNT_TYPE],
           tier: user[CognitoUserAttributesEnum.TIER],
           targetTier: CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD,
         },
@@ -117,7 +126,7 @@ export class VerificationService {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: SendToQueueErrorsEnum.RABBIT_PUSH_DATA_ERROR,
         message: SendToQueueErrorsResponseEnum.RABBIT_PUSH_DATA_ERROR,
-        console: { userSub: user.sub, accountType: user[CognitoUserAttributesEnum.ACCOUNT_TYPE] },
+        console: { userSub: user.sub },
         error,
       })
     }

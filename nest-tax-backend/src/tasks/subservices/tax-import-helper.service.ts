@@ -82,7 +82,7 @@ export default class TaxImportHelperService {
     birthNumbers: string[]
     newlyCreated: string[]
   }> {
-    const thisYear = new Date().getFullYear()
+    const thisYear = nowInBratislava().year
     // (number of tax types: 2) * (number of years to be imported: delta including initial)
     const NorisCallsPerNewUser = 2 * (thisYear - firstHistoricalYear + 1)
 
@@ -180,7 +180,7 @@ export default class TaxImportHelperService {
     }
 
     const startedAt = Date.now()
-    const yearIsCurrent = year === new Date().getFullYear()
+    const yearIsCurrent = year === nowInBratislava().year
     const result =
       await this.norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear(
         taxType,

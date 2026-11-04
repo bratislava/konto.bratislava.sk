@@ -1,7 +1,7 @@
 import type { MockedFunction } from 'vitest'
 
 import getBaConfigInstance from '../../../config/ba-config.instance'
-import { BRATISLAVA_TIME_ZONE, toDate } from '../../functions/temporal'
+import { BRATISLAVA_TIME_ZONE, nowInBratislava, toDate } from '../../functions/temporal'
 import { getTaxDeadlineDate } from '../tax-deadline'
 
 vi.mock('../../../config/ba-config.instance')
@@ -23,7 +23,7 @@ describe('tax-deadline', () => {
       mockTaxDeadline({ month: 4, day: 1 })
     })
 
-    const { year } = Temporal.Now.zonedDateTimeISO(BRATISLAVA_TIME_ZONE)
+    const { year } = nowInBratislava()
     const afterDeadline = [
       dateInTimeZone(
         {
@@ -94,7 +94,7 @@ describe('tax-deadline', () => {
       mockTaxDeadline({ month: 2, day: 1 })
     })
 
-    const { year } = Temporal.Now.zonedDateTimeISO(BRATISLAVA_TIME_ZONE)
+    const { year } = nowInBratislava()
     const afterDeadline = [
       dateInTimeZone(
         {

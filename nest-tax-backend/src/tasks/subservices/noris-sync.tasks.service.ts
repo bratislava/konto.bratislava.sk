@@ -17,6 +17,7 @@ import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
 } from '../../utils/constants'
+import { nowInBratislava } from '../../utils/functions/temporal'
 import { getNextTaxType } from '../utils/tax-type-switch'
 
 @Injectable()
@@ -163,7 +164,7 @@ export default class NorisSyncTasksService {
 
   private async updateTaxesFromNorisByTaxType(taxType: TaxType) {
     const startedAt = Date.now()
-    const currentYear = new Date().getFullYear()
+    const currentYear = nowInBratislava().year
     const { lastUpdatedAtDatabaseFieldName } = getTaxDefinitionByType(taxType)
 
     const taxPayers = await this.prismaService.taxPayer.findMany({

@@ -11,7 +11,7 @@ import { CustomErrorNorisTypesEnum } from '../../noris/noris.errors'
 import { NorisService } from '../../noris/noris.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import { OVERPAYMENTS_LOOKBACK_DAYS } from '../../utils/constants'
-import { toDate } from '../../utils/functions/temporal'
+import { nowInBratislava, toDate } from '../../utils/functions/temporal'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { RetryService } from '../../utils-module/retry.service'
 import TasksConfigSubservice from './config.service'
@@ -47,7 +47,7 @@ export default class TaxImportTasksService {
   }
 
   private async loadTaxDataForUserByTaxType(taxType: TaxType) {
-    const thisYear = new Date().getFullYear()
+    const thisYear = nowInBratislava().year
 
     const [isWithinWindow, todayTaxCount, dailyLimit] = await Promise.all([
       this.taxImportHelperService.isWithinImportWindow(),
@@ -191,7 +191,7 @@ export default class TaxImportTasksService {
     this.logger.log('Starting loadHistoricalTaxes task')
     const startedAt = Date.now()
 
-    const currentYear = new Date().getFullYear()
+    const currentYear = nowInBratislava().year
     const previousYear = currentYear - 1
 
     if (previousYear < firstHistoricalYear) {

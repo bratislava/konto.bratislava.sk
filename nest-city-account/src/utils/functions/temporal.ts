@@ -6,3 +6,9 @@ export const BRATISLAVA_TIME_ZONE = 'Europe/Bratislava'
  */
 export const toDate = (dateTime: Temporal.ZonedDateTime | Temporal.Instant): Date =>
   new Date(dateTime.epochMilliseconds)
+
+export const nowInBratislava = (): Temporal.ZonedDateTime =>
+  Temporal.Now.zonedDateTimeISO(BRATISLAVA_TIME_ZONE)
+
+export const endOfDay = (dateTime: Temporal.ZonedDateTime): Temporal.ZonedDateTime =>
+  dateTime.startOfDay().add({ days: 1 }).subtract({ milliseconds: 1 })

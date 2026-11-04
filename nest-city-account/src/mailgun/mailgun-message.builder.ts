@@ -3,6 +3,7 @@ import { MailgunMessageData } from 'mailgun.js/definitions'
 
 import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
 import { MAILGUN } from '../user-verification/constants'
+import { nowInBratislava } from '../utils/functions/temporal'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 
 interface BaseMailgunParams {
@@ -89,7 +90,7 @@ export class MailgunMessageBuilder {
 
     const variables = {
       firstName: firstName ?? null,
-      year: new Date().getFullYear().toString(),
+      year: nowInBratislava().year.toString(),
       deliveryMethod,
     }
 

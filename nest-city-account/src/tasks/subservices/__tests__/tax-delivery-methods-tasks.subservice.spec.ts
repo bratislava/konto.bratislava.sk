@@ -53,7 +53,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
   beforeEach(async () => {
     vi.useFakeTimers({
-      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date'],
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date', 'Temporal'],
     })
     vi.setSystemTime(new Date('2024-02-15T12:00:00.000Z'))
     mockGetBaConfigInstance.mockReturnValue({ taxDeadline: { month: 2, day: 1 } } as ReturnType<

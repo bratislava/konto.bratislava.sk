@@ -13,6 +13,7 @@ import { DeliveryMethod } from '../../noris/types/noris.enums'
 import { PdfGeneratorService } from '../../pdf-generator/pdf-generator.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../../utils/constants/tax-deadline'
+import { endOfDay, nowInBratislava, toDate } from '../../utils/functions/temporal'
 import {
   DeliveryMethodErrorsEnum,
   DeliveryMethodErrorsResponseEnum,
@@ -41,7 +42,7 @@ export class TaxDeliveryMethodsTasksSubservice {
   ) {}
 
   async updateDeliveryMethodsInNoris() {
-    const currentYear = new Date().getFullYear()
+    const currentYear = nowInBratislava().year
     const taxDeadlineDate = getTaxDeadlineDate()
 
     const users = await this.prismaService.user.findMany({
@@ -318,15 +319,13 @@ export class TaxDeliveryMethodsTasksSubservice {
   }
 
   private getYesterdayRange() {
-    const yesterdayStart = new Date()
-    yesterdayStart.setDate(yesterdayStart.getDate() - 1)
-    yesterdayStart.setHours(0, 0, 0, 0)
+    const yesterday = nowInBratislava().subtract({ days: 1 })
 
-    const yesterdayEnd = new Date()
-    yesterdayEnd.setDate(yesterdayEnd.getDate() - 1)
-    yesterdayEnd.setHours(23, 59, 59, 999)
-
-    return { yesterdayStart, yesterdayEnd }
+    return {
+      yesterday: yesterday.toPlainDate(),
+      yesterdayStart: toDate(yesterday.startOfDay()),
+      yesterdayEnd: toDate(endOfDay(yesterday)),
+    }
   }
 
   private async checkEmailConfigActive(): Promise<boolean> {
@@ -598,9 +597,9 @@ export class TaxDeliveryMethodsTasksSubservice {
       return
     }
 
-    const { yesterdayStart, yesterdayEnd } = this.getYesterdayRange()
+    const { yesterday, yesterdayStart, yesterdayEnd } = this.getYesterdayRange()
 
-    this.logger.log(`Processing delivery method summaries for: ${yesterdayStart.toDateString()}`)
+    this.logger.log(`Processing delivery method summaries for: ${yesterday.toString()}`)
 
     // Fetch all userIds with detected delivery method change during the previous day.
     const allUserIds = await this.findUsersWithDeliveryMethodChanges(yesterdayStart, yesterdayEnd)

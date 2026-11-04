@@ -2,7 +2,7 @@ import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../../prisma/prisma.service'
-import { toDate } from '../../utils/functions/temporal'
+import { nowInBratislava, toDate } from '../../utils/functions/temporal'
 
 @Injectable()
 export class CleanupTasksSubservice {
@@ -12,8 +12,7 @@ export class CleanupTasksSubservice {
   ) {}
 
   async deleteOldUserVerificationData() {
-    const today = new Date()
-    const oneMonthAgo = new Date(today.setMonth(today.getMonth() - 1))
+    const oneMonthAgo = toDate(nowInBratislava().subtract({ months: 1 }))
 
     const deletedUserVerifications = await this.prismaService.userIdCardVerify.deleteMany({
       where: {

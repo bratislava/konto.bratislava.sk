@@ -52,7 +52,8 @@ const baAjvInputFormats = {
   'ba-ratio': {
     validate: (value: string) => parseRatio(value).isValid,
   },
-  'ba-ico': /^\d{6,8}$/,
+  'ba-ico': /^(\d{8}|\d{12})$/,
+  'ba-ico-8-digit-only': /^\d{8}$/,
   'ba-iban': {
     validate: (value: string) => {
       const electronicFormat = electronicFormatIBAN(value)

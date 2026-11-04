@@ -53,6 +53,16 @@ describe('IsBirthNumber', () => {
     )
   })
 
+  // Checksum-valid numbers that `rodnecislo` accepts due to the Czech +20 / +70 month offsets
+  ;['1272030001', '1222030007'].forEach((birthNumber) => {
+    it(`rejects a birth number with +20 / +70 month offset ${birthNumber}`, async () => {
+      const dto = plainToInstance(BirthNumberDto, { birthNumber })
+      const errors = await validate(dto)
+      expect(errors).toHaveLength(1)
+      expect(errors[0].property).toBe('birthNumber')
+    })
+  })
+
   it('rejects non-string values', async () => {
     const dto = plainToInstance(BirthNumberDto, { birthNumber: 8501011002 })
     const errors = await validate(dto)

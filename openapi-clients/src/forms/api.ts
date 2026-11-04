@@ -64,6 +64,7 @@ export const ClientFileInfoStatusDtoTypeEnum = {
   ScanError: 'ScanError',
   ScanDone: 'ScanDone',
   ScanInfected: 'ScanInfected',
+  ScanRejected: 'ScanRejected',
   UnknownFile: 'UnknownFile',
   UnknownStatus: 'UnknownStatus',
   UploadServerError: 'UploadServerError',
@@ -210,6 +211,7 @@ export const GetFileResponseReducedDtoStatusEnum = {
   ScanTimeout: 'SCAN_TIMEOUT',
   ScanNotSuccessful: 'SCAN_NOT_SUCCESSFUL',
   FormIdNotFound: 'FORM_ID_NOT_FOUND',
+  Rejected: 'REJECTED',
 } as const
 
 export type GetFileResponseReducedDtoStatusEnum =
@@ -325,6 +327,7 @@ export const GetFormResponseDtoErrorEnum = {
   FilesNotYetScanned: 'FILES_NOT_YET_SCANNED',
   UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
   InfectedFiles: 'INFECTED_FILES',
+  RejectedFiles: 'REJECTED_FILES',
   NasesSendError: 'NASES_SEND_ERROR',
   GinisSendError: 'GINIS_SEND_ERROR',
   SharepointSendError: 'SHAREPOINT_SEND_ERROR',
@@ -380,6 +383,7 @@ export const GetFormResponseSimpleDraftDtoErrorEnum = {
   FilesNotYetScanned: 'FILES_NOT_YET_SCANNED',
   UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
   InfectedFiles: 'INFECTED_FILES',
+  RejectedFiles: 'REJECTED_FILES',
   NasesSendError: 'NASES_SEND_ERROR',
   GinisSendError: 'GINIS_SEND_ERROR',
   SharepointSendError: 'SHAREPOINT_SEND_ERROR',
@@ -441,6 +445,7 @@ export const GetFormResponseSimpleSentDtoErrorEnum = {
   FilesNotYetScanned: 'FILES_NOT_YET_SCANNED',
   UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
   InfectedFiles: 'INFECTED_FILES',
+  RejectedFiles: 'REJECTED_FILES',
   NasesSendError: 'NASES_SEND_ERROR',
   GinisSendError: 'GINIS_SEND_ERROR',
   SharepointSendError: 'SHAREPOINT_SEND_ERROR',
@@ -592,6 +597,7 @@ export const PostFileResponseDtoStatusEnum = {
   ScanTimeout: 'SCAN_TIMEOUT',
   ScanNotSuccessful: 'SCAN_NOT_SUCCESSFUL',
   FormIdNotFound: 'FORM_ID_NOT_FOUND',
+  Rejected: 'REJECTED',
 } as const
 
 export type PostFileResponseDtoStatusEnum =
@@ -695,6 +701,7 @@ export const UpdateFileStatusRequestDtoStatusEnum = {
   ScanTimeout: 'SCAN_TIMEOUT',
   ScanNotSuccessful: 'SCAN_NOT_SUCCESSFUL',
   FormIdNotFound: 'FORM_ID_NOT_FOUND',
+  Rejected: 'REJECTED',
 } as const
 
 export type UpdateFileStatusRequestDtoStatusEnum =
@@ -773,6 +780,7 @@ export const UpdateFileStatusResponseDtoStatusEnum = {
   ScanTimeout: 'SCAN_TIMEOUT',
   ScanNotSuccessful: 'SCAN_NOT_SUCCESSFUL',
   FormIdNotFound: 'FORM_ID_NOT_FOUND',
+  Rejected: 'REJECTED',
 } as const
 
 export type UpdateFileStatusResponseDtoStatusEnum =
@@ -887,6 +895,7 @@ export const UpdateFormResponseDtoErrorEnum = {
   FilesNotYetScanned: 'FILES_NOT_YET_SCANNED',
   UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
   InfectedFiles: 'INFECTED_FILES',
+  RejectedFiles: 'REJECTED_FILES',
   NasesSendError: 'NASES_SEND_ERROR',
   GinisSendError: 'GINIS_SEND_ERROR',
   SharepointSendError: 'SHAREPOINT_SEND_ERROR',

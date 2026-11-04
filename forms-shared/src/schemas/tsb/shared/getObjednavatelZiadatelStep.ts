@@ -68,7 +68,7 @@ export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') =
         ]),
         [
           input('obchodneMeno', { title: 'Obchodné meno', required: true, type: 'text' }, {}),
-          input('ico', { title: 'IČO', required: true, type: 'text' }, {}),
+          input('ico', { title: 'IČO', required: true, type: 'ba-ico' }, {}),
           input('dic', { title: 'DIČ', required: true, type: 'text' }, {}),
           input('icDph', { title: 'IČ DPH', required: true, type: 'text' }, {}),
         ],

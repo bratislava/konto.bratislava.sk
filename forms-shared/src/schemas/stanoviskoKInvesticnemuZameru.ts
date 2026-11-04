@@ -19,6 +19,7 @@ import {
   esbsKatastralneUzemiaCiselnik,
   katastralneUzemiaCodeAbbreviationMap,
 } from '../tax-form/mapping/shared/esbsCiselniky'
+import { sharedPhoneNumberField } from './shared/fields'
 
 const addressFields = (title: string) => [
   input(
@@ -68,11 +69,7 @@ const ziadatelStavebnikFields = [
     input('kontaktnaOsoba', { type: 'text', title: 'Kontaktná osoba', required: true }, {}),
   ]),
   input('email', { title: 'Email', required: true, type: 'email' }, {}),
-  input(
-    'telefon',
-    { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
-    { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
-  ),
+  sharedPhoneNumberField('telefon', true),
 ]
 
 export default schema(
@@ -122,11 +119,7 @@ export default schema(
         { selfColumn: '2/4' },
       ),
       input('email', { title: 'Email', required: true, type: 'email' }, {}),
-      input(
-        'telefon',
-        { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
-        { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
-      ),
+      sharedPhoneNumberField('telefon', true),
       input(
         'autorizacneOsvedcenie',
         { type: 'text', title: 'Číslo autorizačného osvedčenia', required: true },

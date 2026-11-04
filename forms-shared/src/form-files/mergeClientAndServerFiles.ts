@@ -31,6 +31,7 @@ const serverResponseToStatusMap: Record<FormsBackendFileStatusEnum, FileStatusTy
   [FormsBackendFileStatusEnum.ScanTimeout]: FileStatusType.ScanError,
   [FormsBackendFileStatusEnum.ScanNotSuccessful]: FileStatusType.ScanError,
   [FormsBackendFileStatusEnum.FormIdNotFound]: FileStatusType.UnknownFile,
+  [FormsBackendFileStatusEnum.Rejected]: FileStatusType.ScanRejected,
 }
 
 const mapServerFile = (serverFileInfo: FormsBackendFile): Record<string, FileInfo> => ({

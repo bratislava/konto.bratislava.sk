@@ -23,6 +23,7 @@ export const FormsBackendFileStatusEnum = {
   ScanTimeout: 'SCAN_TIMEOUT',
   ScanNotSuccessful: 'SCAN_NOT_SUCCESSFUL',
   FormIdNotFound: 'FORM_ID_NOT_FOUND',
+  Rejected: 'REJECTED',
 } as const
 
 export type FormsBackendFileStatusEnum =

@@ -74,6 +74,9 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
             </Typography>
           ),
         },
+        [GetFormResponseDtoErrorEnum.RejectedFiles]: {
+          // TODO
+        },
         [GetFormResponseDtoErrorEnum.NasesSendError]: {
           icon: <Icon name="error" className="size-6 text-error" />,
           iconRound: (

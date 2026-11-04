@@ -18,7 +18,10 @@ export const MAX_TRIES_FOR_NASES_CHECK = 10
 
 export const INNOVATION_MAIL = 'inovacie@bratislava.sk'
 
-export const EDITABLE_ERRORS: FormError[] = [FormError.INFECTED_FILES]
+export const EDITABLE_ERRORS: FormError[] = [
+  FormError.INFECTED_FILES,
+  FormError.REJECTED_FILES,
+]
 
 export const JSON_FORM_EXAMPLE = {
   mestoPSCstep: {

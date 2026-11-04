@@ -24,6 +24,24 @@ export function isValidScanStatus(status: string): boolean {
   return Object.values(FileStatus).includes(status as FileStatus)
 }
 
+// statuses after which the file is not scanned again, forms backend is notified about them
+export const finalScanStatuses = [
+  FileStatus.SAFE,
+  FileStatus.INFECTED,
+  FileStatus.NOT_FOUND,
+  FileStatus.MOVE_ERROR_SAFE,
+  FileStatus.MOVE_ERROR_INFECTED,
+  FileStatus.SCAN_NOT_SUCCESSFUL,
+  FileStatus.REJECTED,
+] as const
+
+export type FinalScanStatus = (typeof finalScanStatuses)[number]
+
+export const isFinalScanStatus = (
+  status: FileStatus,
+): status is FinalScanStatus =>
+  (finalScanStatuses as readonly FileStatus[]).includes(status)
+
 // return list of statuses in string
 export function listOfStatuses(): string {
   return Object.values(FileStatus).toString()

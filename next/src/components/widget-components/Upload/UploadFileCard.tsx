@@ -52,6 +52,7 @@ const useGetErrorMessage = (fileInfo: FileInfo) => {
   return (
     {
       [FileStatusType.ScanInfected]: t('UploadFileCard.errors.scanInfected'),
+      [FileStatusType.ScanRejected]: t('UploadFileCard.errors.scanRejected'),
       [FileStatusType.ScanError]: t('UploadFileCard.errors.scanError'),
     }[status.type] ?? t('UploadFileCard.errors.unknownError')
   )

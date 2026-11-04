@@ -32,6 +32,8 @@ enum FileStatus {
   SCAN_NOT_SUCCESSFUL
   // when file id is not found in forms
   FORM_ID_NOT_FOUND
+  // when file is safe but its content is not allowed, e.g. an archive inside a ZIP
+  REJECTED
 }
 
 model Files {

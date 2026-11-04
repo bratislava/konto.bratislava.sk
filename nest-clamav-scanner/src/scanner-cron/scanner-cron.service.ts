@@ -5,6 +5,8 @@ import { Readable as ReadableStream } from 'stream'
 import { ClamavClientService } from '../clamav-client/clamav-client.service'
 import {
   chunkArray,
+  finalScanStatuses,
+  isFinalScanStatus,
   isValidScanStatus,
   listOfStatuses,
   timeout,
@@ -345,16 +347,8 @@ export class ScannerCronService {
     //if forms are running, update the status of the file
     let notifiedStatus = false
 
-    //if state is SAFE, INFECTED, MOVE ERROR INFECTED, MOVE ERROR SAFE or NOT FOUND, update the status of the file in forms
-    if (
-      globalThis.formsRunning &&
-      (status === FileStatus.SAFE ||
-        status === FileStatus.INFECTED ||
-        status === FileStatus.NOT_FOUND ||
-        status === FileStatus.MOVE_ERROR_SAFE ||
-        status === FileStatus.MOVE_ERROR_INFECTED ||
-        status === FileStatus.SCAN_NOT_SUCCESSFUL)
-    ) {
+    //notify forms about every final status
+    if (globalThis.formsRunning && isFinalScanStatus(status)) {
       notifiedStatus = true
       let responseStatus = 404
       this.logger.debug(`Notifying forms about file id: ${file.id}`)
@@ -500,32 +494,13 @@ export class ScannerCronService {
     }
   }
 
-  //fix unnotified files  which are in state SAFE, INFECTED, MOVE ERROR INFECTED, MOVE ERROR SAFE, NOT FOUND or SCAN NOT SUCCESSFUL and are not notified
+  //resend final statuses that forms has not been notified about yet
   async fixUnnotifiedFiles(): Promise<void> {
-    //get all files which are in state SAFE, INFECTED, MOVE ERROR INFECTED, MOVE ERROR SAFE, NOT FOUND or SCAN NOT SUCCESSFUL and are not notified
-    //all states are in finished state
     const unnotifiedFiles = await this.prismaService.files.findMany({
       where: {
-        OR: [
-          {
-            status: FileStatus.SAFE,
-          },
-          {
-            status: FileStatus.INFECTED,
-          },
-          {
-            status: FileStatus.MOVE_ERROR_INFECTED,
-          },
-          {
-            status: FileStatus.MOVE_ERROR_SAFE,
-          },
-          {
-            status: FileStatus.NOT_FOUND,
-          },
-          {
-            status: FileStatus.SCAN_NOT_SUCCESSFUL,
-          },
-        ],
+        status: {
+          in: [...finalScanStatuses],
+        },
         notified: false,
       },
       take: 200,

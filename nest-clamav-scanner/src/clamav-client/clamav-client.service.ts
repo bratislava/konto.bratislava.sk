@@ -5,6 +5,11 @@ import { Readable as ReadableStream } from 'stream'
 import BaConfigService from '../config/ba-config.service'
 import { FileStatus } from '../generated/prisma/client'
 
+// Encrypted files (AlertEncryptedArchive) and files over the scan limits
+// (AlertExceedsMax) are reported as heuristic detections, they are not allowed
+// but not infected either
+const REJECTED_DETECTIONS = /Heuristics\.(Encrypted|Limits\.Exceeded)\./
+
 @Injectable()
 export class ClamavClientService {
   private readonly logger: Logger
@@ -27,13 +32,19 @@ export class ClamavClientService {
 
   //function which gets clam reply
   getScanStatus(result: string): FileStatus {
-    if (result.includes('OK') && !result.includes('FOUND')) {
+    // The reply format is only defined by the clamd source: "<name>: OK", "<name>: <detection> FOUND" and
+    // "<name>: <message> ERROR" (clamd/scanner.c, clamd/session.c), with a null terminator for zINSTREAM
+    const reply = result.replaceAll('\0', '').trim()
+    if (reply.endsWith(': OK')) {
       return FileStatus.SAFE
     }
-    if (result.includes('FOUND') && !result.includes('OK')) {
-      return FileStatus.INFECTED
+    const detection = /: (.+) FOUND$/.exec(reply)?.[1]
+    if (detection !== undefined) {
+      return REJECTED_DETECTIONS.test(detection)
+        ? FileStatus.REJECTED
+        : FileStatus.INFECTED
     }
-    if (result.includes('SCAN TIMEOUT')) {
+    if (result.includes(FileStatus.SCAN_TIMEOUT)) {
       return FileStatus.SCAN_TIMEOUT
     }
 

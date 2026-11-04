@@ -13,7 +13,7 @@ const exampleForm: ExampleForm = {
           psc: '55442',
         },
       },
-      ico: '4422110033',
+      ico: '12345678',
       dic: '15485124545',
       platcaDph: true,
       kontaktnaOsoba: 'Milan Váh',

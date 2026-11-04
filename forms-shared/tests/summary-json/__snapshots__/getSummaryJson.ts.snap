@@ -1047,13 +1047,13 @@ exports[`getSummaryJson > oloEnergetickeZhodnotenieOdpaduVZevoExample summary JS
           "displayValues": [
             {
               "type": "String",
-              "value": "5689541122",
+              "value": "12345678",
             },
           ],
           "id": "root_povodcaOdpadu_ico",
           "label": "IČO",
           "type": "Field",
-          "value": "5689541122",
+          "value": "12345678",
         },
         {
           "displayValues": [
@@ -1754,13 +1754,13 @@ exports[`getSummaryJson > oloKoloTaxiExample summary JSON should match snapshot 
           "displayValues": [
             {
               "type": "String",
-              "value": "154515451",
+              "value": "12345678",
             },
           ],
           "id": "root_ziadatel_ico",
           "label": "IČO",
           "type": "Field",
-          "value": "154515451",
+          "value": "12345678",
         },
         {
           "displayValues": [
@@ -2294,13 +2294,13 @@ exports[`getSummaryJson > oloOdvozObjemnehoOdpaduValnikomExample summary JSON sh
           "displayValues": [
             {
               "type": "String",
-              "value": "4422110033",
+              "value": "12345678",
             },
           ],
           "id": "root_ziadatel_ico",
           "label": "IČO",
           "type": "Field",
-          "value": "4422110033",
+          "value": "12345678",
         },
         {
           "displayValues": [
@@ -2541,13 +2541,13 @@ exports[`getSummaryJson > oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom
           "displayValues": [
             {
               "type": "String",
-              "value": "5451245",
+              "value": "12345678",
             },
           ],
           "id": "root_ziadatel_ico",
           "label": "IČO",
           "type": "Field",
-          "value": "5451245",
+          "value": "12345678",
         },
         {
           "displayValues": [
@@ -3598,13 +3598,13 @@ exports[`getSummaryJson > oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpoloc
           "displayValues": [
             {
               "type": "String",
-              "value": "123456",
+              "value": "12345678",
             },
           ],
           "id": "root_ziadatel_ico",
           "label": "IČO",
           "type": "Field",
-          "value": "123456",
+          "value": "12345678",
         },
         {
           "displayValues": [

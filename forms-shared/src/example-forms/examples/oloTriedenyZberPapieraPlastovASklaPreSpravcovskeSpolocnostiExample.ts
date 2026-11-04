@@ -20,7 +20,7 @@ const exampleForm: ExampleForm = {
           psc: '81101',
         },
       },
-      ico: '123456',
+      ico: '12345678',
       dic: '123456',
       telefon: '+421123323232',
       email: 'test@test.test',

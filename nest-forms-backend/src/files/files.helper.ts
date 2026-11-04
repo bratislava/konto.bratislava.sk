@@ -260,6 +260,26 @@ export default class FilesHelper {
     return false
   }
 
+  async checkRejectedFiles(formId: string): Promise<boolean> {
+    const rejectedFiles: Files[] = await this.prisma.files.findMany({
+      where: {
+        formId,
+        status: FileStatus.REJECTED,
+      },
+    })
+
+    if (rejectedFiles.length > 0) {
+      this.logger.warn({
+        type: 'Form contains rejected files.',
+        formId,
+        error: FormError.REJECTED_FILES,
+        rejectedFileIds: rejectedFiles.map((file) => file.id),
+      })
+      return true
+    }
+    return false
+  }
+
   async areErrorFilesInForm(formId: string): Promise<boolean> {
     const errorFiles: Files[] = await this.prisma.files.findMany({
       where: {

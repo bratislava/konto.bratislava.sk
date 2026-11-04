@@ -454,6 +454,13 @@ export class FormSenderService {
       })
     }
 
+    if (formAttachmentsReady.error === FormError.REJECTED_FILES) {
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: FormSenderErrorsEnum.REJECTED_FILE,
+        message: FormSenderErrorsResponseEnum.REJECTED_FILE,
+      })
+    }
+
     throw this.errorFactoryService.BadRequestException({
       errorEnum: FormSenderErrorsEnum.FILE_NOT_SCANNED,
       message: FormSenderErrorsResponseEnum.FILE_NOT_SCANNED,

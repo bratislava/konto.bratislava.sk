@@ -436,6 +436,19 @@ export default class FilesService {
       return result
     }
 
+    // if there are files with content that is not allowed, the user has to remove them
+    if (await this.filesHelper.checkRejectedFiles(formId)) {
+      this.logger.warn(`Form with id ${formId} has rejected files.`)
+      const result = {
+        filesReady: false,
+        requeue: false,
+        state: FormState.ERROR,
+        error: FormError.REJECTED_FILES,
+      }
+      this.logger.warn(JSON.stringify(result))
+      return result
+    }
+
     // if there are files in error state notify developers, and set form to error state
     if (await this.filesHelper.areErrorFilesInForm(formId)) {
       const result = {

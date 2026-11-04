@@ -147,7 +147,12 @@ describe('FormsService', () => {
                       { state: FormState.DRAFT },
                       {
                         state: FormState.ERROR,
-                        error: { in: [FormError.INFECTED_FILES] },
+                        error: {
+                          in: [
+                            FormError.INFECTED_FILES,
+                            FormError.REJECTED_FILES,
+                          ],
+                        },
                       },
                     ],
                   },

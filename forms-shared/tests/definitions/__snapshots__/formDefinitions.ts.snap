@@ -5273,10 +5273,11 @@ exports[`Form definitions > olo-kolo-taxi > schema matches snapshot 1`] = `
                               "baOrder": 3,
                               "baUiSchema": {
                                 "ui:options": {
-                                  "inputType": "text",
+                                  "inputType": "email",
                                 },
                                 "ui:widget": "Input",
                               },
+                              "format": "email",
                               "title": "E-mail pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
@@ -9107,10 +9108,11 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                               "baOrder": 3,
                               "baUiSchema": {
                                 "ui:options": {
-                                  "inputType": "text",
+                                  "inputType": "email",
                                 },
                                 "ui:widget": "Input",
                               },
+                              "format": "email",
                               "title": "E-mail pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
@@ -9202,10 +9204,11 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                               "baOrder": 3,
                               "baUiSchema": {
                                 "ui:options": {
-                                  "inputType": "text",
+                                  "inputType": "email",
                                 },
                                 "ui:widget": "Input",
                               },
+                              "format": "email",
                               "title": "E-mail pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
@@ -10664,10 +10667,11 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                               "baOrder": 3,
                               "baUiSchema": {
                                 "ui:options": {
-                                  "inputType": "text",
+                                  "inputType": "email",
                                 },
                                 "ui:widget": "Input",
                               },
+                              "format": "email",
                               "title": "E-mail pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
@@ -10759,10 +10763,11 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                               "baOrder": 3,
                               "baUiSchema": {
                                 "ui:options": {
-                                  "inputType": "text",
+                                  "inputType": "email",
                                 },
                                 "ui:widget": "Input",
                               },
+                              "format": "email",
                               "title": "E-mail pre zasielanie elektronických faktúr",
                               "type": "string",
                             },

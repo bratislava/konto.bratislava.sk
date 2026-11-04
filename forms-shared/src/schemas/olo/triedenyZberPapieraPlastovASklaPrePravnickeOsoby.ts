@@ -40,7 +40,7 @@ const getFakturacia = (novyOdberatel: boolean) =>
         input(
           'emailPreFaktury',
           {
-            type: 'text',
+            type: 'email',
             title: 'E-mail pre zasielanie elektronických faktúr',
             required: true,
           },

@@ -7,6 +7,7 @@ export enum FileStatusType {
   ScanError = 'ScanError',
   ScanDone = 'ScanDone',
   ScanInfected = 'ScanInfected',
+  ScanRejected = 'ScanRejected',
   UnknownFile = 'UnknownFile',
   UnknownStatus = 'UnknownStatus',
   UploadServerError = 'UploadServerError',
@@ -61,6 +62,7 @@ export type FileStatus =
   | { type: FileStatusType.ScanError }
   | { type: FileStatusType.ScanDone }
   | { type: FileStatusType.ScanInfected }
+  | { type: FileStatusType.ScanRejected }
 
 export type ClientFileInfo = {
   status: FileStatus

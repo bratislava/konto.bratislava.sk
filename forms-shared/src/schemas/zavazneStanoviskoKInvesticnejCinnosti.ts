@@ -59,7 +59,7 @@ const ziadatelStavebnikFields = [
     createCondition([[['ziadatelTyp'], { enum: ['fyzickaOsobaPodnikatel', 'pravnickaOsoba'] }]]),
     [
       input('obchodneMeno', { type: 'text', title: 'Obchodné meno', required: true }, {}),
-      input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+      input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
     ],
   ),
   conditionalFields(

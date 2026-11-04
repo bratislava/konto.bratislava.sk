@@ -96,10 +96,10 @@ export default schema(
         [
           input(
             'icoPovodnehoOdberatela',
-            { type: 'text', title: 'IČO pôvodného odberateľa', required: true },
+            { type: 'ba-ico', title: 'IČO pôvodného odberateľa', required: true },
             {},
           ),
-          input('noveIco', { type: 'text', title: 'Nové IČO', required: true }, {}),
+          input('noveIco', { type: 'ba-ico', title: 'Nové IČO', required: true }, {}),
           input(
             'dicNovehoOdberatela',
             { type: 'text', title: 'DIČ nového odberateľa', required: true },
@@ -112,7 +112,7 @@ export default schema(
           ),
         ],
         [
-          input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+          input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
           input('dic', { type: 'text', title: 'DIČ', required: true }, {}),
         ],
       ),

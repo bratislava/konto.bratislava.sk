@@ -34,7 +34,7 @@ const exampleForm: ExampleForm = {
           psc: '11144',
         },
       },
-      ico: '5689541122',
+      ico: '12345678',
     },
     drzitelOdpadu: {
       steDrzitelOdpadu: true,

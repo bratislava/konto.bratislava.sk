@@ -54,7 +54,7 @@ export default schema(
         { title: 'Názov občianskeho združenia', required: true, type: 'text' },
         {},
       ),
-      input('ico', { title: 'IČO', required: true, type: 'text' }, { size: 'medium' }),
+      input('ico', { title: 'IČO', required: true, type: 'ba-ico' }, { size: 'medium' }),
       ...getAdresaFields('Adresa sídla'),
       object(
         'statutar',

@@ -117,17 +117,17 @@ export default schema(
         input('cisloZmluvy', { type: 'text', title: 'Číslo zmluvy', required: true }, {}),
       ]),
       conditionalFields(createCondition([[['typOdberatela'], { enum: ['Nový', 'Existujúci'] }]]), [
-        input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+        input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
       ]),
       conditionalFields(
         createCondition([[['typOdberatela'], { const: 'Zmena odberateľa' }]]),
         [
           input(
             'icoPovodnehoOdberatela',
-            { type: 'text', title: 'IČO pôvodného odberateľa', required: true },
+            { type: 'ba-ico', title: 'IČO pôvodného odberateľa', required: true },
             {},
           ),
-          input('noveIco', { type: 'text', title: 'Nové IČO', required: true }, {}),
+          input('noveIco', { type: 'ba-ico', title: 'Nové IČO', required: true }, {}),
           input(
             'dicNovehoOdberatela',
             { type: 'text', title: 'DIČ nového odberateľa', required: true },

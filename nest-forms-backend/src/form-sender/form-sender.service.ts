@@ -1,5 +1,5 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { HttpStatus, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ValidatorType } from '@rjsf/utils'
 import {
   FormDefinition,
@@ -17,6 +17,7 @@ import {
   versionCompareBumpDuringSend,
   versionCompareCanSendForm,
 } from 'forms-shared/versioning/version-compare'
+import { SktalkReceiveAndSaveToOutboxResult } from 'openapi-clients/slovensko-sk'
 
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import { isAuthUser, User } from '../auth-v2/types/user'
@@ -363,7 +364,7 @@ export class FormSenderService {
     // just before sending to nases, claim the form by moving it to QUEUED
     // the transition is conditional on the form still being editable, so a concurrent send (or a
     // resend of the same eID token) is rejected here instead of sending the submission twice
-    // sendToNasesAndUpdateState must never throw, and if it does not succeed we update the state back to DRAFT & set NASES_SEND_ERROR
+    // if sending to NASES fails, sendToNasesAndUpdateState updates the state back to DRAFT & sets NASES_SEND_ERROR
     const claimed = await this.formsService.transitionToQueued(id, {
       formSummary,
       ...(shouldBumpJsonVersion
@@ -467,10 +468,10 @@ export class FormSenderService {
     senderUri: string,
     additionalFormUpdates?: FormUpdateBodyDto,
   ): Promise<void> {
-    // send is implemented in a way that it does not throw. Therefore this is not in try-catch block.
-    const sendData = await this.nasesSenderService.send(jwt, form, senderUri)
-
-    if (sendData.status !== HttpStatus.OK) {
+    let sendData: SktalkReceiveAndSaveToOutboxResult
+    try {
+      sendData = await this.nasesSenderService.send(jwt, form, senderUri)
+    } catch (error) {
       await this.formsService.updateForm(data.formId, {
         state: FormState.DRAFT,
         error: FormError.NASES_SEND_ERROR,
@@ -480,10 +481,10 @@ export class FormSenderService {
         errorEnum: NasesErrorsEnum.UNABLE_SEND_FORM_TO_NASES,
         message: NasesErrorsResponseEnum.UNABLE_SEND_FORM_TO_NASES,
         console: {
-          status: sendData.status,
           formId: data.formId,
           error: FormError.NASES_SEND_ERROR,
         },
+        error,
       })
     }
 
@@ -499,7 +500,7 @@ export class FormSenderService {
       type: 'ALL GOOD - 200',
       status: 200,
       formId: data.formId,
-      sendData: sendData.data,
+      sendData,
     })
   }
 

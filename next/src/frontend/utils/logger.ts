@@ -9,6 +9,14 @@ import pino from 'pino'
 import { environment } from '@/src/environment'
 import { isBrowser, isProductionDeployment } from '@/src/frontend/utils/general'
 
+export const stringifyForLog = (value: unknown) => {
+  try {
+    return JSON.stringify(value)
+  } catch (error) {
+    return `<value of type ${typeof value} is not serializable: ${error instanceof Error ? error.message : 'unknown reason'}>`
+  }
+}
+
 let mutableFaro: Faro | null = null
 
 const sendLogsToFaro = isProductionDeployment()
@@ -20,7 +28,7 @@ const mutableLogger = pino({
     transmit: sendLogsToFaro
       ? {
           send(_level, logEvent) {
-            mutableFaro?.api.pushLog([JSON.stringify(logEvent)])
+            mutableFaro?.api.pushLog([stringifyForLog(logEvent)])
           },
         }
       : undefined,

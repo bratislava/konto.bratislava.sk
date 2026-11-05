@@ -4,21 +4,13 @@ import { useMemo } from 'react'
 import Markdown from '@/src/components/formatting/Markdown'
 import Alert from '@/src/components/simple-components/Alert'
 import { GENERIC_ERROR_MESSAGE, isError, isErrorWithoutName } from '@/src/frontend/utils/errors'
-import logger from '@/src/frontend/utils/logger'
+import logger, { stringifyForLog } from '@/src/frontend/utils/logger'
 
 interface Props {
   error?: Error | null
   args?: Record<string, string | number>
   close?: () => void
   solid?: boolean
-}
-
-const stringifyForLog = (value: unknown) => {
-  try {
-    return JSON.stringify(value)
-  } catch (error) {
-    return `<value of type ${typeof value} is not serializable: ${error instanceof Error ? error.message : 'unknown reason'}>`
-  }
 }
 
 const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {

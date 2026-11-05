@@ -2,12 +2,14 @@ import { Readable } from 'node:stream'
 
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { v1, v4 } from 'uuid'
 import type { Mock } from 'vitest'
 import { Builder, Parser } from 'xml2js'
 
 import prismaMock from '../../../../test/singleton'
+import { createTestForm } from '../../../__tests__/factories/form.factory'
 import ClientsService from '../../../clients/clients.service'
 import BaConfigService from '../../../config/ba-config.service'
 import ConvertService from '../../../convert/convert.service'
@@ -15,7 +17,10 @@ import { FileStatus } from '../../../generated/prisma/client'
 import { MinioStorageService } from '../../../minio-storage/minio-storage.service'
 import PrismaService from '../../../prisma/prisma.service'
 import TaxService from '../../../tax/tax.service'
-import { NasesErrorsResponseEnum } from '../../nases.errors.enum'
+import {
+  NasesErrorsEnum,
+  NasesErrorsResponseEnum,
+} from '../../nases.errors.enum'
 import NasesSenderService from '../nases.sender.service'
 
 vi.mock('axios')
@@ -37,6 +42,8 @@ const createMockReadableStream = (content: string): Readable => {
 
 describe('NasesSenderService', () => {
   let service: NasesSenderService
+  let logger: LineLoggerService
+  let clientsService: ClientsService
 
   beforeEach(async () => {
     vi.resetAllMocks()
@@ -64,6 +71,8 @@ describe('NasesSenderService', () => {
     }).compile()
 
     service = app.get<NasesSenderService>(NasesSenderService)
+    logger = app.get(LineLoggerService)
+    clientsService = app.get(ClientsService)
   })
 
   describe('should be defined', () => {
@@ -313,6 +322,34 @@ describe('NasesSenderService', () => {
       )
 
       expect(returnXmlString).toBe(xmlExample)
+    })
+  })
+
+  describe('send', () => {
+    it('should log the cause and return a generic message when envelope creation fails', async () => {
+      const envelopeError = new Error('Envelope failure.')
+      service['createEnvelopeSendMessage'] = vi
+        .fn()
+        .mockRejectedValue(envelopeError)
+      const form = createTestForm()
+
+      const result = await service.send('jwt', form, 'sender-uri')
+
+      expect(result).toEqual({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        data: { message: NasesErrorsResponseEnum.CREATE_ENVELOPE_ERROR },
+      })
+      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
+        expect.toMatchLogNestError({
+          errorEnum: NasesErrorsEnum.CREATE_ENVELOPE_ERROR,
+          message: NasesErrorsResponseEnum.CREATE_ENVELOPE_ERROR,
+          console: { formId: form.id },
+          error: envelopeError,
+        }),
+      )
+      expect(
+        clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost,
+      ).not.toHaveBeenCalled()
     })
   })
 })

@@ -21,6 +21,7 @@ import {
   MyApplicationState,
   MyApplicationStateFilter,
 } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationStates'
+import { FormDefinitionInfoBySlug } from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionInfoBySlug'
 import { SelectOption } from '@/src/components/widget-components/SelectField/SelectField'
 
 // ─── Shared showcase data ───
@@ -28,8 +29,8 @@ import { SelectOption } from '@/src/components/widget-components/SelectField/Sel
 const MOCK_FORM_SLUG = 'zavazne-stanovisko-k-investicnej-cinnosti'
 const MOCK_FORM_CATEGORY = 'Záväzné stanovisko k investičnej činnosti'
 
-export const formDefinitionSlugTitleMap: Record<string, string> = {
-  [MOCK_FORM_SLUG]: MOCK_FORM_CATEGORY,
+export const formDefinitionInfoBySlug: FormDefinitionInfoBySlug = {
+  [MOCK_FORM_SLUG]: { title: MOCK_FORM_CATEGORY, isTaxForm: false },
 }
 
 // ─── List page (MyApplicationsPageContent) ───

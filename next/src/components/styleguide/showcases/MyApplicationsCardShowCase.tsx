@@ -6,7 +6,7 @@ import {
 
 import RowGroupWrapper from '@/src/components/common/RowGroupWrapper'
 import MyApplicationsCard from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard/MyApplicationsCard'
-import { FormDefinitionSlugTitleMapProvider } from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionSlugTitleMap'
+import { FormDefinitionInfoBySlugProvider } from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionInfoBySlug'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
@@ -30,8 +30,8 @@ const getDummyData = (
     : { ...base, state, formSentAt: '2023-09-13T08:48:22.121Z' }
 }
 
-const formDefinitionSlugTitleMap = {
-  'example-form-definition-slug': 'Example Form',
+const formDefinitionInfoBySlug = {
+  'example-form-definition-slug': { title: 'Example Form', isTaxForm: false },
 }
 
 const showCaseCards: { state: FormState; error: GetFormResponseDtoErrorEnum }[] = [
@@ -42,7 +42,7 @@ const showCaseCards: { state: FormState; error: GetFormResponseDtoErrorEnum }[] 
 
 const MyApplicationsCardShowCase = () => {
   return (
-    <FormDefinitionSlugTitleMapProvider formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}>
+    <FormDefinitionInfoBySlugProvider formDefinitionInfoBySlug={formDefinitionInfoBySlug}>
       <Wrapper direction="column" title="My Applications Card">
         <Stack>
           <div className="flex flex-1 flex-col gap-2">
@@ -60,7 +60,7 @@ const MyApplicationsCardShowCase = () => {
           </div>
         </Stack>
       </Wrapper>
-    </FormDefinitionSlugTitleMapProvider>
+    </FormDefinitionInfoBySlugProvider>
   )
 }
 

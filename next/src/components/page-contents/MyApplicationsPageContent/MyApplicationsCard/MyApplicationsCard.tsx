@@ -8,7 +8,7 @@ import Icon from '@/src/components/icon-components/Icon'
 import BottomSheetMenuModal from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuModal'
 import { useDeleteFormConcept } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard/useDeleteFormConcept'
 import { getMyApplicationStateByFormResponseState } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationStates'
-import { useFormDefinitionSlugTitleMap } from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionSlugTitleMap'
+import { useFormDefinitionInfoBySlug } from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionInfoBySlug'
 import DropdownMenu, {
   DropdownMenuItemProps,
 } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
@@ -23,11 +23,6 @@ import { ROUTES } from '@/src/utils/routes'
 type Props = {
   form: GetFormsResponseDtoItemsInner
   refreshListData: () => Promise<void>
-}
-
-// TODO Handle centrally, maybe by including form type into formDefinitionSlugTitleMap
-const isTaxForm = ({ formSlug }: { formSlug: string }) => {
-  return formSlug === 'priznanie-k-dani-z-nehnutelnosti'
 }
 
 /**
@@ -46,8 +41,7 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
 
   const formSlug = form.formDefinitionSlug
 
-  const formDefinitionSlugTitleMap = useFormDefinitionSlugTitleMap()
-  const cardTitle = formDefinitionSlugTitleMap[formSlug]
+  const { title, isTaxForm } = useFormDefinitionInfoBySlug()[formSlug] ?? {}
 
   const formPageHref = ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(formSlug, form.id)
   const detailPageHref = ROUTES.MY_APPLICATION_DETAIL(form.id)
@@ -67,7 +61,7 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
           value: formatDate(form.formSentAt),
         }
 
-  const canDownloadPdf = !isTaxForm({ formSlug })
+  const canDownloadPdf = !isTaxForm
   const conceptMenuItems: DropdownMenuItemProps[] = [
     {
       title: t('MyApplicationsCard.menu.downloadXml'),
@@ -172,7 +166,7 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
         <div className="flex max-w-150 grow flex-col items-start gap-2">
           {isEditable && <Tag variant="warning" text={t('MyApplicationsCard.conceptTag')} />}
           <Typography variant="h5" as="h3" className={cn({ 'group-hover:underline': !isEditable })}>
-            {cardTitle}
+            {title}
           </Typography>
         </div>
         <div className="flex flex-col lg:mr-auto lg:gap-2">

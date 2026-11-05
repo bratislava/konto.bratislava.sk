@@ -1,5 +1,6 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
+import { isSlovenskoSkTaxFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { useTranslation } from 'next-i18next/pages'
 
 import { strapiClient } from '@/src/clients/graphql-strapi'
@@ -19,22 +20,28 @@ import {
 import MyApplicationsPageContent from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsPageContent'
 import { parseMyApplicationsFiltersFromServerUrlQuery } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsUrlQuery'
 import {
-  FormDefinitionSlugTitleMap,
-  FormDefinitionSlugTitleMapProvider,
-} from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionSlugTitleMap'
+  FormDefinitionInfoBySlug,
+  FormDefinitionInfoBySlugProvider,
+} from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionInfoBySlug'
 import SeoHead from '@/src/components/simple-components/SeoHead'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
 type MyApplicationsPageProps = {
   general: GeneralQuery
-  formDefinitionSlugTitleMap: FormDefinitionSlugTitleMap
+  formDefinitionInfoBySlug: FormDefinitionInfoBySlug
   dehydratedState: DehydratedState
 }
 
-const getFormDefinitionSlugTitleMap = (): FormDefinitionSlugTitleMap =>
+const getFormDefinitionInfoBySlug = (): FormDefinitionInfoBySlug =>
   Object.fromEntries(
-    formDefinitions.map((formDefinition) => [formDefinition.slug, formDefinition.title]),
+    formDefinitions.map((formDefinition) => [
+      formDefinition.slug,
+      {
+        title: formDefinition.title,
+        isTaxForm: isSlovenskoSkTaxFormDefinition(formDefinition),
+      },
+    ]),
   )
 
 export const getServerSideProps = amplifyGetServerSideProps<MyApplicationsPageProps>(
@@ -68,7 +75,7 @@ export const getServerSideProps = amplifyGetServerSideProps<MyApplicationsPagePr
     return {
       props: {
         general,
-        formDefinitionSlugTitleMap: getFormDefinitionSlugTitleMap(),
+        formDefinitionInfoBySlug: getFormDefinitionInfoBySlug(),
         dehydratedState: dehydrate(queryClient),
         ...(await slovakServerSideTranslations()),
       },
@@ -79,7 +86,7 @@ export const getServerSideProps = amplifyGetServerSideProps<MyApplicationsPagePr
 
 const MyApplicationsPage = ({
   general,
-  formDefinitionSlugTitleMap,
+  formDefinitionInfoBySlug,
   dehydratedState,
 }: MyApplicationsPageProps) => {
   const { t } = useTranslation()
@@ -89,11 +96,9 @@ const MyApplicationsPage = ({
       <GeneralContextProvider general={general}>
         <SeoHead title={t('MyApplicationsPageContent.title')} />
         <PageLayout>
-          <FormDefinitionSlugTitleMapProvider
-            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-          >
+          <FormDefinitionInfoBySlugProvider formDefinitionInfoBySlug={formDefinitionInfoBySlug}>
             <MyApplicationsPageContent />
-          </FormDefinitionSlugTitleMapProvider>
+          </FormDefinitionInfoBySlugProvider>
         </PageLayout>
       </GeneralContextProvider>
     </HydrationBoundary>

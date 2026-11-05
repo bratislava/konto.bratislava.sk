@@ -2,13 +2,13 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 
 import MyApplicationsPageContent from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsPageContent'
-import { FormDefinitionSlugTitleMapProvider } from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionSlugTitleMap'
+import { FormDefinitionInfoBySlugProvider } from '@/src/components/page-contents/MyApplicationsPageContent/useFormDefinitionInfoBySlug'
 import { useMyApplicationsFilters } from '@/src/components/page-contents/MyApplicationsPageContent/useMyApplicationsFilters'
 
 import {
   createMockApplications,
   createMockQueryClient,
-  formDefinitionSlugTitleMap,
+  formDefinitionInfoBySlug,
   ListScenario,
   listScenarioOptions,
   sectionOptions,
@@ -51,11 +51,9 @@ const MyApplicationsListShowCase = () => {
       {/* key forces a remount so the freshly seeded QueryClient is picked up */}
       <QueryClientProvider client={queryClient}>
         <div className="bg-background-passive-base" key={`${myApplicationState}-${scenario}`}>
-          <FormDefinitionSlugTitleMapProvider
-            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-          >
+          <FormDefinitionInfoBySlugProvider formDefinitionInfoBySlug={formDefinitionInfoBySlug}>
             <MyApplicationsPageContent />
-          </FormDefinitionSlugTitleMapProvider>
+          </FormDefinitionInfoBySlugProvider>
         </div>
       </QueryClientProvider>
     </ShowcaseLayout>

@@ -52,6 +52,13 @@ import {
 } from './form-sender.errors.enum'
 import { FormSenderService } from './form-sender.service'
 
+const nasesSendResult = {
+  receive_result: 0,
+  receive_timeout: false,
+  save_to_outbox_result: 0,
+  save_to_outbox_timeout: false,
+}
+
 vi.mock('forms-shared/definitions/getFormDefinitionBySlug')
 vi.mock('forms-shared/form-utils/validators')
 vi.mock('forms-shared/summary/summary')
@@ -63,6 +70,11 @@ describe('FormSenderService', () => {
   let authUser: AuthFixtureUser
   let logger: LineLoggerService
   const errorFactory = new ErrorFactoryService({ alertReporting })
+  const createNasesSendError = () =>
+    errorFactory.UnprocessableEntityException({
+      errorEnum: NasesErrorsEnum.SEND_TO_NASES_ERROR,
+      message: NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
+    })
 
   beforeAll(() => {
     userFixtureFactory = new UserFixtureFactory()
@@ -180,10 +192,9 @@ describe('FormSenderService', () => {
         eidSendPossible: true,
       })
 
-      vi.mocked(service['nasesSenderService'].send).mockResolvedValue({
-        status: HttpStatus.NOT_FOUND,
-        data: {},
-      })
+      vi.mocked(service['nasesSenderService'].send).mockRejectedValue(
+        createNasesSendError(),
+      )
 
       const updateFormSpy = vi.mocked(service['formsService'].updateForm)
 
@@ -308,9 +319,9 @@ describe('FormSenderService', () => {
         actor: { sub: 'actor-sub' },
       } as JwtNasesPayload
       ;(getFormDefinitionBySlug as Mock).mockReturnValue(mockFormDefinition)
-      const nasesSendResponse = { status: HttpStatus.NOT_FOUND, data: {} }
-      vi.mocked(service['nasesSenderService'].send).mockResolvedValue(
-        nasesSendResponse,
+      const nasesSendError = createNasesSendError()
+      vi.mocked(service['nasesSenderService'].send).mockRejectedValue(
+        nasesSendError,
       )
       const sendToNasesSpy = vi.spyOn(service, 'sendToNasesAndUpdateState')
 
@@ -332,6 +343,7 @@ describe('FormSenderService', () => {
         'Error sending form to nases.',
         expect.toMatchLogNestError({
           errorEnum: NasesErrorsEnum.UNABLE_SEND_FORM_TO_NASES,
+          error: nasesSendError,
         }),
       )
       expect(updateSpy).toHaveBeenLastCalledWith(
@@ -366,10 +378,9 @@ describe('FormSenderService', () => {
         actor: { sub: 'actor-sub' },
       } as JwtNasesPayload
       ;(getFormDefinitionBySlug as Mock).mockReturnValue(mockFormDefinition)
-      vi.mocked(service['nasesSenderService'].send).mockResolvedValue({
-        status: HttpStatus.OK,
-        data: {},
-      })
+      vi.mocked(service['nasesSenderService'].send).mockResolvedValue(
+        nasesSendResult,
+      )
       const sendToNasesSpy = vi.spyOn(service, 'sendToNasesAndUpdateState')
       const ginisError = new Error('Ginis error')
       const publishToGinisSpy = vi
@@ -422,10 +433,9 @@ describe('FormSenderService', () => {
         actor: { sub: 'actor-sub' },
       } as JwtNasesPayload
       ;(getFormDefinitionBySlug as Mock).mockReturnValue(mockFormDefinition)
-      vi.mocked(service['nasesSenderService'].send).mockResolvedValue({
-        status: HttpStatus.OK,
-        data: {},
-      })
+      vi.mocked(service['nasesSenderService'].send).mockResolvedValue(
+        nasesSendResult,
+      )
       const sendToNasesSpy = vi.spyOn(service, 'sendToNasesAndUpdateState')
       const publishToGinisSpy = vi.mocked(
         service['rabbitmqClientService'].publishToGinis,
@@ -477,10 +487,9 @@ describe('FormSenderService', () => {
         actor: { sub: 'actor-sub' },
       } as JwtNasesPayload
       ;(getFormDefinitionBySlug as Mock).mockReturnValue(mockFormDefinition)
-      vi.mocked(service['nasesSenderService'].send).mockResolvedValue({
-        status: HttpStatus.OK,
-        data: {},
-      })
+      vi.mocked(service['nasesSenderService'].send).mockResolvedValue(
+        nasesSendResult,
+      )
       const sendToNasesSpy = vi.spyOn(service, 'sendToNasesAndUpdateState')
       const publishToGinisSpy = vi.mocked(
         service['rabbitmqClientService'].publishToGinis,
@@ -960,43 +969,10 @@ describe('FormSenderService', () => {
   })
 
   describe('sendToNasesAndUpdateState', () => {
-    it('should throw if status is not 200', async () => {
-      const sendResponse = { status: 401 }
-      const rabbitPayload = {
-        formId: '',
-        tries: 1,
-        userData: {
-          email: 'test.inovacie_at_bratislava.sk',
-          firstName: 'Tester',
-        },
-      }
-      service['nasesSenderService'].send = vi
-        .fn()
-        .mockResolvedValue(sendResponse)
-
-      await expect(
-        service.sendToNasesAndUpdateState(
-          '',
-          {} as Forms,
-          rabbitPayload,
-          'test-uri',
-        ),
-      ).rejects.toThrowEqualLogNestError({
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        errorEnum: NasesErrorsEnum.UNABLE_SEND_FORM_TO_NASES,
-        message: NasesErrorsResponseEnum.UNABLE_SEND_FORM_TO_NASES,
-        console: {
-          status: sendResponse.status,
-          formId: rabbitPayload.formId,
-          error: FormError.NASES_SEND_ERROR,
-        },
-      })
-    })
-
     it('should start checking for nases delivery and not trigger any errors', async () => {
       service['nasesSenderService'].send = vi
         .fn()
-        .mockResolvedValue({ status: 200 })
+        .mockResolvedValue(nasesSendResult)
 
       const spyLog = vi.mocked(logger.error)
       await service.sendToNasesAndUpdateState(
@@ -1019,7 +995,7 @@ describe('FormSenderService', () => {
     it('should pass additionalFormUpdates to formsService.updateForm', async () => {
       service['nasesSenderService'].send = vi
         .fn()
-        .mockResolvedValue({ status: 200 })
+        .mockResolvedValue(nasesSendResult)
 
       const updateFormSpy = vi.mocked(service['formsService'].updateForm)
       const additionalFormUpdates = {
@@ -1048,8 +1024,8 @@ describe('FormSenderService', () => {
       })
     })
 
-    it('should update to ERROR and throw error if sending to NASES fails', async () => {
-      const sendResponse = { status: 500 }
+    it('should update to DRAFT with NASES_SEND_ERROR and throw if sending to NASES fails', async () => {
+      const sendError = createNasesSendError()
       const rabbitPayload = {
         formId: 'formIdVal',
         tries: 1,
@@ -1058,9 +1034,7 @@ describe('FormSenderService', () => {
           firstName: 'Tester',
         },
       }
-      service['nasesSenderService'].send = vi
-        .fn()
-        .mockResolvedValue(sendResponse)
+      service['nasesSenderService'].send = vi.fn().mockRejectedValue(sendError)
 
       const updateFormSpy = vi.mocked(service['formsService'].updateForm)
 
@@ -1076,22 +1050,26 @@ describe('FormSenderService', () => {
         errorEnum: NasesErrorsEnum.UNABLE_SEND_FORM_TO_NASES,
         message: NasesErrorsResponseEnum.UNABLE_SEND_FORM_TO_NASES,
         console: {
-          status: sendResponse.status,
           formId: rabbitPayload.formId,
           error: FormError.NASES_SEND_ERROR,
         },
+        error: sendError,
       })
 
       expect(updateFormSpy).toHaveBeenCalledWith(rabbitPayload.formId, {
         state: FormState.DRAFT,
         error: FormError.NASES_SEND_ERROR,
       })
+      expect(updateFormSpy).not.toHaveBeenCalledWith(
+        rabbitPayload.formId,
+        expectObjectContaining({ state: FormState.DELIVERED_NASES }),
+      )
     })
 
     it('should update to DELIVERED_NASES if sending to NASES is successful', async () => {
       service['nasesSenderService'].send = vi
         .fn()
-        .mockResolvedValue({ status: 200 })
+        .mockResolvedValue(nasesSendResult)
 
       const updateFormSpy = vi.mocked(service['formsService'].updateForm)
 

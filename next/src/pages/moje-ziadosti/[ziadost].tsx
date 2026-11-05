@@ -1,5 +1,5 @@
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
+import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import { formsClient } from '@/src/clients/forms'
 import { strapiClient } from '@/src/clients/graphql-strapi'
@@ -8,7 +8,6 @@ import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import MyApplicationDetails from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails/MyApplicationDetails'
-import { MyApplicationFormData } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationTypes'
 import SeoHead from '@/src/components/simple-components/SeoHead'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { modifyGinisDataForSchemaSlug } from '@/src/frontend/utils/ginis'
@@ -18,7 +17,7 @@ import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerS
 type MyApplicationDetailsPageProps = {
   general: GeneralQuery
   formDefinitionTitle: string
-  myApplicationFormData: MyApplicationFormData
+  myApplicationFormData: GetFormResponseDto
   myApplicationGinisData: GinisDocumentDetailResponseDto | null
 }
 
@@ -31,7 +30,7 @@ export const getServerSideProps = amplifyGetServerSideProps<MyApplicationDetails
     }
 
     // eslint-disable-next-line no-useless-assignment
-    let myApplicationFormData: MyApplicationFormData | null = null
+    let myApplicationFormData: GetFormResponseDto | null = null
     let myApplicationGinisData: GinisDocumentDetailResponseDto | null = null
 
     try {
@@ -40,8 +39,7 @@ export const getServerSideProps = amplifyGetServerSideProps<MyApplicationDetails
         getSsrAuthSession: fetchAuthSession,
       })
 
-      // `formSentAt` is returned by BE, but missing in `GetFormResponseDto`
-      myApplicationFormData = response.data as MyApplicationFormData
+      myApplicationFormData = response.data
 
       if (myApplicationFormData.ginisDocumentId) {
         const ginisRequest = await formsClient.ginisControllerGetGinisDocumentByFormId(id, {

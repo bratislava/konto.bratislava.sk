@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next/pages'
-import { GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
+import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import { LabelValueRowProps } from '@/src/components/common/LabelValueRowGroup/LabelValueRow'
 import LabelValueRowGroup from '@/src/components/common/LabelValueRowGroup/LabelValueRowGroup'
@@ -8,11 +8,10 @@ import { formatMarkdownLink } from '@/src/components/formatting/formatMarkdownLi
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
 import MyApplicationDetailsHeader from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails/MyApplicationDetailsHeader'
-import { MyApplicationFormData } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationTypes'
 
 type Props = {
   formDefinitionTitle: string
-  myApplicationFormData: MyApplicationFormData
+  myApplicationFormData: GetFormResponseDto
   myApplicationGinisData: GinisDocumentDetailResponseDto | null
 }
 
@@ -54,7 +53,7 @@ const MyApplicationDetails = ({
     ? [
         {
           label: formatDate(formSentAt),
-          value: t('MyApplicationHistory.states.DOCUMENT_CREATED'),
+          value: t('MyApplicationDetails.sent'),
         },
       ]
     : []

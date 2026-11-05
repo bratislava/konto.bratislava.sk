@@ -1,16 +1,16 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
+import { GetFormResponseDto } from 'openapi-clients/forms'
 
 import FormatDate from '@/src/components/formatting/FormatDate'
 import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import { MyApplicationFormData } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationTypes'
 import { useExportFormToPdf } from '@/src/frontend/hooks/useExportFormToPdf'
 
 type Props = {
   formDefinitionTitle: string
-  myApplicationFormData?: MyApplicationFormData
+  myApplicationFormData?: GetFormResponseDto
 }
 
 /**

@@ -1,6 +1,7 @@
 import { QueryClient } from '@tanstack/react-query'
 import {
   FormState,
+  GetFormResponseDto,
   GetFormResponseDtoErrorEnum,
   GetFormResponseDtoStateEnum,
   GetFormsResponseDto,
@@ -20,7 +21,6 @@ import {
   MyApplicationState,
   MyApplicationStateFilter,
 } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationStates'
-import { MyApplicationFormData } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationTypes'
 import { SelectOption } from '@/src/components/widget-components/SelectField/SelectField'
 
 // ─── Shared showcase data ───
@@ -244,7 +244,7 @@ export const MOCK_FORM_DEFINITION_TITLE = MOCK_FORM_CATEGORY
 
 export const createMockMyApplicationFormData = (
   state: GetFormResponseDtoStateEnum,
-): MyApplicationFormData => ({
+): GetFormResponseDto => ({
   email: 'test@example.com',
   id: 'mock-application-detail',
   createdAt: '2024-04-15T08:48:15.346Z',

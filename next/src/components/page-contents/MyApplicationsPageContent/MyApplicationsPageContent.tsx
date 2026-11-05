@@ -1,5 +1,6 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'next-i18next/pages'
+import { useEffect } from 'react'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
@@ -28,7 +29,7 @@ import cn from '@/src/utils/cn'
 
 const MyApplicationsPageContent = () => {
   const { t } = useTranslation()
-  const { selectedMyApplicationState, setSelectedMyApplicationState, page } =
+  const { selectedMyApplicationState, setSelectedMyApplicationState, page, setPage } =
     useMyApplicationsFilters()
 
   const filters = getMyApplicationsFilters({
@@ -40,6 +41,7 @@ const MyApplicationsPageContent = () => {
     data: applications,
     isPending,
     isError,
+    isPlaceholderData,
     refetch: refetchApplications,
   } = useQuery({
     queryKey: getMyApplicationsQueryKey(filters),
@@ -55,6 +57,23 @@ const MyApplicationsPageContent = () => {
   const refreshListData = async () => {
     await Promise.all([refetchApplicationsCount(), refetchApplications()])
   }
+
+  // Deleting the last application on the last page (or a hand-edited URL)
+  // leaves the current page past the end of the list.
+  // The pagination isn't rendered for an empty list, so there would be
+  // no way back - move to the last existing page instead.
+  const lastPage =
+    !!applications && !isPlaceholderData ? Math.max(applications.countPages, 1) : undefined
+  const isPageOutOfRange = lastPage !== undefined && page > lastPage
+
+  useEffect(() => {
+    if (isPageOutOfRange) {
+      setPage(lastPage)
+    }
+  }, [isPageOutOfRange, lastPage, setPage])
+
+  const isListLoading =
+    isPending || isPageOutOfRange || (isPlaceholderData && applications.items.length === 0)
 
   const tabTitles: Record<MyApplicationStateFilter, string> = {
     ALL: t('MyApplicationsPageContent.tabs.all'),
@@ -102,16 +121,15 @@ const MyApplicationsPageContent = () => {
           </TabList>
           {MY_APPLICATION_STATE_FILTERS.map((variant) => (
             <TabPanel key={variant} id={variant}>
-              {/* The empty-state banner is shown only when the list loaded successfully, a failed
-                  request (e.g. 500 from backend) is handled inline by the list with a retry button */}
-              {!isPending && !isError && !applications.items.length ? (
+              {/* The empty-state banner is shown only when the list loaded successfully, a failed request (e.g. 500 from backend) is handled inline by the list with a retry button */}
+              {!isListLoading && !isError && applications.items.length === 0 ? (
                 <MyApplicationsBanner
                   variant={selectedMyApplicationState === 'DRAFT' ? 'no-drafts' : 'no-applications'}
                 />
               ) : (
                 <MyApplicationsList
                   applications={applications}
-                  isPending={isPending}
+                  isPending={isListLoading}
                   isError={isError}
                   refreshListData={refreshListData}
                 />

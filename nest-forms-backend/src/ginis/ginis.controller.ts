@@ -110,6 +110,8 @@ export default class GinisController {
     }
     return {
       id: wflDocument['Id-dokumentu'],
+      referenceNumber:
+        this.ginisHelper.extractReferenceNumberFromGinisDocument(wflDocument),
       dossierId: wflDocument['Id-spisu'],
       ownerName:
         this.ginisHelper.extractSanitizeGinisOwnerFullName(ownerDetail),

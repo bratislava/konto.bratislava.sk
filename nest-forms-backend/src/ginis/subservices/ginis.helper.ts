@@ -1,8 +1,12 @@
-import { GinDetailReferentaDetailReferenta } from '@bratislava/ginis-sdk'
+import {
+  GinDetailReferentaDetailReferenta,
+  SslDetailDokumentuWflDokument,
+} from '@bratislava/ginis-sdk'
 import { Injectable } from '@nestjs/common'
 
 import FormsService from '../../forms/forms.service'
 import { FormError, FormState } from '../../generated/prisma/client'
+import { SslWflDocumentReferenceNumberFlag } from './ginis-api.service'
 
 @Injectable()
 export default class GinisHelper {
@@ -56,5 +60,22 @@ export default class GinisHelper {
     const name = this.stripNumbersWithDash(ownerDetail.Jmeno)
     const surname = this.stripNumbersWithDash(ownerDetail.Prijmeni)
     return `${name} ${surname}`
+  }
+
+  extractReferenceNumberFromGinisDocument(
+    wflDocument: SslDetailDokumentuWflDokument | null,
+  ): string | undefined {
+    if (!wflDocument) {
+      return undefined
+    }
+    if (
+      wflDocument['Priznak-cj'] ===
+        SslWflDocumentReferenceNumberFlag.INITIATING.toString() ||
+      wflDocument['Priznak-cj'] ===
+        SslWflDocumentReferenceNumberFlag.RESOLVING.toString()
+    ) {
+      return wflDocument.Znacka
+    }
+    return undefined
   }
 }

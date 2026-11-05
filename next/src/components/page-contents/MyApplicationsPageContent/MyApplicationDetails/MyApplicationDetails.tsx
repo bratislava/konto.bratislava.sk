@@ -7,7 +7,7 @@ import { formatDate } from '@/src/components/formatting/FormatDate'
 import { formatMarkdownLink } from '@/src/components/formatting/formatMarkdownLink'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
-import MyApplicationDetailsHeader from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetailsHeader'
+import MyApplicationDetailsHeader from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails/MyApplicationDetailsHeader'
 
 type Props = {
   formDefinitionTitle: string
@@ -26,13 +26,14 @@ const MyApplicationDetails = ({
 }: Props) => {
   const { t } = useTranslation()
 
-  const { id, dossierId, ownerName, ownerEmail, ownerPhone, documentHistory } =
+  const { id, referenceNumber, dossierId, ownerName, ownerEmail, ownerPhone } =
     myApplicationGinisData ?? {}
 
   const detailsRows: LabelValueRowProps[] = [
-    { label: t('MyApplicationDetails.recordNumber'), value: id },
-    // TODO Add 'Názov projektu' when more information is availible from product (we will display this only for some forms)
-    { label: t('MyApplicationDetails.fileNumber'), value: dossierId },
+    { label: t('MyApplicationDetails.recordReferenceNumber'), value: referenceNumber },
+    { label: t('MyApplicationDetails.recordIdentifier'), value: id },
+    // TODO Add 'Názov projektu' when more information is available from product (we will display this only for some forms)
+    { label: t('MyApplicationDetails.fileIdentifier'), value: dossierId },
     { label: t('MyApplicationDetails.ownerName'), value: ownerName },
     {
       label: t('MyApplicationDetails.ownerContact'),
@@ -46,30 +47,22 @@ const MyApplicationDetails = ({
     },
   ].filter((row) => Boolean(row.value))
 
-  /**
-   * TODO History is broken, check with BE
-   * - history data needs changes in process and on BE
-   * - until then, we just take 1 instance and present it as 'document created'
-   *   (all the instances are interpreted as document created)
-   * - fix the types in OpenAPI (BE)
-   */
-  const historyLabelMap = {
-    DOCUMENT_CREATED: t('MyApplicationHistory.states.DOCUMENT_CREATED'),
-    UNKNOWN: t('MyApplicationHistory.states.UNKNOWN'),
-  }
-
-  const historyRows: LabelValueRowProps[] =
-    documentHistory?.slice(-1).map((row) => ({
-      label: formatDate(row['Datum-zmeny']),
-      value: historyLabelMap[row.assignedCategory],
-    })) ?? []
+  // For now, the only history entry we show is the date the form was sent
+  const { formSentAt } = myApplicationFormData
+  const historyRows: LabelValueRowProps[] = formSentAt
+    ? [
+        {
+          label: formatDate(formSentAt),
+          value: t('MyApplicationDetails.sent'),
+        },
+      ]
+    : []
 
   return (
     <div className="flex flex-col">
       <MyApplicationDetailsHeader
         formDefinitionTitle={formDefinitionTitle}
         myApplicationFormData={myApplicationFormData}
-        myApplicationGinisData={myApplicationGinisData}
       />
       <SectionContainer className="py-6 lg:pt-8 lg:pb-18">
         <div className="flex flex-col gap-6 lg:gap-8">

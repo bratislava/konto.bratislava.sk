@@ -1,7 +1,7 @@
 import { GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
 import { useMemo, useState } from 'react'
 
-import MyApplicationDetails from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails'
+import MyApplicationDetails from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails/MyApplicationDetails'
 
 import {
   createMockMyApplicationFormData,

@@ -28,6 +28,7 @@ export const ROUTES = {
   THANK_YOU: '/vysledok-platby',
   USER_PROFILE: '/moj-profil',
   MY_APPLICATIONS: '/moje-ziadosti',
+  MY_APPLICATION_DETAIL: (formId: string) => `/moje-ziadosti/${formId}`,
   PAYMENT_RESULT: '/platba/stav',
 }
 

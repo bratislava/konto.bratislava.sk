@@ -36,11 +36,21 @@ export enum SslFileUploadType {
   SOURCE = 'elektronicky-obraz',
 }
 
+// Priznak-el-obrazu
+// Příznak že k dokumentu existuje jeho elektronický obraz.
 export enum SslWflDocumentElectronicSourceExistence {
   EXISTS = 'existuje', // Příznak že dokument nebo jeho obraz existuje v sledované, elektronické podobě. Za sledovaný el. dokument se nepovažuje žádný soubor uložený mimo systém GINIS.
   EXISTS_NO_AUTOMATIC_CONVERSION = 'existuje-neaut-konv', // Příznak že dokument má el. podobu.
   HYBRID_DOSSIER = 'hybridni-spis', // Hybridní spis bez elektronického obrazu.
   DOES_NOT_EXIST = 'neexistuje', // Příznak že k dokument neexistuje sledovaný elektronický obraz.
+}
+
+// Priznak-cj
+// Příznak o tom, že dokument má vztah z ČJ.
+export enum SslWflDocumentReferenceNumberFlag {
+  NOT_RELATED = 'neni-cj', // Příznak, že se jedná o dokument, který nemá žádný vztah k ČJ.
+  INITIATING = 'iniciacni-k-cj', // Příznak, že tento dokument je iniciačním dokumentem k ČJ. Složený tvar čísla jednací je předáván v položce 'Znacka'.
+  RESOLVING = 'vyrizujici-k-cj', // Příznak, že tento dokument je vyrizujicim dokumentem k ČJ. Složený tvar čísla jednací je předáván v položce 'Znacka'.
 }
 
 export interface GinContactParams {

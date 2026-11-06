@@ -376,7 +376,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-kolo-taxi',
     title: 'KOLO Taxi',
-    jsonVersion: '1.1.0',
+    jsonVersion: '1.2.0',
     schema: koloTaxi,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -454,7 +454,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke-osoby',
     title: 'Triedený zber papiera, plastov a skla pre právnické osoby',
-    jsonVersion: '1.3.0',
+    jsonVersion: '1.4.0',
     schema: triedenyZberPapieraPlastovASklaPrePravnickeOsoby,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -473,7 +473,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovske-spolocnosti',
     title: 'Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
-    jsonVersion: '1.2.0',
+    jsonVersion: '1.3.0',
     schema: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {

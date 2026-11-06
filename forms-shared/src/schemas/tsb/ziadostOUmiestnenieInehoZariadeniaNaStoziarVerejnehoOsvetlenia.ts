@@ -10,6 +10,7 @@ import { schema } from '../../generator/functions/schema'
 import { step } from '../../generator/functions/step'
 import { createCondition, createStringItems } from '../../generator/helpers'
 import { object } from '../../generator/object'
+import { sharedPhoneNumberField } from '../shared/fields'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
 
 export default schema(
@@ -86,11 +87,7 @@ export default schema(
             ],
           ),
           input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-          input(
-            'telefonneCislo',
-            { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-            { helptext: 'Vyplňte vo formáte +421' },
-          ),
+          sharedPhoneNumberField('telefonneCislo', true),
           datePicker(
             'planovanyDatumMontaze',
             {

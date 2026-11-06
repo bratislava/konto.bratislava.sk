@@ -6,6 +6,7 @@ import { radioGroup } from '../../../generator/functions/radioGroup'
 import { step } from '../../../generator/functions/step'
 import { createCondition } from '../../../generator/helpers'
 import { object } from '../../../generator/object'
+import { sharedPhoneNumberField } from '../../shared/fields'
 
 export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') => {
   const fieldProperty = match(type)
@@ -107,11 +108,7 @@ export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') =
         ]),
         [
           input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-          input(
-            'telefonneCislo',
-            { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-            { helptext: 'Vyplňte vo formáte +421' },
-          ),
+          sharedPhoneNumberField('telefonneCislo', true),
         ],
       ),
       conditionalFields(createCondition([[[fieldProperty], { const: 'pravnickaOsoba' }]]), [
@@ -119,11 +116,7 @@ export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') =
           input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
           input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
           input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-          input(
-            'telefonneCislo',
-            { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-            { helptext: 'Vyplňte vo formáte +421' },
-          ),
+          sharedPhoneNumberField('telefonneCislo', true),
         ]),
       ]),
     ],

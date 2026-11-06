@@ -40,7 +40,7 @@ const getFakturacia = (novyOdberatel: boolean) =>
         input(
           'emailPreFaktury',
           {
-            type: 'text',
+            type: 'email',
             title: 'E-mail pre zasielanie elektronických faktúr',
             required: true,
           },
@@ -149,7 +149,7 @@ export default schema(
           input(
             'noveTelefonneCislo',
             { type: 'ba-phone-number', title: 'Nové telefónne číslo', required: true },
-            { size: 'medium', placeholder: '+421' },
+            { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
           ),
           input('novyEmail', { title: 'Nový email', required: true, type: 'email' }, {}),
         ],

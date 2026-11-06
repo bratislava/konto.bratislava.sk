@@ -11,6 +11,7 @@ import { schema } from '../../generator/functions/schema'
 import { step } from '../../generator/functions/step'
 import { textArea } from '../../generator/functions/textArea'
 import { createCondition } from '../../generator/helpers'
+import { sharedPhoneNumberField } from '../shared/fields'
 
 export default schema({ title: 'Podnety a pochvaly občanov' }, [
   step('podnet', { title: 'Podať podnet' }, [
@@ -106,11 +107,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, [
       { type: 'text', title: 'Priezvisko', required: true },
       { selfColumn: '2/4' },
     ),
-    input(
-      'telefon',
-      { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
-      { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
-    ),
+    sharedPhoneNumberField('telefon', true),
     input('email', { title: 'Email', required: true, type: 'email' }, {}),
     textArea('sprava', { title: 'Správa', required: true }, { helptext: 'Napíšte svoje podnety' }),
     fileUploadMultiple<typeof podnetyAPochvalyObcanovFiles>(

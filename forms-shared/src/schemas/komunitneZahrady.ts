@@ -17,6 +17,7 @@ import { textArea } from '../generator/functions/textArea'
 import { createCondition, createStringItems } from '../generator/helpers'
 import { object } from '../generator/object'
 import { esbsBratislavaMestskaCastNoPrefixCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
+import { sharedPhoneNumberField } from './shared/fields'
 
 const getAdresaFields = (title: string) => [
   input(
@@ -42,11 +43,7 @@ export default schema(
       ),
       ...getAdresaFields('Adresa trvalého pobytu'),
       input('email', { title: 'Email', required: true, type: 'email' }, {}),
-      input(
-        'telefon',
-        { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
-        { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
-      ),
+      sharedPhoneNumberField('telefon', true),
     ]),
     step('obcianskeZdruzenie', { title: 'Občianske združenie' }, [
       input(

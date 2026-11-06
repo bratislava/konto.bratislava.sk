@@ -46,7 +46,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, [
       checkboxGroup(
         'druhOdpadu',
         {
-          title: 'Vyberte druh odpadu',
+          title: 'Druh odpadu',
           required: true,
           items: [
             { value: 'zmesovyKomunalnyOdpad', label: 'Zmesový komunálny odpad' },
@@ -108,7 +108,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, [
       { selfColumn: '2/4' },
     ),
     sharedPhoneNumberField('telefon', true),
-    input('email', { title: 'Email', required: true, type: 'email' }, {}),
+    input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
     textArea('sprava', { title: 'Správa', required: true }, { helptext: 'Napíšte svoje podnety' }),
     fileUploadMultiple<typeof podnetyAPochvalyObcanovFiles>(
       'prilohy',

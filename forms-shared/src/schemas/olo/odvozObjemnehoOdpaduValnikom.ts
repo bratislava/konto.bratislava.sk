@@ -59,7 +59,7 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, [
       checkbox(
         'elektronickaFaktura',
         {
-          title: 'Súhlasím so zaslaním elektronickej faktúry',
+          title: 'Súhlas so zaslaním elektronickej faktúry',
         },
         {
           helptext:

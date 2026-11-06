@@ -36,7 +36,7 @@ const ziadatelStavebnikFields = [
     'ziadatelTyp',
     {
       type: 'string',
-      title: 'Žiadate ako',
+      title: 'Žiadam ako',
       required: true,
       items: [
         { value: 'fyzickaOsoba', label: 'Fyzická osoba', isDefault: true },
@@ -66,9 +66,9 @@ const ziadatelStavebnikFields = [
   conditionalFields(createCondition([[['ziadatelTyp'], { const: 'pravnickaOsoba' }]]), [
     input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
     ...addressFields('Adresa sídla'),
-    input('kontaktnaOsoba', { type: 'text', title: 'Kontaktná osoba', required: true }, {}),
+    input('kontaktnaOsoba', { type: 'text', title: 'Meno kontaktnej osoby', required: true }, {}),
   ]),
-  input('email', { title: 'Email', required: true, type: 'email' }, {}),
+  input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
   sharedPhoneNumberField('telefon', true),
 ]
 
@@ -118,7 +118,7 @@ export default schema(
         { title: 'Priezvisko', required: true, type: 'text' },
         { selfColumn: '2/4' },
       ),
-      input('email', { title: 'Email', required: true, type: 'email' }, {}),
+      input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
       sharedPhoneNumberField('telefon', true),
       input(
         'autorizacneOsvedcenie',

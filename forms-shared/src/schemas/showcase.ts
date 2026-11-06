@@ -303,7 +303,7 @@ export default schema(
             'email',
             {
               type: 'email',
-              title: 'Email',
+              title: 'E-mail',
               required: true,
             },
             {

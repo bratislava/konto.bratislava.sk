@@ -634,7 +634,7 @@ const getOsobaFields = (
         ],
       )
       .otherwise(() => []),
-    input('email', { title: 'Email', required: true, type: 'email' }, {}),
+    input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
     sharedPhoneNumberField('telefon', true),
     ...getAdresaFields(
       match(osobaTyp)
@@ -738,7 +738,7 @@ export default schema(
           [
             fileUploadMultiple<typeof oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyFiles>(
               'splnomocnenie',
-              { title: 'Nahrajte splnomocnenie', required: true, slotId: 'splnomocnenie' },
+              { title: 'Splnomocnenie na zastupovanie', required: true, slotId: 'splnomocnenie' },
               {
                 type: 'dragAndDrop',
                 helptext:
@@ -1479,7 +1479,7 @@ export default schema(
           { variant: 'boxed', orientations: 'column' },
         ),
         conditionalFields(createCondition([[['sposobPlatby'], { const: 'sepaInkaso' }]]), [
-          input('iban', { type: 'ba-iban', title: 'Zadajte váš IBAN', required: true }, {}),
+          input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
         ]),
       ],
     ),

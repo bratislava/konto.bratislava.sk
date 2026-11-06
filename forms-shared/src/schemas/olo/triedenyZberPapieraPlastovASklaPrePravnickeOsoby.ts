@@ -27,7 +27,7 @@ const getFakturacia = (novyOdberatel: boolean) =>
       checkbox(
         'elektronickaFaktura',
         {
-          title: 'Súhlasím so zaslaním elektronickej faktúry',
+          title: 'Súhlas so zaslaním elektronickej faktúry',
         },
         {
           helptext:
@@ -155,7 +155,7 @@ export default schema(
         ],
         [
           sharedPhoneNumberField('telefon', true),
-          input('email', { title: 'Email', required: true, type: 'email' }, {}),
+          input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
         ],
       ),
       conditionalFields(
@@ -207,7 +207,7 @@ export default schema(
           select(
             'druhOdpadu',
             {
-              title: 'Vyberte druh odpadu',
+              title: 'Druh odpadu',
               required: true,
               items: createStringItems([
                 'Papier (Pravidelný odvoz odpadových obalov kat. číslo 15)',
@@ -404,7 +404,7 @@ export default schema(
         {
           type: 'boolean',
           title:
-            'Chcete dostať potvrdenie o prevzatí odpadov/obalov aj na iný email ako uvedený v kroku žiadateľ?',
+            'Chcete dostať potvrdenie o prevzatí odpadov/obalov aj na iný e-mail ako uvedený v kroku žiadateľ?',
           required: true,
           items: [
             { value: true, label: 'Áno' },
@@ -419,9 +419,9 @@ export default schema(
       conditionalFields(createCondition([[['emailPotvrdeniePouzitIny'], { const: true }]]), [
         input(
           'emailPotvrdenie',
-          { type: 'text', title: 'Email', required: true },
+          { type: 'text', title: 'E-mail', required: true },
           {
-            helptext: 'V prípade viacerých emailov ich oddeľte čiarkou',
+            helptext: 'V prípade viacerých e-mailov ich oddeľte čiarkou',
           },
         ),
       ]),

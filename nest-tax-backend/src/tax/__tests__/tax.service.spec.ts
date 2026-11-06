@@ -86,6 +86,7 @@ const createMockTaxPayer = (
     permanentResidenceCity: 'Test City',
     lastUpdatedAtDZN: new Date('2025-01-01T10:00:00.000Z'),
     lastUpdatedAtKO: new Date('2025-01-01T10:00:00.000Z'),
+    cityAccountUserMissingSince: null,
     ...overrides,
   }
 }

@@ -1,11 +1,16 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { Mocked } from 'vitest'
 
+import { cognitoUserDataFactory } from '../../../../__tests__/factories/cognitoUserData.factory'
+import { userFactory } from '../../../../__tests__/factories/user.factory'
 import { expectObjectContaining } from '../../../../__tests__/matchers'
 import { MagproxyService } from '../../../../magproxy/magproxy.service'
 import { PhysicalEntityService } from '../../../../physical-entity/physical-entity.service'
 import { RfoIdentityListElement } from '../../../../rfo-by-birthnumber/dtos/rfoSchema'
+import { CognitoUserAccountTypesEnum } from '../../../../utils/global-dtos/cognito.dto'
+import { IdentityCardVerificationRequest } from '../../../dtos/identity-card-verification-queue.dto'
 import { VerificationErrorsEnum } from '../../../verification.errors.enum'
 import { VerificationSubservice } from '../verification.subservice'
 import { VerificationDataSubservice } from '../verification-data.subservice'
@@ -14,6 +19,9 @@ const IDENTITY_CARD = 'Občiansky preukaz'
 
 describe('VerificationSubservice', () => {
   let service: VerificationSubservice
+  let magproxyService: Mocked<MagproxyService>
+  let verificationDataSubservice: Mocked<VerificationDataSubservice>
+  let physicalEntityService: Mocked<PhysicalEntityService>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -34,6 +42,9 @@ describe('VerificationSubservice', () => {
     }).compile()
 
     service = module.get<VerificationSubservice>(VerificationSubservice)
+    magproxyService = module.get(MagproxyService)
+    verificationDataSubservice = module.get(VerificationDataSubservice)
+    physicalEntityService = module.get(PhysicalEntityService)
   })
 
   it('should be defined', () => {
@@ -328,6 +339,99 @@ describe('VerificationSubservice', () => {
       }
 
       expect(service['validatePersonName'](rfoData, 'Ján', 'Novák')).toBe(false)
+    })
+  })
+
+  describe('verifyIdentityCard', () => {
+    const IDENTITY_CARD_NUMBER = 'AB123456'
+    const BIRTH_NUMBER = '8808080006'
+    const dbUser = userFactory()
+
+    const request: IdentityCardVerificationRequest = {
+      user: cognitoUserDataFactory({ given_name: 'Ján', family_name: 'Novák' }),
+      data: { birthNumber: BIRTH_NUMBER, identityCard: IDENTITY_CARD_NUMBER, turnstileToken: '' },
+      type: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY,
+    }
+
+    const matchingRfo: RfoIdentityListElement = {
+      rodneCislo: '880808/0006',
+      ifo: 'ifo-id',
+      menaOsoby: [{ meno: 'Ján' }],
+      priezviskaOsoby: [{ meno: 'Novák' }],
+      doklady: [
+        {
+          druhDokladuKod: 111,
+          druhDokladu: IDENTITY_CARD,
+          jednoznacnyIdentifikator: IDENTITY_CARD_NUMBER,
+          udrzitela: true,
+        },
+      ],
+    }
+
+    beforeEach(() => {
+      verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber.mockResolvedValue({
+        success: true,
+      })
+      verificationDataSubservice.findUserByEmailOrExternalId.mockResolvedValue(dbUser)
+    })
+
+    it('should save the user and link the physical entity when matched in the RFO list', async () => {
+      magproxyService.rfoBirthNumberList.mockResolvedValue({ success: true, data: [matchingRfo] })
+
+      const result = await service.verifyIdentityCard(request)
+
+      expect(result).toEqual({ success: true })
+      expect(magproxyService.rfoBirthNumberDcom).not.toHaveBeenCalled()
+      expect(verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber).toHaveBeenCalledWith(
+        request.user,
+        'ifo-id',
+        BIRTH_NUMBER,
+        0
+      )
+      expect(physicalEntityService.linkToUserIdByBirthnumber).toHaveBeenCalledWith(
+        dbUser.id,
+        BIRTH_NUMBER
+      )
+    })
+
+    it('should save the user and link the physical entity when matched via DCOM', async () => {
+      // The RFO list knows the birth number but not the identity card, so DCOM is used.
+      magproxyService.rfoBirthNumberList.mockResolvedValue({
+        success: true,
+        data: [{ ...matchingRfo, doklady: [] }],
+      })
+      magproxyService.rfoBirthNumberDcom.mockResolvedValue({ success: true, data: matchingRfo })
+
+      const result = await service.verifyIdentityCard(request)
+
+      expect(result).toEqual({ success: true })
+      expect(magproxyService.rfoBirthNumberDcom).toHaveBeenCalled()
+      expect(verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber).toHaveBeenCalledWith(
+        request.user,
+        'ifo-id',
+        BIRTH_NUMBER,
+        1
+      )
+      expect(physicalEntityService.linkToUserIdByBirthnumber).toHaveBeenCalledWith(
+        dbUser.id,
+        BIRTH_NUMBER
+      )
+    })
+
+    it('should not link the physical entity when saving the user fails', async () => {
+      magproxyService.rfoBirthNumberList.mockResolvedValue({ success: true, data: [matchingRfo] })
+      verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber.mockResolvedValue({
+        success: false,
+        reason: VerificationErrorsEnum.BIRTHNUMBER_IFO_DUPLICITY,
+      })
+
+      const result = await service.verifyIdentityCard(request)
+
+      expect(result).toEqual({
+        success: false,
+        reason: VerificationErrorsEnum.BIRTHNUMBER_IFO_DUPLICITY,
+      })
+      expect(physicalEntityService.linkToUserIdByBirthnumber).not.toHaveBeenCalled()
     })
   })
 })

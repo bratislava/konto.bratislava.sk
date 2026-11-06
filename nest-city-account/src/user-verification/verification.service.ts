@@ -31,10 +31,9 @@ import { rabbitmqRequeueDelay } from '../utils/handlers/rabbitmq.handlers'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { UserIdentitySubservice } from '../utils/subservices/user-identity.subservice'
 import { RABBIT_MQ } from './constants'
-import { RabbitMessageDto } from './dtos/rabbit.dto'
+import { IdentityCardVerificationQueueMessage } from './dtos/identity-card-verification-queue.dto'
 import {
   RequestBodyVerifyIdentityCardDto,
-  RequestBodyVerifyWithRpoDto,
   ResponseVerificationDto,
   ResponseVerificationIdentityCardMessageEnum,
   ResponseVerificationIdentityCardToQueueDto,
@@ -74,9 +73,18 @@ export class VerificationService {
 
   async sendToQueue(
     user: CognitoGetUserData,
-    data: RequestBodyVerifyIdentityCardDto | RequestBodyVerifyWithRpoDto,
-    type: CognitoUserAccountTypesEnum
+    data: RequestBodyVerifyIdentityCardDto
   ): Promise<ResponseVerificationIdentityCardToQueueDto> {
+    if (
+      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] !== CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
+    ) {
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: VerificationErrorsEnum.IDENTITY_CARD_VERIFICATION_NOT_ALLOWED,
+        message: VerificationErrorsResponseEnum.IDENTITY_CARD_VERIFICATION_NOT_ALLOWED,
+        console: { userSub: user.sub, accountType: user[CognitoUserAttributesEnum.ACCOUNT_TYPE] },
+      })
+    }
+
     if (
       user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.EID ||
       user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.IDENTITY_CARD
@@ -91,7 +99,7 @@ export class VerificationService {
       await this.userTierService.changeTier(
         user.idUser,
         CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD,
-        user['custom:account_type']
+        CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
       )
       await this.bloomreachOutboxService.trackCustomer(user.idUser)
     } catch (error) {
@@ -100,7 +108,6 @@ export class VerificationService {
         message: SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
         console: {
           userSub: user.sub,
-          accountType: type,
           tier: user[CognitoUserAttributesEnum.TIER],
           targetTier: CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD,
         },
@@ -111,15 +118,15 @@ export class VerificationService {
     try {
       await this.verificationDataSubservice.createVerificationUserInQueue(user)
       await this.amqpConnection.publish(RABBIT_MQ.EXCHANGE, RABBIT_MQ.ROUTING_KEY, {
-        msg: { data, user, type },
+        msg: { data, user, type: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY },
       })
 
-      await this.addEncryptedVerificationDataToDatabase(user, data, type)
+      await this.addEncryptedIdentityCardToDatabase(user, data)
     } catch (error) {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: SendToQueueErrorsEnum.RABBIT_PUSH_DATA_ERROR,
         message: SendToQueueErrorsResponseEnum.RABBIT_PUSH_DATA_ERROR,
-        console: { userSub: user.sub, accountType: type },
+        console: { userSub: user.sub },
         error,
       })
     }
@@ -138,11 +145,9 @@ export class VerificationService {
     errorHandler: async (channel: Channel, message: ConsumeMessage) => {
       channel.reject(message, false)
       let userSub: string | undefined
-      let accountType: CognitoUserAccountTypesEnum | undefined
       try {
-        const data = JSON.parse(message.content.toString()) as RabbitMessageDto
+        const data = JSON.parse(message.content.toString()) as IdentityCardVerificationQueueMessage
         userSub = data.msg.user.sub
-        accountType = data.msg.type
         const errorFactoryService = new ErrorFactoryService({ alertReporting })
         const prismaService = new PrismaService(
           getBaConfigInstance(),
@@ -153,7 +158,7 @@ export class VerificationService {
         await userTierService.changeTier(
           data.msg.user.idUser,
           CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD,
-          data.msg.type
+          CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
         )
 
         const bloomreachContactDatabaseService = new BloomreachContactDatabaseService(
@@ -189,7 +194,6 @@ export class VerificationService {
           'RabbitMQ error handler - catch cognito/parser error',
           {
             userSub,
-            accountType,
             redelivered: message.fields.redelivered,
             deliveryTag: message.fields.deliveryTag,
           },
@@ -199,31 +203,28 @@ export class VerificationService {
     },
   })
   public async onQueueConsumption(_: unknown, amqpMessage: ConsumeMessage) {
-    const data = JSON.parse(amqpMessage.content.toString()) as RabbitMessageDto
+    const data = JSON.parse(amqpMessage.content.toString()) as IdentityCardVerificationQueueMessage
+
+    // TODO: Remove once the ico-rpo removal is fully deployed, together with `type` in IdentityCardVerificationRequest.
+    // Messages from the removed ico-rpo verification can still arrive from pods running older code
+    // or from delayed requeues. They must not go through the physical entity verification.
+    if (data.msg.type !== CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
+      this.logger.error('Dropping verification message of removed ico-rpo verification', {
+        userSub: data.msg.user.sub,
+        accountType: data.msg.type,
+      })
+      await this.userTierService.changeTier(
+        data.msg.user.idUser,
+        CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD,
+        data.msg.type
+      )
+      await this.bloomreachOutboxService.trackCustomer(data.msg.user.idUser)
+      return new Nack()
+    }
+
     let verification: VerificationReturnType
     try {
-      switch (data.msg.type) {
-        case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
-          const body = data.msg.data
-          verification = await this.verificationSubservice.verifyIdentityCard(data.msg.user, body)
-          break
-        }
-        case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
-        case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
-          const body = data.msg.data as RequestBodyVerifyWithRpoDto
-          verification = await this.verificationSubservice.verifyIcoIdentityCard(
-            data.msg.user,
-            body
-          )
-          break
-        }
-        default:
-          this.logger.error('Not exists type of RPO or RFO verification', {
-            userSub: data.msg.user.sub,
-            accountType: data.msg.type,
-          })
-          return new Nack()
-      }
+      verification = await this.verificationSubservice.verifyIdentityCard(data.msg)
     } catch (error) {
       // All errors that are thrown should be retryable. Otherwise, return {success: false}.
       return await this.handleVerificationError({ error, data })
@@ -235,11 +236,11 @@ export class VerificationService {
     return await this.handleVerificationFailed(data, verification)
   }
 
-  private async handleVerificationSuccess(data: RabbitMessageDto) {
+  private async handleVerificationSuccess(data: IdentityCardVerificationQueueMessage) {
     await this.userTierService.changeTier(
       data.msg.user.idUser,
       CognitoUserAttributesTierEnum.IDENTITY_CARD,
-      data.msg.type
+      CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
     )
     await this.bloomreachOutboxService.trackCustomer(data.msg.user.idUser)
     const newUserData = await this.cognitoSubservice.getDataFromCognito(data.msg.user.idUser)
@@ -249,7 +250,6 @@ export class VerificationService {
     ) {
       this.logger.error('COGNITO_ERROR - WRITE TIER IDENTITY_CARD', {
         userSub: data.msg.user.sub,
-        accountType: data.msg.type,
         oldTier: data.msg.user[CognitoUserAttributesEnum.TIER],
         newTier: newUserData[CognitoUserAttributesEnum.TIER],
       })
@@ -270,7 +270,6 @@ export class VerificationService {
       if (!email) {
         this.logger.error("Error - no email sent, couldn't find email in user object", {
           userSub: data.msg.user.sub,
-          accountType: data.msg.type,
           tier: newUserData[CognitoUserAttributesEnum.TIER],
         })
       } else {
@@ -290,7 +289,6 @@ export class VerificationService {
         'Error while sending verification success email: ',
         {
           userSub: data.msg.user.sub,
-          accountType: data.msg.type,
           tier: newUserData[CognitoUserAttributesEnum.TIER],
         },
         error
@@ -299,20 +297,19 @@ export class VerificationService {
     this.logger.log({
       type: 'ALL GOOD - 200',
       userSub: data.msg.user.sub,
-      accountType: data.msg.type,
       cognitoData: newUserData[CognitoUserAttributesEnum.TIER],
     })
     return new Nack()
   }
 
   private async handleVerificationFailed(
-    data: RabbitMessageDto,
+    data: IdentityCardVerificationQueueMessage,
     verification: { success: false; reason: CustomErrorEnums }
   ) {
     await this.userTierService.changeTier(
       data.msg.user.idUser,
       CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD,
-      data.msg.type
+      CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
     )
     await this.bloomreachOutboxService.trackCustomer(data.msg.user.idUser)
     const newUserData = await this.cognitoSubservice.getDataFromCognito(data.msg.user.idUser)
@@ -322,7 +319,6 @@ export class VerificationService {
     ) {
       this.logger.error('COGNITO_ERROR - WRITE TIER NOT_VERIFIED', {
         userSub: data.msg.user.sub,
-        accountType: data.msg.type,
         oldTier: data.msg.user[CognitoUserAttributesEnum.TIER],
         newTier: newUserData[CognitoUserAttributesEnum.TIER],
         reason: verification.reason,
@@ -344,7 +340,6 @@ export class VerificationService {
       if (!email) {
         this.logger.error("Error - no email sent, couldn't find email in user object", {
           userSub: data.msg.user.sub,
-          accountType: data.msg.type,
           tier: newUserData[CognitoUserAttributesEnum.TIER],
         })
       } else {
@@ -365,7 +360,6 @@ export class VerificationService {
         'Error while sending verification failed email: ',
         {
           userSub: data.msg.user.sub,
-          accountType: data.msg.type,
           tier: newUserData[CognitoUserAttributesEnum.TIER],
           reason: verification.reason,
         },
@@ -375,7 +369,6 @@ export class VerificationService {
     this.logger.error({
       type: 'Not Verified without error - 200',
       userSub: data.msg.user.sub,
-      accountType: data.msg.type,
       reason: verification.reason,
       cognitoData: newUserData[CognitoUserAttributesEnum.TIER],
     })
@@ -383,7 +376,7 @@ export class VerificationService {
   }
 
   private async handleVerificationError(options: {
-    data: RabbitMessageDto
+    data: IdentityCardVerificationQueueMessage
     message?: string
     error?: unknown
     reason?: CustomErrorEnums
@@ -394,7 +387,6 @@ export class VerificationService {
       {
         message: options.message,
         reason: options.reason,
-        type: options.data.msg.type,
         userSub: options.data.msg.user.sub,
         // tier when the message was queued, i.e. before QUEUE_IDENTITY_CARD was set
         tierBeforeQueue: options.data.msg.user[CognitoUserAttributesEnum.TIER],
@@ -555,24 +547,6 @@ export class VerificationService {
     }
   }
 
-  private async addEncryptedVerificationDataToDatabase(
-    user: CognitoGetUserData,
-    data: RequestBodyVerifyIdentityCardDto | RequestBodyVerifyWithRpoDto,
-    type: CognitoUserAccountTypesEnum
-  ): Promise<void> {
-    switch (type) {
-      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY:
-        await this.addEncryptedIdentityCardToDatabase(user, data)
-        break
-      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
-      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
-        await this.addEncryptedIdentityCardIcoToDatabase(user, data as RequestBodyVerifyWithRpoDto)
-        break
-      default:
-        break
-    }
-  }
-
   private async addEncryptedIdentityCardToDatabase(
     user: CognitoGetUserData,
     data: RequestBodyVerifyIdentityCardDto
@@ -599,40 +573,6 @@ export class VerificationService {
         userId: userFromDb.id,
         birthNumber: birthNumberEncrypted,
         idCard: idCardEncrypted,
-        givenName: givenNameEncrypted,
-        familyName: familyNameEncrypted,
-      },
-    })
-  }
-
-  private async addEncryptedIdentityCardIcoToDatabase(
-    user: CognitoGetUserData,
-    data: RequestBodyVerifyWithRpoDto
-  ): Promise<void> {
-    const legalPerson = await this.prisma.legalPerson.findUnique({
-      where: {
-        externalId: user.sub,
-      },
-    })
-
-    if (legalPerson === null) {
-      return // We do not want to throw any error here!
-    }
-
-    const birthNumberEncrypted = encryptData(data.birthNumber)
-    const idCardEncrypted = encryptData(data.identityCard)
-    const icoEncrypted = encryptData(data.ico)
-
-    // TODO this should not be undefined at this point
-    const givenNameEncrypted = encryptData(user.given_name ?? NAME_NOT_SET)
-    const familyNameEncrypted = encryptData(user.family_name ?? NAME_NOT_SET)
-
-    await this.prisma.legalPersonIcoIdCardVerify.create({
-      data: {
-        legalPersonId: legalPerson.id,
-        birthNumber: birthNumberEncrypted,
-        idCard: idCardEncrypted,
-        ico: icoEncrypted,
         givenName: givenNameEncrypted,
         familyName: familyNameEncrypted,
       },
@@ -740,15 +680,6 @@ export class VerificationService {
   }
 
   async getVerificationDataForUser(email: string): Promise<VerificationDataForUserResponseDto> {
-    const legalPerson = await this.prisma.legalPerson.findUnique({
-      where: {
-        email,
-      },
-    })
-    if (legalPerson) {
-      return this.getVerificationDataForLegalPerson(legalPerson)
-    }
-
     const user = await this.prisma.user.findUnique({
       where: {
         email,
@@ -782,35 +713,6 @@ export class VerificationService {
     return {
       externalId: user.externalId,
       email,
-      verificationDataLastMonth: verifyDataDecrypted,
-    }
-  }
-
-  private async getVerificationDataForLegalPerson(
-    legalPerson: LegalPerson
-  ): Promise<VerificationDataForUserResponseDto> {
-    const verifyData = await this.prisma.legalPersonIcoIdCardVerify.findMany({
-      where: {
-        legalPersonId: legalPerson.id,
-      },
-      orderBy: {
-        verifyStart: 'desc',
-      },
-    })
-    const verifyDataDecrypted = verifyData.map((record) => ({
-      ...record,
-      idCard: decryptData(record.idCard),
-      birthNumber: decryptData(record.birthNumber),
-      ico: decryptData(record.ico),
-      givenName: decryptName(record.givenName),
-      familyName: decryptName(record.familyName),
-      userId: record.legalPersonId,
-      legalPersonId: undefined,
-    }))
-
-    return {
-      externalId: legalPerson.externalId,
-      email: legalPerson.email,
       verificationDataLastMonth: verifyDataDecrypted,
     }
   }

@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
-import { IsBirthNumber, IsIco, IsIdentityCard } from '../../utils/decorators/validation.decorators'
+import { IsBirthNumber, IsIdentityCard } from '../../utils/decorators/validation.decorators'
 import { VerificationErrorsEnum } from '../verification.errors.enum'
 
 export enum ResponseVerificationIdentityCardMessageEnum {
@@ -162,39 +162,4 @@ export class ResponseCustomErrorVerificationEidDto {
     enumName: 'VerificationErrorsEnum',
   })
   errorName!: VerificationErrorsEnum
-}
-
-export class RequestBodyVerifyWithRpoDto {
-  @ApiProperty({
-    description: 'ico',
-    example: '00000000',
-  })
-  @IsIco({
-    message: 'Text must be Ico of length 6 to 8 character. Only numeric characters allowed.',
-  })
-  ico!: string
-
-  @ApiProperty({
-    description: "Birth number of legal entity's executive",
-    example: '0000000011',
-  })
-  @IsBirthNumber({
-    message: 'Text must be birthnumber without slash (9 or 10 characters) and Only numbers ',
-  })
-  birthNumber!: string
-
-  @ApiProperty({
-    description: "Identity card of legal entity's executive",
-    example: 'AB123456',
-  })
-  @IsIdentityCard({
-    message: 'Text input must be a valid identity card.',
-  })
-  identityCard!: string
-
-  @ApiProperty({
-    description: 'Token returned by turnstile captcha',
-    example: '',
-  })
-  turnstileToken!: string
 }

@@ -86,13 +86,13 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, [
       checkbox(
         'elektronickaFaktura',
         {
-          title: 'Zasielanie faktúry elektronicky',
+          title: 'Súhlas so zaslaním elektronickej faktúry',
           required: true,
         },
         {
           helptext:
             'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.10 VOP.',
-          checkboxLabel: 'Súhlasím so zaslaním elektronickej fakúry',
+          checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
           variant: 'boxed',
         },
       ),

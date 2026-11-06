@@ -28,7 +28,7 @@ export default schema(
         input(
           'email',
           { title: 'E-mail', required: true, type: 'email' },
-          { helptext: 'Faktúra vám bude zaslaná prostredníctvom tohto emailu' },
+          { helptext: 'Faktúra vám bude zaslaná prostredníctvom tohto e-mailu' },
         ),
       ]),
       object('udajeObjednavky', { objectDisplay: 'boxed', title: 'Údaje objednávky' }, [

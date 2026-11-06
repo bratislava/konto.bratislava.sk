@@ -34,7 +34,7 @@ export default schema(
           'email',
           { title: 'E-mail', required: true, type: 'email' },
           {
-            helptext: 'Faktúra vám bude zaslaná prostredníctvom tohto emailu',
+            helptext: 'Faktúra vám bude zaslaná prostredníctvom tohto e-mailu',
           },
         ),
       ]),

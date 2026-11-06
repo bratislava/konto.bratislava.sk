@@ -102,7 +102,7 @@ export default schema(
             checkbox(
               'elektronickaFaktura',
               {
-                title: 'Zasielanie faktúry elektronicky',
+                title: 'Súhlas so zaslaním elektronickej faktúry',
               },
               {
                 helptext:
@@ -144,7 +144,7 @@ export default schema(
           select(
             'druhOdpadu',
             {
-              title: 'Vyberte druh odpadu',
+              title: 'Druh odpadu',
               required: true,
               items: createStringItems([
                 'Zmesový komunálny odpad',

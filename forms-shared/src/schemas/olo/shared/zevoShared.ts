@@ -273,7 +273,7 @@ export const getZevoSchema = (type: ZevoType) => [
             checkbox(
               'elektronickaFaktura',
               {
-                title: 'Súhlasím so zaslaním elektronickej faktúry',
+                title: 'Súhlas so zaslaním elektronickej faktúry',
               },
               {
                 helptext:
@@ -1024,7 +1024,7 @@ export const getZevoSchema = (type: ZevoType) => [
           'predpokladaneMnozstvo',
           {
             type: 'integer',
-            title: 'Prosím uveďte predpokladané množstvo odpadu za obdobie / rok (kg)',
+            title: 'Predpokladané množstvo odpadu za obdobie / rok (kg)',
             required: true,
             minimum: 0,
           },

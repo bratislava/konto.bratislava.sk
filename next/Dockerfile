@@ -27,18 +27,15 @@ ENV TURBO_API=$TURBO_API
 ARG TURBO_TEAM
 ENV TURBO_TEAM=$TURBO_TEAM
 
-ARG TURBO_TOKEN
-ENV TURBO_TOKEN=$TURBO_TOKEN
-
 FROM builder-deps AS lint
-RUN pnpm turbo run lint --filter=city-account-next
+RUN --mount=type=secret,id=turbo_token,env=TURBO_TOKEN pnpm turbo run lint --filter=city-account-next
 
 FROM builder-deps AS builder
 ARG NEXT_BUILD_ENV
 ENV NEXT_BUILD_ENV=$NEXT_BUILD_ENV
 RUN cp "next/.env.ci-build.$NEXT_BUILD_ENV" next/.env.production.local
 
-RUN pnpm turbo run build --filter=city-account-next
+RUN --mount=type=secret,id=turbo_token,env=TURBO_TOKEN pnpm turbo run build --filter=city-account-next
 
 FROM node:${NODE_VERSION}-alpine AS runner
 # Based on https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile

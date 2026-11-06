@@ -29,22 +29,19 @@ ENV TURBO_API=$TURBO_API
 ARG TURBO_TEAM
 ENV TURBO_TEAM=$TURBO_TEAM
 
-ARG TURBO_TOKEN
-ENV TURBO_TOKEN=$TURBO_TOKEN
-
-RUN pnpm turbo run build --filter=nest-city-account^... --filter=!nest-city-account
+RUN --mount=type=secret,id=turbo_token,env=TURBO_TOKEN pnpm turbo run build --filter=nest-city-account^... --filter=!nest-city-account
 
 FROM builder-deps AS builder
-RUN pnpm turbo run build --filter=nest-city-account
+RUN --mount=type=secret,id=turbo_token,env=TURBO_TOKEN pnpm turbo run build --filter=nest-city-account
 
 FROM builder-deps AS test
-RUN pnpm turbo run test --filter=nest-city-account
+RUN --mount=type=secret,id=turbo_token,env=TURBO_TOKEN pnpm turbo run test --filter=nest-city-account
 
 FROM builder-deps AS typecheck
-RUN pnpm turbo run typecheck --filter=nest-city-account
+RUN --mount=type=secret,id=turbo_token,env=TURBO_TOKEN pnpm turbo run typecheck --filter=nest-city-account
 
 FROM builder AS lint
-RUN pnpm turbo run lint --filter=nest-city-account
+RUN --mount=type=secret,id=turbo_token,env=TURBO_TOKEN pnpm turbo run lint --filter=nest-city-account
 
 FROM base AS prod-deps
 COPY --from=prepare /app/out/json/ .

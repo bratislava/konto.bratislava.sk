@@ -107,6 +107,8 @@ jobs:
           CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).main.to }}
           TAGS: ${{ env.IMAGE_TAG }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
+          # The in-job cache server has no authentication, so any token works.
+          TURBO_TOKEN: local
           NEXT_BUILD_ENV: e2e
 
       - name: Wait for pnpm and Node.js

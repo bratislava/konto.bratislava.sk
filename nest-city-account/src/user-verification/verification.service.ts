@@ -204,6 +204,24 @@ export class VerificationService {
   })
   public async onQueueConsumption(_: unknown, amqpMessage: ConsumeMessage) {
     const data = JSON.parse(amqpMessage.content.toString()) as IdentityCardVerificationQueueMessage
+
+    // TODO: Remove once the ico-rpo removal is fully deployed, together with `type` in IdentityCardVerificationRequest.
+    // Messages from the removed ico-rpo verification can still arrive from pods running older code
+    // or from delayed requeues. They must not go through the physical entity verification.
+    if (data.msg.type !== CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
+      this.logger.error('Dropping verification message of removed ico-rpo verification', {
+        userSub: data.msg.user.sub,
+        accountType: data.msg.type,
+      })
+      await this.userTierService.changeTier(
+        data.msg.user.idUser,
+        CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD,
+        data.msg.type
+      )
+      await this.bloomreachOutboxService.trackCustomer(data.msg.user.idUser)
+      return new Nack()
+    }
+
     let verification: VerificationReturnType
     try {
       verification = await this.verificationSubservice.verifyIdentityCard(data.msg)

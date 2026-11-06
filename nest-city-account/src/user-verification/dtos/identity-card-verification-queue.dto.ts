@@ -7,9 +7,10 @@ import { RequestBodyVerifyIdentityCardDto } from './requests.verification.dto'
 export interface IdentityCardVerificationRequest {
   user: CognitoGetUserData
   data: RequestBodyVerifyIdentityCardDto
-  // TODO: Not read since the removal of ico-rpo verification, only physical entities are queued.
+  // TODO: Only physical entities are queued since the removal of ico-rpo verification.
   // Still sent, because pods running older code Nack messages without it during the deploy.
-  // Remove once the ico-rpo removal is fully deployed.
+  // Read only by the guard in VerificationService.onQueueConsumption dropping leftover ico-rpo messages.
+  // Remove together with that guard once the ico-rpo removal is fully deployed.
   type: CognitoUserAccountTypesEnum
 }
 

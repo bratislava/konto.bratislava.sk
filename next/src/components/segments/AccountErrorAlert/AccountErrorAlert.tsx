@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import Markdown from '@/src/components/formatting/Markdown'
 import Alert from '@/src/components/simple-components/Alert'
 import { GENERIC_ERROR_MESSAGE, isError, isErrorWithoutName } from '@/src/frontend/utils/errors'
-import logger from '@/src/frontend/utils/logger'
+import logger, { stringifyForLog } from '@/src/frontend/utils/logger'
 
 interface Props {
   error?: Error | null
@@ -24,7 +24,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
     if (!isError(error)) {
       logger.error(
         `${GENERIC_ERROR_MESSAGE} - something not error-like passed into AccountErrorAlert: `,
-        JSON.stringify(error),
+        stringifyForLog(error),
       )
 
       return t('AccountErrorAlert.errors.unknown')
@@ -34,7 +34,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
       logger.error(
         `${GENERIC_ERROR_MESSAGE} - unknown error without error code in AccountErrorAlert: `,
         error.message,
-        JSON.stringify(error),
+        stringifyForLog(error),
       )
 
       return t('AccountErrorAlert.errors.unknown')

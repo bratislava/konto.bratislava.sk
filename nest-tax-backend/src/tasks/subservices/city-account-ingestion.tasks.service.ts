@@ -47,6 +47,8 @@ export default class CityAccountIngestionTasksService {
         skipDuplicates: true,
       })
 
+    // Some tax payers skipped as duplicates above may have `cityAccountUserMissingSince` set, because their user
+    // was missing from city account at some point (e.g. deactivated and later reverified). Their user is back, so reset it.
     await this.prismaService.taxPayer.updateMany({
       where: {
         birthNumber: { in: data.birthNumbers },
@@ -82,9 +84,8 @@ export default class CityAccountIngestionTasksService {
     }
   }
 
-  async recheckCityAccountUserMissing() {
+  private async *taxPayersWithCityAccountUserMissingBatches() {
     let lastTaxPayerId = 0
-    let unmarkedCount = 0
     let taxPayers: { id: number; birthNumber: string }[]
 
     do {
@@ -99,20 +100,25 @@ export default class CityAccountIngestionTasksService {
         take: this.RECHECK_USER_MISSING_BATCH,
       })
       if (taxPayers.length === 0) {
-        break
+        return
       }
+      yield taxPayers
       lastTaxPayerId = taxPayers[taxPayers.length - 1].id
+    } while (taxPayers.length === this.RECHECK_USER_MISSING_BATCH)
+  }
 
+  async recheckCityAccountUserMissing() {
+    let unmarkedCount = 0
+
+    for await (const taxPayers of this.taxPayersWithCityAccountUserMissingBatches()) {
       const birthNumbers = taxPayers.map((taxPayer) => taxPayer.birthNumber)
       const userData =
-        // eslint-disable-next-line no-await-in-loop -- batches are processed sequentially to keep the load on city account steady
         await this.cityAccountSubservice.getUserDataAdminBatch(birthNumbers)
       const birthNumbersBackInCityAccount = birthNumbers.filter(
         (birthNumber) => userData[birthNumber],
       )
 
       if (birthNumbersBackInCityAccount.length > 0) {
-        // eslint-disable-next-line no-await-in-loop -- batches are processed sequentially to keep the load on city account steady
         const { count } = await this.prismaService.taxPayer.updateMany({
           where: {
             birthNumber: { in: birthNumbersBackInCityAccount },
@@ -122,7 +128,7 @@ export default class CityAccountIngestionTasksService {
         })
         unmarkedCount += count
       }
-    } while (taxPayers.length === this.RECHECK_USER_MISSING_BATCH)
+    }
 
     this.logger.log(
       `Unmarked ${unmarkedCount} tax payers whose user is back in city account.`,

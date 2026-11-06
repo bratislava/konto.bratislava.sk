@@ -13,14 +13,6 @@ interface Props {
   solid?: boolean
 }
 
-const stringifyForLog = (value: unknown) => {
-  try {
-    return JSON.stringify(value)
-  } catch (error) {
-    return `<value of type ${typeof value} is not serializable: ${error instanceof Error ? error.message : 'unknown reason'}>`
-  }
-}
-
 const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
   const { t } = useTranslation()
 

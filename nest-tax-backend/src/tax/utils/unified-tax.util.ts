@@ -1,4 +1,5 @@
 import { ErrorFactoryService } from '@bratislava/log-nest'
+import { easter } from 'date-easter'
 
 import {
   DeliveryMethodNamed,
@@ -43,6 +44,15 @@ const INSTALLMENT_TO_QR_NOTE: Record<number, QrPaymentNoteEnum> = {
   4: QrPaymentNoteEnum.QR_fourthInstallment,
 }
 
+const getEasterSunday = (year: number): Temporal.PlainDate =>
+  Temporal.PlainDate.from(easter(year))
+
+const getGoodFriday = (year: number): Temporal.PlainDate =>
+  getEasterSunday(year).subtract({ days: 2 })
+
+const getEasterMonday = (year: number): Temporal.PlainDate =>
+  getEasterSunday(year).add({ days: 1 })
+
 export const stateHolidays: Partial<
   Record<number, { dates: Temporal.PlainDate[] }>
 > = {
@@ -50,8 +60,8 @@ export const stateHolidays: Partial<
     dates: [
       Temporal.PlainDate.from('2020-01-01'),
       Temporal.PlainDate.from('2020-01-06'),
-      Temporal.PlainDate.from('2020-04-10'),
-      Temporal.PlainDate.from('2020-04-13'),
+      getGoodFriday(2020),
+      getEasterMonday(2020),
       Temporal.PlainDate.from('2020-05-01'),
       Temporal.PlainDate.from('2020-05-08'),
       Temporal.PlainDate.from('2020-07-05'),
@@ -69,8 +79,8 @@ export const stateHolidays: Partial<
     dates: [
       Temporal.PlainDate.from('2021-01-01'),
       Temporal.PlainDate.from('2021-01-06'),
-      Temporal.PlainDate.from('2021-04-02'),
-      Temporal.PlainDate.from('2021-04-05'),
+      getGoodFriday(2021),
+      getEasterMonday(2021),
       Temporal.PlainDate.from('2021-05-01'),
       Temporal.PlainDate.from('2021-05-08'),
       Temporal.PlainDate.from('2021-07-05'),
@@ -88,8 +98,8 @@ export const stateHolidays: Partial<
     dates: [
       Temporal.PlainDate.from('2022-01-01'),
       Temporal.PlainDate.from('2022-01-06'),
-      Temporal.PlainDate.from('2022-04-15'),
-      Temporal.PlainDate.from('2022-04-18'),
+      getGoodFriday(2022),
+      getEasterMonday(2022),
       Temporal.PlainDate.from('2022-05-01'),
       Temporal.PlainDate.from('2022-05-08'),
       Temporal.PlainDate.from('2022-07-05'),
@@ -107,8 +117,8 @@ export const stateHolidays: Partial<
     dates: [
       Temporal.PlainDate.from('2023-01-01'),
       Temporal.PlainDate.from('2023-01-06'),
-      Temporal.PlainDate.from('2023-04-07'),
-      Temporal.PlainDate.from('2023-04-10'),
+      getGoodFriday(2023),
+      getEasterMonday(2023),
       Temporal.PlainDate.from('2023-05-01'),
       Temporal.PlainDate.from('2023-05-08'),
       Temporal.PlainDate.from('2023-07-05'),
@@ -126,8 +136,8 @@ export const stateHolidays: Partial<
     dates: [
       Temporal.PlainDate.from('2024-01-01'),
       Temporal.PlainDate.from('2024-01-06'),
-      Temporal.PlainDate.from('2024-03-29'),
-      Temporal.PlainDate.from('2024-04-01'),
+      getGoodFriday(2024),
+      getEasterMonday(2024),
       Temporal.PlainDate.from('2024-05-01'),
       Temporal.PlainDate.from('2024-05-08'),
       Temporal.PlainDate.from('2024-07-05'),
@@ -144,8 +154,8 @@ export const stateHolidays: Partial<
     dates: [
       Temporal.PlainDate.from('2025-01-01'),
       Temporal.PlainDate.from('2025-01-06'),
-      Temporal.PlainDate.from('2025-04-18'),
-      Temporal.PlainDate.from('2025-04-21'),
+      getGoodFriday(2025),
+      getEasterMonday(2025),
       Temporal.PlainDate.from('2025-05-01'),
       Temporal.PlainDate.from('2025-05-08'),
       Temporal.PlainDate.from('2025-07-05'),
@@ -162,8 +172,8 @@ export const stateHolidays: Partial<
     dates: [
       Temporal.PlainDate.from('2026-01-01'),
       Temporal.PlainDate.from('2026-01-06'),
-      Temporal.PlainDate.from('2026-04-02'),
-      Temporal.PlainDate.from('2026-04-06'),
+      getGoodFriday(2026),
+      getEasterMonday(2026),
       Temporal.PlainDate.from('2026-05-01'),
       Temporal.PlainDate.from('2026-05-08'),
       Temporal.PlainDate.from('2026-07-05'),
@@ -180,8 +190,8 @@ export const stateHolidays: Partial<
     dates: [
       Temporal.PlainDate.from('2027-01-01'),
       Temporal.PlainDate.from('2027-01-06'),
-      Temporal.PlainDate.from('2027-04-26'),
-      Temporal.PlainDate.from('2027-04-29'),
+      getGoodFriday(2027),
+      getEasterMonday(2027),
       Temporal.PlainDate.from('2027-05-01'),
       Temporal.PlainDate.from('2027-05-08'),
       Temporal.PlainDate.from('2027-07-05'),
@@ -198,8 +208,8 @@ export const stateHolidays: Partial<
     dates: [
       Temporal.PlainDate.from('2028-01-01'),
       Temporal.PlainDate.from('2028-01-06'),
-      Temporal.PlainDate.from('2028-04-14'),
-      Temporal.PlainDate.from('2028-04-17'),
+      getGoodFriday(2028),
+      getEasterMonday(2028),
       Temporal.PlainDate.from('2028-05-01'),
       Temporal.PlainDate.from('2028-05-08'),
       Temporal.PlainDate.from('2028-07-05'),

@@ -1,11 +1,16 @@
 import { Readable } from 'node:stream'
 
-import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
+import {
+  ErrorEnum,
+  ErrorFactoryService,
+  LineLoggerService,
+} from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
 import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import { AxiosError, AxiosResponse } from 'axios'
 import { v1, v4 } from 'uuid'
-import type { Mock } from 'vitest'
+import type { Mock, MockedFunction } from 'vitest'
 import { Builder, Parser } from 'xml2js'
 
 import prismaMock from '../../../../test/singleton'
@@ -23,7 +28,6 @@ import {
 } from '../../nases.errors.enum'
 import NasesSenderService from '../nases.sender.service'
 
-vi.mock('axios')
 vi.mock('../../../minio-storage/minio-storage.service')
 vi.mock('../../../convert/convert.service')
 vi.mock('uuid', () => ({
@@ -42,7 +46,6 @@ const createMockReadableStream = (content: string): Readable => {
 
 describe('NasesSenderService', () => {
   let service: NasesSenderService
-  let logger: LineLoggerService
   let clientsService: ClientsService
 
   beforeEach(async () => {
@@ -71,7 +74,6 @@ describe('NasesSenderService', () => {
     }).compile()
 
     service = app.get<NasesSenderService>(NasesSenderService)
-    logger = app.get(LineLoggerService)
     clientsService = app.get(ClientsService)
   })
 
@@ -326,30 +328,133 @@ describe('NasesSenderService', () => {
   })
 
   describe('send', () => {
-    it('should log the cause and return a generic message when envelope creation fails', async () => {
+    const jwt = 'jwt'
+    const senderUri = 'sender-uri'
+    const envelope = '<SKTalkMessage />'
+
+    let outboxPostMock: MockedFunction<
+      ClientsService['slovenskoSkApi']['apiSktalkReceiveAndSaveToOutboxPost']
+    >
+
+    beforeEach(() => {
+      service['createEnvelopeSendMessage'] = vi.fn().mockResolvedValue(envelope)
+      outboxPostMock = vi.mocked(
+        clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost,
+      )
+    })
+
+    it('should return the response data when slovensko.sk accepts the message', async () => {
+      const responseData = {
+        receive_result: 0,
+        receive_timeout: false,
+        save_to_outbox_result: 0,
+        save_to_outbox_timeout: false,
+      }
+      outboxPostMock.mockResolvedValue(
+        createMock<AxiosResponse>({ data: responseData }),
+      )
+      const form = createTestForm()
+
+      const result = await service.send(jwt, form, senderUri)
+
+      expect(result).toEqual(responseData)
+      expect(outboxPostMock).toHaveBeenCalledWith(
+        { message: envelope },
+        { headers: { Authorization: `Bearer ${jwt}` } },
+      )
+    })
+
+    it('should throw and not call slovensko.sk when envelope creation fails', async () => {
       const envelopeError = new Error('Envelope failure.')
       service['createEnvelopeSendMessage'] = vi
         .fn()
         .mockRejectedValue(envelopeError)
       const form = createTestForm()
 
-      const result = await service.send('jwt', form, 'sender-uri')
-
-      expect(result).toEqual({
+      await expect(
+        service.send(jwt, form, senderUri),
+      ).rejects.toThrowEqualLogNestError({
         status: HttpStatus.INTERNAL_SERVER_ERROR,
-        data: { message: NasesErrorsResponseEnum.CREATE_ENVELOPE_ERROR },
+        errorEnum: NasesErrorsEnum.CREATE_ENVELOPE_ERROR,
+        message: NasesErrorsResponseEnum.CREATE_ENVELOPE_ERROR,
+        console: { formId: form.id },
+        error: envelopeError,
       })
-      expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
-        expect.toMatchLogNestError({
-          errorEnum: NasesErrorsEnum.CREATE_ENVELOPE_ERROR,
-          message: NasesErrorsResponseEnum.CREATE_ENVELOPE_ERROR,
-          console: { formId: form.id },
-          error: envelopeError,
-        }),
+      expect(outboxPostMock).not.toHaveBeenCalled()
+    })
+
+    it('should throw a bad gateway error when slovensko.sk responds with an error status', async () => {
+      const axiosError = new AxiosError('Request failed')
+      axiosError.response = createMock<AxiosResponse>({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        data: { message: 'Upstream failure.' },
+      })
+      outboxPostMock.mockRejectedValue(axiosError)
+      const form = createTestForm()
+
+      await expect(
+        service.send(jwt, form, senderUri),
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.BAD_GATEWAY,
+        errorEnum: ErrorEnum.BAD_GATEWAY_ERROR,
+        message: NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
+        console: { formId: form.id },
+        error: axiosError,
+      })
+    })
+
+    it('should throw an internal server error when the request fails with a non-axios error', async () => {
+      const requestError = new Error('Unexpected failure.')
+      outboxPostMock.mockRejectedValue(requestError)
+      const form = createTestForm()
+
+      await expect(
+        service.send(jwt, form, senderUri),
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorEnum: NasesErrorsEnum.SEND_TO_NASES_ERROR,
+        message: NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
+        console: { formId: form.id },
+        error: requestError,
+      })
+    })
+
+    it('should throw a bad gateway error when slovensko.sk responds with an empty body', async () => {
+      outboxPostMock.mockResolvedValue(
+        createMock<AxiosResponse>({ data: undefined }),
       )
-      expect(
-        clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost,
-      ).not.toHaveBeenCalled()
+      const form = createTestForm()
+
+      await expect(
+        service.send(jwt, form, senderUri),
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.BAD_GATEWAY,
+        errorEnum: NasesErrorsEnum.SEND_TO_NASES_ERROR,
+        message: `${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} Empty response body.`,
+        console: { formId: form.id },
+      })
+    })
+
+    it('should throw with the mapped NASES error when slovensko.sk does not accept the message', async () => {
+      const responseData = {
+        receive_result: 3_100_001,
+        receive_timeout: false,
+        save_to_outbox_result: null,
+        save_to_outbox_timeout: null,
+      }
+      outboxPostMock.mockResolvedValue(
+        createMock<AxiosResponse>({ data: responseData }),
+      )
+      const form = createTestForm()
+
+      await expect(
+        service.send(jwt, form, senderUri),
+      ).rejects.toThrowEqualLogNestError({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errorEnum: NasesErrorsEnum.SEND_TO_NASES_ERROR,
+        message: `${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} Code: 3100001, Text: Chyba vstupných údajov - Vstupný parameter message je nevyplnený`,
+        console: { formId: form.id, responseData },
+      })
     })
   })
 })

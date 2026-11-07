@@ -27,6 +27,7 @@ import { DeliveryMethod } from '../../../noris/types/noris.enums'
 import { PdfGeneratorService } from '../../../pdf-generator/pdf-generator.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import alertReporting from '../../../utils/constants/error.alerts'
+import { BRATISLAVA_TIME_ZONE } from '../../../utils/functions/temporal'
 import { TaxDeliveryMethodsTasksSubservice } from '../tax-delivery-methods-tasks.subservice'
 
 vi.mock('../../../config/ba-config.instance')
@@ -53,7 +54,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
   beforeEach(async () => {
     vi.useFakeTimers({
-      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date'],
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date', 'Temporal'],
     })
     vi.setSystemTime(new Date('2024-02-15T12:00:00.000Z'))
     mockGetBaConfigInstance.mockReturnValue({ taxDeadline: { month: 2, day: 1 } } as ReturnType<
@@ -1090,18 +1091,15 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         .calls[0][0] as Prisma.DeliveryMethodPreferenceHistoryFindManyArgs
       const createdAtFilter = initialCall.where
         ?.createdAt as Prisma.DateTimeFilter<'DeliveryMethodPreferenceHistory'>
-      const rangeStart = createdAtFilter.gte as Date
-      const rangeEnd = createdAtFilter.lte as Date
+      const toBratislavaDateTime = (date: Date) =>
+        Temporal.Instant.fromEpochMilliseconds(date.getTime())
+          .toZonedDateTimeISO(BRATISLAVA_TIME_ZONE)
+          .toPlainDateTime()
+          .toString()
 
-      expect(rangeStart.getHours()).toBe(0)
-      expect(rangeStart.getMinutes()).toBe(0)
-      expect(rangeStart.getSeconds()).toBe(0)
-      expect(rangeStart.getMilliseconds()).toBe(0)
-
-      expect(rangeEnd.getHours()).toBe(23)
-      expect(rangeEnd.getMinutes()).toBe(59)
-      expect(rangeEnd.getSeconds()).toBe(59)
-      expect(rangeEnd.getMilliseconds()).toBe(999)
+      // Today is 2024-02-15, so the range is the whole of 2024-02-14 in Bratislava.
+      expect(toBratislavaDateTime(createdAtFilter.gte as Date)).toBe('2024-02-14T00:00:00')
+      expect(toBratislavaDateTime(createdAtFilter.lte as Date)).toBe('2024-02-14T23:59:59.999')
 
       // Verify eDesk query uses same date range
       expect(prismaMock.physicalEntity.findMany).toHaveBeenCalledWith(

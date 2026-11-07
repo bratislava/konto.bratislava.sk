@@ -89,6 +89,7 @@
     "@nestjs/testing": "12.3.2",
     "@ngneat/falso": "8.0.2",
     "@testcontainers/postgresql": "12.2.1",
+    "@tsconfig/node26": "catalog:",
     "@types/express": "5.0.6",
     "@types/json-schema": "7.0.15",
     "@types/jsonwebtoken": "9.0.10",

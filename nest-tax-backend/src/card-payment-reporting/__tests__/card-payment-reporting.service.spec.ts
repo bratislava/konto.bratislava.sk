@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
 import type { Mock } from 'vitest'
 
 import BaConfigService from '../../config/ba-config.service'
 import { Prisma, TaxType } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
+import {
+  BRATISLAVA_TIME_ZONE,
+  formatYYMMDD,
+} from '../../utils/functions/temporal'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import EmailSubservice from '../../utils/subservices/email.subservice'
 import SftpFileSubservice from '../../utils/subservices/sftp-file.subservice'
@@ -16,6 +17,9 @@ import {
   type CsvColumns,
   type CsvRecord,
 } from '../card-payment-reporting.service'
+
+const daysAgo = (days: number) =>
+  Temporal.Now.plainDateISO(BRATISLAVA_TIME_ZONE).subtract({ days })
 
 type EmailSendCall = [
   recipients: string[],
@@ -129,28 +133,13 @@ describe('CardPaymentReportingService', () => {
     expect(service).toBeDefined()
   })
 
-  describe('extractFileDate', () => {
-    it('should extract and return file date when valid', () => {
-      const fileName = 'AH_DATA_99999999_9999999999_999_2411089999.csv'
-      const result = service['extractFileDate'](fileName)
-      expect(result).toBe('20241108')
-    })
-
-    it('should return null for invalid file name format', () => {
-      const fileName = 'invalid_filename.csv'
-      const result = service['extractFileDate'](fileName)
-      expect(result).toBeNull()
-    })
-  })
-
   describe('getDateInfo', () => {
     it('should return date information based on the input date string', () => {
-      dayjs.extend(utc)
-      dayjs.extend(timezone)
-      const fileDate = '20231001'
+      const fileDate = Temporal.PlainDate.from('2023-10-01')
       const result = service['getDateInfo'](fileDate)
       expect(result.today_DDMMYYYY).toBe('01102023')
       expect(result.today_YYMMDD).toBe('231001')
+      expect(result.yesterday_DDMMYYYY).toBe('30092023')
       expect(result.humanReadable).toBe('01.10.2023')
     })
   })
@@ -274,7 +263,7 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
 
   describe('generateAndSendPaymentReport', () => {
     // The service skips files older than 180 days, so the fixtures must be recent
-    const fileDate = dayjs().subtract(10, 'day').format('YYMMDD')
+    const fileDate = formatYYMMDD(daysAgo(10))
     const csvFileName = `AH_DATA_1_2_3_${fileDate}1234.csv`
 
     beforeEach(() => {
@@ -505,7 +494,7 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
     })
 
     it('should skip files older than 180 days', async () => {
-      const oldFileDate = dayjs().subtract(181, 'day').format('YYMMDD')
+      const oldFileDate = formatYYMMDD(daysAgo(181))
       const csv = makeCsvFileContent([
         makePosRow({ orderId: '1111111111111111' }),
       ])
@@ -529,6 +518,30 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
         'Dnes nie je čo reportovať.',
         [],
       )
+    })
+
+    it('should still report a file exactly 180 days old', async () => {
+      const boundaryFileDate = formatYYMMDD(daysAgo(180))
+      const csv = makeCsvFileContent([
+        makePosRow({ orderId: '1111111111111111' }),
+      ])
+
+      mockSftpFileSubservice.getNewFiles.mockResolvedValue([
+        { name: `AH_DATA_1_2_3_${boundaryFileDate}1234.csv`, content: csv },
+      ])
+
+      await service.generateAndSendPaymentReport(['test@example.com'])
+
+      const calls = mockEmailSubservice.send.mock.calls as EmailSendCall[]
+      expect(
+        calls.map(([, subject, , attachments]) => [
+          subject,
+          attachments.length,
+        ]),
+      ).toEqual([
+        ['Report platieb kartou - DZN', 1],
+        ['Report platieb kartou - KO', 1],
+      ])
     })
   })
 })

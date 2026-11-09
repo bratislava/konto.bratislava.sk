@@ -85,20 +85,10 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
     },
   ].filter(isDefined)
 
-  const mobileConceptMenuItems: DropdownMenuItemProps[] = [
-    ...conceptMenuItems,
-    {
-      title: t('MyApplicationsCard.button.continue'),
-      icon: <Icon name={'edit'} className="size-6" />,
-      url: formPageHref,
-    },
-  ]
-
   const detailPageDesktopButton = (
     <Button
       variant="icon-wrapped"
       href={detailPageHref}
-      target="_blank"
       hasLinkIcon={false}
       endIcon={<Icon name="chevron-right" />}
       aria-label={t('MyApplicationsCard.button.view')}
@@ -107,13 +97,7 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
   )
 
   const detailPageMobileButton = (
-    <Button
-      variant="link"
-      href={detailPageHref}
-      target="_blank"
-      className="p-0 no-underline"
-      stretched
-    >
+    <Button variant="link" href={detailPageHref} className="p-0 no-underline" stretched>
       {t('MyApplicationsCard.button.view')}
     </Button>
   )
@@ -146,7 +130,6 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
       startIcon={<Icon name="edit" className="size-6" />}
       href={formPageHref}
       hasLinkIcon={false}
-      target="_blank"
       className="grow"
     >
       {t('MyApplicationsCard.button.continue')}
@@ -224,7 +207,7 @@ const MyApplicationsCard = ({ form, refreshListData }: Props) => {
       <BottomSheetMenuModal
         isOpen={isBottomSheetMenuOpen}
         setIsOpen={setIsBottomSheetMenuOpen}
-        conceptMenuContent={mobileConceptMenuItems}
+        conceptMenuContent={conceptMenuItems}
       />
     </>
   )

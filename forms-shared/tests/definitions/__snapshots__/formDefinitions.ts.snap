@@ -6596,7 +6596,7 @@ exports[`Form definitions > olo-mimoriadny-odvoz-a-zhodnotenie-odpadu > schema m
                       "Plasty/kovové obaly a nápojové kartóny",
                       "Sklo",
                     ],
-                    "title": "Druh odpadu",
+                    "title": "Vyberte druh odpadu",
                     "type": "string",
                   },
                   "miestoDodania": {
@@ -8471,7 +8471,7 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
                       ],
                     },
                     "minItems": 1,
-                    "title": "Druh odpadu",
+                    "title": "Vyberte druh odpadu",
                     "type": "array",
                     "uniqueItems": true,
                   },
@@ -10033,7 +10033,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                       "Sklo (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)",
                       "Kuchynský biologicky rozložiteľný odpad (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)",
                     ],
-                    "title": "Druh odpadu",
+                    "title": "Vyberte druh odpadu",
                     "type": "string",
                   },
                   "miestoDodania": {
@@ -11300,7 +11300,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                       "Plasty (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)",
                       "Sklo (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)",
                     ],
-                    "title": "Druh odpadu",
+                    "title": "Vyberte druh odpadu",
                     "type": "string",
                   },
                   "miestoDodania": {

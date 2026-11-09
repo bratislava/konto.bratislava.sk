@@ -144,7 +144,7 @@ export default schema(
           select(
             'druhOdpadu',
             {
-              title: 'Druh odpadu',
+              title: 'Vyberte druh odpadu',
               required: true,
               items: createStringItems([
                 'Zmesový komunálny odpad',

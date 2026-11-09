@@ -207,7 +207,7 @@ export default schema(
           select(
             'druhOdpadu',
             {
-              title: 'Druh odpadu',
+              title: 'Vyberte druh odpadu',
               required: true,
               items: createStringItems([
                 'Papier (Pravidelný odvoz odpadových obalov kat. číslo 15)',

@@ -46,7 +46,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, [
       checkboxGroup(
         'druhOdpadu',
         {
-          title: 'Druh odpadu',
+          title: 'Vyberte druh odpadu',
           required: true,
           items: [
             { value: 'zmesovyKomunalnyOdpad', label: 'Zmesový komunálny odpad' },

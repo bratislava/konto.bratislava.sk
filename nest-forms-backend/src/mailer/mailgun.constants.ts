@@ -1,3 +1,5 @@
+import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
+
 import BaConfigService from '../config/ba-config.service'
 
 export enum MailgunConfigVariableType {
@@ -24,9 +26,9 @@ interface MailgunConfig {
 
 export function getMailgunConfig(
   baConfigService: BaConfigService,
-): Record<string, MailgunConfig> {
+): Record<MailgunTemplateEnum, MailgunConfig> {
   return {
-    GINIS_SENT: {
+    [MailgunTemplateEnum.GINIS_SENT]: {
       template: '2023-application-status-sent',
       subject: 'Bratislavské konto: Vaša žiadosť bola odoslaná',
       variables: {
@@ -47,7 +49,7 @@ export function getMailgunConfig(
         },
       },
     },
-    GINIS_DELIVERED: {
+    [MailgunTemplateEnum.GINIS_DELIVERED]: {
       template: '2023-application-status-delivered',
       subject: 'Bratislavské konto: Vaša žiadosť bola doručená',
       variables: {
@@ -68,7 +70,7 @@ export function getMailgunConfig(
         },
       },
     },
-    GINIS_IN_PROGRESS: {
+    [MailgunTemplateEnum.GINIS_IN_PROGRESS]: {
       template: '2023-application-status-in-progress',
       subject: 'Bratislavské konto: Na odoslaní Vašej žiadosti pracujeme',
       variables: {
@@ -86,7 +88,7 @@ export function getMailgunConfig(
         },
       },
     },
-    GINIS_SUCCESS: {
+    [MailgunTemplateEnum.GINIS_SUCCESS]: {
       template: '2023-application-status-success',
       subject: 'Bratislavské konto: Vaša žiadosť bola vybavená',
       variables: {
@@ -107,7 +109,7 @@ export function getMailgunConfig(
         },
       },
     },
-    GINIS_DENIED: {
+    [MailgunTemplateEnum.GINIS_DENIED]: {
       template: '2023-application-status-denied',
       subject: 'Bratislavské konto: Vaša žiadosť bola zamietnutá',
       variables: {
@@ -128,7 +130,7 @@ export function getMailgunConfig(
         },
       },
     },
-    ATTACHMENT_VIRUS: {
+    [MailgunTemplateEnum.ATTACHMENT_VIRUS]: {
       template: '2023-application-status-virus',
       subject: 'Bratislavské konto: Vo Vašej žiadosti sa nachádza vírus',
       variables: {
@@ -150,7 +152,7 @@ export function getMailgunConfig(
         },
       },
     },
-    OLO_NEW_SUBMISSION: {
+    [MailgunTemplateEnum.OLO_NEW_SUBMISSION]: {
       template: 'olo-form-send',
       subject: 'OLO: Nové podanie',
       variables: {
@@ -164,7 +166,7 @@ export function getMailgunConfig(
         },
       },
     },
-    OLO_SENT_SUCCESS: {
+    [MailgunTemplateEnum.OLO_SENT_SUCCESS]: {
       template: '2024-olo-form-success',
       subject: 'OLO: Vaša žiadosť bola odoslaná',
       variables: {
@@ -182,7 +184,7 @@ export function getMailgunConfig(
         },
       },
     },
-    TSB_NEW_SUBMISSION: {
+    [MailgunTemplateEnum.TSB_NEW_SUBMISSION]: {
       template: 'tsb-form-send',
       subject: 'TSB: Nové podanie',
       renderLocally: true,
@@ -197,7 +199,7 @@ export function getMailgunConfig(
         },
       },
     },
-    TSB_ORDER_SENT_SUCCESS: {
+    [MailgunTemplateEnum.TSB_ORDER_SENT_SUCCESS]: {
       template: '2025-tsb-form-success',
       subject: 'TSB: Vaša objednávka bola odoslaná',
       variables: {
@@ -214,7 +216,7 @@ export function getMailgunConfig(
         },
       },
     },
-    TSB_REQUEST_SENT_SUCCESS: {
+    [MailgunTemplateEnum.TSB_REQUEST_SENT_SUCCESS]: {
       template: '2025-tsb-form-success',
       subject: 'TSB: Vaša žiadosť bola odoslaná',
       variables: {
@@ -231,7 +233,7 @@ export function getMailgunConfig(
         },
       },
     },
-    BRATISLAVA_NEW_SUBMISSION: {
+    [MailgunTemplateEnum.BRATISLAVA_NEW_SUBMISSION]: {
       template: '2026-bratislava-new-submission',
       subject: 'Bratislavské konto: Nové podanie',
       variables: {
@@ -249,7 +251,7 @@ export function getMailgunConfig(
         },
       },
     },
-    BRATISLAVA_SENT_SUCCESS: {
+    [MailgunTemplateEnum.BRATISLAVA_SENT_SUCCESS]: {
       template: '2026-bratislava-form-success',
       subject: 'Bratislavské konto: Vaša žiadosť bola odoslaná',
       variables: {
@@ -271,7 +273,7 @@ export function getMailgunConfig(
         },
       },
     },
-    PAAS_CONTACT_FORM_SENT_SUCCESS: {
+    [MailgunTemplateEnum.PAAS_CONTACT_FORM_SENT_SUCCESS]: {
       template: '2026-city-account-paas-contact-form-success',
       subject: 'PAAS: Vaša požiadavka bola odoslaná',
       variables: {

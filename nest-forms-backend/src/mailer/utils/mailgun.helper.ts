@@ -1,6 +1,7 @@
 import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import FormData from 'form-data'
+import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import Handlebars from 'handlebars'
 import Mailgun from 'mailgun.js'
 import { Enums, Interfaces } from 'mailgun.js/definitions'
@@ -17,12 +18,15 @@ import {
 } from '../../utils/global-enums/mailgun.errors.enum'
 import {
   getMailgunConfig,
+  MailgunConfig,
   MailgunConfigVariableType,
 } from '../mailgun.constants'
 
 @Injectable()
 export default class MailgunHelper {
   mailgunClient: Interfaces.IMailgunClient
+
+  readonly templateConfigs: Record<MailgunTemplateEnum, MailgunConfig>
 
   constructor(
     private readonly errorFactoryService: ErrorFactoryService,
@@ -35,15 +39,15 @@ export default class MailgunHelper {
       key: this.baConfigService.mailgun.apiKey,
       url: this.baConfigService.mailgun.host,
     })
+    this.templateConfigs = getMailgunConfig(this.baConfigService)
   }
 
   async createEmailVariables(
     data: SendEmailInputDto,
   ): Promise<SendEmailVariablesDto> {
-    const mailgunConfig = getMailgunConfig(this.baConfigService)
     const response: SendEmailVariablesDto = {}
     await Promise.all(
-      Object.entries(mailgunConfig[data.template].variables).map(
+      Object.entries(this.templateConfigs[data.template].variables).map(
         async ([key, val]) => {
           switch (val.type) {
             case MailgunConfigVariableType.PARAMETER: {

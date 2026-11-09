@@ -8,7 +8,6 @@ import {
   MailgunErrorsResponseEnum,
 } from '../utils/global-enums/mailgun.errors.enum'
 import { Mailer, MailerSendEmailParams } from './mailer.interface'
-import { getMailgunConfig } from './mailgun.constants'
 import MailgunHelper from './utils/mailgun.helper'
 
 @Injectable()
@@ -44,16 +43,16 @@ export default class OloMailerService implements Mailer {
   async sendEmail(params: MailerSendEmailParams): Promise<void> {
     const { data, emailFrom, replyTo, attachments, subject } = params
     try {
-      const mailgunConfig = getMailgunConfig(this.baConfigService)
+      const templateConfig = this.mailgunHelper.templateConfigs[data.template]
       const mailBody = await this.mailgunHelper.getFilledTemplate(
-        mailgunConfig[data.template].template,
+        templateConfig.template,
         await this.mailgunHelper.createEmailVariables(data),
       )
       await this.oloTransporter.sendMail({
         from: `OLO <${emailFrom}>`,
         to: data.to,
         replyTo,
-        subject: subject ?? mailgunConfig[data.template].subject,
+        subject: subject ?? templateConfig.subject,
         html: mailBody,
         attachments,
       })

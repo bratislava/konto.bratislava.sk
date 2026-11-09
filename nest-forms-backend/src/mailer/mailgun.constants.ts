@@ -17,7 +17,7 @@ type MailgunConfigVariableByType =
     }
   | { type: MailgunConfigVariableType.FEEDBACK_LINK }
 
-interface MailgunConfig {
+export interface MailgunConfig {
   template: string
   subject: string
   renderLocally?: boolean

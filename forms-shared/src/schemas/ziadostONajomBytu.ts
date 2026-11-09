@@ -341,7 +341,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
               'kontaktovanyEmailom',
               {
                 type: 'boolean',
-                title: 'Chcem byť kontaktovaný/á e-mailom?',
+                title: 'Chcete byť kontaktovaný/á e-mailom?',
                 required: true,
                 items: [
                   { value: true, label: 'Áno', isDefault: true },
@@ -1519,7 +1519,7 @@ export default schema(
         'maximalnaVyskaNajomneho',
         {
           title:
-            'Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť',
+            'Uveďte maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť',
           type: 'number',
           step: 0.01,
           required: true,
@@ -1528,7 +1528,7 @@ export default schema(
         { size: 'medium', helptext: 'Zadajte sumu v €' },
       ),
     ]),
-    step('sucetPrijmovCestneVyhlasenie', { title: 'Súčet príjmov a čestné výhlásenie' }, [
+    step('sucetPrijmovCestneVyhlasenie', { title: 'Súčet príjmov a čestné vyhlásenie' }, [
       customComponentsField(
         'sucetPrijmovKalkulacka',
         {

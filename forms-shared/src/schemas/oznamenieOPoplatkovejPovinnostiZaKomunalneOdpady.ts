@@ -692,7 +692,7 @@ export default schema(
         'typOznamenia',
         {
           type: 'string',
-          title: 'Vyberte, prosím, druh oznámenia',
+          title: 'Vyberte druh oznámenia',
           required: true,
           items: [
             { value: 'vznik', label: 'Vznik poplatkovej povinnosti', isDefault: true },

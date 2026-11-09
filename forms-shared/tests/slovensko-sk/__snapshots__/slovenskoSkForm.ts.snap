@@ -281,7 +281,7 @@ exports[`slovenskoSkForm > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExamp
   <Summary>
     <Form title="Oznámenie o poplatkovej povinnosti za komunálne odpady">
       <Step id="root_typOznamenia" title="Typ oznámenia">
-        <Field id="root_typOznamenia_typOznamenia" label="Vyberte, prosím, druh oznámenia">
+        <Field id="root_typOznamenia_typOznamenia" label="Vyberte druh oznámenia">
           <StringValue>Vznik poplatkovej povinnosti</StringValue>
         </Field>
       </Step>
@@ -2997,7 +2997,7 @@ exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 
         <Field id="root_ziadatelZiadatelka_osobneUdaje_email" label="E-mail">
           <StringValue>jana.novakova@email.com</StringValue>
         </Field>
-        <Field id="root_ziadatelZiadatelka_osobneUdaje_kontaktovanyEmailom" label="Chcem byť kontaktovaný/á e-mailom?">
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_kontaktovanyEmailom" label="Chcete byť kontaktovaný/á e-mailom?">
           <StringValue>Áno</StringValue>
         </Field>
         <Field id="root_ziadatelZiadatelka_osobneUdaje_telefonneCislo" label="Telefónne číslo">
@@ -3293,11 +3293,11 @@ exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 
           <StringValue>Ružinov</StringValue>
           <StringValue>Nové Mesto</StringValue>
         </Field>
-        <Field id="root_ineOkolnosti_maximalnaVyskaNajomneho" label="Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť">
+        <Field id="root_ineOkolnosti_maximalnaVyskaNajomneho" label="Uveďte maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť">
           <StringValue>700</StringValue>
         </Field>
       </Step>
-      <Step id="root_sucetPrijmovCestneVyhlasenie" title="Súčet príjmov a čestné výhlásenie">
+      <Step id="root_sucetPrijmovCestneVyhlasenie" title="Súčet príjmov a čestné vyhlásenie">
         <Field id="root_sucetPrijmovCestneVyhlasenie_cestneVyhlasenie" label="Čestné vyhlásenie">
           <StringValue>Čestne vyhlasujem, že všetky údaje uvedené v žiadosti a dokumentoch na nahliadnutie sú pravdivé a úplné. Zároveň som si vedomý/á toho, že poskytnutie nepravdivých a/alebo neúplných informácií môže mať za následok nezaradenie žiadosti do evidencie žiadateľov.</StringValue>
         </Field>

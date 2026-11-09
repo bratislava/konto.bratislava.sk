@@ -784,7 +784,7 @@ export default schema(
               value: 'spravcaSpolocenstvoVlastnikov',
               label: 'Správca alebo spoločenstvo vlastníkov',
             },
-            { value: 'fyzickaOsobaPodnikatel', label: 'Fyzická osoba - podnikateľ' },
+            { value: 'fyzickaOsobaPodnikatel', label: 'Fyzická osoba – podnikateľ' },
             { value: 'pravnickaOsoba', label: 'Právnická osoba' },
           ],
         },

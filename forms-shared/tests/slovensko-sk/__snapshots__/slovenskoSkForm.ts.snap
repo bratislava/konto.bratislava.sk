@@ -3252,7 +3252,7 @@ exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 
             <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_sucasneByvanie_situaciaRovnakaAkoVasa" label="Je situácia súčasného bývania člena/členky domácnosti rovnaká ako vaša?">
               <StringValue>Áno</StringValue>
             </Field>
-            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_zamestnanie" label="Bol člen/členka  v minulom kalendárnom roku zamestnaný/á?">
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_zamestnanie" label="Bol člen/členka domácnosti v minulom kalendárnom roku zamestnaný/á?">
               <StringValue>Nie</StringValue>
             </Field>
             <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_samostatnaZarobkovaCinnost" label="Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?">

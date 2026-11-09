@@ -505,7 +505,7 @@ const getPrijemSection = (stepType: StepType) => {
           [StepType.ManzelManzelka]:
             'Bol váš manžel/manželka v minulom kalendárnom roku zamestnaný/á?',
           [StepType.DruhDruzka]: 'Bol váš druh/družka v minulom kalendárnom roku zamestnaný/á?',
-          [StepType.InyClen]: 'Bol člen/členka  v minulom kalendárnom roku zamestnaný/á?',
+          [StepType.InyClen]: 'Bol člen/členka domácnosti v minulom kalendárnom roku zamestnaný/á?',
         }[stepType],
         required: true,
         items: [

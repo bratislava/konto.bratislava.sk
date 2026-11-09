@@ -13060,7 +13060,7 @@ exports[`getSummaryJsonBrowser > ziadostONajomBytuExample summary JSON should ma
                     },
                   ],
                   "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_zamestnanie",
-                  "label": "Bol člen/členka  v minulom kalendárnom roku zamestnaný/á?",
+                  "label": "Bol člen/členka domácnosti v minulom kalendárnom roku zamestnaný/á?",
                   "type": "Field",
                   "value": false,
                 },

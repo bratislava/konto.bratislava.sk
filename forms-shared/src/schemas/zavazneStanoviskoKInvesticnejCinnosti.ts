@@ -109,7 +109,7 @@ export default schema(
           },
           {
             type: 'button',
-            helptext: 'nahrajte splnomocnenie od stavebníka',
+            helptext: 'Nahrajte splnomocnenie od stavebníka',
           },
         ),
         ...ziadatelStavebnikFields,

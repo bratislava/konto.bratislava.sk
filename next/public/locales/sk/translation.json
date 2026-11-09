@@ -40,7 +40,7 @@
   "auth.continueToOauthOrigin": "Pokračovať na {{clientTitle}}",
   "auth.fields.accountType.label": "Vytváram účet ako",
   "auth.fields.accountType.options.fo": "Fyzická osoba",
-  "auth.fields.accountType.options.fop": "Fyzická osoba - podnikateľ",
+  "auth.fields.accountType.options.fop": "Fyzická osoba – podnikateľ",
   "auth.fields.accountType.options.po": "Právnická osoba",
   "auth.fields.birthNumber.format": "Zadajte rodné číslo s lomkou vo formáte 123456/7890.",
   "auth.fields.birthNumber.helptext": "Zadávajte s lomkou.",

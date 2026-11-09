@@ -26630,7 +26630,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                       "value": "spravcaSpolocenstvoVlastnikov",
                     },
                     {
-                      "label": "Fyzická osoba - podnikateľ",
+                      "label": "Fyzická osoba – podnikateľ",
                       "value": "fyzickaOsobaPodnikatel",
                     },
                     {
@@ -72332,7 +72332,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                     "baOrder": 2,
                     "baUiSchema": {
                       "ui:options": {
-                        "helptext": "nahrajte splnomocnenie od stavebníka",
+                        "helptext": "Nahrajte splnomocnenie od stavebníka",
                         "slotId": "splnomocnenie",
                         "type": "button",
                       },
@@ -76797,7 +76797,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                     "baOrder": 2,
                     "baUiSchema": {
                       "ui:options": {
-                        "helptext": "nahrajte splnomocnenie od stavebníka",
+                        "helptext": "Nahrajte splnomocnenie od stavebníka",
                         "slotId": "splnomocnenie",
                         "type": "button",
                       },
@@ -87336,7 +87336,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                   true,
                                   false,
                                 ],
-                                "title": "Bol člen/členka  v minulom kalendárnom roku zamestnaný/á?",
+                                "title": "Bol člen/členka domácnosti v minulom kalendárnom roku zamestnaný/á?",
                                 "type": "boolean",
                               },
                             },
@@ -88436,7 +88436,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                   true,
                                   false,
                                 ],
-                                "title": "Bol člen/členka  v minulom kalendárnom roku zamestnaný/á?",
+                                "title": "Bol člen/členka domácnosti v minulom kalendárnom roku zamestnaný/á?",
                                 "type": "boolean",
                               },
                             },

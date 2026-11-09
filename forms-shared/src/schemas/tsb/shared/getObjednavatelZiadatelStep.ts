@@ -28,8 +28,8 @@ export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') =
         {
           type: 'string',
           title: match(type)
-            .with('objednavatel', () => 'Objednávate ako')
-            .with('ziadatel', () => 'Žiadate ako')
+            .with('objednavatel', () => 'Objednávam ako')
+            .with('ziadatel', () => 'Žiadam ako')
             .exhaustive(),
           required: true,
           items: [

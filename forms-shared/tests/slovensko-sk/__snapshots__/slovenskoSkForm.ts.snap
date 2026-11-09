@@ -3322,7 +3322,7 @@ exports[`slovenskoSkForm > ziadostOSlobodnyPristupKInformaciamExample > XML shou
   <Summary>
     <Form title="Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.">
       <Step id="root_ziadatel" title="Žiadateľ">
-        <Field id="root_ziadatel_typZiadatela" label="Žiadate ako">
+        <Field id="root_ziadatel_typZiadatela" label="Žiadam ako">
           <StringValue>Fyzická osoba</StringValue>
         </Field>
         <Field id="root_ziadatel_meno" label="Meno">
@@ -3381,7 +3381,7 @@ exports[`slovenskoSkForm > ziadostOUzemnoplanovaciuInformaciuExample > XML shoul
   <Summary>
     <Form title="Žiadosť o územnoplánovaciu informáciu">
       <Step id="root_ziadatel" title="Žiadateľ">
-        <Field id="root_ziadatel_typZiadatela" label="Žiadate ako">
+        <Field id="root_ziadatel_typZiadatela" label="Žiadam ako">
           <StringValue>Fyzická osoba</StringValue>
         </Field>
         <Field id="root_ziadatel_meno" label="Meno">

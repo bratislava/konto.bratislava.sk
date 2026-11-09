@@ -151,7 +151,7 @@ export default schema(
             { type: 'ba-phone-number', title: 'Nové telefónne číslo', required: true },
             { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
           ),
-          input('novyEmail', { title: 'Nový email', required: true, type: 'email' }, {}),
+          input('novyEmail', { title: 'Nový e-mail', required: true, type: 'email' }, {}),
         ],
         [
           sharedPhoneNumberField('telefon', true),

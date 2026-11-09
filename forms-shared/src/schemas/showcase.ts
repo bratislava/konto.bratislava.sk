@@ -307,7 +307,7 @@ export default schema(
               required: true,
             },
             {
-              helptext: 'Email format',
+              helptext: 'E-mail format',
             },
           ),
           input(

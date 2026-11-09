@@ -100,6 +100,24 @@ describe('MailgunHelper', () => {
       expect(result.firstName).toBe('John')
     })
 
+    it('should leave missing PARAMETER values undefined', async () => {
+      const input: SendEmailInputDto = {
+        to: 'user@example.com',
+        template: MailgunTemplateEnum.GINIS_SENT,
+        data: {
+          formId: 'form-123',
+          messageSubject: 'Test Application',
+          firstName: null,
+          slug: 'test-form',
+          formSentAt: mockFormSentAt,
+        },
+      }
+
+      const result = await mailgunHelper.createEmailVariables(input)
+
+      expect(result.firstName).toBeUndefined()
+    })
+
     it('should process FEEDBACK_LINK type variables correctly', async () => {
       const feedbackLink = 'https://test.feedback.com/bratislava/'
       vi.mocked(strapiService.getFeedbackLink).mockResolvedValue(feedbackLink)
@@ -200,6 +218,67 @@ describe('MailgunHelper', () => {
 
       expect(result.applicationName).toBe('OLO Test Application')
       expect(result.htmlData).toBe('<p>Form HTML data</p>')
+    })
+
+    it('should keep $ replacement patterns in values unchanged', async () => {
+      const htmlData = "<p>Price: 5 $& $' $` $$ $1</p>"
+      const input: SendEmailInputDto = {
+        to: 'olo@example.com',
+        template: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
+        data: {
+          formId: 'olo-form-123',
+          messageSubject: 'OLO Test Application',
+          firstName: null,
+          slug: 'olo-form',
+          htmlData,
+          formSentAt: mockFormSentAt,
+        },
+      }
+
+      const result = await mailgunHelper.createEmailVariables(input)
+
+      expect(result.htmlData).toBe(htmlData)
+    })
+
+    it('should keep {{...}} in values unchanged', async () => {
+      const input: SendEmailInputDto = {
+        to: 'user@example.com',
+        template: MailgunTemplateEnum.GINIS_IN_PROGRESS,
+        data: {
+          formId: 'form-123',
+          messageSubject: 'Application {{slug}}',
+          firstName: 'John',
+          slug: 'test-form',
+          formSentAt: mockFormSentAt,
+        },
+      }
+
+      const result = await mailgunHelper.createEmailVariables(input)
+
+      expect(result.applicationName).toBe('Application {{slug}}')
+    })
+
+    it('should handle BRATISLAVA_SENT_SUCCESS template correctly', async () => {
+      const input: SendEmailInputDto = {
+        to: 'user@example.com',
+        template: MailgunTemplateEnum.BRATISLAVA_SENT_SUCCESS,
+        data: {
+          formId: 'form-123',
+          messageSubject: 'Test Application',
+          firstName: 'John',
+          slug: 'test-form',
+          formSentAt: mockFormSentAt,
+        },
+      }
+
+      const result = await mailgunHelper.createEmailVariables(input)
+
+      expect(result).toEqual({
+        applicationName: 'Test Application',
+        feHost: 'https://konto.bratislava.sk',
+        firstName: 'John',
+        formSentAt: mockFormSentAt.toString(),
+      })
     })
 
     it('should handle ATTACHMENT_VIRUS template correctly', async () => {

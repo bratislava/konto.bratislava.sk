@@ -1,16 +1,18 @@
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 
+export interface SendEmailDataDto {
+  formId: string
+  messageSubject: string
+  firstName: string | null
+  slug: string
+  formSentAt: Date | null
+  htmlData?: string
+}
+
 export interface SendEmailInputDto {
   to: string
   template: MailgunTemplateEnum
-  data: {
-    formId: string
-    messageSubject: string
-    firstName: string | null
-    slug: string
-    formSentAt: Date | null
-    htmlData?: string
-  }
+  data: SendEmailDataDto
 }
 
 export interface SendEmailVariablesDto {
@@ -18,7 +20,7 @@ export interface SendEmailVariablesDto {
   firstName?: string
   feHost?: string
   feedbackLink?: string
-  formId?: string
+  formSentAt?: string
   htmlData?: string
   slug?: string
 }

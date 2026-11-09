@@ -16,7 +16,7 @@ import MailgunHelper from './utils/mailgun.helper'
 
 @Injectable()
 export default class MailgunService implements Mailer {
-  mailgunClient: Interfaces.IMailgunClient
+  private readonly mailgunClient: Interfaces.IMailgunClient
 
   constructor(
     private readonly baConfigService: BaConfigService,

@@ -12,7 +12,7 @@ import MailgunHelper from './utils/mailgun.helper'
 
 @Injectable()
 export default class OloMailerService implements Mailer {
-  oloTransporter: Transporter
+  private readonly oloTransporter: Transporter
 
   constructor(
     private readonly baConfigService: BaConfigService,
@@ -23,7 +23,7 @@ export default class OloMailerService implements Mailer {
     this.oloTransporter = nodemailer.createTransport({
       host: 'smtp.office365.com',
       port: 587,
-      secure: false, // Use TLS
+      secure: false,
       auth: {
         user: this.baConfigService.olo.smtp.username,
         pass: this.baConfigService.olo.smtp.password,
@@ -36,24 +36,23 @@ export default class OloMailerService implements Mailer {
 
   /**
    * Sends an email using OLO SMTP instead of Mailgun.
-   * @param data Object containing the email data which should be sent.
-   * @param oloEmailFrom The email address to send the email from.
-   * @param attachments Optional array of attachments to be sent with the email.
    */
   async sendEmail(params: MailerSendEmailParams): Promise<void> {
     const { data, emailFrom, replyTo, attachments, subject } = params
     try {
       const templateConfig = this.mailgunHelper.templateConfigs[data.template]
-      const mailBody = await this.mailgunHelper.getFilledTemplate(
+      const variables = await this.mailgunHelper.createEmailVariables(data)
+      const html = await this.mailgunHelper.getFilledTemplate(
         templateConfig.template,
-        await this.mailgunHelper.createEmailVariables(data),
+        variables,
       )
+
       await this.oloTransporter.sendMail({
         from: `OLO <${emailFrom}>`,
         to: data.to,
         replyTo,
         subject: subject ?? templateConfig.subject,
-        html: mailBody,
+        html,
         attachments,
       })
     } catch (error) {

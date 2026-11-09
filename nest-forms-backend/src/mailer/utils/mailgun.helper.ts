@@ -9,6 +9,7 @@ import { Enums, Interfaces } from 'mailgun.js/definitions'
 import BaConfigService from '../../config/ba-config.service'
 import StrapiService from '../../strapi/strapi.service'
 import {
+  SendEmailDataDto,
   SendEmailInputDto,
   SendEmailVariablesDto,
 } from '../../utils/global-dtos/mailgun.dto'
@@ -19,12 +20,13 @@ import {
 import {
   getMailgunConfig,
   MailgunConfig,
+  MailgunConfigVariable,
   MailgunConfigVariableType,
 } from '../mailgun.constants'
 
 @Injectable()
 export default class MailgunHelper {
-  mailgunClient: Interfaces.IMailgunClient
+  readonly mailgunClient: Interfaces.IMailgunClient
 
   readonly templateConfigs: Record<MailgunTemplateEnum, MailgunConfig>
 
@@ -43,49 +45,37 @@ export default class MailgunHelper {
   }
 
   async createEmailVariables(
-    data: SendEmailInputDto,
+    input: SendEmailInputDto,
   ): Promise<SendEmailVariablesDto> {
-    const response: SendEmailVariablesDto = {}
-    await Promise.all(
-      Object.entries(this.templateConfigs[data.template].variables).map(
-        async ([key, val]) => {
-          switch (val.type) {
-            case MailgunConfigVariableType.PARAMETER: {
-              let baseStr =
-                response[key as keyof SendEmailVariablesDto] || val.value
-              Object.entries(data.data).forEach(([k, v]) => {
-                if (v) {
-                  baseStr = baseStr.replace(`{{${k}}}`, v.toString())
-                }
-              })
-              response[key as keyof SendEmailVariablesDto] = baseStr
-              break
-            }
-
-            case MailgunConfigVariableType.FEEDBACK_LINK: {
-              const feedbackLink = await this.strapiService.getFeedbackLink(
-                data.data.slug,
-              )
-              if (feedbackLink) {
-                response[key as keyof SendEmailVariablesDto] = feedbackLink
-              }
-
-              break
-            }
-
-            case MailgunConfigVariableType.STRING:
-              response[key as keyof SendEmailVariablesDto] = val.value
-
-              break
-
-            default:
-              response[key as keyof SendEmailVariablesDto] = undefined
-            // No default
-          }
-        },
+    const { variables } = this.templateConfigs[input.template]
+    const resolvedVariables = await Promise.all(
+      Object.entries(variables).map(
+        async ([key, variable]) =>
+          [key, await this.resolveVariable(variable, input.data)] as const,
       ),
     )
-    return response
+    return Object.fromEntries(resolvedVariables)
+  }
+
+  private async resolveVariable(
+    variable: MailgunConfigVariable,
+    data: SendEmailDataDto,
+  ): Promise<string | undefined> {
+    switch (variable.type) {
+      case MailgunConfigVariableType.PARAMETER:
+        return variable.getValue(data) || undefined
+
+      case MailgunConfigVariableType.STRING:
+        return variable.value
+
+      case MailgunConfigVariableType.FEEDBACK_LINK: {
+        const feedbackLink = await this.strapiService.getFeedbackLink(data.slug)
+        return feedbackLink || undefined
+      }
+
+      default:
+        return variable satisfies never
+    }
   }
 
   /**

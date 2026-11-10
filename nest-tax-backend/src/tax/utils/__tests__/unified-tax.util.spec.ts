@@ -33,6 +33,7 @@ import {
   getTaxDetailPure,
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
+  stateHolidays,
 } from '../unified-tax.util'
 
 // Add this mock at the top after imports
@@ -382,6 +383,23 @@ function expectEqualAsJsonStringsWithDates(received: object, expected: object) {
 
   expect(stringifiedOutput).toEqual(stringifiedExpected)
 }
+
+describe('stateHolidays', () => {
+  it.each([
+    [2024, '2024-03-29', '2024-04-01'],
+    [2025, '2025-04-18', '2025-04-21'],
+    [2026, '2026-04-03', '2026-04-06'],
+    [2027, '2027-03-26', '2027-03-29'],
+    [2028, '2028-04-14', '2028-04-17'],
+  ])(
+    'includes Good Friday and Easter Monday for %i',
+    (year, goodFriday, easterMonday) => {
+      const dates = stateHolidays[year]?.dates.map((date) => date.toString())
+
+      expect(dates).toEqual(expect.arrayContaining([goodFriday, easterMonday]))
+    },
+  )
+})
 
 describe('UnifiedTaxUtil', () => {
   beforeEach(async () => {

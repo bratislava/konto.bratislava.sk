@@ -303,11 +303,11 @@ export default schema(
             'email',
             {
               type: 'email',
-              title: 'E-mail',
+              title: 'Email',
               required: true,
             },
             {
-              helptext: 'E-mail format',
+              helptext: 'Email format',
             },
           ),
           input(

@@ -36,7 +36,7 @@ export default schema(
       ),
       input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
       input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
-      input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+      input('email', { title: 'Email', required: true, type: 'email' }, {}),
       sharedPhoneNumberField('telefon', true),
     ]),
 

@@ -41,7 +41,7 @@ const getFakturacia = (novyOdberatel: boolean) =>
           'emailPreFaktury',
           {
             type: 'email',
-            title: 'E-mail pre zasielanie elektronických faktúr',
+            title: 'Email pre zasielanie elektronických faktúr',
             required: true,
           },
           {},
@@ -162,11 +162,11 @@ export default schema(
             { type: 'ba-phone-number', title: 'Nové telefónne číslo', required: true },
             { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
           ),
-          input('novyEmail', { title: 'Nový e-mail', required: true, type: 'email' }, {}),
+          input('novyEmail', { title: 'Nový email', required: true, type: 'email' }, {}),
         ],
         [
           sharedPhoneNumberField('telefon', true),
-          input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+          input('email', { title: 'Email', required: true, type: 'email' }, {}),
         ],
       ),
       conditionalFields(
@@ -330,7 +330,7 @@ export default schema(
         {
           type: 'boolean',
           title:
-            'Chcete dostať potvrdenie o prevzatí odpadov/obalov aj na iný e-mail ako uvedený v kroku žiadateľ?',
+            'Chcete dostať potvrdenie o prevzatí odpadov/obalov aj na iný email ako uvedený v kroku žiadateľ?',
           required: true,
           items: [
             { value: true, label: 'Áno' },
@@ -345,9 +345,9 @@ export default schema(
       conditionalFields(createCondition([[['emailPotvrdeniePouzitIny'], { const: true }]]), [
         input(
           'emailPotvrdenie',
-          { type: 'text', title: 'E-mail', required: true },
+          { type: 'text', title: 'Email', required: true },
           {
-            helptext: 'V prípade viacerých e-mailov ich oddeľte čiarkou',
+            helptext: 'V prípade viacerých emailov ich oddeľte čiarkou',
           },
         ),
       ]),

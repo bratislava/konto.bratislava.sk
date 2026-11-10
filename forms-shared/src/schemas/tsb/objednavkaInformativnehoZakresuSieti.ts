@@ -27,8 +27,8 @@ export default schema(
         input('psc', { title: 'PSČ', required: true, type: 'text' }, { selfColumn: '1/4' }),
         input(
           'email',
-          { title: 'E-mail', required: true, type: 'email' },
-          { helptext: 'Faktúra vám bude zaslaná prostredníctvom tohto e-mailu' },
+          { title: 'Email', required: true, type: 'email' },
+          { helptext: 'Faktúra vám bude zaslaná prostredníctvom tohto emailu' },
         ),
       ]),
       object('udajeObjednavky', { objectDisplay: 'boxed', title: 'Údaje objednávky' }, [

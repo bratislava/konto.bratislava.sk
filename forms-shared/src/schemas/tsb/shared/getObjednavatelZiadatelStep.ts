@@ -107,7 +107,7 @@ export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') =
           ],
         ]),
         [
-          input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+          input('email', { title: 'Email', required: true, type: 'email' }, {}),
           sharedPhoneNumberField('telefonneCislo', true),
         ],
       ),
@@ -115,7 +115,7 @@ export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') =
         object('kontaktnaOsoba', { objectDisplay: 'boxed', title: 'Kontaktná osoba' }, [
           input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
           input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-          input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+          input('email', { title: 'Email', required: true, type: 'email' }, {}),
           sharedPhoneNumberField('telefonneCislo', true),
         ]),
       ]),

@@ -95,7 +95,7 @@ export default schema(
                 {
                   title: 'Kontaktné údaje',
                   description:
-                    'Uvedenie telefónneho čísla a e-mailu je nepovinné. Ak ich poskytnete, môžeme vás v prípade potreby kontaktovať na doplnenie informácií. Žiadosť je možné odoslať aj bez vyplnenia týchto údajov.',
+                    'Uvedenie telefónneho čísla a emailu je nepovinné. Ak ich poskytnete, môžeme vás v prípade potreby kontaktovať na doplnenie informácií. Žiadosť je možné odoslať aj bez vyplnenia týchto údajov.',
                   objectDisplay: 'boxed',
                 },
                 [
@@ -113,7 +113,7 @@ export default schema(
                       ),
                     ])
                     .otherwise(() => []),
-                  input('email', { title: 'E-mail', required: false, type: 'email' }, {}),
+                  input('email', { title: 'Email', required: false, type: 'email' }, {}),
                   sharedPhoneNumberField('telefon', false),
                 ],
               ),
@@ -150,7 +150,7 @@ export default schema(
           required: true,
           items: [
             { value: 'elektronickaSchranka', label: 'do elektronickej schránky' },
-            { value: 'email', label: 'na e-mailovú adresu' },
+            { value: 'email', label: 'na emailovú adresu' },
             { value: 'postou', label: 'listinne poštou' },
             { value: 'telefon', label: 'telefonicky' },
             { value: 'fax', label: 'faxom' },
@@ -160,7 +160,7 @@ export default schema(
         {},
       ),
       conditionalFields(createCondition([[['sposobSpristupnenia'], { const: 'email' }]]), [
-        input('emailSpristupnenia', { title: 'E-mail', type: 'email', required: true }, {}),
+        input('emailSpristupnenia', { title: 'Email', type: 'email', required: true }, {}),
       ]),
       conditionalFields(createCondition([[['sposobSpristupnenia'], { const: 'telefon' }]]), [
         sharedPhoneNumberField('telefon', true),

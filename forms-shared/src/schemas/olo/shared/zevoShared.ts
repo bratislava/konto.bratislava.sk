@@ -116,7 +116,7 @@ export const getZevoSchema = (type: ZevoType) => [
       ],
     ),
     sharedPhoneNumberField('telefon', true),
-    input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+    input('email', { title: 'Email', required: true, type: 'email' }, {}),
     ...(type === ZevoType.EnergetickeZhodnotenieOdpaduVZevo
       ? [
           radioGroup(
@@ -287,7 +287,7 @@ export const getZevoSchema = (type: ZevoType) => [
                 'emailPreFaktury',
                 {
                   type: 'email',
-                  title: 'E-mail pre zasielanie elektronických faktúr',
+                  title: 'Email pre zasielanie elektronických faktúr',
                   required: true,
                 },
                 {},
@@ -348,7 +348,7 @@ export const getZevoSchema = (type: ZevoType) => [
           ]),
           input(
             'emailPovodcuOdpadu',
-            { title: 'E-mail pôvodcu odpadu', required: true, type: 'email' },
+            { title: 'Email pôvodcu odpadu', required: true, type: 'email' },
             {},
           ),
         ]),
@@ -407,7 +407,7 @@ export const getZevoSchema = (type: ZevoType) => [
           ),
           input(
             'emailDrzitelaOdpadu',
-            { title: 'E-mail držiteľa odpadu', required: true, type: 'email' },
+            { title: 'Email držiteľa odpadu', required: true, type: 'email' },
             {},
           ),
         ]),

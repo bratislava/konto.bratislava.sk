@@ -331,9 +331,9 @@ const getOsobneUdajeSection = (stepType: StepType) => {
       ? [
           input(
             'email',
-            { title: 'E-mail', type: 'email' },
+            { title: 'Email', type: 'email' },
             {
-              helptext: 'Ak nemáte e-mail, uveďte kontaktné údaje na inú osobu resp. organizáciu.',
+              helptext: 'Ak nemáte email, uveďte kontaktné údaje na inú osobu resp. organizáciu.',
             },
           ),
           conditionalFields(createCondition([[['email'], { type: 'string' }]]), [
@@ -341,7 +341,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
               'kontaktovanyEmailom',
               {
                 type: 'boolean',
-                title: 'Chcete byť kontaktovaný/á e-mailom?',
+                title: 'Chcete byť kontaktovaný/á emailom?',
                 required: true,
                 items: [
                   { value: true, label: 'Áno', isDefault: true },

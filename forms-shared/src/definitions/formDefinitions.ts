@@ -396,7 +396,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-olo-taxi',
     title: 'OLO Taxi',
-    jsonVersion: '1.0.1',
+    jsonVersion: '1.0.2',
     schema: oloTaxi,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -699,7 +699,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'paas-kontaktny-formular',
     title: 'Kontaktný formulár PAAS',
-    jsonVersion: '1.0.1',
+    jsonVersion: '1.0.2',
     schema: kontaktnyFormularPaas,
     files: kontaktnyFormularPaasFiles,
     sendPolicy: FormSendPolicy.NotAuthenticated,

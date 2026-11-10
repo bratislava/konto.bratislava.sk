@@ -42,7 +42,7 @@ export default schema(
         { selfColumn: '2/4' },
       ),
       ...getAdresaFields('Adresa trvalého pobytu'),
-      input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+      input('email', { title: 'Email', required: true, type: 'email' }, {}),
       sharedPhoneNumberField('telefon', true),
     ]),
     step('obcianskeZdruzenie', { title: 'Občianske združenie' }, [

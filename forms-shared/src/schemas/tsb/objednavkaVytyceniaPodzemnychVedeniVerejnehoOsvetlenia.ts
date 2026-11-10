@@ -32,9 +32,9 @@ export default schema(
         ),
         input(
           'email',
-          { title: 'E-mail', required: true, type: 'email' },
+          { title: 'Email', required: true, type: 'email' },
           {
-            helptext: 'Faktúra vám bude zaslaná prostredníctvom tohto e-mailu',
+            helptext: 'Faktúra vám bude zaslaná prostredníctvom tohto emailu',
           },
         ),
       ]),

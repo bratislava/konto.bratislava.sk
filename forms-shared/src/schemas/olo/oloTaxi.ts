@@ -38,7 +38,7 @@ export default schema(
       ]),
       sharedAddressField('adresaTrvalehoPobytu', 'Adresa trvalého pobytu', true),
       sharedPhoneNumberField('telefon', true),
-      input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+      input('email', { title: 'Email', required: true, type: 'email' }, {}),
     ]),
     step('sluzba', { title: 'Služba' }, [
       input(

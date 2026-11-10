@@ -118,7 +118,7 @@ export default schema(
                       ),
                     ])
                     .otherwise(() => []),
-                  input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+                  input('email', { title: 'Email', required: true, type: 'email' }, {}),
                   sharedPhoneNumberField('telefon', true),
                 ],
               ),
@@ -150,7 +150,7 @@ export default schema(
                   required: true,
                   items: match(ziadatelTypy)
                     .with('fyzickaOsoba', () => [
-                      { value: 'email', label: 'E-mail' },
+                      { value: 'email', label: 'Email' },
                       { value: 'posta', label: 'Poštou na adresu žiadateľa' },
                       {
                         value: 'elektronickaSchranka',
@@ -158,7 +158,7 @@ export default schema(
                       },
                     ])
                     .with(['fyzickaOsobaPodnikatel', 'pravnickaOsoba'], () => [
-                      { value: 'email', label: 'E-mail' },
+                      { value: 'email', label: 'Email' },
                       {
                         value: 'elektronickaSchranka',
                         label: 'Elektronická schránka slovensko.sk',

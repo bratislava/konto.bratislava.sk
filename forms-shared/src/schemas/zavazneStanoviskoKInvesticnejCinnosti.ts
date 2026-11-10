@@ -72,7 +72,7 @@ const ziadatelStavebnikFields = [
     input('opravnenaOsoba', { type: 'text', title: 'Oprávnená osoba', required: true }, {}),
     input('typOpravnenia', { type: 'text', title: 'Typ oprávnenia', required: true }, {}),
   ]),
-  input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+  input('email', { title: 'Email', required: true, type: 'email' }, {}),
   sharedPhoneNumberField('telefon', true),
 ]
 
@@ -122,7 +122,7 @@ export default schema(
         { title: 'Priezvisko', required: true, type: 'text' },
         { selfColumn: '2/4' },
       ),
-      input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+      input('email', { title: 'Email', required: true, type: 'email' }, {}),
       sharedPhoneNumberField('telefon', true),
       input(
         'autorizacneOsvedcenie',

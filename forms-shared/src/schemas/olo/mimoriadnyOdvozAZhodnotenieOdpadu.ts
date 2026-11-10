@@ -91,7 +91,7 @@ export default schema(
         ],
       ),
       sharedPhoneNumberField('telefon', true),
-      input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+      input('email', { title: 'Email', required: true, type: 'email' }, {}),
       conditionalFields(
         createCondition([
           [['ziadatelTyp'], { enum: ['Právnická osoba', 'Správcovská spoločnosť'] }],
@@ -116,7 +116,7 @@ export default schema(
                 'emailPreFaktury',
                 {
                   type: 'email',
-                  title: 'E-mail pre zasielanie elektronických faktúr',
+                  title: 'Email pre zasielanie elektronických faktúr',
                   required: true,
                 },
                 {},

@@ -634,7 +634,7 @@ const getOsobaFields = (
         ],
       )
       .otherwise(() => []),
-    input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+    input('email', { title: 'Email', required: true, type: 'email' }, {}),
     sharedPhoneNumberField('telefon', true),
     ...getAdresaFields(
       match(osobaTyp)

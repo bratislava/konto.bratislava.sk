@@ -69,7 +69,7 @@ export default schema({ title: 'KOLO Taxi' }, [
       ),
     ]),
     sharedPhoneNumberField('telefon', true),
-    input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+    input('email', { title: 'Email', required: true, type: 'email' }, {}),
     conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Právnická osoba' }]]), [
       object('fakturacia', { objectDisplay: 'boxed', title: 'Fakturácia' }, [
         input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
@@ -90,7 +90,7 @@ export default schema({ title: 'KOLO Taxi' }, [
             'emailPreFaktury',
             {
               type: 'email',
-              title: 'E-mail pre zasielanie elektronických faktúr',
+              title: 'Email pre zasielanie elektronických faktúr',
               required: true,
             },
             {},

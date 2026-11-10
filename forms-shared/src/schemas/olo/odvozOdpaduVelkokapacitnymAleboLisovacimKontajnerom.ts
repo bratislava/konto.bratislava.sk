@@ -81,7 +81,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
       ],
     ),
     sharedPhoneNumberField('telefon', true),
-    input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+    input('email', { title: 'Email', required: true, type: 'email' }, {}),
     object('fakturacia', { objectDisplay: 'boxed', title: 'Fakturácia' }, [
       input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
       checkbox(
@@ -102,7 +102,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
           'emailPreFaktury',
           {
             type: 'email',
-            title: 'E-mail pre zasielanie elektronických faktúr',
+            title: 'Email pre zasielanie elektronických faktúr',
             required: true,
           },
           {},

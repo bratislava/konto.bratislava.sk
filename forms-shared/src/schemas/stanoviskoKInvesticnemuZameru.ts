@@ -66,7 +66,7 @@ const ziadatelStavebnikFields = [
   conditionalFields(createCondition([[['ziadatelTyp'], { const: 'pravnickaOsoba' }]]), [
     input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
     ...addressFields('Adresa sídla'),
-    input('kontaktnaOsoba', { type: 'text', title: 'Meno kontaktnej osoby', required: true }, {}),
+    input('kontaktnaOsoba', { type: 'text', title: 'Kontaktná osoba', required: true }, {}),
   ]),
   input('email', { title: 'Email', required: true, type: 'email' }, {}),
   sharedPhoneNumberField('telefon', true),

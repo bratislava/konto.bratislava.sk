@@ -71898,7 +71898,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                       },
                       "ui:widget": "Input",
                     },
-                    "title": "Meno kontaktnej osoby",
+                    "title": "Kontaktná osoba",
                     "type": "string",
                   },
                   "mesto": {
@@ -72262,7 +72262,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                             },
                             "ui:widget": "Input",
                           },
-                          "title": "Meno kontaktnej osoby",
+                          "title": "Kontaktná osoba",
                           "type": "string",
                         },
                         "mesto": {

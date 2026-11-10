@@ -35,7 +35,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "meno": {
@@ -1468,7 +1468,7 @@ exports[`Form definitions > olo-docistenie-stanovista-zbernych-nadob > schema ma
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "fakturacia": {
@@ -1496,7 +1496,7 @@ exports[`Form definitions > olo-docistenie-stanovista-zbernych-nadob > schema ma
                           "ui:widget": "Input",
                         },
                         "format": "email",
-                        "title": "E-mail pre zasielanie elektronických faktúr",
+                        "title": "Email pre zasielanie elektronických faktúr",
                         "type": "string",
                       },
                     },
@@ -2555,7 +2555,7 @@ exports[`Form definitions > olo-energeticke-zhodnotenie-odpadu-v-zevo > schema m
                                       "ui:widget": "Input",
                                     },
                                     "format": "email",
-                                    "title": "E-mail pre zasielanie elektronických faktúr",
+                                    "title": "Email pre zasielanie elektronických faktúr",
                                     "type": "string",
                                   },
                                 },
@@ -2665,7 +2665,7 @@ exports[`Form definitions > olo-energeticke-zhodnotenie-odpadu-v-zevo > schema m
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "preferovanyDatumDovozu": {
@@ -3020,7 +3020,7 @@ exports[`Form definitions > olo-energeticke-zhodnotenie-odpadu-v-zevo > schema m
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail pôvodcu odpadu",
+                    "title": "Email pôvodcu odpadu",
                     "type": "string",
                   },
                   "typPovodcuOdpadu": {
@@ -3351,7 +3351,7 @@ exports[`Form definitions > olo-energeticke-zhodnotenie-odpadu-v-zevo > schema m
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail držiteľa odpadu",
+                    "title": "Email držiteľa odpadu",
                     "type": "string",
                   },
                   "typDrzitelaOdpadu": {
@@ -5278,7 +5278,7 @@ exports[`Form definitions > olo-kolo-taxi > schema matches snapshot 1`] = `
                                 "ui:widget": "Input",
                               },
                               "format": "email",
-                              "title": "E-mail pre zasielanie elektronických faktúr",
+                              "title": "Email pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
                           },
@@ -5352,7 +5352,7 @@ exports[`Form definitions > olo-kolo-taxi > schema matches snapshot 1`] = `
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "telefon": {
@@ -5992,7 +5992,7 @@ exports[`Form definitions > olo-mimoriadny-odvoz-a-zhodnotenie-odpadu > schema m
                                 "ui:widget": "Input",
                               },
                               "format": "email",
-                              "title": "E-mail pre zasielanie elektronických faktúr",
+                              "title": "Email pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
                           },
@@ -6066,7 +6066,7 @@ exports[`Form definitions > olo-mimoriadny-odvoz-a-zhodnotenie-odpadu > schema m
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "telefon": {
@@ -6903,7 +6903,7 @@ exports[`Form definitions > olo-odvoz-objemneho-odpadu-valnikom > schema matches
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "fakturacia": {
@@ -6931,7 +6931,7 @@ exports[`Form definitions > olo-odvoz-objemneho-odpadu-valnikom > schema matches
                           "ui:widget": "Input",
                         },
                         "format": "email",
-                        "title": "E-mail pre zasielanie elektronických faktúr",
+                        "title": "Email pre zasielanie elektronických faktúr",
                         "type": "string",
                       },
                     },
@@ -7606,7 +7606,7 @@ exports[`Form definitions > olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kon
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "fakturacia": {
@@ -7634,7 +7634,7 @@ exports[`Form definitions > olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kon
                           "ui:widget": "Input",
                         },
                         "format": "email",
-                        "title": "E-mail pre zasielanie elektronických faktúr",
+                        "title": "Email pre zasielanie elektronických faktúr",
                         "type": "string",
                       },
                     },
@@ -8124,7 +8124,7 @@ exports[`Form definitions > olo-olo-taxi > schema matches snapshot 1`] = `
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "menoPriezvisko": {
@@ -8673,7 +8673,7 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "kategoriaPodnetu": {
@@ -9014,7 +9014,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                   "telefon": {
@@ -9074,7 +9074,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "Nový e-mail",
+                    "title": "Nový email",
                     "type": "string",
                   },
                 },
@@ -9113,7 +9113,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                                 "ui:widget": "Input",
                               },
                               "format": "email",
-                              "title": "E-mail pre zasielanie elektronických faktúr",
+                              "title": "Email pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
                           },
@@ -9209,7 +9209,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                                 "ui:widget": "Input",
                               },
                               "format": "email",
-                              "title": "E-mail pre zasielanie elektronických faktúr",
+                              "title": "Email pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
                           },
@@ -9525,12 +9525,12 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                     "baOrder": 3,
                     "baUiSchema": {
                       "ui:options": {
-                        "helptext": "V prípade viacerých e-mailov ich oddeľte čiarkou",
+                        "helptext": "V prípade viacerých emailov ich oddeľte čiarkou",
                         "inputType": "text",
                       },
                       "ui:widget": "Input",
                     },
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                 },
@@ -9572,7 +9572,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                 true,
                 false,
               ],
-              "title": "Chcete dostať potvrdenie o prevzatí odpadov/obalov aj na iný e-mail ako uvedený v kroku žiadateľ?",
+              "title": "Chcete dostať potvrdenie o prevzatí odpadov/obalov aj na iný email ako uvedený v kroku žiadateľ?",
               "type": "boolean",
             },
             "infoOOdpade": {
@@ -10573,7 +10573,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                   "telefon": {
@@ -10633,7 +10633,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "Nový e-mail",
+                    "title": "Nový email",
                     "type": "string",
                   },
                 },
@@ -10672,7 +10672,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                                 "ui:widget": "Input",
                               },
                               "format": "email",
-                              "title": "E-mail pre zasielanie elektronických faktúr",
+                              "title": "Email pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
                           },
@@ -10768,7 +10768,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                                 "ui:widget": "Input",
                               },
                               "format": "email",
-                              "title": "E-mail pre zasielanie elektronických faktúr",
+                              "title": "Email pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
                           },
@@ -10976,12 +10976,12 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                     "baOrder": 3,
                     "baUiSchema": {
                       "ui:options": {
-                        "helptext": "V prípade viacerých e-mailov ich oddeľte čiarkou",
+                        "helptext": "V prípade viacerých emailov ich oddeľte čiarkou",
                         "inputType": "text",
                       },
                       "ui:widget": "Input",
                     },
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                 },
@@ -11023,7 +11023,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                 true,
                 false,
               ],
-              "title": "Chcete dostať potvrdenie o prevzatí odpadov/obalov aj na iný e-mail ako uvedený v kroku žiadateľ?",
+              "title": "Chcete dostať potvrdenie o prevzatí odpadov/obalov aj na iný email ako uvedený v kroku žiadateľ?",
               "type": "boolean",
             },
             "infoOOdpade": {
@@ -11934,7 +11934,7 @@ exports[`Form definitions > olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom > schem
                                       "ui:widget": "Input",
                                     },
                                     "format": "email",
-                                    "title": "E-mail pre zasielanie elektronických faktúr",
+                                    "title": "Email pre zasielanie elektronických faktúr",
                                     "type": "string",
                                   },
                                 },
@@ -12044,7 +12044,7 @@ exports[`Form definitions > olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom > schem
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "telefon": {
@@ -13652,7 +13652,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                                 "ui:widget": "Input",
                               },
                               "format": "email",
-                              "title": "E-mail",
+                              "title": "Email",
                               "type": "string",
                             },
                             "meno": {
@@ -15072,7 +15072,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                                 "ui:widget": "Input",
                               },
                               "format": "email",
-                              "title": "E-mail",
+                              "title": "Email",
                               "type": "string",
                             },
                             "ico": {
@@ -17935,7 +17935,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                   "maPrechodnyPobyt": {
@@ -19383,7 +19383,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                   "ico": {
@@ -20777,7 +20777,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                   "ico": {
@@ -22223,7 +22223,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                   "ico": {
@@ -23633,7 +23633,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                           "ui:widget": "Input",
                         },
                         "format": "email",
-                        "title": "E-mail",
+                        "title": "Email",
                         "type": "string",
                       },
                       "meno": {
@@ -41350,7 +41350,7 @@ exports[`Form definitions > paas-kontaktny-formular > schema matches snapshot 1`
                     "ui:widget": "Input",
                   },
                   "format": "email",
-                  "title": "E-mail",
+                  "title": "Email",
                   "type": "string",
                 },
                 "menoPriezviskoObchodneMeno": {
@@ -41453,7 +41453,7 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "meno": {
@@ -71966,7 +71966,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "telefon": {
@@ -72324,7 +72324,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                   "splnomocnenie": {
@@ -72489,7 +72489,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "meno": {
@@ -73131,7 +73131,7 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                   "telefonneCislo": {
@@ -73188,7 +73188,7 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
                           "ui:widget": "Input",
                         },
                         "format": "email",
-                        "title": "E-mail",
+                        "title": "Email",
                         "type": "string",
                       },
                       "meno": {
@@ -73346,13 +73346,13 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
                   "baOrder": 4,
                   "baUiSchema": {
                     "ui:options": {
-                      "helptext": "Faktúra vám bude zaslaná prostredníctvom tohto e-mailu",
+                      "helptext": "Faktúra vám bude zaslaná prostredníctvom tohto emailu",
                       "inputType": "email",
                     },
                     "ui:widget": "Input",
                   },
                   "format": "email",
-                  "title": "E-mail",
+                  "title": "Email",
                   "type": "string",
                 },
                 "fakturacnaAdresa": {
@@ -73880,7 +73880,7 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                   "telefonneCislo": {
@@ -73937,7 +73937,7 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
                           "ui:widget": "Input",
                         },
                         "format": "email",
-                        "title": "E-mail",
+                        "title": "Email",
                         "type": "string",
                       },
                       "meno": {
@@ -74107,13 +74107,13 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
                   "baOrder": 4,
                   "baUiSchema": {
                     "ui:options": {
-                      "helptext": "Faktúra vám bude zaslaná prostredníctvom tohto e-mailu",
+                      "helptext": "Faktúra vám bude zaslaná prostredníctvom tohto emailu",
                       "inputType": "email",
                     },
                     "ui:widget": "Input",
                   },
                   "format": "email",
-                  "title": "E-mail",
+                  "title": "Email",
                   "type": "string",
                 },
                 "mesto": {
@@ -74671,7 +74671,7 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                   "telefonneCislo": {
@@ -74728,7 +74728,7 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
                           "ui:widget": "Input",
                         },
                         "format": "email",
-                        "title": "E-mail",
+                        "title": "Email",
                         "type": "string",
                       },
                       "meno": {
@@ -75517,7 +75517,7 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                   "telefonneCislo": {
@@ -75574,7 +75574,7 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
                           "ui:widget": "Input",
                         },
                         "format": "email",
-                        "title": "E-mail",
+                        "title": "Email",
                         "type": "string",
                       },
                       "meno": {
@@ -75880,14 +75880,14 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
                     "ui:widget": "Input",
                   },
                   "format": "email",
-                  "title": "E-mail",
+                  "title": "Email",
                   "type": "string",
                 },
                 "planovanyDatumDemontaze": {
                   "baOrder": 9,
                   "baUiSchema": {
                     "ui:options": {
-                      "helptext": "Žiadateľ je povinný na základe písomnej výzvy zabezpečiť demontáž svojho zariadenia na vlastné náklady, a to v lehote najneskôr do **15 kalendárnych dní** od doručenia takejto výzvy prostredníctvom kontaktného e-mailu.",
+                      "helptext": "Žiadateľ je povinný na základe písomnej výzvy zabezpečiť demontáž svojho zariadenia na vlastné náklady, a to v lehote najneskôr do **15 kalendárnych dní** od doručenia takejto výzvy prostredníctvom kontaktného emailu.",
                       "helptextMarkdown": true,
                     },
                     "ui:widget": "DatePicker",
@@ -75900,7 +75900,7 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
                   "baOrder": 8,
                   "baUiSchema": {
                     "ui:options": {
-                      "helptext": "O zahájení prác je potrebné písomne informovať **minimálne 1 pracovný deň** vopred prostredníctvom e-mailu na [info@tsb.sk](mailto:info@tsb.sk).",
+                      "helptext": "O zahájení prác je potrebné písomne informovať **minimálne 1 pracovný deň** vopred prostredníctvom emailu na [info@tsb.sk](mailto:info@tsb.sk).",
                       "helptextMarkdown": true,
                     },
                     "ui:widget": "DatePicker",
@@ -76419,7 +76419,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "telefon": {
@@ -76789,7 +76789,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                   "splnomocnenie": {
@@ -76954,7 +76954,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "meno": {
@@ -77678,7 +77678,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                           true,
                           false,
                         ],
-                        "title": "Chcete byť kontaktovaný/á e-mailom?",
+                        "title": "Chcete byť kontaktovaný/á emailom?",
                         "type": "boolean",
                       },
                     },
@@ -78047,13 +78047,13 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                   "baOrder": 8,
                   "baUiSchema": {
                     "ui:options": {
-                      "helptext": "Ak nemáte e-mail, uveďte kontaktné údaje na inú osobu resp. organizáciu.",
+                      "helptext": "Ak nemáte email, uveďte kontaktné údaje na inú osobu resp. organizáciu.",
                       "inputType": "email",
                     },
                     "ui:widget": "Input",
                   },
                   "format": "email",
-                  "title": "E-mail",
+                  "title": "Email",
                   "type": "string",
                 },
                 "meno": {
@@ -89813,7 +89813,7 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
                     "baOrder": 15,
                     "baUiSchema": {
                       "ui:options": {
-                        "description": "Uvedenie telefónneho čísla a e-mailu je nepovinné. Ak ich poskytnete, môžeme vás v prípade potreby kontaktovať na doplnenie informácií. Žiadosť je možné odoslať aj bez vyplnenia týchto údajov.",
+                        "description": "Uvedenie telefónneho čísla a emailu je nepovinné. Ak ich poskytnete, môžeme vás v prípade potreby kontaktovať na doplnenie informácií. Žiadosť je možné odoslať aj bez vyplnenia týchto údajov.",
                         "objectDisplay": "boxed",
                         "title": "Kontaktné údaje",
                       },
@@ -89828,7 +89828,7 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
                           "ui:widget": "Input",
                         },
                         "format": "email",
-                        "title": "E-mail",
+                        "title": "Email",
                         "type": "string",
                       },
                       "telefon": {
@@ -89872,7 +89872,7 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
                     "baOrder": 16,
                     "baUiSchema": {
                       "ui:options": {
-                        "description": "Uvedenie telefónneho čísla a e-mailu je nepovinné. Ak ich poskytnete, môžeme vás v prípade potreby kontaktovať na doplnenie informácií. Žiadosť je možné odoslať aj bez vyplnenia týchto údajov.",
+                        "description": "Uvedenie telefónneho čísla a emailu je nepovinné. Ak ich poskytnete, môžeme vás v prípade potreby kontaktovať na doplnenie informácií. Žiadosť je možné odoslať aj bez vyplnenia týchto údajov.",
                         "objectDisplay": "boxed",
                         "title": "Kontaktné údaje",
                       },
@@ -89887,7 +89887,7 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
                           "ui:widget": "Input",
                         },
                         "format": "email",
-                        "title": "E-mail",
+                        "title": "Email",
                         "type": "string",
                       },
                       "meno": {
@@ -90085,7 +90085,7 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                 },
@@ -90182,7 +90182,7 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
                       "value": "elektronickaSchranka",
                     },
                     {
-                      "label": "na e-mailovú adresu",
+                      "label": "na emailovú adresu",
                       "value": "email",
                     },
                     {
@@ -90572,7 +90572,7 @@ exports[`Form definitions > ziadost-o-uzemnoplanovaciu-informaciu > schema match
                           "ui:widget": "Input",
                         },
                         "format": "email",
-                        "title": "E-mail",
+                        "title": "Email",
                         "type": "string",
                       },
                       "telefon": {
@@ -90635,7 +90635,7 @@ exports[`Form definitions > ziadost-o-uzemnoplanovaciu-informaciu > schema match
                           "ui:widget": "Input",
                         },
                         "format": "email",
-                        "title": "E-mail",
+                        "title": "Email",
                         "type": "string",
                       },
                       "meno": {
@@ -90712,7 +90712,7 @@ exports[`Form definitions > ziadost-o-uzemnoplanovaciu-informaciu > schema match
                       "ui:options": {
                         "enumMetadata": [
                           {
-                            "label": "E-mail",
+                            "label": "Email",
                             "value": "email",
                           },
                           {
@@ -90766,7 +90766,7 @@ exports[`Form definitions > ziadost-o-uzemnoplanovaciu-informaciu > schema match
                       "ui:options": {
                         "enumMetadata": [
                           {
-                            "label": "E-mail",
+                            "label": "Email",
                             "value": "email",
                           },
                           {

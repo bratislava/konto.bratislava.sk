@@ -109,7 +109,7 @@ exports[`slovenskoSkForm > komunitneZahradyExample > XML should match snapshot 1
         <Field id="root_ziadatel_psc" label="PSČ">
           <StringValue>82108</StringValue>
         </Field>
-        <Field id="root_ziadatel_email" label="E-mail">
+        <Field id="root_ziadatel_email" label="Email">
           <StringValue>jan.kovac@priklad.sk</StringValue>
         </Field>
         <Field id="root_ziadatel_telefon" label="Telefónne číslo">
@@ -307,7 +307,7 @@ exports[`slovenskoSkForm > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExamp
         <Field id="root_oznamovatel_rodneCislo" label="Rodné číslo">
           <StringValue>910313/1234</StringValue>
         </Field>
-        <Field id="root_oznamovatel_email" label="E-mail">
+        <Field id="root_oznamovatel_email" label="Email">
           <StringValue>jan.kovac@priklad.sk</StringValue>
         </Field>
         <Field id="root_oznamovatel_telefon" label="Telefónne číslo">
@@ -561,7 +561,7 @@ exports[`slovenskoSkForm > predzahradkyExample > XML should match snapshot 1`] =
         <Field id="root_ziadatel_psc" label="PSČ">
           <StringValue>82108</StringValue>
         </Field>
-        <Field id="root_ziadatel_email" label="E-mail">
+        <Field id="root_ziadatel_email" label="Email">
           <StringValue>jan.kovac@priklad.sk</StringValue>
         </Field>
         <Field id="root_ziadatel_telefon" label="Telefónne číslo">
@@ -2368,7 +2368,7 @@ exports[`slovenskoSkForm > stanoviskoKInvesticnemuZameruExample > XML should mat
         <Field id="root_ziadatel_psc" label="PSČ">
           <StringValue>82108</StringValue>
         </Field>
-        <Field id="root_ziadatel_email" label="E-mail">
+        <Field id="root_ziadatel_email" label="Email">
           <StringValue>jan.kovac@priklad.sk</StringValue>
         </Field>
         <Field id="root_ziadatel_telefon" label="Telefónne číslo">
@@ -2400,7 +2400,7 @@ exports[`slovenskoSkForm > stanoviskoKInvesticnemuZameruExample > XML should mat
         <Field id="root_stavebnik_psc" label="PSČ">
           <StringValue>83104</StringValue>
         </Field>
-        <Field id="root_stavebnik_email" label="E-mail">
+        <Field id="root_stavebnik_email" label="Email">
           <StringValue>marta.novakova@priklad.sk</StringValue>
         </Field>
         <Field id="root_stavebnik_telefon" label="Telefónne číslo">
@@ -2414,7 +2414,7 @@ exports[`slovenskoSkForm > stanoviskoKInvesticnemuZameruExample > XML should mat
         <Field id="root_zodpovednyProjektant_priezvisko" label="Priezvisko">
           <StringValue>Horváth</StringValue>
         </Field>
-        <Field id="root_zodpovednyProjektant_email" label="E-mail">
+        <Field id="root_zodpovednyProjektant_email" label="Email">
           <StringValue>peter.horvath@priklad.sk</StringValue>
         </Field>
         <Field id="root_zodpovednyProjektant_telefon" label="Telefónne číslo">
@@ -2581,7 +2581,7 @@ exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML sh
         <Field id="root_ziadatel_psc" label="PSČ">
           <StringValue>82108</StringValue>
         </Field>
-        <Field id="root_ziadatel_email" label="E-mail">
+        <Field id="root_ziadatel_email" label="Email">
           <StringValue>jan.kovac@priklad.sk</StringValue>
         </Field>
         <Field id="root_ziadatel_telefon" label="Telefónne číslo">
@@ -2613,7 +2613,7 @@ exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML sh
         <Field id="root_stavebnik_psc" label="PSČ">
           <StringValue>83104</StringValue>
         </Field>
-        <Field id="root_stavebnik_email" label="E-mail">
+        <Field id="root_stavebnik_email" label="Email">
           <StringValue>marta.novakova@priklad.sk</StringValue>
         </Field>
         <Field id="root_stavebnik_telefon" label="Telefónne číslo">
@@ -2627,7 +2627,7 @@ exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML sh
         <Field id="root_zodpovednyProjektant_priezvisko" label="Priezvisko">
           <StringValue>Horváth</StringValue>
         </Field>
-        <Field id="root_zodpovednyProjektant_email" label="E-mail">
+        <Field id="root_zodpovednyProjektant_email" label="Email">
           <StringValue>peter.horvath@priklad.sk</StringValue>
         </Field>
         <Field id="root_zodpovednyProjektant_telefon" label="Telefónne číslo">
@@ -2994,10 +2994,10 @@ exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 
         <Field id="root_ziadatelZiadatelka_osobneUdaje_rodinnyStav" label="Rodinný stav">
           <StringValue>Rozvedený/rozvedená</StringValue>
         </Field>
-        <Field id="root_ziadatelZiadatelka_osobneUdaje_email" label="E-mail">
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_email" label="Email">
           <StringValue>jana.novakova@email.com</StringValue>
         </Field>
-        <Field id="root_ziadatelZiadatelka_osobneUdaje_kontaktovanyEmailom" label="Chcete byť kontaktovaný/á e-mailom?">
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_kontaktovanyEmailom" label="Chcete byť kontaktovaný/á emailom?">
           <StringValue>Áno</StringValue>
         </Field>
         <Field id="root_ziadatelZiadatelka_osobneUdaje_telefonneCislo" label="Telefónne číslo">
@@ -3340,7 +3340,7 @@ exports[`slovenskoSkForm > ziadostOSlobodnyPristupKInformaciamExample > XML shou
         <Field id="root_ziadatel_psc" label="PSČ">
           <StringValue>82109</StringValue>
         </Field>
-        <Field id="root_ziadatel_kontaktneUdaje_email" label="E-mail">
+        <Field id="root_ziadatel_kontaktneUdaje_email" label="Email">
           <StringValue>martin.kovac@example.com</StringValue>
         </Field>
         <Field id="root_ziadatel_kontaktneUdaje_telefon" label="Telefónne číslo">
@@ -3360,9 +3360,9 @@ exports[`slovenskoSkForm > ziadostOSlobodnyPristupKInformaciamExample > XML shou
       </Step>
       <Step id="root_sposobSpristupnenia" title="Spôsob sprístupnenia informácií">
         <Field id="root_sposobSpristupnenia_sposobSpristupnenia" label="Akým spôsobom chcete sprístupniť požadované informácie">
-          <StringValue>na e-mailovú adresu</StringValue>
+          <StringValue>na emailovú adresu</StringValue>
         </Field>
-        <Field id="root_sposobSpristupnenia_emailSpristupnenia" label="E-mail">
+        <Field id="root_sposobSpristupnenia_emailSpristupnenia" label="Email">
           <StringValue>martin.kovac@example.com</StringValue>
         </Field>
       </Step>
@@ -3399,14 +3399,14 @@ exports[`slovenskoSkForm > ziadostOUzemnoplanovaciuInformaciuExample > XML shoul
         <Field id="root_ziadatel_psc" label="PSČ">
           <StringValue>82109</StringValue>
         </Field>
-        <Field id="root_ziadatel_kontaktneUdaje_email" label="E-mail">
+        <Field id="root_ziadatel_kontaktneUdaje_email" label="Email">
           <StringValue>jana.svobodova@priklad.sk</StringValue>
         </Field>
         <Field id="root_ziadatel_kontaktneUdaje_telefon" label="Telefónne číslo">
           <StringValue>+421917654321</StringValue>
         </Field>
         <Field id="root_ziadatel_formaDorucovania" label="Akou formou chcete doručiť územnoplánovaciu informáciu?">
-          <StringValue>E-mail</StringValue>
+          <StringValue>Email</StringValue>
         </Field>
       </Step>
       <Step id="root_detailAUcel" title="Detail a účel">

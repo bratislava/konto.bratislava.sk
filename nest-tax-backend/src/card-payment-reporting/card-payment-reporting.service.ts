@@ -1,19 +1,24 @@
 import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 import { parse } from 'csv-parse/sync'
-import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
 
 import BaConfigService from '../config/ba-config.service'
 import { TaxType } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
+import {
+  formatDDMMYYYY,
+  formatSlovakDate,
+  formatYYMMDD,
+  isBefore,
+  nowInBratislava,
+} from '../utils/functions/temporal'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import EmailSubservice from '../utils/subservices/email.subservice'
-import SftpFileSubservice from '../utils/subservices/sftp-file.subservice'
+import SftpFileSubservice, {
+  parseSftpFileNameDate,
+} from '../utils/subservices/sftp-file.subservice'
 
-dayjs.extend(utc)
-dayjs.extend(timezone)
+const REPORT_FILE_MAX_AGE_DAYS = 180
 
 interface ReportTypeConfig {
   taxType: TaxType
@@ -51,7 +56,7 @@ export interface OutputFile {
   filename: string
   content: string
   debet: number
-  date: dayjs.Dayjs
+  date: Temporal.PlainDate
 }
 
 @Injectable()
@@ -98,22 +103,14 @@ export class CardPaymentReportingService {
     return price >= 0 ? paddedPrice : '-'.concat(paddedPrice)
   }
 
-  private extractFileDate(fileName: string): string | null {
-    const fileDateMatches = fileName.split('_').pop()?.slice(0, 6)
-    if (!fileDateMatches || Number.isNaN(Number(fileDateMatches))) {
-      return null
-    }
-    return `20${fileDateMatches}` // Add century
-  }
-
-  private getDateInfo(fileDate: string) {
-    const today = dayjs(fileDate).tz('Europe/Bratislava')
-    const yesterday = today.subtract(1, 'day')
+  private getDateInfo(fileDate: Temporal.PlainDate) {
+    const today = fileDate
+    const yesterday = today.subtract({ days: 1 })
     return {
-      today_DDMMYYYY: today.format('DDMMYYYY'),
-      today_YYMMDD: today.format('YYMMDD'),
-      yesterday_DDMMYYYY: yesterday.format('DDMMYYYY'),
-      humanReadable: today.format('DD.MM.YYYY'),
+      today_DDMMYYYY: formatDDMMYYYY(today),
+      today_YYMMDD: formatYYMMDD(today),
+      yesterday_DDMMYYYY: formatDDMMYYYY(yesterday),
+      humanReadable: formatSlovakDate(today),
       today,
     }
   }
@@ -309,11 +306,13 @@ export class CardPaymentReportingService {
       from,
     )
 
-    const hundredEightyDaysAgo = dayjs().subtract(180, 'day')
+    const maxAgeCutoff = nowInBratislava()
+      .toPlainDate()
+      .subtract({ days: REPORT_FILE_MAX_AGE_DAYS })
 
     const outputFiles: (OutputFile | null)[] = await Promise.all(
       sftpFiles.map(async (file) => {
-        const fileDate = this.extractFileDate(file.name)
+        const fileDate = parseSftpFileNameDate(file.name)
         if (!fileDate) {
           this.logger.warn({
             message:
@@ -324,11 +323,11 @@ export class CardPaymentReportingService {
           return null
         }
 
-        const dateInfo = this.getDateInfo(fileDate)
-
-        if (dateInfo.today.isBefore(hundredEightyDaysAgo)) {
+        if (isBefore(fileDate, maxAgeCutoff)) {
           return null
         }
+
+        const dateInfo = this.getDateInfo(fileDate)
 
         const csvData = this.processCsvData(file.content)
 
@@ -402,17 +401,12 @@ export class CardPaymentReportingService {
       contentType: 'text/plain',
     }))
 
-    outputFiles.sort((a, b) => {
-      if (a.date.isBefore(b.date)) {
-        return a.date.isAfter(b.date) ? 1 : -1
-      }
-      return a.date.isAfter(b.date) ? 1 : 0
-    })
+    outputFiles.sort((a, b) => Temporal.PlainDate.compare(a.date, b.date))
 
     const message =
       attachments.length === 0
         ? 'Dnes nie je čo reportovať.'
-        : `Report z dní:\n  - ${outputFiles.map((file) => [file.date.format('DD.MM.YYYY'), ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
+        : `Report z dní:\n  - ${outputFiles.map((file) => [formatSlovakDate(file.date), ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
 
     await this.mailSubservice.send(
       emailRecipients,

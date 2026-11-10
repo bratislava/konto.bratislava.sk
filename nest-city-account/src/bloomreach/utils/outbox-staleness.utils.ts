@@ -1,7 +1,6 @@
-import dayjs from 'dayjs'
-
 import { BloomreachOutboxStatus } from '../../generated/prisma/enums'
 import type * as Prisma from '../../generated/prisma/internal/prismaNamespace'
+import { toDate } from '../../utils/functions/temporal'
 
 /**
  * Bloomreach processes delivered commands in a queue. Typically within ~10
@@ -21,7 +20,9 @@ export function isLiveOrRecentlyCompleted(
     { status: { in: [BloomreachOutboxStatus.PENDING, BloomreachOutboxStatus.PROCESSING] } },
     {
       status: BloomreachOutboxStatus.COMPLETED,
-      updatedAt: { gte: dayjs().subtract(propagationWindowHours, 'hour').toDate() },
+      updatedAt: {
+        gte: toDate(Temporal.Now.instant().subtract({ hours: propagationWindowHours })),
+      },
     },
   ]
 }

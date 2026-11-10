@@ -66,10 +66,12 @@ const MyApplicationDetails = ({
       />
       <SectionContainer className="py-6 lg:pt-8 lg:pb-18">
         <div className="flex flex-col gap-6 lg:gap-8">
-          <div className="flex flex-col gap-2 lg:gap-4">
-            <SectionHeader title={t('MyApplicationDetails.detailsTitle')} />
-            <LabelValueRowGroup rows={detailsRows} />
-          </div>
+          {detailsRows.length > 0 ? (
+            <div className="flex flex-col gap-2 lg:gap-4">
+              <SectionHeader title={t('MyApplicationDetails.detailsTitle')} />
+              <LabelValueRowGroup rows={detailsRows} />
+            </div>
+          ) : null}
           <div className="flex flex-col gap-2 lg:gap-4">
             <SectionHeader title={t('MyApplicationDetails.historyTitle')} />
             <LabelValueRowGroup rows={historyRows} />

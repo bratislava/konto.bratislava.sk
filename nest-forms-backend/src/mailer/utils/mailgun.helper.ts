@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common'
 import FormData from 'form-data'
 import Handlebars from 'handlebars'
 import Mailgun from 'mailgun.js'
-import { Interfaces, TemplateQuery } from 'mailgun.js/definitions'
+import { Enums, Interfaces } from 'mailgun.js/definitions'
 
 import BaConfigService from '../../config/ba-config.service'
 import StrapiService from '../../strapi/strapi.service'
@@ -100,7 +100,7 @@ export default class MailgunHelper {
     const response = await this.mailgunClient.domains.domainTemplates.get(
       this.baConfigService.mailgun.domain,
       templateName,
-      { active: 'yes' } as TemplateQuery, // There is an error when importing mailgun.js/Enums, thus this is needed
+      { active: Enums.YesNo.YES },
     )
 
     if (!response.version?.template) {

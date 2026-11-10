@@ -119,6 +119,7 @@ describe('DeliveryMethodCodec', () => {
 
     it('should throw when encoding empty string', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment -- deliberately invalid delivery method
         DeliveryMethodCodec.encode('' as DeliveryMethod)
       }).toThrow()
     })

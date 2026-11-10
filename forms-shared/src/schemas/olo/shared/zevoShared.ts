@@ -70,7 +70,7 @@ export const getZevoSchema = (type: ZevoType) => [
           ],
         ),
         sharedAddressField('adresaPravnickaOsoba', 'Adresa sídla organizácie', true),
-        input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+        input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
         input('dic', { type: 'text', title: 'DIČ', required: true }, {}),
         checkbox(
           'platcaDph',
@@ -338,7 +338,7 @@ export const getZevoSchema = (type: ZevoType) => [
                 {},
               ),
               sharedAddressField('sidloOrganizacie', 'Adresa sídla organizácie', true),
-              input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+              input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
             ],
           ),
           conditionalFields(createCondition([[['typPovodcuOdpadu'], { const: 'Fyzická osoba' }]]), [
@@ -394,7 +394,7 @@ export const getZevoSchema = (type: ZevoType) => [
                 {},
               ),
               sharedAddressField('sidloOrganizacie', 'Adresa sídla organizácie', true),
-              input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+              input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
             ],
           ),
           conditionalFields(

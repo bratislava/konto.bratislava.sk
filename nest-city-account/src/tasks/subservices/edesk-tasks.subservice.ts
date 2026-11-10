@@ -73,11 +73,10 @@ export class EdeskTasksSubservice {
   }
 
   private mapUpvsEdeskStatusToNorisType(status: string): EdeskStatus {
-    const parsedStatus = z.enum(UpvsIdentityUpvsEdeskStatusEnum).safeParse(status)
-    if (!parsedStatus.success) {
+    if (!z.enum(UpvsIdentityUpvsEdeskStatusEnum).validate(status)) {
       throw new Error(`Invalid UPVS eDesk status: ${status}`)
     }
-    switch (parsedStatus.data) {
+    switch (status) {
       case UpvsIdentityUpvsEdeskStatusEnum.Nonexistent:
         return EdeskStatus.NONEXISTENT
       case UpvsIdentityUpvsEdeskStatusEnum.Created:

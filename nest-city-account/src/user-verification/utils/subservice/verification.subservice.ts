@@ -1,6 +1,5 @@
 import { LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
-import { ResponseRpoLegalPersonDto } from 'openapi-clients/magproxy'
 
 import { MagproxyErrorsEnum } from '../../../magproxy/magproxy.errors.enum'
 import { MagproxyService } from '../../../magproxy/magproxy.service'
@@ -11,10 +10,8 @@ import {
   CognitoGetUserData,
   CognitoUserAttributesEnum,
 } from '../../../utils/global-dtos/cognito.dto'
-import {
-  RequestBodyVerifyIdentityCardDto,
-  RequestBodyVerifyWithRpoDto,
-} from '../../dtos/requests.verification.dto'
+import { IdentityCardVerificationRequest } from '../../dtos/identity-card-verification-queue.dto'
+import { RequestBodyVerifyIdentityCardDto } from '../../dtos/requests.verification.dto'
 import { VerificationReturnType } from '../../types'
 import { VerificationErrorsEnum } from '../../verification.errors.enum'
 import { VerificationDataSubservice } from './verification-data.subservice'
@@ -69,36 +66,6 @@ export class VerificationSubservice {
     return {
       success: false,
       reason: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
-    }
-  }
-
-  private verifyRpoStatutory(
-    legalEntity: ResponseRpoLegalPersonDto,
-    birthNumber: string,
-    userSub: string
-  ): VerificationReturnType {
-    const statutoryBodies = legalEntity.statutarneOrgany
-
-    for (const statutoryBody of statutoryBodies ?? []) {
-      for (const externalId of statutoryBody.osoba.fyzickaOsoba.externeIds) {
-        if (
-          externalId.typIdentifikatora.nazov === 'Rodné číslo' &&
-          externalId.identifikator.replace('/', '') === birthNumber.replace('/', '')
-        ) {
-          return { success: true }
-        }
-      }
-    }
-
-    this.logger.warn({
-      message: 'Could not match birthnumber with statutory organ from RPO',
-      ico: legalEntity.ico,
-      userSub,
-      statutoryBodyCount: statutoryBodies?.length ?? 0,
-    })
-    return {
-      success: false,
-      reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
     }
   }
 
@@ -171,16 +138,13 @@ export class VerificationSubservice {
    * The function attempts to verify the user's identity by comparing RFO data from magproxy with the provided data.
    * It creates a PhysicalEntity entry in the database alongside a new User (user only if the verification is successful).
    *
-   * @param {CognitoGetUserData} user - The user object from Cognito.
-   * @param {RequestBodyVerifyIdentityCardDto} data - The data for verifying the identity card.
-   * @param {string} [ico] - The optional ICO number.
+   * @param {IdentityCardVerificationRequest} request - The user from Cognito and the data for verifying the identity card.
    * @throws {Error} - If there is an unexpected error during the verification process.
    */
-  async verifyIdentityCard(
-    user: CognitoGetUserData,
-    data: RequestBodyVerifyIdentityCardDto,
-    ico?: string
-  ): Promise<VerificationReturnType> {
+  async verifyIdentityCard({
+    user,
+    data,
+  }: IdentityCardVerificationRequest): Promise<VerificationReturnType> {
     if (!isValidBirthNumber(data.birthNumber)) {
       return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT }
     }
@@ -203,12 +167,11 @@ export class VerificationSubservice {
     const { firstMatchingRfo, birthNumberNotExistCounter } = this.findMatchingRfoEntry(
       rfoData.data,
       data.identityCard,
-      user,
-      ico
+      user
     )
 
     if (firstMatchingRfo !== null) {
-      return this.handleMatchedRfoEntry(user, ico, firstMatchingRfo)
+      return this.handleMatchedRfoEntry(user, firstMatchingRfo)
     }
 
     // No RFO response contained birthNumber
@@ -216,14 +179,13 @@ export class VerificationSubservice {
       return { success: false, reason: MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
     }
 
-    return this.verifyIdentityCardViaDcom(user, data, ico)
+    return this.verifyIdentityCardViaDcom(user, data)
   }
 
   private findMatchingRfoEntry(
     rfoEntries: RfoIdentityListElement[],
     identityCard: string,
-    user: CognitoGetUserData,
-    ico: string | undefined
+    user: CognitoGetUserData
   ): { firstMatchingRfo: RfoIdentityListElement | null; birthNumberNotExistCounter: number } {
     let birthNumberNotExistCounter = 0
 
@@ -239,8 +201,8 @@ export class VerificationSubservice {
         continue
       }
 
-      // For physical person, require Cognito given_name + family_name match to RFO
-      if (!ico && !this.validatePersonName(rfoDataSingle, user.given_name, user.family_name)) {
+      // Require Cognito given_name + family_name match to RFO
+      if (!this.validatePersonName(rfoDataSingle, user.given_name, user.family_name)) {
         this.logger.warn('We refused validation based on names not matching.', {
           cognitoID: user.sub,
           hasGivenName: !!user.given_name,
@@ -260,7 +222,6 @@ export class VerificationSubservice {
 
   private async handleMatchedRfoEntry(
     user: CognitoGetUserData,
-    ico: string | undefined,
     matchingRfo: RfoIdentityListElement
   ): Promise<VerificationReturnType> {
     const birthNumber = matchingRfo.rodneCislo?.replaceAll('/', '')
@@ -268,39 +229,31 @@ export class VerificationSubservice {
       return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
     }
 
-    const databaseResult = ico
-      ? await this.verificationDataSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
-          user,
-          ico,
-          birthNumber
-        )
-      : await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
-          user,
-          matchingRfo.ifo || null,
-          birthNumber,
-          0
-        )
+    const databaseResult =
+      await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
+        user,
+        matchingRfo.ifo || null,
+        birthNumber,
+        0
+      )
 
     if (!databaseResult.success) {
       return databaseResult
     }
 
-    if (!ico) {
-      const dbUser = await this.verificationDataSubservice.findUserByEmailOrExternalId(
-        user.email,
-        user.idUser
-      )
-      if (dbUser !== null) {
-        await this.physicalEntityService.linkToUserIdByBirthnumber(dbUser.id, birthNumber)
-      }
+    const dbUser = await this.verificationDataSubservice.findUserByEmailOrExternalId(
+      user.email,
+      user.idUser
+    )
+    if (dbUser !== null) {
+      await this.physicalEntityService.linkToUserIdByBirthnumber(dbUser.id, birthNumber)
     }
     return { success: true }
   }
 
   private async verifyIdentityCardViaDcom(
     user: CognitoGetUserData,
-    data: RequestBodyVerifyIdentityCardDto,
-    ico: string | undefined
+    data: RequestBodyVerifyIdentityCardDto
   ): Promise<VerificationReturnType> {
     const rfoDataDcom = await this.magproxyService.rfoBirthNumberDcom(data.birthNumber)
 
@@ -317,8 +270,8 @@ export class VerificationSubservice {
       return rfoCheckDcom
     }
 
-    // For physical person, require Cognito given_name + family_name match to RFO
-    if (!ico && !this.validatePersonName(rfoDataDcom.data, user.given_name, user.family_name)) {
+    // Require Cognito given_name + family_name match to RFO
+    if (!this.validatePersonName(rfoDataDcom.data, user.given_name, user.family_name)) {
       this.logger.warn('We refused validation based on names not matching.', {
         cognitoID: user.sub,
         hasGivenName: !!user.given_name,
@@ -330,50 +283,11 @@ export class VerificationSubservice {
     }
 
     const birthNumber = rfoDataDcom.data.rodneCislo.replaceAll('/', '')
-    const dbResultDcom = ico
-      ? await this.verificationDataSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
-          user,
-          ico,
-          birthNumber
-        )
-      : await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
-          user,
-          rfoDataDcom.data.ifo || null,
-          birthNumber,
-          1
-        )
-
-    return dbResultDcom.success
-      ? { success: true }
-      : { success: false, reason: VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY }
-  }
-
-  async verifyIcoIdentityCard(
-    user: CognitoGetUserData,
-    data: RequestBodyVerifyWithRpoDto
-  ): Promise<VerificationReturnType> {
-    if (!isValidBirthNumber(data.birthNumber)) {
-      return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT }
-    }
-
-    const rpoData = await this.magproxyService.rpoIco(data.ico)
-    if (!rpoData.success) {
-      return rpoData
-    }
-
-    const verifyStatutory = this.verifyRpoStatutory(rpoData.data, data.birthNumber, user.sub)
-    if (!verifyStatutory.success) {
-      return verifyStatutory
-    }
-
-    return await this.verifyIdentityCard(
+    return await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
       user,
-      {
-        birthNumber: data.birthNumber,
-        identityCard: data.identityCard,
-        turnstileToken: data.turnstileToken,
-      },
-      data.ico
+      rfoDataDcom.data.ifo || null,
+      birthNumber,
+      1
     )
   }
 }

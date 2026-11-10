@@ -10,6 +10,7 @@ import { step } from '../generator/functions/step'
 import { textArea } from '../generator/functions/textArea'
 import { createCondition } from '../generator/helpers'
 import { object } from '../generator/object'
+import { sharedPhoneNumberField } from './shared/fields'
 
 const addressFields = (title: string) => [
   input(
@@ -113,11 +114,7 @@ export default schema(
                     ])
                     .otherwise(() => []),
                   input('email', { title: 'Email', required: false, type: 'email' }, {}),
-                  input(
-                    'telefon',
-                    { type: 'ba-phone-number', title: 'Telefónne číslo', required: false },
-                    { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
-                  ),
+                  sharedPhoneNumberField('telefon', false),
                 ],
               ),
             ],
@@ -166,11 +163,7 @@ export default schema(
         input('emailSpristupnenia', { title: 'Email', type: 'email', required: true }, {}),
       ]),
       conditionalFields(createCondition([[['sposobSpristupnenia'], { const: 'telefon' }]]), [
-        input(
-          'telefon',
-          { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
-          { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
-        ),
+        sharedPhoneNumberField('telefon', true),
       ]),
       conditionalFields(createCondition([[['sposobSpristupnenia'], { const: 'fax' }]]), [
         input(

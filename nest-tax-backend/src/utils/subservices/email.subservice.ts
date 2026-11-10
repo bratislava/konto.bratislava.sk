@@ -4,8 +4,7 @@ import {
   LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
-import nodemailer from 'nodemailer'
-import { SentMessageInfo } from 'nodemailer/lib/smtp-transport'
+import nodemailer, { SMTPSentMessageInfo, Transporter } from 'nodemailer'
 
 import BaConfigService from '../../config/ba-config.service'
 
@@ -22,7 +21,7 @@ import BaConfigService from '../../config/ba-config.service'
  */
 @Injectable()
 export default class EmailSubservice {
-  private readonly transporter: nodemailer.Transporter<SentMessageInfo>
+  private readonly transporter: Transporter<SMTPSentMessageInfo>
 
   constructor(
     private readonly baConfigService: BaConfigService,

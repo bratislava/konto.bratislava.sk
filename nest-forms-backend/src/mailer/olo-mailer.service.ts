@@ -1,6 +1,6 @@
 import { ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
-import nodemailer from 'nodemailer'
+import nodemailer, { Transporter } from 'nodemailer'
 
 import BaConfigService from '../config/ba-config.service'
 import {
@@ -13,7 +13,7 @@ import MailgunHelper from './utils/mailgun.helper'
 
 @Injectable()
 export default class OloMailerService implements Mailer {
-  oloTransporter: nodemailer.Transporter
+  oloTransporter: Transporter
 
   constructor(
     private readonly baConfigService: BaConfigService,

@@ -344,6 +344,16 @@ export class UpdateFormResponseDto {
   @IsOptional()
   declare finishSubmission: Date | null
 
+  @Type(() => Date)
+  @ApiProperty({
+    description: FORM_SENT_AT_DESCRIPTION,
+    example: new Date('2026-01-01'),
+    nullable: true,
+  })
+  @IsOptional()
+  @IsDate()
+  declare formSentAt: Date | null
+
   @ApiProperty({
     description: 'Slug of the form definition',
     example: 'zavazne-stanovisko-k-investicnej-cinnosti',

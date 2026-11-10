@@ -329,7 +329,20 @@ export default schema(
               required: true,
             },
             {
-              helptext: 'Slovak IČO, six to eight digits',
+              helptext:
+                'Slovak IČO, eight or twelve digits. Default format, use this one unless the form specifically needs only 8-digit IČO.',
+            },
+          ),
+          input(
+            'icoEightDigit',
+            {
+              type: 'ba-ico-8-digit-only',
+              title: 'IČO (eight digits)',
+              required: true,
+            },
+            {
+              helptext:
+                'Slovak IČO, eight digits only. Used only in specific case, such as "priznanie k dani z nehnuteľností".',
             },
           ),
         ],

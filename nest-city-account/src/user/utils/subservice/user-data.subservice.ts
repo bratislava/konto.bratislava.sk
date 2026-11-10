@@ -609,11 +609,6 @@ export class UserDataSubservice {
           ico: null,
           birthnumberIcoAlreadyExistsCounter: 0,
           birthnumberIcoAlreadyExistsLast: null,
-          legalPersonIcoIdCardVerify: {
-            deleteMany: {
-              legalPersonId: legalPerson.id,
-            },
-          },
         },
       })
     }

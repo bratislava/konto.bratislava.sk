@@ -362,9 +362,8 @@ const getOsobneUdajeSection = (stepType: StepType) => {
           { type: 'ba-slovak-phone-number', title: 'Telefónne číslo', required: true },
           {
             size: 'medium',
-            placeholder: '+421',
             helptext:
-              'Ak nemáte telefonický kontakt, uveďte kontaktné údaje na inú osobu resp. organizáciu. Vyplňte vo formáte s predvoľbou +421.',
+              'Ak nemáte telefonický kontakt, uveďte kontaktné údaje na inú osobu resp. organizáciu. Vyplňte vo formáte +421.',
           },
         )
       : null,

@@ -25,7 +25,7 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, [
     ),
     input('nazov', { type: 'text', title: 'Názov organizácie', required: true }, {}),
     sharedAddressField('adresaSidla', 'Adresa sídla organizácie', true),
-    input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+    input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
     input('dic', { type: 'text', title: 'DIČ', required: true }, {}),
     checkbox(
       'platcaDph',

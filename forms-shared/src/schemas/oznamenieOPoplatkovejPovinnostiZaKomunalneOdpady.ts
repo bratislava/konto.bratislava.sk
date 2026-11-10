@@ -18,6 +18,7 @@ import { createCondition } from '../generator/helpers'
 import { object } from '../generator/object'
 import { esbsKatastralneUzemiaCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
 import { esbsNationalityCiselnik } from './priznanie-k-dani-z-nehnutelnosti/esbsCiselniky'
+import { sharedPhoneNumberField } from './shared/fields'
 
 const komunalnyOdpadOptions = {
   fyzickaOsoba: {
@@ -634,11 +635,7 @@ const getOsobaFields = (
       )
       .otherwise(() => []),
     input('email', { title: 'Email', required: true, type: 'email' }, {}),
-    input(
-      'telefon',
-      { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
-      { size: 'medium', placeholder: '+421', helptext: 'Vyplňte vo formáte +421' },
-    ),
+    sharedPhoneNumberField('telefon', true),
     ...getAdresaFields(
       match(osobaTyp)
         .with('fyzickaOsoba', () => 'Adresa trvalého pobytu')

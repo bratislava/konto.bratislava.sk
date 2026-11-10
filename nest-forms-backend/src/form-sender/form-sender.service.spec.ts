@@ -188,7 +188,7 @@ describe('FormSenderService', () => {
       })
 
       vi.mocked(service['nasesSenderService'].send).mockResolvedValue({
-        status: 404,
+        status: HttpStatus.NOT_FOUND,
         data: {},
       })
 
@@ -315,7 +315,7 @@ describe('FormSenderService', () => {
         actor: { sub: 'actor-sub' },
       } as JwtNasesPayload
       ;(getFormDefinitionBySlug as Mock).mockReturnValue(mockFormDefinition)
-      const nasesSendResponse = { status: 404, data: {} }
+      const nasesSendResponse = { status: HttpStatus.NOT_FOUND, data: {} }
       vi.mocked(service['nasesSenderService'].send).mockResolvedValue(
         nasesSendResponse,
       )
@@ -374,7 +374,7 @@ describe('FormSenderService', () => {
       } as JwtNasesPayload
       ;(getFormDefinitionBySlug as Mock).mockReturnValue(mockFormDefinition)
       vi.mocked(service['nasesSenderService'].send).mockResolvedValue({
-        status: 200,
+        status: HttpStatus.OK,
         data: {},
       })
       const sendToNasesSpy = vi.spyOn(service, 'sendToNasesAndUpdateState')
@@ -430,7 +430,7 @@ describe('FormSenderService', () => {
       } as JwtNasesPayload
       ;(getFormDefinitionBySlug as Mock).mockReturnValue(mockFormDefinition)
       vi.mocked(service['nasesSenderService'].send).mockResolvedValue({
-        status: 200,
+        status: HttpStatus.OK,
         data: {},
       })
       const sendToNasesSpy = vi.spyOn(service, 'sendToNasesAndUpdateState')
@@ -485,7 +485,7 @@ describe('FormSenderService', () => {
       } as JwtNasesPayload
       ;(getFormDefinitionBySlug as Mock).mockReturnValue(mockFormDefinition)
       vi.mocked(service['nasesSenderService'].send).mockResolvedValue({
-        status: 200,
+        status: HttpStatus.OK,
         data: {},
       })
       const sendToNasesSpy = vi.spyOn(service, 'sendToNasesAndUpdateState')

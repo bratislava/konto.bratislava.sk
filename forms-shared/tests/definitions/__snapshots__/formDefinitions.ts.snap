@@ -151,6 +151,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                 },
                 "ui:widget": "Input",
               },
+              "format": "ba-ico",
               "title": "IČO",
               "type": "string",
             },
@@ -1332,6 +1333,7 @@ exports[`Form definitions > olo-docistenie-stanovista-zbernych-nadob > schema ma
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -1549,8 +1551,8 @@ exports[`Form definitions > olo-docistenie-stanovista-zbernych-nadob > schema ma
               "baOrder": 13,
               "baUiSchema": {
                 "ui:options": {
+                  "helptext": "Vyplňte vo formáte +421",
                   "inputType": "tel",
-                  "placeholder": "+421",
                   "size": "medium",
                 },
                 "ui:widget": "Input",
@@ -2124,6 +2126,7 @@ exports[`Form definitions > olo-energeticke-zhodnotenie-odpadu-v-zevo > schema m
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -2679,8 +2682,8 @@ exports[`Form definitions > olo-energeticke-zhodnotenie-odpadu-v-zevo > schema m
               "baOrder": 14,
               "baUiSchema": {
                 "ui:options": {
+                  "helptext": "Vyplňte vo formáte +421",
                   "inputType": "tel",
-                  "placeholder": "+421",
                   "size": "medium",
                 },
                 "ui:widget": "Input",
@@ -2813,6 +2816,7 @@ exports[`Form definitions > olo-energeticke-zhodnotenie-odpadu-v-zevo > schema m
                             },
                             "ui:widget": "Input",
                           },
+                          "format": "ba-ico",
                           "title": "IČO",
                           "type": "string",
                         },
@@ -3143,6 +3147,7 @@ exports[`Form definitions > olo-energeticke-zhodnotenie-odpadu-v-zevo > schema m
                             },
                             "ui:widget": "Input",
                           },
+                          "format": "ba-ico",
                           "title": "IČO",
                           "type": "string",
                         },
@@ -5159,6 +5164,7 @@ exports[`Form definitions > olo-kolo-taxi > schema matches snapshot 1`] = `
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -5267,10 +5273,11 @@ exports[`Form definitions > olo-kolo-taxi > schema matches snapshot 1`] = `
                               "baOrder": 3,
                               "baUiSchema": {
                                 "ui:options": {
-                                  "inputType": "text",
+                                  "inputType": "email",
                                 },
                                 "ui:widget": "Input",
                               },
+                              "format": "email",
                               "title": "E-mail pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
@@ -5352,8 +5359,8 @@ exports[`Form definitions > olo-kolo-taxi > schema matches snapshot 1`] = `
               "baOrder": 13,
               "baUiSchema": {
                 "ui:options": {
+                  "helptext": "Vyplňte vo formáte +421",
                   "inputType": "tel",
-                  "placeholder": "+421",
                   "size": "medium",
                 },
                 "ui:widget": "Input",
@@ -5825,6 +5832,7 @@ exports[`Form definitions > olo-mimoriadny-odvoz-a-zhodnotenie-odpadu > schema m
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -6065,8 +6073,8 @@ exports[`Form definitions > olo-mimoriadny-odvoz-a-zhodnotenie-odpadu > schema m
               "baOrder": 13,
               "baUiSchema": {
                 "ui:options": {
+                  "helptext": "Vyplňte vo formáte +421",
                   "inputType": "tel",
-                  "placeholder": "+421",
                   "size": "medium",
                 },
                 "ui:widget": "Input",
@@ -6981,6 +6989,7 @@ exports[`Form definitions > olo-odvoz-objemneho-odpadu-valnikom > schema matches
                 },
                 "ui:widget": "Input",
               },
+              "format": "ba-ico",
               "title": "IČO",
               "type": "string",
             },
@@ -7022,8 +7031,8 @@ exports[`Form definitions > olo-odvoz-objemneho-odpadu-valnikom > schema matches
               "baOrder": 11,
               "baUiSchema": {
                 "ui:options": {
+                  "helptext": "Vyplňte vo formáte +421",
                   "inputType": "tel",
-                  "placeholder": "+421",
                   "size": "medium",
                 },
                 "ui:widget": "Input",
@@ -7462,6 +7471,7 @@ exports[`Form definitions > olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kon
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -7679,8 +7689,8 @@ exports[`Form definitions > olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kon
               "baOrder": 13,
               "baUiSchema": {
                 "ui:options": {
+                  "helptext": "Vyplňte vo formáte +421",
                   "inputType": "tel",
-                  "placeholder": "+421",
                   "size": "medium",
                 },
                 "ui:widget": "Input",
@@ -8155,8 +8165,8 @@ exports[`Form definitions > olo-olo-taxi > schema matches snapshot 1`] = `
               "baOrder": 4,
               "baUiSchema": {
                 "ui:options": {
+                  "helptext": "Vyplňte vo formáte +421",
                   "inputType": "tel",
-                  "placeholder": "+421",
                   "size": "medium",
                 },
                 "ui:widget": "Input",
@@ -8879,6 +8889,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -8933,6 +8944,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO pôvodného odberateľa",
                     "type": "string",
                   },
@@ -8944,6 +8956,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "Nové IČO",
                     "type": "string",
                   },
@@ -9008,8 +9021,8 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                     "baOrder": 18,
                     "baUiSchema": {
                       "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
                         "inputType": "tel",
-                        "placeholder": "+421",
                         "size": "medium",
                       },
                       "ui:widget": "Input",
@@ -9042,8 +9055,8 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                     "baOrder": 16,
                     "baUiSchema": {
                       "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
                         "inputType": "tel",
-                        "placeholder": "+421",
                         "size": "medium",
                       },
                       "ui:widget": "Input",
@@ -9095,10 +9108,11 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                               "baOrder": 3,
                               "baUiSchema": {
                                 "ui:options": {
-                                  "inputType": "text",
+                                  "inputType": "email",
                                 },
                                 "ui:widget": "Input",
                               },
+                              "format": "email",
                               "title": "E-mail pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
@@ -9190,10 +9204,11 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                               "baOrder": 3,
                               "baUiSchema": {
                                 "ui:options": {
-                                  "inputType": "text",
+                                  "inputType": "email",
                                 },
                                 "ui:widget": "Input",
                               },
+                              "format": "email",
                               "title": "E-mail pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
@@ -10413,6 +10428,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -10487,6 +10503,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO pôvodného odberateľa",
                     "type": "string",
                   },
@@ -10498,6 +10515,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "Nové IČO",
                     "type": "string",
                   },
@@ -10562,8 +10580,8 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                     "baOrder": 19,
                     "baUiSchema": {
                       "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
                         "inputType": "tel",
-                        "placeholder": "+421",
                         "size": "medium",
                       },
                       "ui:widget": "Input",
@@ -10596,8 +10614,8 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                     "baOrder": 17,
                     "baUiSchema": {
                       "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
                         "inputType": "tel",
-                        "placeholder": "+421",
                         "size": "medium",
                       },
                       "ui:widget": "Input",
@@ -10649,10 +10667,11 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                               "baOrder": 3,
                               "baUiSchema": {
                                 "ui:options": {
-                                  "inputType": "text",
+                                  "inputType": "email",
                                 },
                                 "ui:widget": "Input",
                               },
+                              "format": "email",
                               "title": "E-mail pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
@@ -10744,10 +10763,11 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                               "baOrder": 3,
                               "baUiSchema": {
                                 "ui:options": {
-                                  "inputType": "text",
+                                  "inputType": "email",
                                 },
                                 "ui:widget": "Input",
                               },
+                              "format": "email",
                               "title": "E-mail pre zasielanie elektronických faktúr",
                               "type": "string",
                             },
@@ -11740,6 +11760,7 @@ exports[`Form definitions > olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom > schem
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -12030,8 +12051,8 @@ exports[`Form definitions > olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom > schem
               "baOrder": 14,
               "baUiSchema": {
                 "ui:options": {
+                  "helptext": "Vyplňte vo formáte +421",
                   "inputType": "tel",
-                  "placeholder": "+421",
                   "size": "medium",
                 },
                 "ui:widget": "Input",
@@ -14981,7 +15002,6 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                                 "ui:options": {
                                   "helptext": "Vyplňte vo formáte +421",
                                   "inputType": "tel",
-                                  "placeholder": "+421",
                                   "size": "medium",
                                 },
                                 "ui:widget": "Input",
@@ -16389,7 +16409,6 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                                 "ui:options": {
                                   "helptext": "Vyplňte vo formáte +421",
                                   "inputType": "tel",
-                                  "placeholder": "+421",
                                   "size": "medium",
                                 },
                                 "ui:widget": "Input",
@@ -19293,7 +19312,6 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                       "ui:options": {
                         "helptext": "Vyplňte vo formáte +421",
                         "inputType": "tel",
-                        "placeholder": "+421",
                         "size": "medium",
                       },
                       "ui:widget": "Input",
@@ -20702,7 +20720,6 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                       "ui:options": {
                         "helptext": "Vyplňte vo formáte +421",
                         "inputType": "tel",
-                        "placeholder": "+421",
                         "size": "medium",
                       },
                       "ui:widget": "Input",
@@ -22134,7 +22151,6 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                       "ui:options": {
                         "helptext": "Vyplňte vo formáte +421",
                         "inputType": "tel",
-                        "placeholder": "+421",
                         "size": "medium",
                       },
                       "ui:widget": "Input",
@@ -23544,7 +23560,6 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                       "ui:options": {
                         "helptext": "Vyplňte vo formáte +421",
                         "inputType": "tel",
-                        "placeholder": "+421",
                         "size": "medium",
                       },
                       "ui:widget": "Input",
@@ -24979,7 +24994,6 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                           "ui:options": {
                             "helptext": "Vyplňte vo formáte +421",
                             "inputType": "tel",
-                            "placeholder": "+421",
                             "size": "medium",
                           },
                           "ui:widget": "Input",
@@ -43623,9 +43637,8 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                         "baOrder": 11,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+                            "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie. Vyplňte vo formáte +421.",
                             "inputType": "tel",
-                            "placeholder": "+421",
                             "size": "medium",
                           },
                           "ui:widget": "Input",
@@ -43845,7 +43858,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                       },
                       "ui:widget": "Input",
                     },
-                    "format": "ba-ico",
+                    "format": "ba-ico-8-digit-only",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -45615,9 +45628,8 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                         "baOrder": 8,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+                            "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie. Vyplňte vo formáte +421.",
                             "inputType": "tel",
-                            "placeholder": "+421",
                             "size": "medium",
                           },
                           "ui:widget": "Input",
@@ -48496,9 +48508,8 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
               "baOrder": 19,
               "baUiSchema": {
                 "ui:options": {
-                  "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+                  "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie. Vyplňte vo formáte +421.",
                   "inputType": "tel",
-                  "placeholder": "+421",
                   "size": "medium",
                 },
                 "ui:widget": "Input",
@@ -56610,9 +56621,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "baOrder": 9,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+                    "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie. Vyplňte vo formáte +421.",
                     "inputType": "tel",
-                    "placeholder": "+421",
                     "size": "medium",
                   },
                   "ui:widget": "Input",
@@ -58494,9 +58504,8 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                         "baOrder": 11,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+                            "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie. Vyplňte vo formáte +421.",
                             "inputType": "tel",
-                            "placeholder": "+421",
                             "size": "medium",
                           },
                           "ui:widget": "Input",
@@ -58716,7 +58725,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                       },
                       "ui:widget": "Input",
                     },
-                    "format": "ba-ico",
+                    "format": "ba-ico-8-digit-only",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -60486,9 +60495,8 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                         "baOrder": 8,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+                            "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie. Vyplňte vo formáte +421.",
                             "inputType": "tel",
-                            "placeholder": "+421",
                             "size": "medium",
                           },
                           "ui:widget": "Input",
@@ -63367,9 +63375,8 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
               "baOrder": 19,
               "baUiSchema": {
                 "ui:options": {
-                  "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+                  "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie. Vyplňte vo formáte +421.",
                   "inputType": "tel",
-                  "placeholder": "+421",
                   "size": "medium",
                 },
                 "ui:widget": "Input",
@@ -71481,9 +71488,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "baOrder": 9,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+                    "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie. Vyplňte vo formáte +421.",
                     "inputType": "tel",
-                    "placeholder": "+421",
                     "size": "medium",
                   },
                   "ui:widget": "Input",
@@ -71880,6 +71886,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -72243,6 +72250,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                             },
                             "ui:widget": "Input",
                           },
+                          "format": "ba-ico",
                           "title": "IČO",
                           "type": "string",
                         },
@@ -72973,6 +72981,7 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -73131,6 +73140,7 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
                       "ui:options": {
                         "helptext": "Vyplňte vo formáte +421",
                         "inputType": "tel",
+                        "size": "medium",
                       },
                       "ui:widget": "Input",
                     },
@@ -73209,6 +73219,7 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
                           "ui:options": {
                             "helptext": "Vyplňte vo formáte +421",
                             "inputType": "tel",
+                            "size": "medium",
                           },
                           "ui:widget": "Input",
                         },
@@ -73719,6 +73730,7 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -73877,6 +73889,7 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
                       "ui:options": {
                         "helptext": "Vyplňte vo formáte +421",
                         "inputType": "tel",
+                        "size": "medium",
                       },
                       "ui:widget": "Input",
                     },
@@ -73955,6 +73968,7 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
                           "ui:options": {
                             "helptext": "Vyplňte vo formáte +421",
                             "inputType": "tel",
+                            "size": "medium",
                           },
                           "ui:widget": "Input",
                         },
@@ -74507,6 +74521,7 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -74665,6 +74680,7 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
                       "ui:options": {
                         "helptext": "Vyplňte vo formáte +421",
                         "inputType": "tel",
+                        "size": "medium",
                       },
                       "ui:widget": "Input",
                     },
@@ -74743,6 +74759,7 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
                           "ui:options": {
                             "helptext": "Vyplňte vo formáte +421",
                             "inputType": "tel",
+                            "size": "medium",
                           },
                           "ui:widget": "Input",
                         },
@@ -75350,6 +75367,7 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -75508,6 +75526,7 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
                       "ui:options": {
                         "helptext": "Vyplňte vo formáte +421",
                         "inputType": "tel",
+                        "size": "medium",
                       },
                       "ui:widget": "Input",
                     },
@@ -75586,6 +75605,7 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
                           "ui:options": {
                             "helptext": "Vyplňte vo formáte +421",
                             "inputType": "tel",
+                            "size": "medium",
                           },
                           "ui:widget": "Input",
                         },
@@ -75895,6 +75915,7 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
                     "ui:options": {
                       "helptext": "Vyplňte vo formáte +421",
                       "inputType": "tel",
+                      "size": "medium",
                     },
                     "ui:widget": "Input",
                   },
@@ -76214,6 +76235,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                       },
                       "ui:widget": "Input",
                     },
+                    "format": "ba-ico",
                     "title": "IČO",
                     "type": "string",
                   },
@@ -76589,6 +76611,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                             },
                             "ui:widget": "Input",
                           },
+                          "format": "ba-ico",
                           "title": "IČO",
                           "type": "string",
                         },
@@ -78139,9 +78162,8 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                   "baOrder": 10,
                   "baUiSchema": {
                     "ui:options": {
-                      "helptext": "Ak nemáte telefonický kontakt, uveďte kontaktné údaje na inú osobu resp. organizáciu. Vyplňte vo formáte s predvoľbou +421.",
+                      "helptext": "Ak nemáte telefonický kontakt, uveďte kontaktné údaje na inú osobu resp. organizáciu. Vyplňte vo formáte +421.",
                       "inputType": "tel",
-                      "placeholder": "+421",
                       "size": "medium",
                     },
                     "ui:widget": "Input",

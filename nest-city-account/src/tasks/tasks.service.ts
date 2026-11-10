@@ -35,8 +35,7 @@ export class TasksService {
   }
 
   /**
-   * Deletes user verification data older than 1 month.
-   * Cleans up both UserIdCardVerify and LegalPersonIcoIdCardVerify records.
+   * Deletes user verification data (UserIdCardVerify records) older than 1 month.
    * Runs daily at 1:02 AM.
    */
   @Cron('2 01 * * *', { timeZone: bratislavaTimezone })

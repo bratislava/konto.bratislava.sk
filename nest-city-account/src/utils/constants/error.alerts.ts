@@ -25,9 +25,7 @@ export default [
   MagproxyErrorsEnum.RFO_ACCESS_ERROR,
   MagproxyErrorsEnum.RFO_DATA_ARRAY_EXPECTED,
   MagproxyErrorsEnum.RFO_UNEXPECTED_RESPONSE,
-  MagproxyErrorsEnum.RPO_UNEXPECTED_RESPONSE,
   VerificationErrorsEnum.UNEXPECTED_UPVS_RESPONSE,
   VerificationErrorsEnum.EMPTY_RFO_RESPONSE,
-  VerificationErrorsEnum.EMPTY_RPO_RESPONSE,
   DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
 ] as string[]

@@ -5,36 +5,35 @@ import {
   LineLoggerService,
 } from '@bratislava/log-nest'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import axios, { AxiosError, AxiosResponse, isAxiosError } from 'axios'
+import { AxiosError, isAxiosError } from 'axios'
+import type {
+  ScanFileResponseDto,
+  ScanStatusDto,
+} from 'openapi-clients/clamav-scanner'
 
-import BaConfigService from '../config/ba-config.service'
-import { Files } from '../generated/prisma/client'
-import { ServiceRunningDto } from '../status/dtos/status.dto'
-import PostScanFileResponseDto, { GetScanFileDto } from './scanner-client.dto'
-import {
-  ScannerClientErrorsEnum,
-  ScannerClientResponseEnum,
-} from './scanner-client.errors.enum'
+import ClientsService from '../clients/clients.service'
+import { ScannerClientErrorsEnum } from './scanner-client.errors.enum'
+
+const HEALTH_CHECK_TIMEOUT_MS = 5000
 
 @Injectable()
 export default class ScannerClientService {
   constructor(
-    private readonly baConfigService: BaConfigService,
+    private readonly clientsService: ClientsService,
     private errorFactoryService: ErrorFactoryService,
     private readonly logger: LineLoggerService,
   ) {}
 
-  // create function which will check health status of forms client with axios and using forms client url NEST_FORMS_BACKEND
   public async isRunning(): Promise<boolean> {
     try {
-      const url = `${this.baConfigService.scannerBackend.url}/health`
-      const response: AxiosResponse<ServiceRunningDto> = await axios.get(url, {
-        timeout: 5000,
-      })
+      const response =
+        await this.clientsService.clamavScannerApi.appControllerIsStatusRunning(
+          { timeout: HEALTH_CHECK_TIMEOUT_MS },
+        )
       this.logger.debug(
         `ScannerClientService.health response.data: ${JSON.stringify(response.data)}`,
       )
-      return response.status === 200
+      return response.data.running
     } catch (error) {
       if (isAxiosError(error)) {
         this.logger.error(
@@ -55,63 +54,18 @@ export default class ScannerClientService {
     }
   }
 
-  // create function which will post array of files to scanner
-  public async scanFiles(
-    filesList: Files,
-  ): Promise<PostScanFileResponseDto[] | undefined> {
-    try {
-      const url = `${this.baConfigService.scannerBackend.url}/api/scan/files`
-      const response: AxiosResponse<PostScanFileResponseDto[]> =
-        await axios.post(url, filesList, {
-          timeout: 10_000,
-          auth: {
-            username: this.baConfigService.scannerBackend.username,
-            password: this.baConfigService.scannerBackend.password,
-          },
-        })
-      this.logger.debug(
-        `ScannerClientService.scanFiles response status: ${response.status}, files: ${response.data.length}`,
-      )
-      return response.data
-    } catch (error) {
-      if (!isAxiosError(error)) {
-        throw this.errorFactoryService.InternalServerErrorException({
-          errorEnum: ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
-          message: ScannerClientResponseEnum.PROBLEM_WITH_SCANNER,
-          error,
-        })
-      }
-      throw this.errorFactoryService.fromAxiosError(error, {
-        errorEnumOverwrite: ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
-        message: ScannerClientResponseEnum.PROBLEM_WITH_SCANNER,
-      })
-    }
-  }
-
   public async scanFile(
     minioFileName: string,
     bucketUid: string,
     userUid: string | null | undefined,
-  ): Promise<PostScanFileResponseDto | undefined> {
-    const url = `${this.baConfigService.scannerBackend.url}/api/scan/file`
-    // scanner needs fileUid key
-    const postData = {
-      fileUid: minioFileName,
-      bucketUid,
-      userUid,
-    }
+  ): Promise<ScanFileResponseDto> {
     try {
-      const response: AxiosResponse<PostScanFileResponseDto> = await axios.post(
-        url,
-        postData,
-        {
-          timeout: 10_000,
-          auth: {
-            username: this.baConfigService.scannerBackend.username,
-            password: this.baConfigService.scannerBackend.password,
-          },
-        },
-      )
+      const response =
+        await this.clientsService.clamavScannerApi.scannerControllerScanFile({
+          // scanner needs fileUid key
+          fileUid: minioFileName,
+          bucketUid,
+        })
       return response.data
     } catch (error) {
       if (!isAxiosError(error)) {
@@ -126,46 +80,12 @@ export default class ScannerClientService {
     }
   }
 
-  public async getScanFile(
-    scannerId: string,
-  ): Promise<GetScanFileDto | undefined> {
-    const url = `${this.baConfigService.scannerBackend.url}/api/scan/file/${scannerId}`
+  public async deleteFile(scannerId: string): Promise<ScanStatusDto> {
     try {
-      const response: AxiosResponse<GetScanFileDto> = await axios.get(url, {
-        timeout: 10_000,
-        auth: {
-          username: this.baConfigService.scannerBackend.username,
-          password: this.baConfigService.scannerBackend.password,
-        },
-      })
-
-      return response.data
-    } catch (error) {
-      if (!isAxiosError(error)) {
-        throw this.errorFactoryService.InternalServerErrorException({
-          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-          message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
-          console: 'Error is not an instance of AxiosError',
-          error,
-        })
-      }
-      throw this.errorHandling(error, scannerId)
-    }
-  }
-
-  public async deleteFile(
-    scannerId: string,
-  ): Promise<GetScanFileDto | undefined> {
-    const url = `${this.baConfigService.scannerBackend.url}/api/scan/file/${scannerId}`
-    try {
-      const response: AxiosResponse<GetScanFileDto> = await axios.delete(url, {
-        timeout: 10_000,
-        auth: {
-          username: this.baConfigService.scannerBackend.username,
-          password: this.baConfigService.scannerBackend.password,
-        },
-      })
-
+      const response =
+        await this.clientsService.clamavScannerApi.scannerControllerDeleteFileById(
+          scannerId,
+        )
       return response.data
     } catch (error) {
       if (!isAxiosError(error)) {

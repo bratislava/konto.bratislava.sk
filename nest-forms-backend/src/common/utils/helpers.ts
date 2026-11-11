@@ -30,7 +30,7 @@ export function isValid(resource: unknown): boolean {
 export const isDefined = (a: unknown): boolean => a !== undefined
 
 // check if scan status is valid
-export function isValidScanStatus(status: string): boolean {
+export function isValidScanStatus(status: string): status is FileStatus {
   return Object.values(FileStatus).includes(status as FileStatus)
 }
 

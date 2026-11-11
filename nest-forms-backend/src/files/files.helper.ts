@@ -10,6 +10,10 @@ import { Injectable } from '@nestjs/common'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { BucketItemStat } from 'minio'
+import type {
+  ScanFileResponseDto,
+  ScanStatusDto,
+} from 'openapi-clients/clamav-scanner'
 
 import {
   finalErrorScanStatuses,
@@ -24,9 +28,6 @@ import {
 import { Files, FileStatus, FormError, Forms } from '../generated/prisma/client'
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
-import PostScanFileResponseDto, {
-  GetScanFileDto,
-} from '../scanner-client/scanner-client.dto'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import { BasicFileDto, BufferedFileDto, FormInfo } from './files.dto'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
@@ -287,7 +288,7 @@ export default class FilesHelper {
   async notifyScannerClient(
     minioFileName: string,
     formInfo: FormInfo,
-  ): Promise<PostScanFileResponseDto | undefined> {
+  ): Promise<ScanFileResponseDto> {
     const path = `${this.getPath(formInfo)}${minioFileName}`
 
     this.logger.log(`Sending file of form ${formInfo.formId} to scanner...`)
@@ -297,18 +298,16 @@ export default class FilesHelper {
       formInfo.userExternalId,
     )
 
-    if (responseScanner) {
-      this.logger.log(
-        `File with scannerId: ${responseScanner.id} was ${responseScanner.status} for scanning.`,
-      )
-    }
+    this.logger.log(
+      `File with scannerId: ${responseScanner.id} was ${responseScanner.status} for scanning.`,
+    )
 
     return responseScanner
   }
 
   async updateFile(
     savedFile: Files,
-    scannerResponse: PostScanFileResponseDto,
+    scannerResponse: ScanFileResponseDto,
   ): Promise<Files> {
     if (!isValidScanStatus(scannerResponse.status)) {
       throw this.errorFactoryService.InternalServerErrorException({
@@ -447,9 +446,7 @@ export default class FilesHelper {
   /*
   Sends request to nest-clamav-scanner to delete file from scanner database, so the file will not be scanned
    */
-  async deleteFileFromScannerClient(
-    scannerId: string,
-  ): Promise<GetScanFileDto | undefined> {
+  async deleteFileFromScannerClient(scannerId: string): Promise<ScanStatusDto> {
     this.logger.log(
       `Deleting file with scannerId: ${scannerId} from scanner...`,
     )
@@ -457,11 +454,9 @@ export default class FilesHelper {
     const responseScanner =
       await this.scannerClientService.deleteFile(scannerId)
 
-    if (responseScanner) {
-      this.logger.log(
-        `File with scannerId: ${scannerId} was deleted from scanner.`,
-      )
-    }
+    this.logger.log(
+      `File with scannerId: ${scannerId} was deleted from scanner.`,
+    )
 
     return responseScanner
   }

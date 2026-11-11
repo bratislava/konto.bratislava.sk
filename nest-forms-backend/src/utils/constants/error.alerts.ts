@@ -22,7 +22,6 @@ import { SharepointErrorsEnum } from '../subservices/dtos/sharepoint.errors.enum
  */
 export default [
   FilesErrorsEnum.FILE_WRONG_STATUS_NOT_ACCEPTED_ERROR,
-  FilesErrorsEnum.SCANNER_NO_RESPONSE_ERROR,
   FilesErrorsEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
   FilesErrorsEnum.FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
   FilesErrorsEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,

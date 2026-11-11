@@ -9,6 +9,7 @@ import {
 import prismaMock from '../../test/singleton'
 import { testJsonData } from '../__tests__/constants'
 import { createTestForm } from '../__tests__/factories/form.factory'
+import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
 import FilesHelper from '../files/files.helper'
@@ -93,6 +94,7 @@ describe('ConvertPdfService', () => {
           },
         },
         ScannerClientService,
+        { provide: ClientsService, useValue: createMock<ClientsService>() },
         ErrorFactoryService,
         { provide: PrismaService, useValue: prismaMock },
         {

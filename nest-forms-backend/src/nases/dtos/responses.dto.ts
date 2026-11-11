@@ -1,12 +1,6 @@
-import { HttpStatus } from '@nestjs/common'
 import { ApiProperty } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import { IsArray, IsString, ValidateNested } from 'class-validator'
-
-export interface NasesSendResponse {
-  status: HttpStatus
-  data: unknown
-}
 
 class ValidateFormRegistrationDto {
   @ApiProperty({ description: 'Form slug' })

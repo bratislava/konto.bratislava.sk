@@ -12,12 +12,11 @@ import BaConfigService from '../config/ba-config.service'
 import { FormError } from '../generated/prisma/client'
 import PrismaService from '../prisma/prisma.service'
 import { Mailer, MailerSendEmailParams } from './mailer.interface'
-import { getMailgunConfig } from './mailgun.constants'
 import MailgunHelper from './utils/mailgun.helper'
 
 @Injectable()
 export default class MailgunService implements Mailer {
-  mailgunClient: Interfaces.IMailgunClient
+  private readonly mailgunClient: Interfaces.IMailgunClient
 
   constructor(
     private readonly baConfigService: BaConfigService,
@@ -51,21 +50,19 @@ export default class MailgunService implements Mailer {
     }))
 
     try {
-      const mailgunConfig = getMailgunConfig(this.baConfigService)
-      const renderLocally = !!mailgunConfig[data.template].renderLocally
-      const { template } = mailgunConfig[data.template]
+      const templateConfig = this.mailgunHelper.templateConfigs[data.template]
       const variables = await this.mailgunHelper.createEmailVariables(data)
 
-      const emailContent = renderLocally
+      const emailContent = templateConfig.renderLocally
         ? {
             html: await this.mailgunHelper.getFilledTemplate(
-              template,
+              templateConfig.template,
               variables,
             ),
           }
         : {
             'h:X-Mailgun-Variables': JSON.stringify(variables),
-            template,
+            template: templateConfig.template,
           }
 
       const mailgunResponse = await this.mailgunClient.messages.create(
@@ -73,7 +70,7 @@ export default class MailgunService implements Mailer {
         {
           from: emailFrom || this.baConfigService.mailgun.emailFrom,
           to: data.to,
-          subject: subject ?? mailgunConfig[data.template].subject,
+          subject: subject ?? templateConfig.subject,
           attachment: mailgunAttachments,
           ...(replyTo ? { 'h:Reply-To': replyTo } : {}),
           ...emailContent,

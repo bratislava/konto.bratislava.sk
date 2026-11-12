@@ -692,7 +692,7 @@ export default schema(
         'typOznamenia',
         {
           type: 'string',
-          title: 'Vyberte, prosím, druh oznámenia',
+          title: 'Vyberte druh oznámenia',
           required: true,
           items: [
             { value: 'vznik', label: 'Vznik poplatkovej povinnosti', isDefault: true },
@@ -738,7 +738,7 @@ export default schema(
           [
             fileUploadMultiple<typeof oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyFiles>(
               'splnomocnenie',
-              { title: 'Nahrajte splnomocnenie', required: true, slotId: 'splnomocnenie' },
+              { title: 'Splnomocnenie na zastupovanie', required: true, slotId: 'splnomocnenie' },
               {
                 type: 'dragAndDrop',
                 helptext:
@@ -784,7 +784,7 @@ export default schema(
               value: 'spravcaSpolocenstvoVlastnikov',
               label: 'Správca alebo spoločenstvo vlastníkov',
             },
-            { value: 'fyzickaOsobaPodnikatel', label: 'Fyzická osoba - podnikateľ' },
+            { value: 'fyzickaOsobaPodnikatel', label: 'Fyzická osoba – podnikateľ' },
             { value: 'pravnickaOsoba', label: 'Právnická osoba' },
           ],
         },
@@ -1479,7 +1479,7 @@ export default schema(
           { variant: 'boxed', orientations: 'column' },
         ),
         conditionalFields(createCondition([[['sposobPlatby'], { const: 'sepaInkaso' }]]), [
-          input('iban', { type: 'ba-iban', title: 'Zadajte váš IBAN', required: true }, {}),
+          input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
         ]),
       ],
     ),

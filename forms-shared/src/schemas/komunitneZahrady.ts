@@ -154,7 +154,7 @@ export default schema(
           input(
             'parcelneCislo',
             {
-              title: 'Číslo parcely',
+              title: 'Parcelné číslo',
               type: 'text',
               required: true,
             },

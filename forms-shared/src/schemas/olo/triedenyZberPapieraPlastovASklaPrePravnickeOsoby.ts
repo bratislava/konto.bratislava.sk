@@ -27,7 +27,7 @@ const getFakturacia = (novyOdberatel: boolean) =>
       checkbox(
         'elektronickaFaktura',
         {
-          title: 'Súhlasím so zaslaním elektronickej faktúry',
+          title: 'Súhlas so zaslaním elektronickej faktúry',
         },
         {
           helptext:
@@ -41,7 +41,7 @@ const getFakturacia = (novyOdberatel: boolean) =>
           'emailPreFaktury',
           {
             type: 'email',
-            title: 'E-mail pre zasielanie elektronických faktúr',
+            title: 'Email pre zasielanie elektronických faktúr',
             required: true,
           },
           {},

@@ -36,7 +36,7 @@ const ziadatelStavebnikFields = [
     'ziadatelTyp',
     {
       type: 'string',
-      title: 'Žiadate ako',
+      title: 'Žiadam ako',
       required: true,
       items: [
         { value: 'fyzickaOsoba', label: 'Fyzická osoba', isDefault: true },
@@ -105,7 +105,7 @@ export default schema(
           },
           {
             type: 'button',
-            helptext: 'nahrajte splnomocnenie od stavebníka',
+            helptext: 'Nahrajte splnomocnenie od stavebníka',
           },
         ),
         ...ziadatelStavebnikFields,

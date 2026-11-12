@@ -90,7 +90,7 @@ export default schema({ title: 'Kontaktný formulár PAAS' }, [
         { type: 'text', title: 'Meno a priezvisko / Obchodné meno', required: true },
         { helptext: 'Ak ste právnická osoba alebo podnikateľ, uveďte obchodné meno.' },
       ),
-      input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+      input('email', { title: 'Email', required: true, type: 'email' }, {}),
     ]),
   ]),
 ])

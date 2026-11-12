@@ -53,13 +53,13 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, [
     ]),
     input('kontaktnaOsoba', { type: 'text', title: 'Meno kontaktnej osoby', required: true }, {}),
     sharedPhoneNumberField('telefon', true),
-    input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+    input('email', { title: 'Email', required: true, type: 'email' }, {}),
     object('fakturacia', { objectDisplay: 'boxed', title: 'Fakturácia' }, [
       input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
       checkbox(
         'elektronickaFaktura',
         {
-          title: 'Súhlasím so zaslaním elektronickej faktúry',
+          title: 'Súhlas so zaslaním elektronickej faktúry',
         },
         {
           helptext:
@@ -73,7 +73,7 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, [
           'emailPreFaktury',
           {
             type: 'email',
-            title: 'E-mail pre zasielanie elektronických faktúr',
+            title: 'Email pre zasielanie elektronických faktúr',
             required: true,
           },
           {},

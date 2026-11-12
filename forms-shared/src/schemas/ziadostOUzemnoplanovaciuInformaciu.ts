@@ -39,7 +39,7 @@ export default schema(
         'typZiadatela',
         {
           type: 'string',
-          title: 'Žiadate ako',
+          title: 'Žiadam ako',
           required: true,
           items: [
             { value: 'fyzickaOsoba', label: 'Fyzická osoba', isDefault: true },

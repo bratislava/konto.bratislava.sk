@@ -86,7 +86,7 @@ export default schema(
               ),
             ],
           ),
-          input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+          input('email', { title: 'Email', required: true, type: 'email' }, {}),
           sharedPhoneNumberField('telefonneCislo', true),
           datePicker(
             'planovanyDatumMontaze',
@@ -96,7 +96,7 @@ export default schema(
             },
             {
               helptext:
-                'O zahájení prác je potrebné písomne informovať **minimálne 1 pracovný deň** vopred prostredníctvom e-mailu na [info@tsb.sk](mailto:info@tsb.sk).',
+                'O zahájení prác je potrebné písomne informovať **minimálne 1 pracovný deň** vopred prostredníctvom emailu na [info@tsb.sk](mailto:info@tsb.sk).',
               helptextMarkdown: true,
             },
           ),
@@ -108,7 +108,7 @@ export default schema(
             },
             {
               helptext:
-                'Žiadateľ je povinný na základe písomnej výzvy zabezpečiť demontáž svojho zariadenia na vlastné náklady, a to v lehote najneskôr do **15 kalendárnych dní** od doručenia takejto výzvy prostredníctvom kontaktného e-mailu.',
+                'Žiadateľ je povinný na základe písomnej výzvy zabezpečiť demontáž svojho zariadenia na vlastné náklady, a to v lehote najneskôr do **15 kalendárnych dní** od doručenia takejto výzvy prostredníctvom kontaktného emailu.',
               helptextMarkdown: true,
             },
           ),

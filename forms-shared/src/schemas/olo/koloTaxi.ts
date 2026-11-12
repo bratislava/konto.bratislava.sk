@@ -76,7 +76,7 @@ export default schema({ title: 'KOLO Taxi' }, [
         checkbox(
           'elektronickaFaktura',
           {
-            title: 'Súhlasím so zaslaním elektronickej faktúry',
+            title: 'Súhlas so zaslaním elektronickej faktúry',
           },
           {
             helptext:
@@ -90,7 +90,7 @@ export default schema({ title: 'KOLO Taxi' }, [
             'emailPreFaktury',
             {
               type: 'email',
-              title: 'E-mail pre zasielanie elektronických faktúr',
+              title: 'Email pre zasielanie elektronických faktúr',
               required: true,
             },
             {},

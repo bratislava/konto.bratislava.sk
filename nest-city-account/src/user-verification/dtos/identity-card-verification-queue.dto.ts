@@ -7,11 +7,13 @@ import { RequestBodyVerifyIdentityCardDto } from './requests.verification.dto'
 export interface IdentityCardVerificationRequest {
   user: CognitoGetUserData
   data: RequestBodyVerifyIdentityCardDto
-  // TODO: Only physical entities are queued since the removal of ico-rpo verification.
-  // Still sent, because pods running older code Nack messages without it during the deploy.
-  // Read only by the guard in VerificationService.onQueueConsumption dropping leftover ico-rpo messages.
-  // Remove together with that guard once the ico-rpo removal is fully deployed.
-  type: CognitoUserAccountTypesEnum
+  // TODO: Remove in the release after the one that removed the ico-rpo guard from
+  // VerificationService.onQueueConsumption, together with `type` in VerificationService.sendToQueue.
+  // Not read anymore, only physical entities are queued. Still sent, because older pods Nack messages
+  // without `type`: prod3.34.1 marks the user NOT_VERIFIED_IDENTITY_CARD, prod3.34.0 and older leave
+  // the user stuck in QUEUE_IDENTITY_CARD. This can happen during the rollout, after a rollback,
+  // or with requeues delayed by up to an hour.
+  type: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
 }
 
 /** RabbitMQ message with a request to verify a user by identity card. */

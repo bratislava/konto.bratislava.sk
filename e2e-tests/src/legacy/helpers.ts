@@ -153,7 +153,7 @@ export const attachFiles = async (page: Page, id: string, fileNames: string[]) =
   // The antivirus scan is server-side.
   for (const message of UPLOAD_IN_PROGRESS) {
     await expect(field(page, id).getByText(message, { exact: false })).toHaveCount(0, {
-      timeout: 60_000,
+      timeout: 180_000,
     })
   }
 }

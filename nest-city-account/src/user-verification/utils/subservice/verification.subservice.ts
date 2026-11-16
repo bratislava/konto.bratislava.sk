@@ -229,26 +229,7 @@ export class VerificationSubservice {
       return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
     }
 
-    const databaseResult =
-      await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
-        user,
-        matchingRfo.ifo || null,
-        birthNumber,
-        0
-      )
-
-    if (!databaseResult.success) {
-      return databaseResult
-    }
-
-    const dbUser = await this.verificationDataSubservice.findUserByEmailOrExternalId(
-      user.email,
-      user.idUser
-    )
-    if (dbUser !== null) {
-      await this.physicalEntityService.linkToUserIdByBirthnumber(dbUser.id, birthNumber)
-    }
-    return { success: true }
+    return this.saveUserAndLinkPhysicalEntity(user, matchingRfo.ifo || null, birthNumber, 0)
   }
 
   private async verifyIdentityCardViaDcom(
@@ -283,11 +264,33 @@ export class VerificationSubservice {
     }
 
     const birthNumber = rfoDataDcom.data.rodneCislo.replaceAll('/', '')
-    return await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
-      user,
-      rfoDataDcom.data.ifo || null,
-      birthNumber,
-      1
+    return this.saveUserAndLinkPhysicalEntity(user, rfoDataDcom.data.ifo || null, birthNumber, 1)
+  }
+
+  private async saveUserAndLinkPhysicalEntity(
+    user: CognitoGetUserData,
+    ifo: string | null,
+    birthNumber: string,
+    oldMagproxyDatabase: number
+  ): Promise<VerificationReturnType> {
+    const databaseResult =
+      await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
+        user,
+        ifo,
+        birthNumber,
+        oldMagproxyDatabase
+      )
+    if (!databaseResult.success) {
+      return databaseResult
+    }
+
+    const dbUser = await this.verificationDataSubservice.findUserByEmailOrExternalId(
+      user.email,
+      user.idUser
     )
+    if (dbUser !== null) {
+      await this.physicalEntityService.linkToUserIdByBirthnumber(dbUser.id, birthNumber)
+    }
+    return { success: true }
   }
 }

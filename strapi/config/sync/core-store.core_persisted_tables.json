@@ -1,0 +1,14 @@
+{
+  "key": "core_persisted_tables",
+  "value": [
+    {
+      "name": "strapi_audit_logs"
+    },
+    {
+      "name": "strapi_audit_logs_user_lnk"
+    }
+  ],
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

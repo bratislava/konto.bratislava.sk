@@ -90,6 +90,34 @@
           "sortable": true
         }
       },
+      "outcome": {
+        "edit": {
+          "label": "outcome",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "outcome",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "reason": {
+        "edit": {
+          "label": "reason",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "reason",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -189,6 +217,18 @@
           {
             "name": "entryDocumentId",
             "size": 6
+          }
+        ],
+        [
+          {
+            "name": "outcome",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "reason",
+            "size": 12
           }
         ]
       ]

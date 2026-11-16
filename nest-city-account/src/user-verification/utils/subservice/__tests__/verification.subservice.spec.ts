@@ -405,7 +405,7 @@ describe('VerificationSubservice', () => {
       const result = await service.verifyIdentityCard(request)
 
       expect(result).toEqual({ success: true })
-      expect(magproxyService.rfoBirthNumberDcom).toHaveBeenCalled()
+      expect(magproxyService.rfoBirthNumberDcom).toHaveBeenCalledWith(BIRTH_NUMBER)
       expect(verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber).toHaveBeenCalledWith(
         request.user,
         'ifo-id',

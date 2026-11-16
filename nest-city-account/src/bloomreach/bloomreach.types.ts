@@ -67,12 +67,43 @@ export interface BloomreachConsentEventProperties {
   valid_until: string
 }
 
-export interface BloomreachEventCommandData {
+export interface BloomreachUnVerificationEventProperties {
+  reason: BloomreachUnVerificationReasonEnum
+}
+
+interface BloomreachEventCommandDataBase<
+  EventType extends BloomreachEventNameEnum,
+  Properties extends object,
+> {
   kind: BloomreachCommandDataKind.EVENT
   customer_ids: BloomreachCustomerIds
-  properties: BloomreachConsentEventProperties
-  event_type: BloomreachEventNameEnum
+  properties: Properties
+  event_type: EventType
   timestamp: number
+}
+
+export type BloomreachConsentEventCommandData = BloomreachEventCommandDataBase<
+  BloomreachEventNameEnum.CONSENT,
+  BloomreachConsentEventProperties
+>
+
+export type BloomreachUnVerificationEventCommandData = BloomreachEventCommandDataBase<
+  BloomreachEventNameEnum.UN_VERIFICATION,
+  BloomreachUnVerificationEventProperties
+>
+
+/** Discriminated by `event_type`, each event type has its own properties shape. */
+export type BloomreachEventCommandData =
+  BloomreachConsentEventCommandData | BloomreachUnVerificationEventCommandData
+
+/**
+ * Identifies an event command in logs and errors. Extends `Record` so it stays assignable to the
+ * logger's `console` context.
+ */
+export interface BloomreachEventLogContext extends Record<string, unknown> {
+  externalId: string
+  eventType: BloomreachEventNameEnum
+  category?: string
 }
 
 export function isBloomreachCustomerData(
@@ -92,15 +123,22 @@ export function isBloomreachEventCommandData(
   return data.kind === BloomreachCommandDataKind.EVENT
 }
 
-export interface BloomreachEventCommand {
+export function isBloomreachConsentEventCommandData(
+  data: BloomreachCustomerCommandData | BloomreachEventCommandData
+): data is BloomreachConsentEventCommandData {
+  return isBloomreachEventCommandData(data) && data.event_type === BloomreachEventNameEnum.CONSENT
+}
+
+export interface BloomreachEventCommand<
+  CommandData extends BloomreachEventCommandData = BloomreachEventCommandData,
+> {
   commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS
-  commandData: BloomreachEventCommandData
+  commandData: CommandData
 }
 
 /** `commandData` stripped of internal bookkeeping not part of Bloomreach's wire contract. */
 export type BloomreachWireCommandData =
-  | Omit<BloomreachCustomerCommandData, 'kind'>
-  | Omit<BloomreachEventCommandData, 'kind'>
+  Omit<BloomreachCustomerCommandData, 'kind'> | Omit<BloomreachEventCommandData, 'kind'>
 
 export function toWireCommandData(
   data: BloomreachCustomerCommandData | BloomreachEventCommandData
@@ -176,6 +214,12 @@ export const BloomreachExportEventsResponseSchema = z.object({
 
 export enum BloomreachEventNameEnum {
   CONSENT = 'consent',
+  UN_VERIFICATION = 'un_verification',
+}
+
+export enum BloomreachUnVerificationReasonEnum {
+  /** Verified by RFO, but IAM could not find the person with the data we currently have */
+  IAM_NOT_FOUND = 'iam_not_found',
 }
 
 export enum BloomreachConsentActionEnum {

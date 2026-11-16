@@ -6,11 +6,14 @@ import { PrismaService } from '../prisma/prisma.service'
 import {
   BloomreachCustomerCommandData,
   BloomreachEventCommandData,
+  BloomreachEventLogContext,
   BloomreachEventNameEnum,
+  BloomreachUnVerificationReasonEnum,
   Consent,
   isBloomreachEventCommandData,
 } from './bloomreach.types'
 import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
+import { eventDedupKeyParts, eventDedupWhere } from './utils/event-dedup.utils'
 import {
   isAnonymizationCommand,
   isExistingHigherPriorityEventCommand,
@@ -59,6 +62,15 @@ export class BloomreachOutboxWriterService {
     )
   }
 
+  async queueUnVerificationEvent(
+    externalId: string,
+    reason: BloomreachUnVerificationReasonEnum
+  ): Promise<void> {
+    const { commandData } = this.payloadBuilder.buildUnVerificationEventCommand(externalId, reason)
+
+    await this.upsertPendingEventCommand(externalId, commandData, false)
+  }
+
   private async upsertPendingEventCommand(
     externalId: string,
     commandData: BloomreachEventCommandData,
@@ -69,8 +81,7 @@ export class BloomreachOutboxWriterService {
         tx,
         externalId,
         BloomreachCommandName.CUSTOMERS_EVENTS,
-        commandData.event_type,
-        commandData.properties.category
+        ...eventDedupKeyParts(commandData)
       )
 
       const existing = await tx.bloomreachOutbox.findFirst({
@@ -78,27 +89,16 @@ export class BloomreachOutboxWriterService {
           externalId,
           commandName: BloomreachCommandName.CUSTOMERS_EVENTS,
           status: BloomreachOutboxStatus.PENDING,
-          AND: [
-            {
-              commandData: {
-                path: ['event_type'],
-                equals: commandData.event_type,
-              },
-            },
-            {
-              commandData: {
-                path: ['properties', 'category'],
-                equals: commandData.properties.category,
-              },
-            },
-          ],
+          AND: eventDedupWhere(commandData),
         },
       })
 
-      const eventContext = {
+      const eventContext: BloomreachEventLogContext = {
         externalId,
         eventType: commandData.event_type,
-        category: commandData.properties.category,
+        ...(commandData.event_type === BloomreachEventNameEnum.CONSENT && {
+          category: commandData.properties.category,
+        }),
       }
 
       if (!existing) {
@@ -201,10 +201,7 @@ export class BloomreachOutboxWriterService {
     })
   }
 
-  private handleEventDowngradeFailure(
-    error: unknown,
-    context: { externalId: string; eventType: BloomreachEventNameEnum; category: string }
-  ): void {
+  private handleEventDowngradeFailure(error: unknown, context: BloomreachEventLogContext): void {
     if (!isTerminalDowngradeError(error)) {
       throw error
     }
@@ -217,13 +214,10 @@ export class BloomreachOutboxWriterService {
     })
   }
 
-  private handleEventCreateFailure(
-    error: unknown,
-    context: { externalId: string; eventType: BloomreachEventNameEnum; category: string }
-  ): void {
+  private handleEventCreateFailure(error: unknown, context: BloomreachEventLogContext): void {
     if (isTerminalOverrideError(error)) {
       this.logger.warn(
-        `Skipped queuing consent event - a terminal entry for this dedup key is at least as recent, ${toLogfmt(
+        `Skipped queuing event - a terminal entry for this dedup key is at least as recent, ${toLogfmt(
           context
         )}`
       )

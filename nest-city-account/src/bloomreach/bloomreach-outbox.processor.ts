@@ -15,6 +15,7 @@ import {
   toWireCommandData,
 } from './bloomreach.types'
 import { BloomreachMergeConsentService } from './bloomreach-merge-consent.service'
+import { eventDedupKeyParts, eventDedupWhere } from './utils/event-dedup.utils'
 import { isAnonymizationCommand, mergeCustomerCommandData } from './utils/merge-commands.utils'
 import { isTerminalDowngradeError } from './utils/outbox-errors.utils'
 import { lockTransactionWithKey, runWithAdvisoryLock } from './utils/outbox-lock.utils'
@@ -303,15 +304,7 @@ export class BloomreachOutboxProcessor {
         const where: Prisma.BloomreachOutboxWhereInput = eventData
           ? {
               ...baseWhere,
-              AND: [
-                { commandData: { path: ['event_type'], equals: eventData.event_type } },
-                {
-                  commandData: {
-                    path: ['properties', 'category'],
-                    equals: eventData.properties.category,
-                  },
-                },
-              ],
+              AND: eventDedupWhere(eventData),
             }
           : baseWhere
 
@@ -319,8 +312,7 @@ export class BloomreachOutboxProcessor {
           ? [
               entry.externalId,
               BloomreachCommandName.CUSTOMERS_EVENTS,
-              eventData.event_type,
-              eventData.properties.category,
+              ...eventDedupKeyParts(eventData),
             ]
           : [entry.externalId, BloomreachCommandName.CUSTOMERS]
 

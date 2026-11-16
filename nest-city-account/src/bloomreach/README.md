@@ -34,7 +34,7 @@ flowchart TD
 
 | File                                  | Responsibility                                                                                                                                                                |
 |---------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `bloomreach-outbox.service.ts`        | Public queueing API: `trackCustomer()`, `trackConsents()`, `anonymizeCustomer()`. Thin wrapper: skips when the integration is inactive and logs failures instead of throwing. |
+| `bloomreach-outbox.service.ts`        | Public queueing API: `trackCustomer()`, `trackConsents()`, `trackUnVerification()`, `anonymizeCustomer()`. Thin wrapper: skips when the integration is inactive and logs failures instead of throwing. |
 | `bloomreach-outbox-writer.service.ts` | Builds commands and writes them to the outbox, deduplicating at write time. Module-internal (not exported), throws on failure.                                                |
 | `bloomreach-outbox.processor.ts`      | Claims a batch (up to 50), runs the merge consent check, sends to Bloomreach batch API. Scheduled every 30s by `TasksService`.                                                |
 | `bloomreach-payload.builder.ts`       | Builds Bloomreach command payloads (`customers`, `customers/events`). Fetches user data from Cognito and DB.                                                                  |
@@ -67,9 +67,11 @@ other:
 
 - **Customer upserts** (`customers` command): if a PENDING entry already exists for the same `externalId`, its
   `commandData` is updated in place instead of creating a duplicate row.
-- **Event commands** (`customers/events`): deduplicated by `externalId` + `event_type` + `category`. If a PENDING entry
-  with the same combination exists and the incoming command doesn't outrank it (see Terminal Entries below), its
-  `commandData` is updated in place; otherwise a new row is created.
+- **Event commands** (`customers/events`): consent events are deduplicated by `externalId` + `event_type` +
+  `category`, other events (`un_verification`) by `externalId` + `event_type` alone (`utils/event-dedup.utils.ts`).
+  If a PENDING entry with the same key exists and the incoming command doesn't outrank it (see Terminal Entries below),
+  its `commandData` is updated in place; otherwise a new row is created. The pending-key index and the outbox triggers
+  compare `category` with `=`, so they don't cover events without it; only the advisory lock deduplicates those.
 
 This ensures the outbox contains at most one PENDING `customers` entry per user at any time, so the processor doesn't
 need to merge at read time. Two partial unique indexes enforce the same invariant at the DB level as a backstop. The

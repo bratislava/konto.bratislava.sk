@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import { isAuthUser, isGuestUser, User } from '../../auth-v2/types/user'
 import { getUserIco } from '../../auth-v2/utils/user-utils'
@@ -134,12 +135,18 @@ export class FormAccessService {
       return false
     }
 
-    // Very special case for embedded (OLO) forms, in modern browsers, iframes cannot persist 3rd
-    // party cookies. It causes that on each page load a guest identity is assigned to the user.
-    // TODO: Remove ASAP as OLO forms are not embedded anymore!
-    const isOloForm = form.formDefinitionSlug.startsWith('olo')
+    // Embedded forms run in an iframe on another site, where the browser doesn't
+    // keep our cookies, including the guest identity one. Every request gets a
+    // new guest identity, so the guest who created the form can't be recognised.
+    // Any guest can therefore access an embedded form, and its ID is the only
+    // secret. This also applies when the form is opened directly on our site.
+    const isEmbeddedForm = Boolean(
+      getFormDefinitionBySlug(form.formDefinitionSlug)?.embedded,
+    )
 
-    return isOloForm || form.cognitoGuestIdentityId === user.cognitoIdentityId
+    return (
+      isEmbeddedForm || form.cognitoGuestIdentityId === user.cognitoIdentityId
+    )
   }
 
   private async hasMigrationAccess(

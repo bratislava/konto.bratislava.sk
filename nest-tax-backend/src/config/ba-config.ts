@@ -58,6 +58,7 @@ export default class BaConfig {
   get noris() {
     return {
       host: this.validatedConfig.MSSQL_HOST,
+      port: this.validatedConfig.MSSQL_PORT,
       database: this.validatedConfig.MSSQL_DB,
       username: this.validatedConfig.MSSQL_USERNAME,
       password: this.validatedConfig.MSSQL_PASSWORD,

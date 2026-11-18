@@ -1,18 +1,11 @@
-import {
-  ErrorFilter,
-  HttpExceptionFilter,
-  LineLoggerService,
-  UnknownExceptionFilter,
-} from '@bratislava/log-nest'
-import { ValidationPipe, VersioningType } from '@nestjs/common'
+import { LineLoggerService } from '@bratislava/log-nest'
 import { NestFactory } from '@nestjs/core'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import type { Request, Response } from 'express'
 
 import { AppModule } from './app.module'
+import { bootstrap } from './bootstrap'
 import BaConfigService from './config/ba-config.service'
 
-async function bootstrap() {
+async function main() {
   const logger = new LineLoggerService('Nest')
   const preview = process.env.NEST_PREVIEW === 'true'
   const app = await NestFactory.create(AppModule, {
@@ -27,50 +20,11 @@ async function bootstrap() {
     return
   }
 
-  const baConfigService = app.get(BaConfigService)
-  app.enableVersioning({
-    type: VersioningType.URI,
-  })
-  const corsOptions = {
-    origin: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    preflightContinue: false,
-    credentials: true,
-    allowedHeaders: 'Content-Type, Accept, Authorization',
-  }
-  app.enableCors(corsOptions)
-  app.useGlobalPipes(new ValidationPipe())
-  app.useGlobalFilters(new UnknownExceptionFilter())
-  app.useGlobalFilters(new ErrorFilter())
-  app.useGlobalFilters(new HttpExceptionFilter())
-  const config = new DocumentBuilder()
-    .setTitle('Nest tax backend')
-    .setDescription('Backend for payment taxes and connection to Noris')
-    .setVersion('1.0')
-    .setContact(
-      'Bratislava Inovations',
-      'https://inovacie.bratislava.sk',
-      'inovacie@bratislava.sk',
-    )
-    .addServer(`http://localhost:${baConfigService.self.port}/`)
-    .addServer('https://nest-tax-backend.dev.bratislava.sk/')
-    .addServer('https://nest-tax-backend.staging.bratislava.sk/')
-    .addServer('https://nest-tax-backend.bratislava.sk/')
-    .addApiKey({ type: 'apiKey', name: 'apiKey', in: 'header' }, 'apiKey')
-    .addBearerAuth({
-      type: 'http',
-      description: 'Get token from cognito',
-      openIdConnectUrl: 'TBD',
-    })
-    .build()
+  bootstrap({ app })
 
-  const document = SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('api', app, document)
-  app
-    .getHttpAdapter()
-    .get('/spec-json', (_req: Request, res: Response) => res.json(document))
+  const baConfigService = app.get(BaConfigService)
 
   await app.listen(baConfigService.self.port)
   logger.log(`Nest is running on port: ${baConfigService.self.port}`)
 }
-void bootstrap()
+void main()

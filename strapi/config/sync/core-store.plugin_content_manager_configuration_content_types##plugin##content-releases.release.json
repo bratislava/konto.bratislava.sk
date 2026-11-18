@@ -89,6 +89,76 @@
           "sortable": true
         }
       },
+      "releaseCondition": {
+        "edit": {
+          "label": "releaseCondition",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "releaseCondition",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "totalPublishedEntries": {
+        "edit": {
+          "label": "totalPublishedEntries",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "totalPublishedEntries",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "totalUnpublishedEntries": {
+        "edit": {
+          "label": "totalUnpublishedEntries",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "totalUnpublishedEntries",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "totalSkippedEntries": {
+        "edit": {
+          "label": "totalSkippedEntries",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "totalSkippedEntries",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "failureReason": {
+        "edit": {
+          "label": "failureReason",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "failureReason",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "actions": {
         "edit": {
           "label": "actions",
@@ -206,6 +276,32 @@
           },
           {
             "name": "status",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "releaseCondition",
+            "size": 6
+          },
+          {
+            "name": "totalPublishedEntries",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "totalUnpublishedEntries",
+            "size": 4
+          },
+          {
+            "name": "totalSkippedEntries",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "failureReason",
             "size": 6
           }
         ]

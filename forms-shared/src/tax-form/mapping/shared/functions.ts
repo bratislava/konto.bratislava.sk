@@ -84,11 +84,7 @@ export function parseRodneCislo(rodneCislo: string | undefined): ParsedRodneCisl
 export const parseRodneCisloOrDatumNarodenia = (
   person: { maRodneCislo?: boolean; rodneCislo?: string; datumNarodenia?: string } | undefined,
 ): { rodneCislo: ParsedRodneCislo; datumNarodenia: Date | undefined } => {
-  // Handle also forms sent before `maRodneCislo` was introduced.
-  const hasBirthNumber =
-    safeBoolean(person?.maRodneCislo, false) ?? Boolean(safeString(person?.rodneCislo))
-
-  if (hasBirthNumber) {
+  if (safeBoolean(person?.maRodneCislo) === true) {
     return {
       rodneCislo: parseRodneCislo(person?.rodneCislo),
       datumNarodenia: getBirthDateFromRodneCislo(person?.rodneCislo),

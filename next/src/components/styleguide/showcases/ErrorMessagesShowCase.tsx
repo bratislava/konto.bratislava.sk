@@ -319,6 +319,12 @@ const rjsfExistingRows: ErrorMessageRow[] = [
     proposed: null,
   },
   {
+    translationKey: 'useFormErrorTranslations.formats.ba-ico-8-digit-only',
+    trigger: 'IČO nemá platný tvar',
+    sources: ['InputWidgetRJSF.tsx'],
+    proposed: null,
+  },
+  {
     translationKey: 'useFormErrorTranslations.formats.ba-rodne-cislo',
     trigger: 'Rodné číslo nemá platný tvar alebo kontrolnú číslicu',
     sources: ['InputWidgetRJSF.tsx'],

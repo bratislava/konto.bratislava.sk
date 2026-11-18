@@ -35,14 +35,14 @@ const DropdownMenu = ({
         <RadixDropdownMenu.Content
           loop
           align="end"
-          className="z-50 rounded-lg bg-gray-0 py-2 shadow-md"
+          className="z-50 rounded-lg bg-background-passive-base py-2 shadow-md"
           sideOffset={2}
         >
           {itemVariant === 'form' &&
             items.map((item, index) => (
               <FormMenuItem
                 key={index}
-                className={cn('rounded-sm menu-dropdown-focus-ring', item.itemClassName)}
+                className={cn('rounded-sm radix-dropdown-menu-item-focus-ring', item.itemClassName)}
                 icon={item.icon}
                 title={item.title}
                 url={item.url}
@@ -53,7 +53,10 @@ const DropdownMenu = ({
             items.map((item, index) => (
               <HeaderMenuItem
                 key={index}
-                itemClassName={cn('rounded-sm menu-dropdown-focus-ring', item.itemClassName)}
+                itemClassName={cn(
+                  'rounded-sm radix-dropdown-menu-item-focus-ring',
+                  item.itemClassName,
+                )}
                 icon={item.icon}
                 title={item.title}
                 url={item.url}

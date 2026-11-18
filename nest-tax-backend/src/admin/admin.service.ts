@@ -98,6 +98,7 @@ export class AdminService {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'No tax administrator found in the database',
+        console: { year, taxType },
       })
     }
 
@@ -111,6 +112,12 @@ export class AdminService {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Tax with this variable symbol already exists',
+        console: {
+          existingTaxId: taxesByVariableSymbolExist.id,
+          existingTaxPayerId: taxesByVariableSymbolExist.taxPayerId,
+          year,
+          taxType,
+        },
       })
     }
 
@@ -141,7 +148,11 @@ export class AdminService {
     taxType,
     order,
   }: RequestAdminDeleteTaxDto): Promise<void> {
-    const birthNumberWithSlash = addSlashToBirthNumber(birthNumber)
+    const birthNumberWithSlash = addSlashToBirthNumber(birthNumber, {
+      year,
+      taxType,
+      order,
+    })
     const taxPayer = await this.prismaService.taxPayer.findUnique({
       where: {
         birthNumber: birthNumberWithSlash,
@@ -151,6 +162,7 @@ export class AdminService {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Tax payer not found',
+        console: { year, taxType, order },
       })
     }
 
@@ -168,6 +180,7 @@ export class AdminService {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Tax not found',
+        console: { taxPayerId: taxPayer.id, year, taxType, order },
       })
     }
 
@@ -183,7 +196,9 @@ export class AdminService {
     })
 
     const userDataFromCityAccount =
-      await this.cityAccountSubservice.getUserDataAdmin(birthNumber)
+      await this.cityAccountSubservice.getUserDataAdmin(birthNumber, {
+        taxPayerId: taxPayer.id,
+      })
     if (!userDataFromCityAccount) {
       return
     }
@@ -204,6 +219,12 @@ export class AdminService {
         this.errorFactoryService.InternalServerErrorException({
           errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
           message: `Error in send Tax data to Bloomreach for tax payer with ID ${taxPayer.id} and year ${year}`,
+          console: {
+            taxId: tax.id,
+            externalId: userDataFromCityAccount.externalId,
+            taxType,
+            order,
+          },
         }),
       )
     }

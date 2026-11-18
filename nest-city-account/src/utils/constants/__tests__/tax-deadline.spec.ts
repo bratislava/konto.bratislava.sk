@@ -1,15 +1,14 @@
 import { DateTime } from 'luxon'
+import type { MockedFunction } from 'vitest'
 
 import getBaConfigInstance from '../../../config/ba-config.instance'
 import { getTaxDeadlineDate } from '../tax-deadline'
 
-jest.mock('../../../config/ba-config.instance')
+vi.mock('../../../config/ba-config.instance')
 
 const TIMEZONE = 'Europe/Bratislava'
 
-const mockGetBaConfigInstance = getBaConfigInstance as jest.MockedFunction<
-  typeof getBaConfigInstance
->
+const mockGetBaConfigInstance = getBaConfigInstance as MockedFunction<typeof getBaConfigInstance>
 
 const mockTaxDeadline = (config: { month: number; day: number }) => {
   mockGetBaConfigInstance.mockReturnValue({ taxDeadline: config } as ReturnType<
@@ -18,10 +17,6 @@ const mockTaxDeadline = (config: { month: number; day: number }) => {
 }
 
 describe('tax-deadline', () => {
-  afterEach(() => {
-    jest.clearAllMocks()
-  })
-
   describe('each date to 1st of April should be before deadline, each date from it should be after', () => {
     beforeEach(() => {
       mockTaxDeadline({ month: 4, day: 1 })

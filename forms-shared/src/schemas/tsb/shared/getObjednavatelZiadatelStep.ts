@@ -6,6 +6,7 @@ import { radioGroup } from '../../../generator/functions/radioGroup'
 import { step } from '../../../generator/functions/step'
 import { createCondition } from '../../../generator/helpers'
 import { object } from '../../../generator/object'
+import { sharedPhoneNumberField } from '../../shared/fields'
 
 export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') => {
   const fieldProperty = match(type)
@@ -27,8 +28,8 @@ export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') =
         {
           type: 'string',
           title: match(type)
-            .with('objednavatel', () => 'Objednávate ako')
-            .with('ziadatel', () => 'Žiadate ako')
+            .with('objednavatel', () => 'Objednávam ako')
+            .with('ziadatel', () => 'Žiadam ako')
             .exhaustive(),
           required: true,
           items: [
@@ -68,7 +69,7 @@ export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') =
         ]),
         [
           input('obchodneMeno', { title: 'Obchodné meno', required: true, type: 'text' }, {}),
-          input('ico', { title: 'IČO', required: true, type: 'text' }, {}),
+          input('ico', { title: 'IČO', required: true, type: 'ba-ico' }, {}),
           input('dic', { title: 'DIČ', required: true, type: 'text' }, {}),
           input('icDph', { title: 'IČ DPH', required: true, type: 'text' }, {}),
         ],
@@ -106,24 +107,16 @@ export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') =
           ],
         ]),
         [
-          input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-          input(
-            'telefonneCislo',
-            { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-            { helptext: 'Vyplňte vo formáte +421' },
-          ),
+          input('email', { title: 'Email', required: true, type: 'email' }, {}),
+          sharedPhoneNumberField('telefonneCislo', true),
         ],
       ),
       conditionalFields(createCondition([[[fieldProperty], { const: 'pravnickaOsoba' }]]), [
         object('kontaktnaOsoba', { objectDisplay: 'boxed', title: 'Kontaktná osoba' }, [
           input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
           input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-          input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-          input(
-            'telefonneCislo',
-            { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-            { helptext: 'Vyplňte vo formáte +421' },
-          ),
+          input('email', { title: 'Email', required: true, type: 'email' }, {}),
+          sharedPhoneNumberField('telefonneCislo', true),
         ]),
       ]),
     ],

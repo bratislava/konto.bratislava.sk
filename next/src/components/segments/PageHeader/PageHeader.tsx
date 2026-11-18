@@ -4,7 +4,7 @@ import { PropsWithChildren } from 'react'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import cn from '@/src/utils/cn'
 
-type AccountSectionHeaderBase = PropsWithChildren<{
+type Props = PropsWithChildren<{
   title: string
   text?: string
   className?: string
@@ -14,7 +14,7 @@ type AccountSectionHeaderBase = PropsWithChildren<{
   titleWrapperClassName?: string
 }>
 
-const PageHeader = (props: AccountSectionHeaderBase) => {
+const PageHeader = (props: Props) => {
   const { title, text, className, titleAsParagraph, titleWrapperClassName, children } = props
 
   return (

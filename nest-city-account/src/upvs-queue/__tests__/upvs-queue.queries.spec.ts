@@ -11,10 +11,6 @@ import {
 describe('upvs-queue.queries', () => {
   const prisma = prismaMock as unknown as PrismaService
 
-  afterEach(() => {
-    jest.clearAllMocks()
-  })
-
   describe('selectUrgentEntities', () => {
     it('returns the rows from $queryRaw', async () => {
       const rows = [{ entityId: 'e1', birthNumber: '123456/7890', externalId: 'x1' }]

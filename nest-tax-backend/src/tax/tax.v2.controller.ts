@@ -85,7 +85,10 @@ export class TaxControllerV2 {
     @Query('order', ParseIntPipe) order: number,
     @Query('type', new ParseEnumPipe(TaxType)) type: TaxType,
   ) {
-    return this.taxService.getTaxDetail(baUser.birthNumber, year, type, order)
+    return this.taxService.getTaxDetail(baUser.birthNumber, year, type, order, {
+      userId: baUser.id,
+      externalId: baUser.externalId,
+    })
   }
 
   @HttpCode(200)
@@ -120,6 +123,7 @@ export class TaxControllerV2 {
     const response = await this.taxService.getListOfTaxesByBirthnumberAndType(
       baUser.birthNumber,
       type,
+      { userId: baUser.id, externalId: baUser.externalId },
     )
     return response
   }

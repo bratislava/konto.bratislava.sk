@@ -69,22 +69,14 @@ async function main() {
     isSlovenskoSkFormDefinition,
   )
 
-  const {
-    selectedFormDefinition,
-    validFrom,
-    unzip,
-  }: {
-    selectedFormDefinition: FormDefinitionSlovenskoSk
-    validFrom: string
-    unzip: boolean
-  } = await inquirer.prompt([
+  const { selectedSlug, validFrom, unzip } = await inquirer.prompt([
     {
-      type: 'list',
-      name: 'selectedFormDefinition',
+      type: 'select',
+      name: 'selectedSlug',
       message: 'Select a form definition:',
       choices: allFormDefinitions.map((formDefinition) => ({
         name: formDefinition.title,
-        value: formDefinition,
+        value: formDefinition.slug,
       })),
     },
     {
@@ -101,6 +93,10 @@ async function main() {
       default: false,
     },
   ])
+
+  const selectedFormDefinition = allFormDefinitions.find(
+    (formDefinition) => formDefinition.slug === selectedSlug,
+  )!
 
   const outputDir = await generateFiles(selectedFormDefinition, validFrom)
   console.log(`Generated schemas for ${selectedFormDefinition.title} in ${outputDir}`)

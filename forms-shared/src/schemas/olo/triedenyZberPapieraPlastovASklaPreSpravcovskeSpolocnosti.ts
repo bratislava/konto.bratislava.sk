@@ -27,7 +27,7 @@ const getFakturacia = (novyOdberatel: boolean) =>
       checkbox(
         'elektronickaFaktura',
         {
-          title: 'Súhlasím so zaslaním elektronickej faktúry',
+          title: 'Súhlas so zaslaním elektronickej faktúry',
         },
         {
           helptext:
@@ -40,8 +40,8 @@ const getFakturacia = (novyOdberatel: boolean) =>
         input(
           'emailPreFaktury',
           {
-            type: 'text',
-            title: 'E-mail pre zasielanie elektronických faktúr',
+            type: 'email',
+            title: 'Email pre zasielanie elektronických faktúr',
             required: true,
           },
           {},
@@ -117,17 +117,17 @@ export default schema(
         input('cisloZmluvy', { type: 'text', title: 'Číslo zmluvy', required: true }, {}),
       ]),
       conditionalFields(createCondition([[['typOdberatela'], { enum: ['Nový', 'Existujúci'] }]]), [
-        input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+        input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
       ]),
       conditionalFields(
         createCondition([[['typOdberatela'], { const: 'Zmena odberateľa' }]]),
         [
           input(
             'icoPovodnehoOdberatela',
-            { type: 'text', title: 'IČO pôvodného odberateľa', required: true },
+            { type: 'ba-ico', title: 'IČO pôvodného odberateľa', required: true },
             {},
           ),
-          input('noveIco', { type: 'text', title: 'Nové IČO', required: true }, {}),
+          input('noveIco', { type: 'ba-ico', title: 'Nové IČO', required: true }, {}),
           input(
             'dicNovehoOdberatela',
             { type: 'text', title: 'DIČ nového odberateľa', required: true },
@@ -160,7 +160,7 @@ export default schema(
           input(
             'noveTelefonneCislo',
             { type: 'ba-phone-number', title: 'Nové telefónne číslo', required: true },
-            { size: 'medium', placeholder: '+421' },
+            { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
           ),
           input('novyEmail', { title: 'Nový email', required: true, type: 'email' }, {}),
         ],

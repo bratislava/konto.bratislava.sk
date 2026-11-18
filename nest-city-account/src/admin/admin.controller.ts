@@ -90,7 +90,7 @@ export class AdminController {
   @ApiOperation({
     summary: 'Get verification data for user.',
     description:
-      'Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.',
+      'Returns data used for verification by identity card for given user in the last month.',
   })
   @ApiResponse({
     status: 200,

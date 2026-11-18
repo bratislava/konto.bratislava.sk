@@ -171,6 +171,11 @@ export class UserController {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
           message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          console: {
+            userSub: user.sub,
+            accountType,
+            tier: user[CognitoUserAttributesEnum.TIER],
+          },
         })
     }
   }
@@ -210,6 +215,11 @@ export class UserController {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
           message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          console: {
+            userSub: user.sub,
+            accountType,
+            tier: user[CognitoUserAttributesEnum.TIER],
+          },
         })
     }
 

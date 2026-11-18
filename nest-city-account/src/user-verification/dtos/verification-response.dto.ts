@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -39,13 +39,19 @@ export class VerificationDataForUser {
   @IsString()
   idCard!: string
 
-  @ApiPropertyOptional({
-    description: 'Ico used for verification.',
-    example: '65451354',
+  @ApiProperty({
+    description: 'Given name of the user at the time of verification.',
+    example: 'Jozef',
   })
   @IsString()
-  @IsOptional()
-  ico?: string
+  givenName!: string
+
+  @ApiProperty({
+    description: 'Family name of the user at the time of verification.',
+    example: 'Mrkvička',
+  })
+  @IsString()
+  familyName!: string
 
   @ApiProperty({
     description: 'Created timestamp',

@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { GinisDocumentChangeType } from '../../utils/ginis/ginis-api-helper'
 
@@ -21,6 +21,9 @@ class GinisSdkHistorieDokumentuWithAssignedCategory {
 export default class GinisDocumentDetailResponseDto {
   @ApiProperty()
   id: string
+
+  @ApiPropertyOptional()
+  referenceNumber?: string
 
   @ApiProperty()
   dossierId: string

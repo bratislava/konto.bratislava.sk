@@ -57,6 +57,7 @@ import {
 } from '../nases/utils/nases.identity.utils'
 import PrismaService from '../prisma/prisma.service'
 import { RABBIT_FORM_DELIVERY, RABBIT_GINIS } from '../utils/constants'
+import alertReporting from '../utils/constants/error.alerts'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckDeliveryPayloadDto } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
@@ -83,19 +84,7 @@ export default class GinisService {
     private readonly nasesContactsService: NasesContactsService,
     @InjectQueue('sharepoint') private readonly sharepointQueue: Queue,
     private readonly logger: LineLoggerService,
-  ) {
-    if (
-      !['production', 'development', 'staging'].includes(
-        this.baConfigService.environment.nodeEnv,
-      ) &&
-      process.env.JEST_WORKER_ID === undefined
-    ) {
-      throw this.errorFactoryService.InternalServerErrorException({
-        errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
-        message: `.env value NODE_ENV must be set to 'production', 'development' or 'staging'`,
-      })
-    }
-  }
+  ) {}
 
   private async updateFailedRegistration(formId: string): Promise<void> {
     await this.prismaService.forms.update({
@@ -310,7 +299,7 @@ export default class GinisService {
   }
 
   async nackTrueWithWait(seconds: number): Promise<Nack> {
-    if (process.env.JEST_WORKER_ID === undefined) {
+    if (process.env.VITEST === undefined) {
       await setTimeout(seconds)
     }
     return new Nack(true)
@@ -322,7 +311,14 @@ export default class GinisService {
     queue: RABBIT_GINIS.QUEUE,
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
       const logger = new LineLoggerService('Rabbit')
-      logger.error(`GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`)
+      const errorFactoryService = new ErrorFactoryService({ alertReporting })
+      logger.error(
+        errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'GinisService RABBIT_MQ_ERROR',
+          error,
+        }),
+      )
       channel.reject(message, false)
     },
   })

@@ -40,13 +40,17 @@ export class CognitoSubservice {
         throw this.errorFactoryService.BadRequestException({
           errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
           message: error.name,
-          console: { cognitoHttpStatusCode: error.$metadata.httpStatusCode },
+          console: {
+            cognitoId: userId,
+            cognitoHttpStatusCode: error.$metadata.httpStatusCode,
+          },
           error,
         })
       }
       throw this.errorFactoryService.BadRequestException({
         errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
         message: 'Unknown error occurred when fetching user from Cognito',
+        console: { cognitoId: userId },
         error,
       })
     }

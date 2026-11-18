@@ -38,7 +38,7 @@ export default schema({ title: 'KOLO Taxi' }, [
     conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Právnická osoba' }]]), [
       input('nazovOrganizacie', { type: 'text', title: 'Názov organizácie', required: true }, {}),
       sharedAddressField('adresaSidlaOrganizacie', 'Adresa sídla organizácie', true),
-      input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+      input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
       input('dic', { type: 'text', title: 'DIČ', required: true }, {}),
       checkbox(
         'platcaDph',
@@ -76,7 +76,7 @@ export default schema({ title: 'KOLO Taxi' }, [
         checkbox(
           'elektronickaFaktura',
           {
-            title: 'Súhlasím so zaslaním elektronickej faktúry',
+            title: 'Súhlas so zaslaním elektronickej faktúry',
           },
           {
             helptext:
@@ -89,8 +89,8 @@ export default schema({ title: 'KOLO Taxi' }, [
           input(
             'emailPreFaktury',
             {
-              type: 'text',
-              title: 'E-mail pre zasielanie elektronických faktúr',
+              type: 'email',
+              title: 'Email pre zasielanie elektronických faktúr',
               required: true,
             },
             {},

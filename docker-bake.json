@@ -1,10 +1,10 @@
 {
   "variable": {
     "NODE_VERSION": {
-      "default": "24.22.1"
+      "default": "24.22.2"
     },
     "PNPM_VERSION": {
-      "default": "12.15.0"
+      "default": "12.16.1"
     },
     "TURBO_VERSION": {
       "default": "2.11.10"

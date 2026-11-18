@@ -17,11 +17,11 @@ export class NorisValidatorService {
   validateNorisData<T extends z.ZodType>(schema: T, data: unknown): z.infer<T> | z.infer<T>[] {
     if (Array.isArray(data)) {
       return data
-        .map((item) => {
+        .map((item, index) => {
           try {
             return this.validateNorisData(schema, item)
           } catch (error) {
-            this.logger.error(error)
+            this.logger.error(error, { index, itemCount: data.length })
             return undefined
           }
         })
@@ -33,6 +33,12 @@ export class NorisValidatorService {
       throw this.errorFactoryService.BadRequestException({
         errorEnum: CustomErrorNorisTypesEnum.VALIDATE_NORIS_DATA_ERROR,
         message: result.error.message,
+        console: {
+          issues: result.error.issues.map((issue) => ({
+            path: issue.path.join('.'),
+            code: issue.code,
+          })),
+        },
         error: result.error,
       })
     }

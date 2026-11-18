@@ -86,6 +86,7 @@ export class NorisConnectionService implements OnModuleDestroy {
     return this.errorFactoryService.InternalServerErrorException({
       errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
       message: this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+      console: { database: this.baConfigService.noris.database },
       error,
     })
   }
@@ -106,6 +107,7 @@ export class NorisConnectionService implements OnModuleDestroy {
       throw this.errorFactoryService.BadRequestException({
         errorEnum: CustomErrorNorisTypesEnum.CONNECTION_ERROR,
         message: this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+        console: { database: this.baConfigService.noris.database, mssqlCode: error.code },
         error,
       })
     }

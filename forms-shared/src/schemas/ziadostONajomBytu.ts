@@ -341,7 +341,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
               'kontaktovanyEmailom',
               {
                 type: 'boolean',
-                title: 'Chcem byť kontaktovaný/á emailom?',
+                title: 'Chcete byť kontaktovaný/á emailom?',
                 required: true,
                 items: [
                   { value: true, label: 'Áno', isDefault: true },
@@ -362,9 +362,8 @@ const getOsobneUdajeSection = (stepType: StepType) => {
           { type: 'ba-slovak-phone-number', title: 'Telefónne číslo', required: true },
           {
             size: 'medium',
-            placeholder: '+421',
             helptext:
-              'Ak nemáte telefonický kontakt, uveďte kontaktné údaje na inú osobu resp. organizáciu. Vyplňte vo formáte s predvoľbou +421.',
+              'Ak nemáte telefonický kontakt, uveďte kontaktné údaje na inú osobu resp. organizáciu. Vyplňte vo formáte +421.',
           },
         )
       : null,
@@ -506,7 +505,7 @@ const getPrijemSection = (stepType: StepType) => {
           [StepType.ManzelManzelka]:
             'Bol váš manžel/manželka v minulom kalendárnom roku zamestnaný/á?',
           [StepType.DruhDruzka]: 'Bol váš druh/družka v minulom kalendárnom roku zamestnaný/á?',
-          [StepType.InyClen]: 'Bol člen/členka  v minulom kalendárnom roku zamestnaný/á?',
+          [StepType.InyClen]: 'Bol člen/členka domácnosti v minulom kalendárnom roku zamestnaný/á?',
         }[stepType],
         required: true,
         items: [
@@ -1520,7 +1519,7 @@ export default schema(
         'maximalnaVyskaNajomneho',
         {
           title:
-            'Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť',
+            'Uveďte maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť',
           type: 'number',
           step: 0.01,
           required: true,
@@ -1529,7 +1528,7 @@ export default schema(
         { size: 'medium', helptext: 'Zadajte sumu v €' },
       ),
     ]),
-    step('sucetPrijmovCestneVyhlasenie', { title: 'Súčet príjmov a čestné výhlásenie' }, [
+    step('sucetPrijmovCestneVyhlasenie', { title: 'Súčet príjmov a čestné vyhlásenie' }, [
       customComponentsField(
         'sucetPrijmovKalkulacka',
         {

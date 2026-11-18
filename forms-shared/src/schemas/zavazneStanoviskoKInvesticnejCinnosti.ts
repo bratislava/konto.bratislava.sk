@@ -20,6 +20,7 @@ import {
   esbsKatastralneUzemiaCiselnik,
   katastralneUzemiaCodeAbbreviationMap,
 } from '../tax-form/mapping/shared/esbsCiselniky'
+import { sharedPhoneNumberField } from './shared/fields'
 
 const addressFields = (title: string) => [
   input(
@@ -36,7 +37,7 @@ const ziadatelStavebnikFields = [
     'ziadatelTyp',
     {
       type: 'string',
-      title: 'Žiadate ako',
+      title: 'Žiadam ako',
       required: true,
       items: [
         { value: 'fyzickaOsoba', label: 'Fyzická osoba', isDefault: true },
@@ -59,7 +60,7 @@ const ziadatelStavebnikFields = [
     createCondition([[['ziadatelTyp'], { enum: ['fyzickaOsobaPodnikatel', 'pravnickaOsoba'] }]]),
     [
       input('obchodneMeno', { type: 'text', title: 'Obchodné meno', required: true }, {}),
-      input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+      input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
     ],
   ),
   conditionalFields(
@@ -72,11 +73,7 @@ const ziadatelStavebnikFields = [
     input('typOpravnenia', { type: 'text', title: 'Typ oprávnenia', required: true }, {}),
   ]),
   input('email', { title: 'Email', required: true, type: 'email' }, {}),
-  input(
-    'telefon',
-    { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
-    { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
-  ),
+  sharedPhoneNumberField('telefon', true),
 ]
 
 export default schema(
@@ -112,7 +109,7 @@ export default schema(
           },
           {
             type: 'button',
-            helptext: 'nahrajte splnomocnenie od stavebníka',
+            helptext: 'Nahrajte splnomocnenie od stavebníka',
           },
         ),
         ...ziadatelStavebnikFields,
@@ -126,11 +123,7 @@ export default schema(
         { selfColumn: '2/4' },
       ),
       input('email', { title: 'Email', required: true, type: 'email' }, {}),
-      input(
-        'telefon',
-        { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
-        { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
-      ),
+      sharedPhoneNumberField('telefon', true),
       input(
         'autorizacneOsvedcenie',
         { type: 'text', title: 'Číslo autorizačného osvedčenia', required: true },

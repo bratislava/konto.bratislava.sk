@@ -19,7 +19,9 @@ const getPrismaClientOptions = (connectionString: string) => {
       { emit: 'event', level: 'warn' },
       { emit: 'event', level: 'error' },
     ],
-    errorFormat: 'colorless',
+    // 'minimal' keeps query argument values (birth numbers, emails, names)
+    // out of error messages, which end up in logs.
+    errorFormat: 'minimal',
   } satisfies Prisma.PrismaClientOptions
 }
 

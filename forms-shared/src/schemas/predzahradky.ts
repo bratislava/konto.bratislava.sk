@@ -15,6 +15,7 @@ import { step } from '../generator/functions/step'
 import { textArea } from '../generator/functions/textArea'
 import { createCondition } from '../generator/helpers'
 import { esbsBratislavaMestskaCastNoPrefixCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
+import { sharedPhoneNumberField } from './shared/fields'
 
 export default schema(
   {
@@ -36,11 +37,7 @@ export default schema(
       input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
       input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
       input('email', { title: 'Email', required: true, type: 'email' }, {}),
-      input(
-        'telefon',
-        { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
-        { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
-      ),
+      sharedPhoneNumberField('telefon', true),
     ]),
 
     step(
@@ -88,7 +85,7 @@ export default schema(
         ),
         input(
           'parcelneCislo',
-          { title: 'Číslo parcely', required: true, type: 'text' },
+          { title: 'Parcelné číslo', required: true, type: 'text' },
           {
             helptext:
               'Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13). Pre schválenie žiadosti sa musí jednať o mestský pozemok.',

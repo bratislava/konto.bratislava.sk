@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
-import { DataModel, generate, PaymentOptions } from 'bysquare'
+import { CurrencyCode, DataModel, encode, PaymentOptions } from 'bysquare'
 import * as qrCode from 'qrcode'
 
 import BaConfigService from '../config/ba-config.service'
@@ -22,14 +22,14 @@ export class QrCodeService {
           beneficiary: {
             name: this.baConfigService.payment.beneficiaryName,
           },
-          currencyCode: 'EUR',
+          currencyCode: CurrencyCode.EUR,
           variableSymbol: qrCodeData.variableSymbol,
           paymentNote: qrCodeData.paymentNote || 'QR_WEB',
         },
       ],
     }
 
-    const qr = generate(model)
+    const qr = encode(model)
     const qr_result = await qrCode.toBuffer(qr)
     return qr_result.toString('base64')
   }

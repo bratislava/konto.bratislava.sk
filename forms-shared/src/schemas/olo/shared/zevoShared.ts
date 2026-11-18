@@ -70,7 +70,7 @@ export const getZevoSchema = (type: ZevoType) => [
           ],
         ),
         sharedAddressField('adresaPravnickaOsoba', 'Adresa sídla organizácie', true),
-        input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+        input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
         input('dic', { type: 'text', title: 'DIČ', required: true }, {}),
         checkbox(
           'platcaDph',
@@ -116,7 +116,7 @@ export const getZevoSchema = (type: ZevoType) => [
       ],
     ),
     sharedPhoneNumberField('telefon', true),
-    input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+    input('email', { title: 'Email', required: true, type: 'email' }, {}),
     ...(type === ZevoType.EnergetickeZhodnotenieOdpaduVZevo
       ? [
           radioGroup(
@@ -273,7 +273,7 @@ export const getZevoSchema = (type: ZevoType) => [
             checkbox(
               'elektronickaFaktura',
               {
-                title: 'Súhlasím so zaslaním elektronickej faktúry',
+                title: 'Súhlas so zaslaním elektronickej faktúry',
               },
               {
                 helptext:
@@ -287,7 +287,7 @@ export const getZevoSchema = (type: ZevoType) => [
                 'emailPreFaktury',
                 {
                   type: 'email',
-                  title: 'E-mail pre zasielanie elektronických faktúr',
+                  title: 'Email pre zasielanie elektronických faktúr',
                   required: true,
                 },
                 {},
@@ -338,7 +338,7 @@ export const getZevoSchema = (type: ZevoType) => [
                 {},
               ),
               sharedAddressField('sidloOrganizacie', 'Adresa sídla organizácie', true),
-              input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+              input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
             ],
           ),
           conditionalFields(createCondition([[['typPovodcuOdpadu'], { const: 'Fyzická osoba' }]]), [
@@ -348,7 +348,7 @@ export const getZevoSchema = (type: ZevoType) => [
           ]),
           input(
             'emailPovodcuOdpadu',
-            { title: 'E-mail pôvodcu odpadu', required: true, type: 'email' },
+            { title: 'Email pôvodcu odpadu', required: true, type: 'email' },
             {},
           ),
         ]),
@@ -394,7 +394,7 @@ export const getZevoSchema = (type: ZevoType) => [
                 {},
               ),
               sharedAddressField('sidloOrganizacie', 'Adresa sídla organizácie', true),
-              input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+              input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
             ],
           ),
           conditionalFields(
@@ -407,7 +407,7 @@ export const getZevoSchema = (type: ZevoType) => [
           ),
           input(
             'emailDrzitelaOdpadu',
-            { title: 'E-mail držiteľa odpadu', required: true, type: 'email' },
+            { title: 'Email držiteľa odpadu', required: true, type: 'email' },
             {},
           ),
         ]),
@@ -1024,7 +1024,7 @@ export const getZevoSchema = (type: ZevoType) => [
           'predpokladaneMnozstvo',
           {
             type: 'integer',
-            title: 'Prosím uveďte predpokladané množstvo odpadu za obdobie / rok (kg)',
+            title: 'Predpokladané množstvo odpadu za obdobie / rok (kg)',
             required: true,
             minimum: 0,
           },

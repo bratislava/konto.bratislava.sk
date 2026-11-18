@@ -22,6 +22,7 @@ export const createTestTaxPayer = (
   permanentResidenceCity: '1234567890',
   lastUpdatedAtDZN: DEFAULT_DATE,
   lastUpdatedAtKO: DEFAULT_DATE,
+  cityAccountUserMissingSince: null,
   taxAdministrators: [],
   ...overrides,
 })

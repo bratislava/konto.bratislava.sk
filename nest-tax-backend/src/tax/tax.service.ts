@@ -4,7 +4,12 @@ import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
-import { PaymentStatus, Prisma, TaxType } from '../generated/prisma/client'
+import {
+  PaymentStatus,
+  Prisma,
+  TaxImportStatus,
+  TaxType,
+} from '../generated/prisma/client'
 import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { QrCodeService } from '../qrcode/qrcode.service'
@@ -81,16 +86,23 @@ export class TaxService {
     return paidAmountsMap
   }
 
+  /**
+   * @param logContext non-PII ids (e.g. userId) attached to error logs.
+   */
   async getListOfTaxesByBirthnumberAndType(
     birthNumber: string,
     type: TaxType,
+    logContext?: Record<string, unknown>,
   ): Promise<ResponseGetTaxesListDto> {
     if (!birthNumber) {
       throw this.errorFactoryService.ForbiddenException({
         errorEnum: CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
         message: CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+        console: { ...logContext, type },
       })
     }
+
+    const currentTime = dayjs().tz('Europe/Bratislava')
 
     const taxPayer = await this.prisma.taxPayer.findUnique({
       where: {
@@ -103,6 +115,15 @@ export class TaxService {
           },
           include: {
             taxAdministrator: true,
+          },
+        },
+        taxImportAttempts: {
+          where: {
+            taxType: type,
+            year: currentTime.year(),
+          },
+          select: {
+            status: true,
           },
         },
       },
@@ -128,21 +149,18 @@ export class TaxService {
         isCancelled: true,
       },
     })
-    const currentTime = dayjs().tz('Europe/Bratislava')
-
     const shouldAddCurrentYear = checkTaxDateInclusion(
       currentTime,
       lookingForTaxDate,
     )
 
-    // TaxPayer is updated only if tax was searched for in Noris
-    const taxPayerWasUpdated = taxPayer
-      ? taxPayer.updatedAt.getTime() - taxPayer.createdAt.getTime() > 1000 // 1-second threshold
-      : false
+    // Tax for the current year was searched for in Noris, and it was not found there
+    const currentYearTaxNotFound =
+      taxPayer?.taxImportAttempts[0]?.status === TaxImportStatus.NOT_FOUND
 
     if (taxes.length === 0) {
       const availabilityStatus =
-        shouldAddCurrentYear || !taxPayerWasUpdated
+        shouldAddCurrentYear || !currentYearTaxNotFound
           ? TaxAvailabilityStatus.LOOKING_FOR_YOUR_TAX
           : TaxAvailabilityStatus.TAX_NOT_ON_RECORD
       return {
@@ -177,7 +195,7 @@ export class TaxService {
 
     if (
       !currentYearTaxExists &&
-      (shouldAddCurrentYear || !taxPayerWasUpdated)
+      (shouldAddCurrentYear || !currentYearTaxNotFound)
     ) {
       items.unshift({
         year: currentTime.year(),
@@ -202,6 +220,7 @@ export class TaxService {
    * @param year - Year of the tax
    * @param type - Type of the tax
    * @param order - Order of the tax
+   * @param logContext - non-PII ids (e.g. userId) attached to error logs
    * @returns Tax data from database
    */
   private async fetchTaxData<T extends Prisma.TaxInclude>(
@@ -210,6 +229,7 @@ export class TaxService {
     year: number,
     type: TaxType,
     order: number,
+    logContext?: Record<string, unknown>,
   ): Promise<Prisma.TaxGetPayload<{ include: T }>> {
     const taxPayer = await this.prisma.taxPayer.findUnique({
       where: taxPayerWhereUniqueInput,
@@ -220,6 +240,13 @@ export class TaxService {
       throw this.errorFactoryService.NotFoundException({
         errorEnum: CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
         message: CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
+        console: {
+          ...logContext,
+          taxPayerId: taxPayerWhereUniqueInput.id,
+          year,
+          type,
+          order,
+        },
       })
     }
 
@@ -242,6 +269,7 @@ export class TaxService {
       throw this.errorFactoryService.NotFoundException({
         errorEnum: CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
         message: CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        console: { ...logContext, taxPayerId: taxPayer.id, year, type, order },
       })
     }
 
@@ -253,6 +281,7 @@ export class TaxService {
     year: number,
     type: TaxType,
     order: number,
+    logContext?: Record<string, unknown>,
   ): Promise<ResponseAnyTaxSummaryDetailDto> {
     const today = dayjs().tz('Europe/Bratislava')
     const taxDefinition = getTaxDefinitionByType(type)
@@ -278,6 +307,7 @@ export class TaxService {
       year,
       type,
       order,
+      logContext,
     )
 
     // Validate tax details type matches expected type
@@ -285,24 +315,28 @@ export class TaxService {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: `Tax details type is not ${type}: ${tax.taxDetails.type}`,
+        console: { taxId: tax.id, taxPayerId: tax.taxPayerId, year, order },
       })
     }
 
-    const detailWithoutQrCode = getTaxDetailPure({
-      type,
-      taxYear: year,
-      today: today.toDate(),
-      overallAmount: tax.amount,
-      paymentCalendarThreshold: taxDefinition.paymentCalendarThreshold,
-      variableSymbol: tax.variableSymbol,
-      dateOfValidity: tax.dateTaxRuling,
-      installments: tax.taxInstallments,
-      taxDetails: tax.taxDetails,
-      taxPayments: tax.taxPayments,
-      deliveryMethod: tax.deliveryMethod,
-      createdAt: tax.createdAt,
-      isCancelled: tax.isCancelled,
-    })
+    const detailWithoutQrCode = getTaxDetailPure(
+      {
+        type,
+        taxYear: year,
+        today: today.toDate(),
+        overallAmount: tax.amount,
+        paymentCalendarThreshold: taxDefinition.paymentCalendarThreshold,
+        variableSymbol: tax.variableSymbol,
+        dateOfValidity: tax.dateTaxRuling,
+        installments: tax.taxInstallments,
+        taxDetails: tax.taxDetails,
+        taxPayments: tax.taxPayments,
+        deliveryMethod: tax.deliveryMethod,
+        createdAt: tax.createdAt,
+        isCancelled: tax.isCancelled,
+      },
+      { taxId: tax.id, year, type, order },
+    )
 
     let oneTimePaymentQrCode: string | undefined
     if (detailWithoutQrCode.oneTimePayment.qrCode) {
@@ -381,6 +415,7 @@ export class TaxService {
       throw this.errorFactoryService.NotFoundException({
         errorEnum: CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
         message: 'Cancelled tax cannot be paid.',
+        console: { taxId: tax.id, year, type, order },
       })
     }
 
@@ -412,6 +447,7 @@ export class TaxService {
       throw this.errorFactoryService.NotFoundException({
         errorEnum: CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
         message: 'Cancelled tax cannot be paid.',
+        console: { taxId: tax.id, year, type: taxType, order },
       })
     }
 

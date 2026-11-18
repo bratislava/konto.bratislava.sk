@@ -1,4 +1,4 @@
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Request } from 'express'
@@ -18,24 +18,24 @@ describe('OAuth2ValidationSubservice', () => {
     id: 'test-client-id',
     secret: 'test-secret',
     name: 'TEST',
-    isRedirectUriAllowed: jest.fn().mockReturnValue(true),
-    areAllScopesAllowed: jest.fn().mockReturnValue(true),
+    isRedirectUriAllowed: vi.fn().mockReturnValue(true),
+    areAllScopesAllowed: vi.fn().mockReturnValue(true),
   })
 
   const mockPublicPkceClient = createMock<OAuth2Client>({
     id: 'public-pkce-client-id',
     secret: undefined,
     name: 'PUBLIC_PKCE',
-    isRedirectUriAllowed: jest.fn().mockReturnValue(true),
-    areAllScopesAllowed: jest.fn().mockReturnValue(true),
+    isRedirectUriAllowed: vi.fn().mockReturnValue(true),
+    areAllScopesAllowed: vi.fn().mockReturnValue(true),
   })
 
   const mockConfidentialClient = createMock<OAuth2Client>({
     id: 'confidential-client-id',
     secret: 'confidential-secret',
     name: 'CONFIDENTIAL',
-    isRedirectUriAllowed: jest.fn().mockReturnValue(true),
-    areAllScopesAllowed: jest.fn().mockReturnValue(true),
+    isRedirectUriAllowed: vi.fn().mockReturnValue(true),
+    areAllScopesAllowed: vi.fn().mockReturnValue(true),
   })
 
   function validAuthParams() {
@@ -70,7 +70,6 @@ describe('OAuth2ValidationSubservice', () => {
   }
 
   beforeEach(async () => {
-    jest.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OAuth2ValidationSubservice,
@@ -83,35 +82,31 @@ describe('OAuth2ValidationSubservice', () => {
     oAuth2ErrorThrower = module.get<OAuth2ErrorThrower>(OAuth2ErrorThrower)
     oAuth2ClientSubservice = module.get<OAuth2ClientSubservice>(OAuth2ClientSubservice)
 
-    // Re-set mock return values (cleared by jest.clearAllMocks)
-    jest.spyOn(mockClient, 'isRedirectUriAllowed').mockReturnValue(true)
-    jest.spyOn(mockClient, 'areAllScopesAllowed').mockReturnValue(true)
-    jest.spyOn(mockPublicPkceClient, 'isRedirectUriAllowed').mockReturnValue(true)
-    jest.spyOn(mockPublicPkceClient, 'areAllScopesAllowed').mockReturnValue(true)
-    jest.spyOn(mockConfidentialClient, 'isRedirectUriAllowed').mockReturnValue(true)
-    jest.spyOn(mockConfidentialClient, 'areAllScopesAllowed').mockReturnValue(true)
+    // Re-set mock return values (cleared by vi.clearAllMocks)
+    vi.spyOn(mockClient, 'isRedirectUriAllowed').mockReturnValue(true)
+    vi.spyOn(mockClient, 'areAllScopesAllowed').mockReturnValue(true)
+    vi.spyOn(mockPublicPkceClient, 'isRedirectUriAllowed').mockReturnValue(true)
+    vi.spyOn(mockPublicPkceClient, 'areAllScopesAllowed').mockReturnValue(true)
+    vi.spyOn(mockConfidentialClient, 'isRedirectUriAllowed').mockReturnValue(true)
+    vi.spyOn(mockConfidentialClient, 'areAllScopesAllowed').mockReturnValue(true)
 
-    jest
-      .spyOn(oAuth2ErrorThrower, 'authorizationException')
-      .mockImplementation(
-        (errorCode, errorDescription, errorUri, consoleMessage, logMetadata) =>
-          new OAuth2Exception(
-            { error: errorCode, error_description: errorDescription, error_uri: errorUri },
-            HttpStatus.BAD_REQUEST,
-            { consoleMessage, metadata: logMetadata }
-          )
-      )
-    jest
-      .spyOn(oAuth2ErrorThrower, 'tokenException')
-      .mockImplementation(
-        (errorCode, errorDescription, errorUri, consoleMessage, logMetadata) =>
-          new OAuth2Exception(
-            { error: errorCode, error_description: errorDescription, error_uri: errorUri },
-            HttpStatus.BAD_REQUEST,
-            { consoleMessage, metadata: logMetadata }
-          )
-      )
-    jest.spyOn(oAuth2ClientSubservice, 'findClientById').mockReturnValue(mockClient)
+    vi.mocked(oAuth2ErrorThrower.authorizationException).mockImplementation(
+      (errorCode, errorDescription, errorUri, consoleMessage, logMetadata) =>
+        new OAuth2Exception(
+          { error: errorCode, error_description: errorDescription, error_uri: errorUri },
+          HttpStatus.BAD_REQUEST,
+          { consoleMessage, metadata: logMetadata }
+        )
+    )
+    vi.mocked(oAuth2ErrorThrower.tokenException).mockImplementation(
+      (errorCode, errorDescription, errorUri, consoleMessage, logMetadata) =>
+        new OAuth2Exception(
+          { error: errorCode, error_description: errorDescription, error_uri: errorUri },
+          HttpStatus.BAD_REQUEST,
+          { consoleMessage, metadata: logMetadata }
+        )
+    )
+    vi.mocked(oAuth2ClientSubservice.findClientById).mockReturnValue(mockClient)
   })
 
   it('should be defined', () => {
@@ -167,7 +162,7 @@ describe('OAuth2ValidationSubservice', () => {
       })
 
       it('should throw UNAUTHORIZED_CLIENT when client_id is not registered', () => {
-        jest.spyOn(oAuth2ClientSubservice, 'findClientById').mockReturnValue(undefined)
+        vi.mocked(oAuth2ClientSubservice.findClientById).mockReturnValue(undefined)
         expect(() => {
           service.validateAuthorizationRequest(validAuthParams())
         }).toThrow(OAuth2Exception)
@@ -214,7 +209,7 @@ describe('OAuth2ValidationSubservice', () => {
       })
 
       it('should throw INVALID_REQUEST when redirect_uri is not in client allowlist', () => {
-        jest.spyOn(mockClient, 'isRedirectUriAllowed').mockReturnValue(false)
+        vi.spyOn(mockClient, 'isRedirectUriAllowed').mockReturnValue(false)
         expect(() => {
           service.validateAuthorizationRequest({
             ...validAuthParams(),
@@ -257,7 +252,7 @@ describe('OAuth2ValidationSubservice', () => {
       })
 
       it('should throw INVALID_SCOPE when scopes are not allowed for client', () => {
-        jest.spyOn(mockClient, 'areAllScopesAllowed').mockReturnValue(false)
+        vi.spyOn(mockClient, 'areAllScopesAllowed').mockReturnValue(false)
         expect(() => {
           service.validateAuthorizationRequest({ ...validAuthParams(), scope: 'admin' })
         }).toThrow(OAuth2Exception)
@@ -305,7 +300,7 @@ describe('OAuth2ValidationSubservice', () => {
 
       it('should throw INVALID_REQUEST for a confidential client that omits PKCE parameters', () => {
         // RFC 9700 Section 2.1.1: having a client_secret does not exempt a client from PKCE.
-        jest.spyOn(oAuth2ClientSubservice, 'findClientById').mockReturnValue(mockConfidentialClient)
+        vi.mocked(oAuth2ClientSubservice.findClientById).mockReturnValue(mockConfidentialClient)
         expect(() => {
           service.validateAuthorizationRequest({
             ...validAuthParams(),
@@ -412,7 +407,7 @@ describe('OAuth2ValidationSubservice', () => {
       })
 
       it('should throw UNSUPPORTED_RESPONSE_TYPE for "token" (implicit grant) on a non-PKCE client', () => {
-        jest.spyOn(oAuth2ClientSubservice, 'findClientById').mockReturnValue(mockConfidentialClient)
+        vi.mocked(oAuth2ClientSubservice.findClientById).mockReturnValue(mockConfidentialClient)
         expect(() => {
           service.validateAuthorizationRequest({
             ...validAuthParams(),
@@ -444,7 +439,7 @@ describe('OAuth2ValidationSubservice', () => {
       })
 
       it('should not throw for a minimal valid request (no scope or state)', () => {
-        jest.spyOn(oAuth2ClientSubservice, 'findClientById').mockReturnValue(mockConfidentialClient)
+        vi.mocked(oAuth2ClientSubservice.findClientById).mockReturnValue(mockConfidentialClient)
         expect(() => {
           service.validateAuthorizationRequest({
             responseType: 'code',
@@ -635,7 +630,7 @@ describe('OAuth2ValidationSubservice', () => {
       })
 
       it('should clear redirectUri and codeVerifier for refresh_token grant', () => {
-        jest.spyOn(mockClient, 'isRedirectUriAllowed').mockReturnValue(false)
+        vi.spyOn(mockClient, 'isRedirectUriAllowed').mockReturnValue(false)
         // Invalid redirect_uri with refresh_token should NOT throw (it's cleared)
         expect(() => {
           service.validateTokenRequest({
@@ -670,7 +665,7 @@ describe('OAuth2ValidationSubservice', () => {
       })
 
       it('should throw INVALID_CLIENT when client_id is not registered', () => {
-        jest.spyOn(oAuth2ClientSubservice, 'findClientById').mockReturnValue(undefined)
+        vi.mocked(oAuth2ClientSubservice.findClientById).mockReturnValue(undefined)
         expect(() => {
           service.validateTokenRequest({ clientId: 'nonexistent', grantType: 'authorization_code' })
         }).toThrow(OAuth2Exception)
@@ -741,7 +736,7 @@ describe('OAuth2ValidationSubservice', () => {
       it('should accept when client has no secret (public client)', () => {
         // Public clients carry no secret, so the secret check is skipped — but they MUST use PKCE,
         // so a code_verifier is supplied here.
-        jest.spyOn(oAuth2ClientSubservice, 'findClientById').mockReturnValue(mockPublicPkceClient)
+        vi.mocked(oAuth2ClientSubservice.findClientById).mockReturnValue(mockPublicPkceClient)
         expect(() => {
           service.validateTokenRequest({
             clientId: 'public-pkce-client-id',
@@ -771,10 +766,10 @@ describe('OAuth2ValidationSubservice', () => {
           id: 'empty-secret-client',
           secret: '',
           name: 'EMPTY',
-          isRedirectUriAllowed: jest.fn().mockReturnValue(true),
-          areAllScopesAllowed: jest.fn().mockReturnValue(true),
+          isRedirectUriAllowed: vi.fn().mockReturnValue(true),
+          areAllScopesAllowed: vi.fn().mockReturnValue(true),
         })
-        jest.spyOn(oAuth2ClientSubservice, 'findClientById').mockReturnValue(emptySecretClient)
+        vi.mocked(oAuth2ClientSubservice.findClientById).mockReturnValue(emptySecretClient)
         expect(() => {
           service.validateTokenRequest({
             clientId: 'empty-secret-client',
@@ -793,7 +788,7 @@ describe('OAuth2ValidationSubservice', () => {
      */
     describe('redirect_uri validation', () => {
       it('should throw INVALID_REQUEST when redirect_uri not in allowlist', () => {
-        jest.spyOn(mockClient, 'isRedirectUriAllowed').mockReturnValue(false)
+        vi.spyOn(mockClient, 'isRedirectUriAllowed').mockReturnValue(false)
         expect(() => {
           service.validateTokenRequest({
             clientId: 'test-client-id',
@@ -897,7 +892,7 @@ describe('OAuth2ValidationSubservice', () => {
 
       it('should require code_verifier from a confidential client too', () => {
         // RFC 9700 Section 2.1.1: having a client_secret does not exempt a client from PKCE.
-        jest.spyOn(oAuth2ClientSubservice, 'findClientById').mockReturnValue(mockConfidentialClient)
+        vi.mocked(oAuth2ClientSubservice.findClientById).mockReturnValue(mockConfidentialClient)
         expect(() => {
           service.validateTokenRequest({
             clientId: 'confidential-client-id',

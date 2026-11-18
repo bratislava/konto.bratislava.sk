@@ -4,8 +4,7 @@ import {
   LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
-import nodemailer from 'nodemailer'
-import { SentMessageInfo } from 'nodemailer/lib/smtp-transport'
+import nodemailer, { SMTPSentMessageInfo, Transporter } from 'nodemailer'
 
 import BaConfigService from '../../config/ba-config.service'
 
@@ -22,7 +21,7 @@ import BaConfigService from '../../config/ba-config.service'
  */
 @Injectable()
 export default class EmailSubservice {
-  private readonly transporter: nodemailer.Transporter<SentMessageInfo>
+  private readonly transporter: Transporter<SMTPSentMessageInfo>
 
   constructor(
     private readonly baConfigService: BaConfigService,
@@ -65,14 +64,16 @@ export default class EmailSubservice {
 
       const info = await this.transporter.sendMail(emailOptions)
 
-      this.logger.log(
-        `Report email sent successfully to ${to.join(', ')}: ${info.messageId}`,
-        { emailOptions },
-      )
+      this.logger.log(`Report email sent successfully: ${info.messageId}`, {
+        subject,
+        recipients: to.length,
+        attachments: attachments?.map((attachment) => attachment.filename),
+      })
     } catch (error) {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Failed to send daily payment email report.',
+        console: { subject, recipients: to.length },
         error,
       })
     }

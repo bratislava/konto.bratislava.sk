@@ -27,7 +27,6 @@ import {
   CognitoGetUserAttributesData,
   CognitoGetUserData,
   CognitoUserAttributesEnum,
-  CognitoUserStatusEnum,
 } from '../global-dtos/cognito.dto'
 
 /**
@@ -76,12 +75,14 @@ export class CognitoSubservice {
         throw this.errorFactoryService.BadRequestException({
           errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
           message: error.name,
+          console: { externalId },
           error,
         })
       }
       throw this.errorFactoryService.BadRequestException({
         errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
         message: 'Unknown error occurred when fetching user from Cognito',
+        console: { externalId },
         error,
       })
     }
@@ -94,6 +95,7 @@ export class CognitoSubservice {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: ErrorEnum.UNPROCESSABLE_ENTITY_ERROR,
         message: 'Username undefined in user data from Cognito',
+        console: { externalId, userStatus: result.UserStatus, enabled: result.Enabled },
       })
     }
 
@@ -103,7 +105,7 @@ export class CognitoSubservice {
       UserCreateDate: result.UserCreateDate,
       UserLastModifiedDate: result.UserLastModifiedDate,
       Enabled: result.Enabled ?? false,
-      UserStatus: result.UserStatus as CognitoUserStatusEnum,
+      UserStatus: result.UserStatus,
     }
   }
 
@@ -120,12 +122,14 @@ export class CognitoSubservice {
         throw this.errorFactoryService.BadRequestException({
           errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
           message: error.name,
+          console: { externalId },
           error,
         })
       }
       throw this.errorFactoryService.BadRequestException({
         errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
         message: 'Unknown error occurred when disabling user in Cognito',
+        console: { externalId },
         error,
       })
     }
@@ -153,6 +157,11 @@ export class CognitoSubservice {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
         message: SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+        console: {
+          externalId,
+          newTier,
+          cognitoErrorName: error instanceof Error ? error.name : undefined,
+        },
         error,
       })
     }
@@ -187,12 +196,14 @@ export class CognitoSubservice {
         throw this.errorFactoryService.BadRequestException({
           errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
           message: error.name,
+          console: { externalId },
           error,
         })
       }
       throw this.errorFactoryService.BadRequestException({
         errorEnum: ErrorEnum.BAD_REQUEST_ERROR,
         message: 'Unknown error occurred when updating user attributes in Cognito',
+        console: { externalId },
         error,
       })
     }
@@ -220,7 +231,7 @@ export class CognitoSubservice {
       UserCreateDate: user.UserCreateDate,
       UserLastModifiedDate: user.UserLastModifiedDate,
       Enabled: user.Enabled ?? false,
-      UserStatus: user.UserStatus as CognitoUserStatusEnum,
+      UserStatus: user.UserStatus,
     }))
   }
 
@@ -238,7 +249,9 @@ export class CognitoSubservice {
       if (response.AuthenticationResult === undefined) {
         throw this.errorFactoryService.UnprocessableEntityException({
           errorEnum: ErrorEnum.UNPROCESSABLE_ENTITY_ERROR,
-          message: 'AuthenticationResult undefined in response to refresh tokens request from Cognito',
+          message:
+            'AuthenticationResult undefined in response to refresh tokens request from Cognito',
+          console: { clientId, challengeName: response.ChallengeName },
         })
       }
       return {
@@ -249,6 +262,10 @@ export class CognitoSubservice {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: ErrorEnum.UNPROCESSABLE_ENTITY_ERROR,
         message: 'Unexpected error occurred when refreshing tokens via Cognito',
+        console: {
+          clientId,
+          cognitoErrorName: error instanceof Error ? error.name : undefined,
+        },
         error,
       })
     }

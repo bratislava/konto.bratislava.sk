@@ -115,10 +115,10 @@ const telefonField = () =>
   sharedPhoneNumberField(
     'telefon',
     false,
-    'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.',
+    'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie. Vyplňte vo formáte +421.',
   )
 
-const icoField = input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {})
+const icoField = input('ico', { type: 'ba-ico-8-digit-only', title: 'IČO', required: true }, {})
 
 const pravnaFormaField = select(
   'pravnaForma',

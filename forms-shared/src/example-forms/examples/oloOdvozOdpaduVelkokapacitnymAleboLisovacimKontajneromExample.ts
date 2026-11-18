@@ -19,7 +19,7 @@ const exampleForm: ExampleForm = {
           psc: '88844',
         },
       },
-      ico: '5451245',
+      ico: '12345678',
       dic: '54854245',
       platcaDph: true,
       icDph: 'SK445754878',

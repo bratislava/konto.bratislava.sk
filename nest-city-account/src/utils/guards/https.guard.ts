@@ -32,7 +32,10 @@ export class HttpsGuard implements CanActivate {
       throw this.errorFactoryService.ForbiddenException({
         errorEnum: ErrorEnum.FORBIDDEN_ERROR,
         message: 'HTTPS is required for OAuth2 endpoints',
-        console: 'Insecure connection attempt blocked',
+        console: {
+          reason: 'Insecure connection attempt blocked',
+          forwardedProto: request.headers['x-forwarded-proto'],
+        },
       })
     }
 

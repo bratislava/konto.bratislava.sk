@@ -41,7 +41,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, [
       [
         input('nazov', { type: 'text', title: 'Názov organizácie', required: true }, {}),
         sharedAddressField('adresaPravnickaOsoba', 'Adresa sídla organizácie', true),
-        input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+        input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
         input('dic', { type: 'text', title: 'DIČ', required: true }, {}),
         checkbox(
           'platcaDph',
@@ -80,19 +80,19 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, [
       ],
     ),
     sharedPhoneNumberField('telefon', true),
-    input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+    input('email', { title: 'Email', required: true, type: 'email' }, {}),
     object('fakturacia', { objectDisplay: 'boxed', title: 'Fakturácia' }, [
       input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
       checkbox(
         'elektronickaFaktura',
         {
-          title: 'Zasielanie faktúry elektronicky',
+          title: 'Súhlas so zaslaním elektronickej faktúry',
           required: true,
         },
         {
           helptext:
             'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.10 VOP.',
-          checkboxLabel: 'Súhlasím so zaslaním elektronickej fakúry',
+          checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
           variant: 'boxed',
         },
       ),
@@ -101,7 +101,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, [
           'emailPreFaktury',
           {
             type: 'email',
-            title: 'E-mail pre zasielanie elektronických faktúr',
+            title: 'Email pre zasielanie elektronických faktúr',
             required: true,
           },
           {},

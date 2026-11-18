@@ -38,7 +38,8 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const request = ctx.getRequest<Request>()
-    const status = exception.getStatus()
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment -- getStatus() returns the HTTP status as a plain number
+    const status: HttpStatus = exception.getStatus()
     const exceptionResponse = exception.getResponse()
 
     // Extract OAuth2 metadata if this is an OAuth2Exception
@@ -61,7 +62,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
         originalUrl: request.originalUrl,
         statusCode: status,
         userAgent: request.get(USER_AGENT) || '',
-        requestBody: request.body,
+        requestBody: this.getLoggableRequestBody(request),
         queryParams: request.query,
         ip: request.ip ?? '<NO IP>',
         error: exceptionResponse,
@@ -85,10 +86,32 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     })
   }
 
+  /**
+   * OAuth2 routes are excluded from the request logger middleware, so this filter is the only place
+   * their errors get logged. Request bodies carry secrets (`code`, `code_verifier`, `client_secret`,
+   * refresh tokens), so only non-secret fields are logged and secrets are reduced to presence flags.
+   */
+  private getLoggableRequestBody(request: Request): Record<string, unknown> {
+    const body: unknown = request.body
+    if (typeof body !== 'object' || body === null) {
+      return {}
+    }
+    const fields = body as Record<string, unknown>
+    return {
+      grantType: fields.grant_type,
+      clientId: fields.client_id,
+      authRequestId: fields.authRequestId,
+      hasCode: fields.code !== undefined,
+      hasCodeVerifier: fields.code_verifier !== undefined,
+      hasClientSecret: fields.client_secret !== undefined,
+      hasRefreshToken: fields.refresh_token !== undefined || fields.refreshToken !== undefined,
+    }
+  }
+
   private handleInternalError(
     request: Request,
     response: Response,
-    status: number,
+    status: HttpStatus,
     exceptionResponse: string | object
   ): Record<string, unknown> {
     const requestWithAuthData = request as RequestWithAuthorizationData
@@ -100,7 +123,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       originalUrl: request.originalUrl,
       statusCode: status,
       userAgent: request.get(USER_AGENT) || '',
-      requestBody: request.body,
+      requestBody: this.getLoggableRequestBody(request),
       queryParams: request.query,
       authRequestData: requestWithAuthData.authorizationRequestData ?? '<NO REQUEST>',
       ip: request.ip ?? '<NO IP>',
@@ -147,7 +170,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
   private handleAuthorizationError(
     request: Request,
     response: Response,
-    status: number,
+    status: HttpStatus,
     exceptionResponse: string | object
   ): Record<string, unknown> {
     const requestWithAuthData = request as RequestWithAuthorizationData
@@ -173,7 +196,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
         originalUrl: request.originalUrl,
         statusCode: status,
         userAgent: request.get(USER_AGENT) || '',
-        requestBody: request.body,
+        requestBody: this.getLoggableRequestBody(request),
         queryParams: request.query,
         authRequestData: requestWithAuthData.authorizationRequestData ?? '<NO REQUEST>',
         ip: request.ip ?? '<NO IP>',
@@ -209,7 +232,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       originalUrl: request.originalUrl,
       statusCode: HttpStatus.SEE_OTHER,
       userAgent: request.get(USER_AGENT) || '',
-      requestBody: request.body,
+      requestBody: this.getLoggableRequestBody(request),
       queryParams: request.query,
       authRequestData: requestWithAuthData.authorizationRequestData ?? '<NO REQUEST>',
       ip: request.ip ?? '<NO IP>',
@@ -228,7 +251,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
   private handleTokenError(
     request: Request,
     response: Response,
-    status: number,
+    status: HttpStatus,
     exceptionResponse: string | object
   ): Record<string, unknown> {
     const errorResponse = this.extractOAuth2TokenError(exceptionResponse, status)
@@ -254,7 +277,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       originalUrl: request.originalUrl,
       statusCode,
       userAgent: request.get(USER_AGENT) || '',
-      requestBody: request.body,
+      requestBody: this.getLoggableRequestBody(request),
       queryParams: request.query,
       ip: request.ip ?? '<NO IP>',
       error: errorResponse.error,
@@ -269,7 +292,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
    */
   private extractOAuth2AuthorizationError(
     exceptionResponse: string | object,
-    status: number
+    status: HttpStatus
   ): OAuth2AuthorizationErrorDto {
     let errorResponse: OAuth2AuthorizationErrorDto
 
@@ -331,7 +354,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
    */
   private extractOAuth2TokenError(
     exceptionResponse: string | object,
-    status: number
+    status: HttpStatus
   ): OAuth2TokenErrorDto {
     let errorResponse: OAuth2TokenErrorDto
 

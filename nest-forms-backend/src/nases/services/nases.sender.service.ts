@@ -6,7 +6,7 @@ import {
   LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
-import { isAxiosError } from 'axios'
+import { AxiosResponse, isAxiosError } from 'axios'
 import {
   FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
@@ -16,6 +16,7 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import { extractFormSubjectTechnical } from 'forms-shared/form-utils/formDataExtractors'
 import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import mime from 'mime-types'
+import { SktalkReceiveAndSaveToOutboxResult } from 'openapi-clients/slovensko-sk'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
 
 import ClientsService from '../../clients/clients.service'
@@ -29,7 +30,6 @@ import { Forms } from '../../generated/prisma/client'
 import { MinioStorageService } from '../../minio-storage/minio-storage.service'
 import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
-import { NasesSendResponse } from '../dtos/responses.dto'
 import {
   NasesErrorCodesEnum,
   NasesErrorCodesResponseEnum,
@@ -338,25 +338,26 @@ export default class NasesSenderService {
     }`
   }
 
-  // TODO nicer error handling, for now it is assumed this function never throws and a lot of code relies on that
   async send(
     jwtToken: string,
     data: Forms,
     senderUri: string,
-  ): Promise<NasesSendResponse> {
-    let message
+  ): Promise<SktalkReceiveAndSaveToOutboxResult> {
+    let message: string
     try {
       message = await this.createEnvelopeSendMessage(data, senderUri)
     } catch (error) {
-      return {
-        status: 500,
-        data: {
-          message: `Failed to create envelope for nases message: ${(error as Error).message || 'Unknown error'}. Details: ${JSON.stringify(error)}`,
-        },
-      }
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: NasesErrorsEnum.CREATE_ENVELOPE_ERROR,
+        message: NasesErrorsResponseEnum.CREATE_ENVELOPE_ERROR,
+        console: { formId: data.id },
+        error,
+      })
     }
+
+    let response: AxiosResponse<SktalkReceiveAndSaveToOutboxResult>
     try {
-      const response =
+      response =
         await this.clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost(
           {
             message,
@@ -367,60 +368,39 @@ export default class NasesSenderService {
             },
           },
         )
-
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive guard; typed as non-null but real API responses can omit the body
-      if (!response.data) {
-        // TODO temp SEND_TO_NASES_ERROR log, remove
-        this.logger.log(
-          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: EMPTY`,
-        )
-
-        return {
-          status: 422,
-          data: {
-            message:
-              'Server error in response data, please contact administrator',
-          },
-        }
-      }
-
-      if (response.data.receive_result !== 0) {
-        // TODO temp SEND_TO_NASES_ERROR log, remove
-        this.logger.log(
-          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${JSON.stringify(
-            response.data,
-          )}`,
-        )
-
-        return {
-          status: 422,
-          data: {
-            message: this.getNasesError(response.data.receive_result),
-          },
-        }
-      }
-
-      return { status: 200, data: response.data }
     } catch (error) {
-      if (isAxiosError(error) && error.response?.data) {
-        this.logger.error(this.errorFactoryService.fromAxiosError(error, {}))
-        return { status: error.response.status, data: error.response.data }
-      }
-
-      this.logger.error(
-        this.errorFactoryService.InternalServerErrorException({
-          errorEnum: NasesErrorsEnum.SEND_TO_NASES_ERROR,
+      if (isAxiosError(error)) {
+        throw this.errorFactoryService.fromAxiosError(error, {
           message: NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
           console: { formId: data.id },
-        }),
-      )
-
-      return {
-        status: 400,
-        data: {
-          message: 'Other server error, please contact administrator',
-        },
+        })
       }
+
+      throw this.errorFactoryService.InternalServerErrorException({
+        errorEnum: NasesErrorsEnum.SEND_TO_NASES_ERROR,
+        message: NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
+        console: { formId: data.id },
+        error,
+      })
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive guard; typed as non-null but real API responses can omit the body
+    if (!response.data) {
+      throw this.errorFactoryService.BadGatewayException({
+        errorEnum: NasesErrorsEnum.SEND_TO_NASES_ERROR,
+        message: `${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} Empty response body.`,
+        console: { formId: data.id },
+      })
+    }
+
+    if (response.data.receive_result !== 0) {
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: NasesErrorsEnum.SEND_TO_NASES_ERROR,
+        message: this.getNasesError(response.data.receive_result),
+        console: { formId: data.id, responseData: response.data },
+      })
+    }
+
+    return response.data
   }
 }

@@ -43,6 +43,7 @@ export class TurnstileSubservice {
       throw this.errorFactoryService.BadRequestException({
         errorEnum: VerificationErrorsEnum.INVALID_CAPTCHA,
         message: VerificationErrorsResponseEnum.INVALID_CAPTCHA,
+        console: { hasToken: !!token },
         error,
       })
     }
@@ -50,6 +51,12 @@ export class TurnstileSubservice {
       throw this.errorFactoryService.BadRequestException({
         errorEnum: VerificationErrorsEnum.INVALID_CAPTCHA,
         message: VerificationErrorsResponseEnum.INVALID_CAPTCHA,
+        console: {
+          turnstileErrors: result.errors,
+          hostname: result.hostname,
+          action: result.action,
+          challengeTimestamp: result.timestamp,
+        },
       })
     }
   }

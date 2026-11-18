@@ -15,28 +15,37 @@ if (!cityAccountStrapiUrl) {
 
 const strapiClient = getSdk(new GraphQLClient(`${cityAccountStrapiUrl}/graphql`))
 
+// Only these pages from the Next.js build are included in the sitemap, any new page has to be added here explicitly.
+const ALLOWED_PATHS = new Set([
+  ROUTES.HOME,
+  ROUTES.MUNICIPAL_SERVICES,
+  ROUTES.HELP,
+  ROUTES.LOGIN,
+  ROUTES.REGISTER,
+  ROUTES.FORGOTTEN_PASSWORD,
+])
+
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
   generateRobotsTxt: false,
   changefreq: 'weekly',
   sitemapSize: 5000,
-  exclude: [
-    '/get-jwt',
-    '/forms-playground',
-    '/forms-iframe-test',
-    '/oauth',
-    '/nases/login',
-    '/sso',
-    '/styleguide',
-    '/oauth-potvrdenie',
-    '/404',
-    '/odhlasenie',
-    '/moj-profil',
-    '/moje-ziadosti',
-    '/zmena-emailu',
-    '/zmena-hesla',
-  ],
+  // returning null excludes the path, otherwise same as the default transform
+  // https://github.com/iamvishnusankar/next-sitemap#custom-transformation-function
+  transform: async (config, path) => {
+    if (!ALLOWED_PATHS.has(path)) {
+      return null
+    }
+
+    return {
+      loc: path,
+      changefreq: config.changefreq,
+      priority: config.priority,
+      lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
+      alternateRefs: config.alternateRefs ?? [],
+    }
+  },
   // generate paths dynamically from Strapi
   additionalPaths: async (config) => {
     const fetchMunicipalServicePaths = async () => {

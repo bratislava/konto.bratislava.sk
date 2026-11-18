@@ -1,7 +1,7 @@
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { TestingModule } from '@nestjs/testing'
 import axios from 'axios'
-import * as nock from 'nock'
+import nock from 'nock'
 
 import { bootstrap } from '../src/bootstrap'
 

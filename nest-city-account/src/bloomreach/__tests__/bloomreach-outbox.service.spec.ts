@@ -1,12 +1,14 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
-import { createMock } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
+import type { Mocked } from 'vitest'
 
 import prismaMock from '../../../test/singleton'
 import { bloomreachOutboxFactory } from '../../__tests__/factories/bloomreachOutbox.factory'
 import BaConfigService from '../../config/ba-config.service'
 import { BloomreachCommandName, ConsentEnum } from '../../generated/prisma/enums'
 import { PrismaService } from '../../prisma/prisma.service'
+import alertReporting from '../../utils/constants/error.alerts'
 import {
   BloomreachCommandDataKind,
   BloomreachCommandNameEnum,
@@ -19,7 +21,7 @@ import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
 
 describe('BloomreachOutboxService', () => {
   let service: BloomreachOutboxService
-  let payloadBuilder: jest.Mocked<BloomreachPayloadBuilder>
+  let payloadBuilder: Mocked<BloomreachPayloadBuilder>
 
   const externalId = 'test-cognito-id'
 
@@ -66,10 +68,7 @@ describe('BloomreachOutboxService', () => {
         BloomreachOutboxWriterService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: BloomreachPayloadBuilder, useValue: createMock<BloomreachPayloadBuilder>() },
-        {
-          provide: ErrorFactoryService,
-          useValue: createMock<ErrorFactoryService>(),
-        },
+        { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
         {
           provide: BaConfigService,
           useValue: {
@@ -83,10 +82,6 @@ describe('BloomreachOutboxService', () => {
 
     service = module.get<BloomreachOutboxService>(BloomreachOutboxService)
     payloadBuilder = module.get(BloomreachPayloadBuilder)
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
   })
 
   describe('trackCustomer', () => {

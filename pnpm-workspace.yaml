@@ -23,7 +23,7 @@ catalog:
   ajv: 8.20.0
   ajv-errors: 3.0.0
   ajv-formats: 3.0.1
-  axios: 1.18.1
+  axios: 1.21.0
   playwright: 1.64.1
   react: 19.3.1
   react-aria: 3.53.1
@@ -51,7 +51,7 @@ packages:
 allowBuilds:
   '@apollo/protobufjs': true
   '@openapitools/openapi-generator-cli': true
-  # Pulled in by jest-haste-map 30.5. Its install script only compiles when a
+  # Pulled in by @graphql-codegen/cli. Its install script only compiles when a
   # source build is forced; the prebuilt binary comes from a per-platform
   # optional dependency.
   '@parcel/watcher': false
@@ -93,6 +93,7 @@ packageExtensions:
     peerDependenciesMeta:
       typescript:
         optional: true
+
 
 # The root package.json pins Node and pnpm in devEngines with `onFail: error`,
 # so any tool that reads that contract and finds the wrong version stops instead

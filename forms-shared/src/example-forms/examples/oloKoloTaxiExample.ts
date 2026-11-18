@@ -13,7 +13,7 @@ const exampleForm: ExampleForm = {
           psc: '82244',
         },
       },
-      ico: '154515451',
+      ico: '12345678',
       dic: '545454524154',
       platcaDph: false,
       konatel: 'Alexander Veľký',

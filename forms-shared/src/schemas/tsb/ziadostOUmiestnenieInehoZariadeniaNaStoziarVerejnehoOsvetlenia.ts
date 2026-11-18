@@ -10,6 +10,7 @@ import { schema } from '../../generator/functions/schema'
 import { step } from '../../generator/functions/step'
 import { createCondition, createStringItems } from '../../generator/helpers'
 import { object } from '../../generator/object'
+import { sharedPhoneNumberField } from '../shared/fields'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
 
 export default schema(
@@ -85,12 +86,8 @@ export default schema(
               ),
             ],
           ),
-          input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-          input(
-            'telefonneCislo',
-            { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-            { helptext: 'Vyplňte vo formáte +421' },
-          ),
+          input('email', { title: 'Email', required: true, type: 'email' }, {}),
+          sharedPhoneNumberField('telefonneCislo', true),
           datePicker(
             'planovanyDatumMontaze',
             {
@@ -99,7 +96,7 @@ export default schema(
             },
             {
               helptext:
-                'O zahájení prác je potrebné písomne informovať **minimálne 1 pracovný deň** vopred prostredníctvom e-mailu na [info@tsb.sk](mailto:info@tsb.sk).',
+                'O zahájení prác je potrebné písomne informovať **minimálne 1 pracovný deň** vopred prostredníctvom emailu na [info@tsb.sk](mailto:info@tsb.sk).',
               helptextMarkdown: true,
             },
           ),
@@ -111,7 +108,7 @@ export default schema(
             },
             {
               helptext:
-                'Žiadateľ je povinný na základe písomnej výzvy zabezpečiť demontáž svojho zariadenia na vlastné náklady, a to v lehote najneskôr do **15 kalendárnych dní** od doručenia takejto výzvy prostredníctvom kontaktného e-mailu.',
+                'Žiadateľ je povinný na základe písomnej výzvy zabezpečiť demontáž svojho zariadenia na vlastné náklady, a to v lehote najneskôr do **15 kalendárnych dní** od doručenia takejto výzvy prostredníctvom kontaktného emailu.',
               helptextMarkdown: true,
             },
           ),

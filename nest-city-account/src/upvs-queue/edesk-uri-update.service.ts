@@ -29,6 +29,7 @@ export class EdeskUriUpdateService {
       orderBy: { updatedAt: 'asc' },
       select: {
         uri: true,
+        norisId: true,
       },
     })
   }
@@ -60,11 +61,17 @@ export class EdeskUriUpdateService {
     throw this.errorFactoryService.InternalServerErrorException({
       errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
       message: `Failed to update URI for physical entity id ${input.id}`,
+      console: {
+        physicalEntityId: input.id,
+        confirmedFailed,
+        successCount: upvsResult.success.length,
+        failedCount: upvsResult.failed.length,
+      },
     })
   }
 
-  async handleUriUpdateExternal(uri: string) {
-    const upvsResult = await this.nasesService.getIdentitiesByUris([{ uri }])
+  async handleUriUpdateExternal(uri: string, norisId?: number) {
+    const upvsResult = await this.nasesService.getIdentitiesByUris([{ uri, norisId }])
     if (upvsResult.success.length !== 1) {
       await this.prismaService.externalEdeskCheck.update({
         where: { uri },

@@ -4,11 +4,15 @@ import { object } from '../../generator/object'
 /**
  * Create phone number input field consistent with all forms.
  */
-export const sharedPhoneNumberField = (property: string, required: boolean, helptext?: string) =>
+export const sharedPhoneNumberField = (
+  property: string,
+  required: boolean,
+  helptext = 'Vyplňte vo formáte +421',
+) =>
   input(
     property,
     { type: 'ba-phone-number', title: 'Telefónne číslo', required },
-    { size: 'medium', placeholder: '+421', helptext },
+    { size: 'medium', helptext },
   )
 
 /**

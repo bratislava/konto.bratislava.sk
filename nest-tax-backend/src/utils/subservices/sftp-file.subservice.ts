@@ -49,6 +49,7 @@ export default class SftpFileSubservice {
       throw this.errorFactoryService.InternalServerErrorException({
         errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
         message: 'Error during retrieval of files form SFTP server',
+        console: { sftpPath, taxType, from },
         error: error instanceof Error ? error : undefined,
       })
     } finally {

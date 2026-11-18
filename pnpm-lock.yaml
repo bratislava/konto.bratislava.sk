@@ -1177,6 +1177,9 @@ importers:
       '@golevelup/ts-vitest':
         specifier: 4.0.1
         version: 4.0.1(vitest@5.0.5)
+      '@nestjs-cognito/core':
+        specifier: 4.1.0
+        version: 4.1.0(@aws-sdk/client-cognito-identity-provider@3.1159.0)(@nestjs/common@12.3.2(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(aws-jwt-verify@5.2.1)
       '@nestjs/cli':
         specifier: 12.0.11
         version: 12.0.11(@swc/core@1.16.18(@swc/helpers@0.5.23))(@types/node@24.19.2)(fork-ts-checker-webpack-plugin@9.1.0(typescript@6.0.3)(webpack@5.109.2(@swc/core@1.16.18(@swc/helpers@0.5.23))(clean-css@5.3.3)(csso@5.0.5)(esbuild@0.28.1)(html-minifier-terser@6.1.0)(lightningcss@1.32.0)(postcss@8.5.32)(sharp@0.35.5(@types/node@24.19.2))(svgo@3.3.3)(uglify-js@3.19.3)))(prettier@3.9.10)(tsconfig-paths-webpack-plugin@4.2.0)(webpack-node-externals@3.0.0)(webpack@5.109.2(@swc/core@1.16.18(@swc/helpers@0.5.23))(clean-css@5.3.3)(csso@5.0.5)(esbuild@0.28.1)(html-minifier-terser@6.1.0)(lightningcss@1.32.0)(postcss@8.5.32)(sharp@0.35.5(@types/node@24.19.2))(svgo@3.3.3)(uglify-js@3.19.3))
@@ -1186,6 +1189,12 @@ importers:
       '@nestjs/testing':
         specifier: 12.3.2
         version: 12.3.2(@nestjs/common@12.3.2(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.3.2)(@nestjs/platform-express@12.3.2)
+      '@testcontainers/mssqlserver':
+        specifier: 12.2.1
+        version: 12.2.1(supports-color@10.2.2)
+      '@testcontainers/postgresql':
+        specifier: 12.2.1
+        version: 12.2.1(supports-color@10.2.2)
       '@types/express':
         specifier: 5.0.6
         version: 5.0.6
@@ -1219,6 +1228,9 @@ importers:
       eslint:
         specifier: 9.39.5
         version: 9.39.5(jiti@2.7.0)(supports-color@10.2.2)
+      nock:
+        specifier: 15.0.5
+        version: 15.0.5(supports-color@10.2.2)
       path:
         specifier: 0.12.7
         version: 0.12.7
@@ -1228,6 +1240,9 @@ importers:
       prisma-json-types-generator:
         specifier: 5.2.0
         version: 5.2.0(@prisma/client@7.10.1(prisma@7.10.1(@types/node@24.19.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(magicast@0.5.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@6.0.3))(typescript@6.0.3))(pg@8.23.1)(prisma@7.10.1(@types/node@24.19.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(magicast@0.5.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@6.0.3))
+      rodnecislo:
+        specifier: 1.8.0
+        version: 1.8.0
       source-map-support:
         specifier: 0.5.21
         version: 0.5.21
@@ -7703,6 +7718,9 @@ packages:
   '@tediousjs/connection-string@1.1.0':
     resolution: {integrity: sha512-z9ZBWEG+8pIB5V1zYzlRPXx0oRJ5H7coPnMQK8EZOw03UTPI9Umn6viL36f5w+CuqkKsnCM50RVStpjZmR0Bng==}
 
+  '@testcontainers/mssqlserver@12.2.1':
+    resolution: {integrity: sha512-5PO5LOIc5mGp+iq27etwwO/NLY90nGhl3jjfisEuMQI9wAIASgX6qOrHNyDK4rSt+DOpW4oOX/NX8XavFr5KaA==}
+
   '@testcontainers/postgresql@12.2.1':
     resolution: {integrity: sha512-MIbI5KjZ9M4SY4+xzxg/w4ZLBeV+Jd6ognXoWn7dh/mhIhBbn7ss0MiZHNg2XbCbu03BW9YQ9+H9xW8PFkJWaA==}
 
@@ -9130,6 +9148,7 @@ packages:
 
   axios-retry@4.5.0:
     resolution: {integrity: sha512-aR99oXhpEDGo0UuAlYcn2iGRds30k366Zfa05XWScR9QaQD4JYiP3/1Qt1u7YlefUOK+cn0CcwoL1oefavQUlQ==}
+    deprecated: axios-retry is no longer maintained. See https://github.com/softonic/axios-retry for alternatives.
     peerDependencies:
       axios: 0.x || 1.x
 
@@ -13710,6 +13729,7 @@ packages:
 
   node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
+    deprecated: This package is no longer needed on supported Node.js versions. Node.js 16+ includes AbortController and AbortSignal as built-in globals. All Node.js versions requiring this polyfill are end-of-life. Use the built-in globals instead.
 
   node-addon-api@7.1.1:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
@@ -25899,6 +25919,15 @@ snapshots:
   '@tanstack/virtual-core@3.17.3': {}
 
   '@tediousjs/connection-string@1.1.0': {}
+
+  '@testcontainers/mssqlserver@12.2.1(supports-color@10.2.2)':
+    dependencies:
+      testcontainers: 12.2.1(supports-color@10.2.2)
+    transitivePeerDependencies:
+      - bare-abort-controller
+      - bare-buffer
+      - react-native-b4a
+      - supports-color
 
   '@testcontainers/postgresql@12.2.1(supports-color@10.2.2)':
     dependencies:

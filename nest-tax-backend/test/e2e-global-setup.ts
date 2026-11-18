@@ -13,6 +13,8 @@ import {
 import { ConnectionPool } from 'mssql'
 
 const NORIS_DATABASE = 'noris'
+// Collation of the real Noris database, the queries rely on it being case-insensitive
+const NORIS_COLLATION = 'SQL_Czech_CP1250_CI_AS'
 const NORIS_SCHEMA_PATH = resolve(__dirname, 'noris', 'schema.sql')
 // SQL Server only publishes amd64 images, on arm64 hosts it runs emulated (Docker Desktop with Rosetta).
 const MSSQL_IMAGE = 'mcr.microsoft.com/mssql/server:2022-latest'
@@ -97,7 +99,7 @@ async function setupNoris(): Promise<void> {
     await masterPool
       .request()
       .batch(
-        `IF DB_ID('${NORIS_DATABASE}') IS NOT NULL DROP DATABASE ${NORIS_DATABASE}; CREATE DATABASE ${NORIS_DATABASE};`,
+        `IF DB_ID('${NORIS_DATABASE}') IS NOT NULL DROP DATABASE ${NORIS_DATABASE}; CREATE DATABASE ${NORIS_DATABASE} COLLATE ${NORIS_COLLATION};`,
       )
   } finally {
     await masterPool.close()

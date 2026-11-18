@@ -15,7 +15,7 @@
  */
 import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { parse, PaymentOptions } from 'bysquare'
+import { CurrencyCode, decode, PaymentOptions } from 'bysquare'
 import * as qrCode from 'qrcode'
 
 import BaConfigService from '../../config/ba-config.service'
@@ -81,7 +81,7 @@ describe('QrCodeService', () => {
     expect(bySquare).toMatchInlineSnapshot(
       `"000AM0003GC7S2V3GP8S4KFF4NT01VR0GPQ73MAF43VJ78L421UL5L20OEBBCDN2U5I22DNGKE0HA8IA90RJCKMD6K60C5INC4OJKB9O6751V3L3PA6A25HGR4DE6QNJ9SND84UBQCM5BBFKVAJ2ULI7RVNDKT19QL6IOQQBVDVBFF9D72S279NBLGQ2287INHV6AQAUGV9H76PKSKJJJ8TR93VVA24D00"`,
     )
-    expect(parse(bySquare)).toEqual({
+    expect(decode(bySquare)).toEqual({
       invoiceId: '00000000-0000-4000-8000-000000000000',
       payments: [
         {
@@ -89,7 +89,7 @@ describe('QrCodeService', () => {
           amount: 123.45,
           bankAccounts: [{ iban: 'SK3112000000198742637541' }],
           beneficiary: { name: 'Hlavne mesto Slovenskej republiky Bratislava' },
-          currencyCode: 'EUR',
+          currencyCode: CurrencyCode.EUR,
           paymentNote: 'QR_jednorazova_uhrada',
           variableSymbol: '2026000123',
         },
@@ -107,7 +107,7 @@ describe('QrCodeService', () => {
     expect(bySquare).toMatchInlineSnapshot(
       `"0009I0007OG9B101IBKGO0RN889SLP1SQIN4S0KKQ8KDDGO8M9UEQO5B4H3C90VBK3OVVBTBHM4LFNFEOA7ECC2V4E7BTK1A6HPLCN77UMDA1A86KAHLKDFPE4NENOSJFQJT50C34RQ09DSOG4AJDFTP94VMBEPT6RSC22G9F5C73MD1DTB7J7QJ60GIRRBHN6A7GUVVVRHVB00"`,
     )
-    expect(parse(bySquare)).toEqual({
+    expect(decode(bySquare)).toEqual({
       invoiceId: '00000000-0000-4000-8000-000000000000',
       payments: [
         {
@@ -115,7 +115,7 @@ describe('QrCodeService', () => {
           amount: 0.1,
           bankAccounts: [{ iban: 'SK3112000000198742637541' }],
           beneficiary: { name: 'Hlavne mesto Slovenskej republiky Bratislava' },
-          currencyCode: 'EUR',
+          currencyCode: CurrencyCode.EUR,
           paymentNote: 'QR_WEB',
           variableSymbol: '2026000456',
         },

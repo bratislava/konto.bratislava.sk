@@ -151,7 +151,7 @@ export default class FilesService {
     if (!isValidScanStatus(status)) {
       throw this.errorFactoryService.NotAcceptableException({
         errorEnum: FilesErrorsEnum.FILE_WRONG_STATUS_NOT_ACCEPTED_ERROR,
-        message: `Invalid Files status: ${status}. Unable to save.`,
+        message: `Invalid Files status: ${String(status)}. Unable to save.`,
       })
     }
 
@@ -288,13 +288,6 @@ export default class FilesService {
       minioFileName,
       formInfo,
     )
-
-    if (!scannerResponse) {
-      throw this.errorFactoryService.InternalServerErrorException({
-        errorEnum: FilesErrorsEnum.SCANNER_NO_RESPONSE_ERROR,
-        message: FilesErrorsResponseEnum.SCANNER_NO_RESPONSE_ERROR,
-      })
-    }
 
     return this.filesHelper.updateFile(file, scannerResponse)
   }
@@ -515,14 +508,7 @@ export default class FilesService {
         }
 
         if (file.scannerId) {
-          const deleteScannerStatus =
-            await this.filesHelper.deleteFileFromScannerClient(file.scannerId)
-          if (deleteScannerStatus === undefined) {
-            throw this.errorFactoryService.InternalServerErrorException({
-              errorEnum: FilesErrorsEnum.FILE_DELETE_FROM_SCANNER_ERROR,
-              message: FilesErrorsResponseEnum.FILE_DELETE_FROM_SCANNER_ERROR,
-            })
-          }
+          await this.filesHelper.deleteFileFromScannerClient(file.scannerId)
         }
 
         const formInfo = this.filesHelper.fileDto2formInfo(file)

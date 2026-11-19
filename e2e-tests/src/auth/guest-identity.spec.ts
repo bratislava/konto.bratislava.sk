@@ -125,7 +125,6 @@ test.describe('signing in', () => {
       })
 
       await test.step('sign in', async () => {
-        await page.goto('/prihlasenie')
         const guest = await requireIdentityCookie(context)
 
         await logIn(page, identity.email, identity.password)

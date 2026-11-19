@@ -16,7 +16,10 @@ export type IdentityCookie = { name: string; value: string }
 export const getIdentityCookie = async (
   context: BrowserContext,
 ): Promise<IdentityCookie | undefined> =>
-  (await context.cookies(BASE_URL)).find((cookie) => cookie.name.endsWith('.identityId'))
+  (await context.cookies(BASE_URL)).find(
+    (cookie) =>
+      cookie.name.startsWith('com.amplify.Cognito.') && cookie.name.endsWith('.identityId'),
+  )
 
 /** The guest identityId cookie, which the current page must have set. */
 export const requireIdentityCookie = async (context: BrowserContext): Promise<IdentityCookie> => {

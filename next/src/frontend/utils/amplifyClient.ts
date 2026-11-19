@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import { isAmplifyIdentityIdCookieName } from '@/src/frontend/utils/amplifyConfig'
 import logger from '@/src/frontend/utils/logger'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -19,16 +20,15 @@ export const removeAllCookiesAndClearLocalStorage = () => {
   localStorage.clear()
 }
 
-/** The guest identity ID Amplify keeps in a cookie, or `null` if there is none. */
+/**
+ * The guest identity ID Amplify keeps in a cookie, or `null` if there is none. If the browser has several (set on
+ * different paths), this is the first one, the same one Amplify's cookie storage reads.
+ */
 export const getAmplifyGuestIdentityId = () => {
   const cookie = document.cookie
     .split(';')
     .map((part) => part.trim())
-    .find((part) => {
-      const cookieName = part.split('=')[0]
-
-      return cookieName.startsWith('com.amplify.Cognito.') && cookieName.endsWith('.identityId')
-    })
+    .find((part) => isAmplifyIdentityIdCookieName(part.split('=')[0]))
 
   return cookie ? decodeURIComponent(cookie.split('=').slice(1).join('=')) : null
 }

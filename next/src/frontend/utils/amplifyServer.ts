@@ -8,6 +8,7 @@ import { UpsertUserRecordClientRequestDtoLoginClientEnum } from 'openapi-clients
 
 import { cityAccountClient, LoginClientEnum } from '@/src/clients/city-account'
 import { ssrAuthContextPropKey, SsrAuthContextType } from '@/src/components/logic/SsrAuthContext'
+import { isAmplifyIdentityIdCookieName } from '@/src/frontend/utils/amplifyConfig'
 import { baRunWithAmplifyServerContext } from '@/src/frontend/utils/amplifyServerRunner'
 import { AmplifyServerContextSpec } from '@/src/frontend/utils/amplifyTypes'
 import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
@@ -46,9 +47,7 @@ class UnusableIdentityIdError extends Error {
 }
 
 const findIdentityIdCookieName = (cookies: Partial<Record<string, string>>) =>
-  Object.keys(cookies).find(
-    (name) => name.startsWith('com.amplify.Cognito.') && name.endsWith('.identityId'),
-  )
+  Object.keys(cookies).find(isAmplifyIdentityIdCookieName)
 
 /**
  * In Amplify V6, `getServerSideProps` must run in Amplify server context to execute Amplify operations. This is a

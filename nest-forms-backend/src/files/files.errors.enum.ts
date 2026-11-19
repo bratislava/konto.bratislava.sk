@@ -19,6 +19,7 @@ export enum FilesErrorsEnum {
   FILE_SCANNING_SERVICE_ERROR = 'FILE_SCANNING_SERVICE_ERROR',
   TOTAL_FILE_SIZE_EXCEEDED_ERROR = 'TOTAL_FILE_SIZE_EXCEEDED_ERROR',
   MISSING_SLOT_ID_ERROR = 'MISSING_SLOT_ID_ERROR',
+  FILE_UPLOAD_ABORTED_BY_CLIENT_ERROR = 'FILE_UPLOAD_ABORTED_BY_CLIENT_ERROR',
 }
 
 export enum FilesErrorsResponseEnum {
@@ -42,4 +43,5 @@ export enum FilesErrorsResponseEnum {
   FILE_SCANNING_SERVICE_ERROR = 'There was an error with files scanning service.',
   TOTAL_FILE_SIZE_EXCEEDED_ERROR = 'Total file size for this form has been exceeded.',
   MISSING_SLOT_ID_ERROR = 'This form requires a slotId query parameter to enforce per-slot file size limits.',
+  FILE_UPLOAD_ABORTED_BY_CLIENT_ERROR = 'File upload was aborted by the client before it finished.',
 }

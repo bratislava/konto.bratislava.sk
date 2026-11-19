@@ -74,6 +74,17 @@ export class FileUploadInterceptor implements NestInterceptor {
             )
             return
           }
+          if (req.readableAborted) {
+            reject(
+              this.errorFactoryService.BadRequestException({
+                errorEnum: FilesErrorsEnum.FILE_UPLOAD_ABORTED_BY_CLIENT_ERROR,
+                message:
+                  FilesErrorsResponseEnum.FILE_UPLOAD_ABORTED_BY_CLIENT_ERROR,
+                error,
+              }),
+            )
+            return
+          }
           if (error instanceof Error) {
             reject(error)
           } else {

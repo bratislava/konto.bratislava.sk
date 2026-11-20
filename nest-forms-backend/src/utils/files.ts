@@ -9,6 +9,22 @@ export const fileIdIsValid = (fileId: string): boolean =>
   fileId !== PDF_FORM_FAKE_FILE_ID
 export const PDF_EXPORT_FILE_NAME = 'pdf-export.pdf'
 
+const INLINE_CONTENT_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'image/avif',
+  'image/bmp',
+  'image/heic',
+  'image/heif',
+])
+
+export const getContentDispositionType = (
+  contentType: string,
+): 'inline' | 'attachment' =>
+  INLINE_CONTENT_TYPES.has(contentType) ? 'inline' : 'attachment'
+
 export const getFileIdsToInfoMap = (
   form: FormWithFiles,
   jwtSecret: string,

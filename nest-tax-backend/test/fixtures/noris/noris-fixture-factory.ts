@@ -296,6 +296,158 @@ export class NorisFixtureFactory {
       .batch(TABLES.map((table) => `DELETE FROM lcs.${table};`).join('\n'))
   }
 
+  async createRealEstateTax(
+    options: NorisRealEstateTaxOptions = {},
+  ): Promise<NorisTaxFixture> {
+    const {
+      total = DEFAULT_REAL_ESTATE_TAX_TOTAL,
+      installmentCount = DEFAULT_REAL_ESTATE_INSTALLMENTS,
+      details = {
+        dan_byty: total,
+        det_zaklad_dane_byt: DEFAULT_APARTMENT_TAX_BASE,
+        det_dan_byty_byt: total,
+      },
+    } = options
+    const fixture = await this.createTaxDocument(
+      NorisTaxType.RealEstate,
+      total,
+      installmentCount,
+      options,
+    )
+    const name = options.name ?? DEFAULT_NAME
+
+    await this.insertSubject(fixture.podklad, {
+      cislo_poradace: await this.insertRegisterWithAdministrator(
+        'dane21_priznanie_config',
+        options.administrator,
+      ),
+    })
+    await this.insert('dane21_priznanie', {
+      cislo_subjektu: fixture.podklad,
+      podnikatel: options.entrepreneur ? 'A' : 'N',
+      titul: name.titul ?? null,
+      meno: name.meno,
+      priezvisko: name.priezvisko,
+      titul_za: name.titulZa ?? null,
+      rok: fixture.year,
+      forma_uhrady: null,
+      rodne_cislo:
+        options.birthNumber ?? addSlashToBirthNumber(fixture.birthNumber),
+    })
+    await this.insert('dane_21_sum_dan_prizn_detail', {
+      cs_dan_prizn: fixture.podklad,
+      dan_spolu: total,
+      dan_stavby_SPOLU: 0,
+      ...Object.fromEntries(
+        Object.entries(details).map(([column, value]) => [
+          toDetailColumn(column),
+          value,
+        ]),
+      ),
+    })
+
+    return fixture
+  }
+
+  async createCommunalWasteTax(
+    options: NorisCommunalWasteTaxOptions = {},
+  ): Promise<NorisTaxFixture> {
+    const {
+      containers = [DEFAULT_NORIS_CONTAINER],
+      skippedContainers = [],
+      installmentCount = DEFAULT_COMMUNAL_WASTE_INSTALLMENTS,
+      paymentMethod = 'P',
+    } = options
+    const containerRows = containers.map((container) => ({
+      objem: container.volume,
+      pocet_nadob: container.count,
+      pocet_odvozov: container.pickups,
+      sadzba_mena: container.rate,
+      suma_uhrada_mena: container.fee,
+      druh_nadoby: container.type,
+      druh_odpadu: null,
+      address: container.address ?? DEFAULT_CONTAINER_ADDRESS,
+      orientacne_cislo:
+        container.streetNumber === undefined
+          ? DEFAULT_ADDRESS.streetNumber
+          : container.streetNumber,
+    }))
+    const total =
+      options.total ??
+      containerRows.reduce(
+        (sum, row) => sum.add(row.suma_uhrada_mena),
+        currency(0),
+      ).value
+
+    const fixture = await this.createTaxDocument(
+      NorisTaxType.CommunalWaste,
+      total,
+      installmentCount,
+      options,
+    )
+    const name = options.name ?? DEFAULT_NAME
+
+    await this.insertSubject(fixture.podklad, {
+      cislo_poradace: await this.insertRegisterWithAdministrator(
+        'pko21_poplatok_config',
+        options.administrator,
+      ),
+    })
+    await this.insert('pko21_poplatok', {
+      cislo_subjektu: fixture.podklad,
+      podnikatel: options.entrepreneur ? 'A' : 'N',
+      rok: fixture.year,
+      titul: name.titul ?? null,
+      meno: name.meno,
+      priezvisko: name.priezvisko,
+      titul_za: name.titulZa ?? null,
+      forma_uhrady: paymentMethod,
+      rodne_cislo:
+        options.birthNumber ?? addSlashToBirthNumber(fixture.birthNumber),
+    })
+    await this.insert('dane_21_sum_pko_popl_celkom', {
+      cs_dan_prizn: fixture.podklad,
+      dan_spolu_nezaokr: total,
+    })
+
+    await Promise.all([
+      ...containerRows.map(async ({ address, ...row }) =>
+        this.insertContainer(fixture.podklad, address, row),
+      ),
+      ...skippedContainers.map(async ({ wasteType, type, volume, pickups }) =>
+        this.insertContainer(fixture.podklad, DEFAULT_CONTAINER_ADDRESS, {
+          objem: volume,
+          pocet_nadob: 1,
+          pocet_odvozov: pickups,
+          sadzba_mena: 0,
+          suma_uhrada_mena: 0,
+          druh_nadoby: type,
+          druh_odpadu: wasteType,
+          orientacne_cislo: DEFAULT_ADDRESS.streetNumber,
+        }),
+      ),
+    ])
+
+    return fixture
+  }
+
+  /** Sets the saldo of the tax document, e.g. to simulate a payment arriving in Noris. */
+  async setPayment(
+    fixture: NorisTaxFixture,
+    { paid, lastPaymentDate = null }: NorisPaymentOptions,
+  ): Promise<void> {
+    await this.pool
+      .request()
+      .input('id', fixture.documentId)
+      .input('paid', paid)
+      .input('remaining', currency(fixture.total).subtract(paid).value)
+      .input('lastPaymentDate', lastPaymentDate)
+      .query(
+        `UPDATE lcs.dane21_doklad_sum_saldo
+         SET uhrazeno = @paid, zbyva_uhradit = @remaining, datum_posledni_platby = @lastPaymentDate
+         WHERE cislo_subjektu = @id`,
+      )
+  }
   private async insertTaxpayerAddress(
     taxpayerId: number,
     address: NorisAddress | null,
@@ -339,6 +491,21 @@ export class NorisFixtureFactory {
     columns: Omit<NorisTableRows['subjekty'], 'cislo_subjektu'>,
   ): Promise<void> {
     await this.insert('subjekty', { cislo_subjektu: id, ...columns })
+  }
+
+  private async ensureDocumentKinds(): Promise<void> {
+    const rows = Object.values(NorisTaxType).flatMap((taxType) => {
+      const { tax, overpayment } = DOCUMENT_KINDS[taxType]
+      return [
+        `(${tax}, 'A', 'V', '${taxType}')`,
+        `(${overpayment}, 'A', 'ZAL', '${taxType}')`,
+      ]
+    })
+    await this.pool.request().batch(
+      `IF NOT EXISTS (SELECT 1 FROM lcs.dane21_druh_dokladu)
+       INSERT INTO lcs.dane21_druh_dokladu (cislo_subjektu, generovat_pohladavku, typ_dokladu, typ_dane)
+       VALUES ${rows.join(', ')}`,
+    )
   }
 
   /** mssql inserts `undefined` as `NULL`. */

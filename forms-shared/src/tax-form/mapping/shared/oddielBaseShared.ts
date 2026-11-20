@@ -8,7 +8,7 @@ import {
   Spoluvlastnictvo,
   TaxFormData,
 } from '../../types'
-import { parseRodneCislo } from './functions'
+import { parseRodneCisloOrDatumNarodenia } from './functions'
 
 export const oddielBaseShared = (
   data: TaxFormData,
@@ -37,6 +37,6 @@ export const oddielBaseShared = (
       : undefined,
   rodneCisloManzelaManzelky:
     priznanie.spoluvlastnictvo === Spoluvlastnictvo.Bezpodielove
-      ? parseRodneCislo(data.bezpodieloveSpoluvlastnictvoManzelov?.rodneCislo)
+      ? parseRodneCisloOrDatumNarodenia(data.bezpodieloveSpoluvlastnictvoManzelov).rodneCislo
       : undefined,
 })

@@ -15,6 +15,10 @@ import React, {
 
 import { formsClient } from '@/src/clients/forms'
 import { useFormSignature } from '@/src/components/forms/signer/useFormSignature'
+import {
+  getSignatureRejectionReasonFromError,
+  useSignatureRejectionMessage,
+} from '@/src/components/forms/signer/useSignatureRejectionMessage'
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormData } from '@/src/components/forms/useFormData'
@@ -73,7 +77,8 @@ const useGetContext = () => {
   const { getValidatedSummary, getUploadFiles, getScanFiles } = useFormSummary()
   const { isSignedIn, accountType } = useSsrAuth()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
-  const { isValidSignature, signature } = useFormSignature()
+  const { isValidSignature, signature, setSignatureRejected } = useFormSignature()
+  const getSignatureRejectionMessage = useSignatureRejectionMessage()
 
   const {
     setRegistrationModal,
@@ -175,6 +180,19 @@ const useGetContext = () => {
       }
 
       setEidSendingModal(false)
+
+      // Sending again would fail the same way, the user has to sign again (the summary shows why).
+      const signatureRejectionReason = getSignatureRejectionReasonFromError(error)
+      if (signatureRejectionReason) {
+        setSignatureRejected(signatureRejectionReason)
+        showToast({
+          message: getSignatureRejectionMessage(signatureRejectionReason),
+          variant: 'error',
+        })
+
+        return
+      }
+
       setEidSendErrorModal({
         isOpen: true,
         confirmCallback: () => {

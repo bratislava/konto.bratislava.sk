@@ -11,14 +11,16 @@ type FormMenuItemBase = {
   url?: string
   className?: string
   onPress?: () => void
+  isDisabled?: boolean
 }
 
-const FormMenuItem = ({ title, icon, url, onPress, className }: FormMenuItemBase) => {
+const FormMenuItem = ({ title, icon, url, onPress, className, isDisabled }: FormMenuItemBase) => {
   return url ? (
     <NextLink href={url} className="flex items-center gap-3">
       <DropdownMenu.Item
+        disabled={isDisabled}
         className={cn(
-          'flex cursor-pointer items-center gap-3 px-5 py-3 hover:font-semibold focus:font-semibold focus:outline-hidden',
+          'flex cursor-pointer items-center gap-3 px-5 py-3 hover:font-semibold focus:font-semibold focus:outline-hidden data-disabled:cursor-not-allowed data-disabled:font-normal data-disabled:opacity-50',
           className,
         )}
       >
@@ -30,9 +32,11 @@ const FormMenuItem = ({ title, icon, url, onPress, className }: FormMenuItemBase
     </NextLink>
   ) : (
     <DropdownMenu.Item
-      onClick={onPress}
+      // `disabled` only stops Radix's own onSelect, our onClick would still fire.
+      onClick={isDisabled ? undefined : onPress}
+      disabled={isDisabled}
       className={cn(
-        'flex cursor-pointer items-center gap-3 px-5 py-3 hover:font-semibold focus:font-semibold focus:outline-hidden',
+        'flex cursor-pointer items-center gap-3 px-5 py-3 hover:font-semibold focus:font-semibold focus:outline-hidden data-disabled:cursor-not-allowed data-disabled:font-normal data-disabled:opacity-50',
         className,
       )}
     >

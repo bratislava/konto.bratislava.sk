@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common'
 
+import ApiJwtTokensModule from '../api-jwt-tokens/api-jwt-tokens.module'
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import { AuthV2Module } from '../auth-v2/auth-v2.module'
+import ClientsModule from '../clients/clients.module'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
+import RedisCacheModule from '../redis-cache/redis-cache.module'
+import SignatureVerdictCacheService from './signature-verdict-cache.service'
+import SignatureVerificationService from './signature-verification.service'
 import SignerController from './signer.controller'
 import SignerService from './signer.service'
 
@@ -15,9 +20,16 @@ import SignerService from './signer.service'
     UserInfoPipeModule,
     FormsV2Module,
     AuthV2Module,
+    ClientsModule,
+    ApiJwtTokensModule,
+    RedisCacheModule,
   ],
   controllers: [SignerController],
-  providers: [SignerService],
-  exports: [SignerService],
+  providers: [
+    SignerService,
+    SignatureVerificationService,
+    SignatureVerdictCacheService,
+  ],
+  exports: [SignerService, SignatureVerificationService],
 })
 export default class SignerModule {}

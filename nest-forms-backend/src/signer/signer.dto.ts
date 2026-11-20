@@ -1,5 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
+  IsBase64,
   IsBoolean,
   IsNotEmpty,
   IsObject,
@@ -8,6 +9,7 @@ import {
 } from 'class-validator'
 
 import { JSON_FORM_EXAMPLE } from '../utils/constants'
+import { SignatureRejectionReason } from './evaluate-cep-verification'
 
 export class SignerDataRequestDto {
   @IsObject()
@@ -99,4 +101,40 @@ export class SignerDataResponseDto {
   })
   @IsString()
   xdcNamespaceURI!: string
+}
+
+export class VerifyFormSignatureRequestDto {
+  @ApiProperty({
+    description:
+      'Base64 encoded signed ASiC-E container, as returned by the signer.',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsBase64()
+  signatureBase64!: string
+}
+
+export class VerifyFormSignatureResponseDto {
+  @ApiProperty({
+    description:
+      'Whether the signature can be used to send the form. `true` also when the signature was not verified (verification disabled, or only logged).',
+  })
+  @IsBoolean()
+  accepted!: boolean
+
+  @ApiProperty({
+    description:
+      'Whether the signature was actually verified by Slovensko.sk. `false` when verification is disabled.',
+  })
+  @IsBoolean()
+  verified!: boolean
+
+  @ApiPropertyOptional({
+    description:
+      'Why the signature was rejected, present when `accepted` is false.',
+    enum: SignatureRejectionReason,
+    enumName: 'SignatureRejectionReason',
+  })
+  @IsOptional()
+  reason?: SignatureRejectionReason
 }

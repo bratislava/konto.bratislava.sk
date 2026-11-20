@@ -45,6 +45,7 @@ import {
 import NasesSenderService from '../nases/services/nases.sender.service'
 import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
+import SignatureVerificationService from '../signer/signature-verification.service'
 import { SendFormResponseDto } from './dtos/responses.dto'
 import { verifyFormSignatureErrorMapping } from './form-sender.errors.dto'
 import {
@@ -65,6 +66,7 @@ export class FormSenderService {
     private readonly convertPdfService: ConvertPdfService,
     private readonly rabbitmqClientService: RabbitmqClientService,
     private readonly nasesSenderService: NasesSenderService,
+    private readonly signatureVerificationService: SignatureVerificationService,
     private readonly logger: LineLoggerService,
   ) {}
 
@@ -299,6 +301,11 @@ export class FormSenderService {
           throw error
         }
       }
+
+      await this.signatureVerificationService.assertSignatureAccepted(
+        form.formSignature.signatureBase64,
+        { formId: form.id },
+      )
     }
 
     if (

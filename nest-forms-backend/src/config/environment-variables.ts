@@ -19,6 +19,18 @@ export enum ClusterEnv {
   Production = 'production',
 }
 
+/**
+ * Verification of signed forms by the Slovensko.sk CEP service (`POST /api/cep/verify`).
+ * - `off`: no verification.
+ * - `log`: signatures are verified and the verdict is logged, but nothing is rejected (shadow mode for rollout).
+ * - `enforce`: rejected signatures cannot be sent.
+ */
+export enum SignatureVerificationMode {
+  Off = 'off',
+  Log = 'log',
+  Enforce = 'enforce',
+}
+
 export default class EnvironmentVariables {
   @EnvEnum(NodeEnv)
   NODE_ENV: NodeEnv
@@ -229,6 +241,9 @@ export default class EnvironmentVariables {
 
   @EnvBoolean()
   FEATURE_TOGGLE_FILE_SIZE_LIMITS: boolean
+
+  @EnvEnum(SignatureVerificationMode)
+  FEATURE_TOGGLE_SIGNATURE_VERIFICATION: SignatureVerificationMode
 
   @EnvInt({ min: 0 })
   MAX_FILE_SIZE: number

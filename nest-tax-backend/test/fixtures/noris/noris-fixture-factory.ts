@@ -448,6 +448,137 @@ export class NorisFixtureFactory {
          WHERE cislo_subjektu = @id`,
       )
   }
+
+  /** Adds a `ZAL` document (overpayment) to the tax. */
+  async addOverpayment(
+    fixture: NorisTaxFixture,
+    {
+      amount,
+      unappliedAmount = amount,
+      refunded = false,
+      date = utcDate(fixture.year, 5, 1),
+    }: NorisOverpaymentOptions,
+  ): Promise<void> {
+    const id = this.nextId()
+    await this.insert('dane21_doklad', {
+      cislo_subjektu: id,
+      stav_dokladu: 'P',
+      datum_platnosti: date,
+      datum_realizacie: date,
+      suma_mena: amount,
+      podklad: fixture.podklad,
+      pohladavka: this.nextId(),
+      druh_dokladu: DOCUMENT_KINDS[fixture.taxType].overpayment,
+      rok_podkladu: fixture.year,
+    })
+    await this.insert('dane21_doklad_sum_saldo', {
+      cislo_subjektu: id,
+      uhrazeno: refunded ? 0 : amount,
+      zbyva_uhradit: refunded ? 0 : -unappliedAmount,
+      datum_posledni_platby: date,
+    })
+  }
+
+  /** Creates the tax document with its kind, saldo, subjects, address and overpayments. */
+  private async createTaxDocument(
+    taxType: NorisTaxType,
+    total: number,
+    installmentCount: number,
+    options: NorisTaxOptions,
+  ): Promise<NorisTaxFixture> {
+    const {
+      birthNumber = generateBirthNumber(),
+      year = new Date().getUTCFullYear(),
+      state = 'P',
+      address = DEFAULT_ADDRESS,
+      payment = { paid: 0 },
+      overpayments = [],
+    } = options
+
+    const issuedAt = new Date(Date.UTC(year, 2, 2, 9, 30))
+    const validFrom = utcDate(year, 4, 7)
+    const dueDates = options.dueDates ?? [
+      dayjs.utc(validFrom).add(FIRST_DUE_DATE_DAYS, 'day').toDate(),
+      ...LATER_DUE_DATES.slice(
+        LATER_DUE_DATES.length - installmentCount + 1,
+      ).map(([month, day]) => utcDate(year, month, day)),
+    ]
+    const installments = splitIntoInstallments(total, dueDates)
+
+    await this.ensureDocumentKinds()
+
+    const documentId = this.nextId()
+    const podklad = this.nextId()
+    const taxpayerId = this.nextId()
+    const variableSymbol = this.nextVariableSymbol()
+
+    await this.insert('dane21_doklad', {
+      cislo_subjektu: documentId,
+      stav_dokladu: state,
+      datum_platnosti: state === 'Z' ? null : validFrom,
+      variabilny_symbol: variableSymbol,
+      datum_realizacie: issuedAt,
+      suma_mena: total,
+      suma_spl1: installments[0]?.amount,
+      suma_spl2: installments[1]?.amount,
+      suma_spl3: installments[2]?.amount,
+      suma_spl4: installments[3]?.amount,
+      datum_spl1: installments[0]?.dueDate,
+      datum_spl2: installments[1]?.dueDate,
+      datum_spl3: installments[2]?.dueDate,
+      datum_spl4: installments[3]?.dueDate,
+      subjekt: taxpayerId,
+      podklad,
+      pohladavka: this.nextId(),
+      druh_dokladu: DOCUMENT_KINDS[taxType].tax,
+      rok_podkladu: year,
+    })
+    await this.insertSubject(documentId, {
+      cislo_poradace: 0,
+      reference_subjektu: [
+        randomDigits(1),
+        randomDigits(2),
+        `${randomDigits(6)}-${randomDigits(2)}`,
+        randomDigits(2),
+        randomDigits(7),
+      ].join('/'),
+    })
+    await this.insertSubject(taxpayerId, {
+      cislo_poradace: 0,
+      reference_subjektu: randomDigits(SUBJECT_REFERENCE_LENGTH),
+    })
+    await this.insertTaxpayerAddress(taxpayerId, address)
+    await this.insert('dane21_doklad_sum_saldo', {
+      cislo_subjektu: documentId,
+      uhrazeno: 0,
+      zbyva_uhradit: total,
+      datum_posledni_platby: null,
+    })
+
+    const fixture: NorisTaxFixture = {
+      taxType,
+      documentId,
+      podklad,
+      birthNumber: birthNumber.replace('/', ''),
+      variableSymbol,
+      year,
+      total,
+      installments,
+    }
+    if (payment.paid > 0) {
+      await this.setPayment(fixture, {
+        lastPaymentDate: installments[0].dueDate,
+        ...payment,
+      })
+    }
+    await Promise.all(
+      overpayments.map(async (overpayment) =>
+        this.addOverpayment(fixture, overpayment),
+      ),
+    )
+    return fixture
+  }
+
   private async insertTaxpayerAddress(
     taxpayerId: number,
     address: NorisAddress | null,
@@ -467,6 +598,34 @@ export class NorisFixtureFactory {
         obec_nazev: address.city,
       })
     }
+  }
+
+  /**
+   * Noris assigns the administrator of a tax return or fee (`vybavuje`, shown in the tax as `vyb_*`) by the register
+   * (`cislo_poradace`, poradač) of its subject. Creates a register with the administrator and returns its id.
+   */
+  private async insertRegisterWithAdministrator(
+    table: 'dane21_priznanie_config' | 'pko21_poplatok_config',
+    administrator: NorisAdministrator | null = DEFAULT_ADMINISTRATOR,
+  ): Promise<number> {
+    const registerId = this.nextId()
+    const administratorId = administrator ? this.nextId() : null
+    await this.insert(table, {
+      cislo_poradace: registerId,
+      vybavuje: administratorId,
+    })
+    if (administrator && administratorId) {
+      await this.insertSubject(administratorId, {
+        cislo_poradace: 0,
+        nazev_subjektu: administrator.name,
+      })
+      await this.insert('zamestnanci', {
+        cislo_subjektu: administratorId,
+        telefon_prace: administrator.phone,
+        e_mail: administrator.email,
+      })
+    }
+    return registerId
   }
 
   private async insertContainer(

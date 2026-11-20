@@ -43,14 +43,21 @@ target "_toolchain" {
 # that inherits it picks up the remote cache without the root file mentioning CI.
 #
 # network=host puts the build steps in the builder's network namespace, which
-# the workflows put in the runner's namespace via the `network=host` buildx
-# driver option. That is what makes the localhost TURBO_API resolve, and it
-# needs `allow: network.host` on the bake action.
+# the workflows put in Docker's host network via the `network=host` buildx
+# driver option. That is what makes localhost addresses resolve: the E2E
+# database service container, and the in-job cache server the E2E tests
+# workflow starts on GitHub-hosted runners. It needs `allow: network.host` on
+# the bake action. On the self-hosted runners TURBO_API is the shared cache
+# server's cluster address instead.
+#
+# The cache token is a BuildKit secret rather than a build arg, so it stays out
+# of the layer metadata that the registry cache exports. The Dockerfiles mount
+# it as TURBO_TOKEN on each `turbo run` step.
 target "_turbo-cache" {
   network = "host"
   args = {
-    TURBO_API   = TURBO_API
-    TURBO_TEAM  = "city-account"
-    TURBO_TOKEN = "local"
+    TURBO_API  = TURBO_API
+    TURBO_TEAM = "city-account"
   }
+  secret = ["id=turbo_token,env=TURBO_TOKEN"]
 }

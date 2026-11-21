@@ -180,7 +180,7 @@ describe('BloomreachOutboxService', () => {
       const subscribeCommandData = {
         kind: BloomreachCommandDataKind.EVENT as const,
         customer_ids: { city_account_id: externalId },
-        event_type: BloomreachEventNameEnum.CONSENT,
+        event_type: BloomreachEventNameEnum.CONSENT as const,
         properties: {
           action: BloomreachConsentActionEnum.ACCEPT,
           category: 'ESBS-MARKETING',
@@ -192,7 +192,7 @@ describe('BloomreachOutboxService', () => {
       const unsubscribeCommandData = {
         kind: BloomreachCommandDataKind.EVENT as const,
         customer_ids: { city_account_id: externalId },
-        event_type: BloomreachEventNameEnum.CONSENT,
+        event_type: BloomreachEventNameEnum.CONSENT as const,
         properties: {
           action: BloomreachConsentActionEnum.REJECT,
           category: 'ESBS-MARKETING',

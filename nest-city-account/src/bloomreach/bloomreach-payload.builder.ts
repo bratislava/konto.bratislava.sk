@@ -11,9 +11,12 @@ import {
   BloomreachCommandDataKind,
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
+  BloomreachConsentEventCommandData,
   BloomreachCustomerCommand,
   BloomreachEventCommand,
   BloomreachEventNameEnum,
+  BloomreachUnVerificationEventCommandData,
+  BloomreachUnVerificationReasonEnum,
   Consent,
 } from './bloomreach.types'
 import { BloomreachContactDatabaseService } from './contact-database/bloomreach-contact-database.service'
@@ -153,7 +156,28 @@ export class BloomreachPayloadBuilder {
     }
   }
 
-  buildConsentEventCommands(consents: Consent[], externalId: string): BloomreachEventCommand[] {
+  buildUnVerificationEventCommand(
+    externalId: string,
+    reason: BloomreachUnVerificationReasonEnum
+  ): BloomreachEventCommand<BloomreachUnVerificationEventCommandData> {
+    return {
+      commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
+      commandData: {
+        kind: BloomreachCommandDataKind.EVENT,
+        customer_ids: {
+          city_account_id: externalId,
+        },
+        properties: { reason },
+        event_type: BloomreachEventNameEnum.UN_VERIFICATION,
+        timestamp: nowUnixSeconds(),
+      },
+    }
+  }
+
+  buildConsentEventCommands(
+    consents: Consent[],
+    externalId: string
+  ): BloomreachEventCommand<BloomreachConsentEventCommandData>[] {
     return consents.map((consent) => ({
       commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
       commandData: {

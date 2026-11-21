@@ -1,0 +1,80 @@
+name: Renovate
+
+on:
+  # A pull request that changes the Renovate config gets a dry run with that
+  # config, so its effect is visible before it is merged.
+  pull_request:
+    paths:
+      - renovate.json5
+      - .github/workflows/renovate.yml
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        description: 'Only log what would be done'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# Real runs share one group so they never overlap; each pull request gets its
+# own, and a new push replaces its previous dry run.
+concurrency:
+  group: renovate-${{ github.event_name == 'pull_request' && github.ref || 'master' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      IS_PULL_REQUEST: ${{ github.event_name == 'pull_request' }}
+      DRY_RUN: ${{ github.event_name == 'pull_request' || inputs.dryRun }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      # Renovate always reads renovate.json5 from master. On a pull request, its
+      # own config is passed in as global config instead, and the one on master
+      # is ignored (RENOVATE_REQUIRE_CONFIG below), so the dry run shows what
+      # the proposed config would do. The action mounts /tmp into the Renovate
+      # container.
+      - name: Prepare config
+        run: |
+          if [ "$IS_PULL_REQUEST" = 'true' ]; then
+            cp renovate.json5 /tmp/renovate-config.json5
+          else
+            echo '{}' > /tmp/renovate-config.json5
+          fi
+
+      - id: token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.RENOVATE_APP_ID }}
+          private-key: ${{ secrets.RENOVATE_APP_PRIVATE_KEY }}
+
+      - uses: renovatebot/github-action@v46.3.3
+        with:
+          token: ${{ steps.token.outputs.token }}
+        env:
+          RENOVATE_REPOSITORIES: ${{ github.repository }}
+          RENOVATE_CONFIG_FILE: /tmp/renovate-config.json5
+          RENOVATE_REQUIRE_CONFIG: ${{ env.IS_PULL_REQUEST == 'true' && 'ignored' || 'optional' }}
+          RENOVATE_ONBOARDING: 'false'
+          RENOVATE_PLATFORM_COMMIT: enabled
+          RENOVATE_DRY_RUN: ${{ env.DRY_RUN == 'true' && 'full' || '' }}
+          LOG_LEVEL: info
+          # A short JSON summary of the branches and updates per run, uploaded
+          # below. Much easier to read than the log.
+          RENOVATE_REPORT_TYPE: file
+          RENOVATE_REPORT_PATH: /tmp/renovate-report.json
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: renovate-report
+          path: /tmp/renovate-report.json
+          if-no-files-found: ignore

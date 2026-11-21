@@ -9,7 +9,6 @@ export const NorisBaseTaxWithoutPaymentSchema = z.object({
   cislo_konania: z.string().nullable(),
   datum_platnosti: z.date().nullable(),
   variabilny_symbol: z.string(), // If it is null, we should not process the tax. Currently all were non-null, thus we can expect it to be non-null, otherwise throw error when parsing.
-  rok: z.number(),
   dan_spolu: z.string(),
   subjekt_refer: z.string().nullable(),
   subjekt_nazev: z.string().nullable(),
@@ -72,8 +71,6 @@ export const NorisCommunalWasteTaxGroupedSchema = NorisBaseTaxSchema.extend(
 export const NorisRawRealEstateTaxDetailSchema = z.object({
   dan_byty: z.string(),
   dan_pozemky: z.string(),
-  dan_stavby: z.string(),
-  dan_stavby_viac: z.string(),
   dan_stavby_SPOLU: z.string(),
   det_zaklad_dane_byt: z.string(),
   det_zaklad_dane_nebyt: z.string(),

@@ -512,7 +512,6 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         expect(result[0].cislo_subjektu).toBe(
           testCommunalWasteTax1.cislo_subjektu,
         )
-        expect(result[0].rok).toBe(testCommunalWasteTax1.rok)
         expect(result[0].dan_spolu).toBe(testCommunalWasteTax1.dan_spolu)
         expect(result[0].subjekt_nazev).toBe(
           testCommunalWasteTax1.subjekt_nazev,
@@ -529,7 +528,6 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         expect(result[0]).toHaveProperty('cislo_konania')
         expect(result[0]).toHaveProperty('datum_platnosti')
         expect(result[0]).toHaveProperty('variabilny_symbol')
-        expect(result[0]).toHaveProperty('rok')
         expect(result[0]).toHaveProperty('dan_spolu')
         expect(result[0]).toHaveProperty('uhrazeno')
         expect(result[0]).toHaveProperty('subjekt_refer')

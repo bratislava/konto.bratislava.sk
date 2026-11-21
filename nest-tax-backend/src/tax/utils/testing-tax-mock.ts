@@ -34,7 +34,6 @@ export const createTestingRealEstateTaxMock = (
     ICO_RC: norisData.fakeBirthNumber,
     subjekt_nazev: norisData.nameSurname,
     dan_spolu: norisData.taxTotal,
-    rok: year,
     datum_platnosti: norisData.dateTaxRuling,
     stav_dokladu: norisData.isCancelled ? 'S' : 'Z',
 
@@ -117,8 +116,6 @@ export const createTestingRealEstateTaxMock = (
     // additional required fields
     cislo_subjektu: 123_456,
     datum_realizacie: new Date(),
-    dan_stavby: '600,50',
-    dan_stavby_viac: '300,25',
     dan_byty: norisData.taxTotal,
 
     forma_uhrady: 'P',
@@ -155,7 +152,6 @@ export const createTestingCommunalWasteTaxMock = (
     ICO_RC: norisData.fakeBirthNumber,
     subjekt_nazev: norisData.nameSurname,
     dan_spolu: norisData.taxTotal,
-    rok: year,
     datum_platnosti: norisData.dateTaxRuling,
 
     // payment data

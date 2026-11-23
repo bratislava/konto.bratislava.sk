@@ -17,8 +17,7 @@ WITH NorisRows AS (
         ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno,
         (SELECT MAX(v) FROM (VALUES(view_doklad_saldo.datum_posledni_platby), (overpayment_sum.datum_realizacie)) AS maxDate(v)) AS datum_posledni_platby,
         subjekt_doklad_sub.reference_subjektu subjekt_refer,
-        ltrim(case when lcs.dane21_priznanie.podnikatel='N' then isnull(lcs.dane21_priznanie.titul+' ', '')+isnull(lcs.dane21_priznanie.meno+' ', '') +isnull(lcs.dane21_priznanie.priezvisko, '') +(case when lcs.dane21_priznanie.titul_za is null then '' else isnull(', '+lcs.dane21_priznanie.titul_za, '') end )         else  lcs.dane21_priznanie.obchodny_nazov end  ) subjekt_nazev, 
-        lcs.dane21_priznanie.rok, 
+        ltrim(isnull(lcs.dane21_priznanie.titul+' ', '')+isnull(lcs.dane21_priznanie.meno+' ', '') +isnull(lcs.dane21_priznanie.priezvisko, '') +isnull(', '+lcs.dane21_priznanie.titul_za, '')) subjekt_nazev, 
         a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, org_cudz.adr_tp_sup_cislo, org_cudz.adr_tp_or_cislo), '') as ulica_tb_cislo, 
         a_tb.psc_refer as psc_ref_tb,
         a_tb.obec_nazev obec_nazev_tb, 
@@ -31,8 +30,6 @@ WITH NorisRows AS (
         lcs.fn21_dec2string( dsum.dan_spolu , 2) as dan_spolu, 
         lcs.fn21_dec2string(dsum.dan_byty, 2) dan_byty, 
         lcs.fn21_dec2string(dsum.dan_pozemky, 2) dan_pozemky, 
-        lcs.fn21_dec2string(dsum.dan_stavby , 2) dan_stavby, 
-        lcs.fn21_dec2string(dsum.dan_stavby_viac, 2) dan_stavby_viac, 
         lcs.fn21_dec2string(dsum.dan_stavby_SPOLU , 2) dan_stavby_SPOLU, 
         lcs.fn21_dec2string(dsum.det_zaklad_dane_byt , 2) det_zaklad_dane_byt, 
         lcs.fn21_dec2string(dsum.det_zaklad_dane_nebyt , 2) det_zaklad_dane_nebyt, 
@@ -81,11 +78,8 @@ WITH NorisRows AS (
         lcs.fn21_dec2string(dsum.det_stavba_j_ZAKLAD_H , 2) det_stavba_ZAKLAD_jH, 
         lcs.fn21_dec2string(dsum.det_stavba_j_ZAKLAD_I , 2) det_stavba_ZAKLAD_jI, 
         lcs.fn21_dec2string(dsum.det_stavba_DAN_H , 2) det_stavba_DAN_H, 
-        lcs.fn21_dec2string(dsum.det_stavba_ZAKLAD_H, 2) det_stavba_ZAKLAD_H   /*zmena 31032008 z DP_conf.typ_priznania='F' na lcs.dane21_priznanie.podnikatel='N'*/, 
-        (case 
-            when lcs.dane21_priznanie.podnikatel='N' then lcs.dane21_priznanie.rodne_cislo 
-            else  isnull(lcs.dane21_priznanie.ico, '')+'/'+isnull(ev_dic_cudz.dic, '') 
-        end) ICO_RC, 
+        lcs.fn21_dec2string(dsum.det_stavba_ZAKLAD_H, 2) det_stavba_ZAKLAD_H, 
+        lcs.dane21_priznanie.rodne_cislo ICO_RC, 
 
         /* ----------------------------Texty splátok výmeru start------------------------------------*/   
         
@@ -125,12 +119,6 @@ WITH NorisRows AS (
     FROM 
         lcs.dane21_doklad  
 
-    -- LEFT JOIN 
-    --     SELECT TOP 10 * FROM
-    --     lcs.kontext kont  
-    --     ON
-    --         kont.hid=host_id()  
-
     LEFT OUTER JOIN 
         lcs.subjekty subjekt_doklad  
         ON 
@@ -140,21 +128,6 @@ WITH NorisRows AS (
         lcs.subjekty subjekt_doklad_sub  
         ON 
             lcs.dane21_doklad.subjekt=subjekt_doklad_sub.cislo_subjektu  
-
-    LEFT OUTER JOIN 
-        lcs.subjekty subjekty_d  
-        ON 
-            lcs.dane21_doklad.podklad=subjekty_d.cislo_subjektu  
-
-    LEFT OUTER JOIN 
-        lcs.subjekty subjekty_e  
-        ON 
-            lcs.dane21_doklad.pohladavka=subjekty_e.cislo_subjektu  
-
-    LEFT OUTER JOIN 
-        lcs.subjekty subjekty_f  
-        ON 
-            lcs.dane21_doklad.text_vzor=subjekty_f.cislo_subjektu  
 
     JOIN 
         lcs.dane21_priznanie  
@@ -172,11 +145,6 @@ WITH NorisRows AS (
             subjekt_priznanie.cislo_poradace=dp_conf.cislo_poradace  
 
     LEFT OUTER JOIN 
-        lcs.subjekty subjekty_vybav  
-        ON 
-            subjekty_vybav.cislo_subjektu=dp_conf.vybavuje  
-
-    LEFT OUTER JOIN 
         lcs.zamestnanci z_vybav  
         ON 
             z_vybav.cislo_subjektu=dp_conf.vybavuje  
@@ -187,119 +155,14 @@ WITH NorisRows AS (
             lcs.dane21_doklad.subjekt=org_cudz.cislo_subjektu  
 
     LEFT OUTER JOIN 
-        lcs.subjekty subjekty_e1  
-        ON 
-            lcs.dane21_priznanie.adresa_prech_pobyt=subjekty_e1.cislo_subjektu  
-
-    LEFT OUTER JOIN 
-        lcs.subjekty subjekty_f1  
-        ON 
-            lcs.dane21_priznanie.bankove_spojenie=subjekty_f1.cislo_subjektu  
-
-    LEFT OUTER JOIN 
-        lcs.subjekty subjekty_g1  
-        ON 
-            lcs.dane21_priznanie.statutarny_zastupca=subjekty_g1.cislo_subjektu  
-
-    LEFT OUTER JOIN 
-        lcs.subjekty subjekty_h1  
-        ON
-            lcs.dane21_priznanie.adresa_postova=subjekty_h1.cislo_subjektu  
-
-    LEFT OUTER JOIN 
-        lcs.subjekty subjekty_i1  
-        ON 
-            lcs.dane21_priznanie.zastupca_adresa=subjekty_i1.cislo_subjektu  
-
-    LEFT OUTER JOIN 
         lcs.dane_21_adresa_view a_tb  
         ON 
             org_cudz.adresa_tp_sidlo=a_tb.cislo_subjektu  
 
     LEFT OUTER JOIN 
-        lcs.dane_21_adresa_view a_pb  
-        ON
-            lcs.dane21_priznanie.adresa_prech_pobyt=a_pb.cislo_subjektu  
-
-    LEFT OUTER JOIN 
-        lcs.dane_21_adresa_view zast_tb  
-        ON
-            lcs.dane21_priznanie.zastupca_adresa=zast_tb.cislo_subjektu  
-
-    LEFT OUTER JOIN
-        lcs.dane_21_adresa_view a_post_doklad  
-        ON 
-            lcs.dane21_doklad.adresa_postova=a_post_doklad.cislo_subjektu  
-
-    LEFT OUTER JOIN
-        lcs.organizace zast_org  
-        ON 
-            lcs.dane21_priznanie.statutarny_zastupca=zast_org.cislo_subjektu  
-
-    LEFT OUTER JOIN 
         lcs.dane_21_sum_dan_prizn_detail dsum  
         ON
             dsum.cs_dan_prizn=lcs.dane21_priznanie.cislo_subjektu  
-
-    LEFT OUTER JOIN
-        lcs.bankovni_spojeni_cizi banspoj  
-        ON
-            lcs.dane21_priznanie.bankove_spojenie=banspoj.cislo_subjektu  
-
-    LEFT OUTER JOIN
-        lcs.subjekty sbanspoj  
-        ON
-            banspoj.cislo_bank_ustav=sbanspoj.cislo_subjektu  
-
-    LEFT OUTER JOIN
-        lcs.editstyles editpr_forma  
-        ON 
-            editpr_forma.name='dane_pravna_forma' and editpr_forma.type=87 and editpr_forma.data_val=lcs.dane21_priznanie.pravna_forma   
-
-    LEFT OUTER JOIN
-        lcs.vztahysubjektu vzt212080  
-        ON 
-            vzt212080.cislo_vztahu=212080 and vzt212080.cislo_subjektu=lcs.dane21_doklad.cislo_subjektu   
-
-    LEFT OUTER JOIN 
-        lcs.subjekty svzt212080  
-        ON
-            vzt212080.cislo_vztaz_subjektu=svzt212080.cislo_subjektu  
-
-    LEFT OUTER JOIN
-        lcs.dane21_doklad dvzt212080  
-        ON
-            vzt212080.cislo_vztaz_subjektu=dvzt212080.cislo_subjektu  
-
-    LEFT OUTER JOIN
-        lcs.vztahysubjektu vzt212081  
-        ON
-            vzt212081.cislo_vztahu=212081 and vzt212081.cislo_subjektu=lcs.dane21_doklad.cislo_subjektu   
-
-    LEFT OUTER JOIN
-        lcs.subjekty svzt212081  
-        ON
-            vzt212081.cislo_vztaz_subjektu=svzt212081.cislo_subjektu  
-
-    LEFT OUTER JOIN
-        lcs.dane21_doklad dvzt212081  
-        ON
-            vzt212081.cislo_vztaz_subjektu=dvzt212081.cislo_subjektu  
-
-    LEFT OUTER JOIN
-        lcs.vztahysubjektu vzt212082  
-        ON
-            vzt212082.cislo_vztahu=212082 and vzt212082.cislo_subjektu=lcs.dane21_doklad.cislo_subjektu   
-
-    LEFT OUTER JOIN
-        lcs.subjekty svzt212082  
-        ON 
-            vzt212082.cislo_vztaz_subjektu=svzt212082.cislo_subjektu  
-
-    LEFT OUTER JOIN
-        lcs.dane21_doklad dvzt212082  
-        ON
-            vzt212082.cislo_vztaz_subjektu=dvzt212082.cislo_subjektu  
 
     LEFT OUTER JOIN
         lcs.dane21_druh_dokladu  
@@ -310,36 +173,6 @@ WITH NorisRows AS (
         lcs.dane21_doklad_sum_saldo view_doklad_saldo  
         ON
             view_doklad_saldo.cislo_subjektu=lcs.dane21_doklad.cislo_subjektu  
-
-    LEFT OUTER JOIN
-        lcs.zamestnanci z_opravneny_podpisat  
-        ON
-            lcs.dane21_druh_dokladu.opravneny_podpisat=z_opravneny_podpisat.cislo_subjektu  
-
-    LEFT OUTER JOIN
-        lcs.evidence_dic ev_dic_cudz  
-        ON 
-            org_cudz.evidence_dic=ev_dic_cudz.cislo_subjektu  
-
-    LEFT OUTER JOIN 
-        lcs.uda_21_ct22_mba uda_zam  
-        ON
-            lcs.dane21_doklad.vybavuje=uda_zam.cislo_subjektu  
-
-    LEFT OUTER JOIN 
-        lcs.organizace_vlastni ov  
-        ON 
-            1=1  
-
-    LEFT OUTER JOIN 
-        lcs.dane_21_dzn_drazba_dedicstvo view_drazb  
-        ON
-            view_drazb.cislo_subjektu=lcs.dane21_priznanie.cislo_subjektu  
-
-    LEFT OUTER JOIN
-        lcs.uda_21_organizacia_mag uda_21_organizacia_mag
-        ON
-            uda_21_organizacia_mag.cislo_subjektu=lcs.dane21_priznanie.subjekt
 
     LEFT OUTER JOIN (
         SELECT
@@ -491,7 +324,6 @@ export const getCommunalWasteTaxesFromNoris = `
         subjekt_doklad.reference_subjektu cislo_konania,
         doklad.datum_platnosti,
         doklad.variabilny_symbol,
-        poplatok.rok rok,
         lcs.fn21_dec2string( dsum.dan_spolu_nezaokr , 2) as dan_spolu,
         (case
             when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno
@@ -499,7 +331,7 @@ export const getCommunalWasteTaxesFromNoris = `
         ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno,
         (SELECT MAX(v) FROM (VALUES(view_doklad_saldo.datum_posledni_platby), (overpayment_sum.datum_realizacie)) AS maxDate(v)) AS datum_posledni_platby,
         subjekt_doklad_sub.reference_subjektu subjekt_refer,
-        ltrim(case when poplatok.podnikatel='N' then isnull(poplatok.titul+' ', '')+isnull(poplatok.meno+' ', '') +isnull(poplatok.priezvisko, '') +(case when poplatok.titul_za is null then '' else isnull(', '+poplatok.titul_za, '') end )         else  poplatok.obchodny_nazov end  ) subjekt_nazev, 
+        ltrim(isnull(poplatok.titul+' ', '')+isnull(poplatok.meno+' ', '') +isnull(poplatok.priezvisko, '') +isnull(', '+poplatok.titul_za, '')) subjekt_nazev, 
         doklad.datum_realizacie datum_realizacie,
         lcs.fn21_meno_osoby_org(pop_conf.vybavuje, null) vyb_nazov,
 
@@ -535,10 +367,7 @@ export const getCommunalWasteTaxesFromNoris = `
 
         /* --------- Texty splátok výmeru end ----------------------------*/
 
-        (case 
-            when poplatok.podnikatel='N' then poplatok.rodne_cislo 
-            else  isnull(poplatok.ico, '')+'/'+isnull(ev_dic_cudz.dic, '') 
-        end) ICO_RC, 
+        poplatok.rodne_cislo ICO_RC, 
 
         a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, org_cudz.adr_tp_sup_cislo, org_cudz.adr_tp_or_cislo), '') as ulica_tb_cislo, 
         a_tb.psc_refer as psc_ref_tb,
@@ -583,7 +412,6 @@ export const getCommunalWasteTaxesFromNoris = `
         ON overpayment_sum.podklad = doklad.podklad
         AND overpayment_sum.rok_podkladu = doklad.rok_podkladu
 
-    JOIN lcs.organizace_vlastni ov  ON 1=1
     JOIN 
         lcs.dane21_druh_dokladu
         ON
@@ -597,11 +425,6 @@ export const getCommunalWasteTaxesFromNoris = `
         lcs.pko21_poplatok_config pop_conf  
         ON 
             subjekt_poplatok.cislo_poradace=pop_conf.cislo_poradace  
-
-    LEFT OUTER JOIN 
-        lcs.subjekty subjekty_vybav  
-        ON 
-            subjekty_vybav.cislo_subjektu=pop_conf.vybavuje  
 
     LEFT OUTER JOIN 
         lcs.zamestnanci z_vybav  
@@ -627,11 +450,6 @@ export const getCommunalWasteTaxesFromNoris = `
         lcs.dane_21_sum_pko_popl_celkom dsum  
         ON
             dsum.cs_dan_prizn=poplatok.cislo_subjektu
-
-    LEFT OUTER JOIN
-        lcs.evidence_dic ev_dic_cudz  
-        ON 
-            org_cudz.evidence_dic=ev_dic_cudz.cislo_subjektu  
 
     JOIN
         lcs.dane21_doklad_sum_saldo view_doklad_saldo  

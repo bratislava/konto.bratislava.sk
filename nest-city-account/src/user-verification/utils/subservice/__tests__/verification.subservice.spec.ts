@@ -9,7 +9,6 @@ import { expectObjectContaining } from '../../../../__tests__/matchers'
 import { MagproxyService } from '../../../../magproxy/magproxy.service'
 import { PhysicalEntityService } from '../../../../physical-entity/physical-entity.service'
 import { RfoIdentityListElement } from '../../../../rfo-by-birthnumber/dtos/rfoSchema'
-import { CognitoUserAccountTypesEnum } from '../../../../utils/global-dtos/cognito.dto'
 import { IdentityCardVerificationRequest } from '../../../dtos/identity-card-verification-queue.dto'
 import { VerificationErrorsEnum } from '../../../verification.errors.enum'
 import { VerificationSubservice } from '../verification.subservice'
@@ -350,7 +349,6 @@ describe('VerificationSubservice', () => {
     const request: IdentityCardVerificationRequest = {
       user: cognitoUserDataFactory({ given_name: 'Ján', family_name: 'Novák' }),
       data: { birthNumber: BIRTH_NUMBER, identityCard: IDENTITY_CARD_NUMBER, turnstileToken: '' },
-      type: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY,
     }
 
     const matchingRfo: RfoIdentityListElement = {

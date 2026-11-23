@@ -118,8 +118,7 @@ export class VerificationService {
     try {
       await this.verificationDataSubservice.createVerificationUserInQueue(user)
       await this.amqpConnection.publish(RABBIT_MQ.EXCHANGE, RABBIT_MQ.ROUTING_KEY, {
-        // TODO: Remove `type` together with it in IdentityCardVerificationRequest, see the TODO there.
-        msg: { data, user, type: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY },
+        msg: { data, user },
       })
 
       await this.addEncryptedIdentityCardToDatabase(user, data)

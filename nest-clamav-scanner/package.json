@@ -58,6 +58,7 @@
     "@nestjs/cli": "12.0.11",
     "@nestjs/schematics": "12.0.12",
     "@nestjs/testing": "12.3.2",
+    "@tsconfig/node26": "catalog:",
     "@types/express": "5.0.6",
     "@types/mime-types": "3.0.1",
     "@types/node": "catalog:",

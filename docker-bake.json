@@ -1,7 +1,7 @@
 {
   "variable": {
     "NODE_VERSION": {
-      "default": "24.22.2"
+      "default": "26.13.1"
     },
     "PNPM_VERSION": {
       "default": "12.16.1"

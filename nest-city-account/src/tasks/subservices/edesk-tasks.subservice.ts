@@ -1,6 +1,5 @@
 import { ErrorEnum, ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
-import dayjs from 'dayjs'
 import { UpvsIdentityUpvsEdeskStatusEnum } from 'openapi-clients/slovensko-sk'
 import { z } from 'zod'
 
@@ -9,6 +8,7 @@ import { NorisEdeskService } from '../../noris/services/noris-edesk.service'
 import { EdeskStatus } from '../../noris/types/noris.types'
 import { PrismaService } from '../../prisma/prisma.service'
 import { UpvsQueueService } from '../../upvs-queue/upvs-queue.service'
+import { toDate } from '../../utils/functions/temporal'
 
 const PHYSICAL_PERSONS_RETRIEVE_BATCH_SIZE = 4000
 const LEGAL_PERSONS_RETRIEVE_BATCH_SIZE = 0 // TODO: add when upvs retrieval works for legal persons
@@ -49,7 +49,7 @@ export class EdeskTasksSubservice {
   }
 
   async alertIdentityLookupRejections(): Promise<void> {
-    const since = dayjs().subtract(1, 'month').toDate()
+    const since = toDate(Temporal.Now.zonedDateTimeISO().subtract({ months: 1 }))
     const rejections = await this.prismaService.identityLookupRejection.findMany({
       where: { updatedAt: { gte: since } },
       select: {

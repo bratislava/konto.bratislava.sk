@@ -1,12 +1,5 @@
-// tax.spec.ts
-import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
-
+import { BRATISLAVA_TIME_ZONE } from '../../../../utils/functions/temporal'
 import { checkTaxDateInclusion } from '../tax.helper'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
 
 describe('checkTaxDateInclusion', () => {
   it.each([
@@ -16,7 +9,10 @@ describe('checkTaxDateInclusion', () => {
   ])(
     'should return $expected for shouldAddCurrentYear when current time is $position the date range',
     ({ currentTime, expected }) => {
-      const mockCurrentTime = dayjs.tz(currentTime, 'Europe/Bratislava')
+      const mockCurrentTime =
+        Temporal.PlainDate.from(currentTime).toZonedDateTime(
+          BRATISLAVA_TIME_ZONE,
+        )
 
       const result = checkTaxDateInclusion(mockCurrentTime, {
         from: { month: 8, day: 10 },

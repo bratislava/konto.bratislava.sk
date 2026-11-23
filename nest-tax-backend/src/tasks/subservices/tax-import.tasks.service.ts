@@ -4,9 +4,6 @@ import {
   LineLoggerService,
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
-import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
 import groupBy from 'lodash/groupBy'
 
 import { Prisma, TaxType } from '../../generated/prisma/client'
@@ -14,13 +11,11 @@ import { CustomErrorNorisTypesEnum } from '../../noris/noris.errors'
 import { NorisService } from '../../noris/noris.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import { OVERPAYMENTS_LOOKBACK_DAYS } from '../../utils/constants'
+import { nowInBratislava, toDate } from '../../utils/functions/temporal'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { RetryService } from '../../utils-module/retry.service'
 import TasksConfigSubservice from './config.service'
 import TaxImportHelperService from './tax-import-helper.service'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
 
 const firstHistoricalYear = 2020
 const LOAD_HISTORICAL_TAXES_BATCH = 500
@@ -52,7 +47,7 @@ export default class TaxImportTasksService {
   }
 
   private async loadTaxDataForUserByTaxType(taxType: TaxType) {
-    const thisYear = new Date().getFullYear()
+    const thisYear = nowInBratislava().year
 
     const [isWithinWindow, todayTaxCount, dailyLimit] = await Promise.all([
       this.taxImportHelperService.isWithinImportWindow(),
@@ -147,7 +142,9 @@ export default class TaxImportTasksService {
       `Using ${lookbackDays} days lookback period for overpayments`,
     )
 
-    const fromDate = dayjs().subtract(lookbackDays, 'day').toDate()
+    const fromDate = toDate(
+      Temporal.Now.zonedDateTimeISO().subtract({ days: lookbackDays }),
+    )
     const data = {
       fromDate,
     }
@@ -194,7 +191,7 @@ export default class TaxImportTasksService {
     this.logger.log('Starting loadHistoricalTaxes task')
     const startedAt = Date.now()
 
-    const currentYear = new Date().getFullYear()
+    const currentYear = nowInBratislava().year
     const previousYear = currentYear - 1
 
     if (previousYear < firstHistoricalYear) {

@@ -5,7 +5,10 @@ import { FileInfo } from 'ssh2-sftp-client'
 import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import alertReporting from '../../constants/error.alerts'
-import SftpFileSubservice from '../sftp-file.subservice'
+import { formatYYMMDD } from '../../functions/temporal'
+import SftpFileSubservice, {
+  parseSftpFileNameDate,
+} from '../sftp-file.subservice'
 
 // Mock SFTPClient
 vi.mock('ssh2-sftp-client')
@@ -161,5 +164,48 @@ describe('SftpFileSubservice', () => {
       'AA_AAAA_0123456789_0123456789_15_25012576.csv',
       'AA_AAAA_0123456789_0123456789_15_25012618.csv',
     ])
+  })
+})
+
+describe('parseSftpFileNameDate', () => {
+  it.each([
+    { fileName: 'AH_DATA_1_2_3_25012434.csv', expected: '2025-01-24' },
+    {
+      fileName: 'AH_DATA_99999999_9999999999_999_2411089999.csv',
+      expected: '2024-11-08',
+    },
+    { fileName: 'st1pbr26_090305.txt', expected: '2009-03-05' },
+    { fileName: 'AH_DATA_1_2_3_2402291.csv', expected: '2024-02-29' },
+  ])(
+    'should read the date of $fileName as $expected',
+    ({ fileName, expected }) => {
+      expect(parseSftpFileNameDate(fileName)?.toString()).toBe(expected)
+    },
+  )
+
+  it.each([
+    { reason: 'month 13', fileName: 'AH_DATA_1_2_3_25132434.csv' },
+    { reason: 'February 30', fileName: 'AH_DATA_1_2_3_25023034.csv' },
+    {
+      reason: 'February 29 in a common year',
+      fileName: 'AH_DATA_1_2_3_25022934.csv',
+    },
+    { reason: 'letters in the date', fileName: 'AH_DATA_1_2_3_25O12434.csv' },
+    { reason: 'fewer than six digits', fileName: 'AH_DATA_1_2_3_2501.csv' },
+    { reason: 'no underscore', fileName: 'report.csv' },
+    {
+      reason: 'no date after the last underscore',
+      fileName: 'invalid_filename.csv',
+    },
+  ])('should return null for $reason', ({ fileName }) => {
+    expect(parseSftpFileNameDate(fileName)).toBeNull()
+  })
+
+  it('should read back what formatYYMMDD writes', () => {
+    const date = Temporal.PlainDate.from('2026-11-02')
+
+    expect(
+      parseSftpFileNameDate(`st1pbr26_${formatYYMMDD(date)}.txt`)?.toString(),
+    ).toBe(date.toString())
   })
 })

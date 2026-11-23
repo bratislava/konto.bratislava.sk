@@ -5,7 +5,6 @@ import {
 } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
-import dayjs from 'dayjs'
 import * as mssql from 'mssql'
 
 import prismaMock from '../../../../test/singleton'
@@ -19,12 +18,20 @@ import {
 } from '../../../generated/prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
 import alertReporting from '../../../utils/constants/error.alerts'
+import { toDate, toInstant } from '../../../utils/functions/temporal'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
 import { NorisTaxPayment } from '../../types/noris.types'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisPaymentSubservice } from '../noris-payment.subservice'
 import { NorisValidatorSubservice } from '../noris-validator.subservice'
+
+const daysBefore = (date: Date, days: number) =>
+  toDate(
+    toInstant(date)
+      .toZonedDateTimeISO(Temporal.Now.timeZoneId())
+      .subtract({ days }),
+  )
 
 const mockQuery = vi.fn()
 const mockInput = vi.fn()
@@ -576,7 +583,9 @@ describe('NorisPaymentSubservice', () => {
   })
 
   describe('processIndividualPayment', () => {
-    const RECENT_DATE = dayjs().subtract(7, 'day').toDate()
+    const RECENT_DATE = toDate(
+      Temporal.Now.zonedDateTimeISO().subtract({ days: 7 }),
+    )
 
     it('should return NOT_EXIST when tax data is not found', async () => {
       const mockNorisPayment: NorisTaxPayment = {
@@ -1269,7 +1278,7 @@ describe('NorisPaymentSubservice', () => {
       }
 
       const FIXED_NOW = new Date('2025-06-15T12:00:00.000Z')
-      const OLD_DATE = dayjs(FIXED_NOW).subtract(200, 'day').toDate()
+      const OLD_DATE = daysBefore(FIXED_NOW, 200)
 
       beforeAll(() => {
         vi.useFakeTimers()
@@ -1369,9 +1378,9 @@ describe('NorisPaymentSubservice', () => {
   describe('isHistoricalPayment', () => {
     const FIXED_NOW = new Date('2025-06-15T12:00:00.000Z')
     // Compute the boundary the same way the implementation does
-    const EXACTLY_AT_THRESHOLD = dayjs(FIXED_NOW).subtract(180, 'day').toDate()
-    const JUST_BEFORE_THRESHOLD = dayjs(FIXED_NOW).subtract(179, 'day').toDate()
-    const JUST_AFTER_THRESHOLD = dayjs(FIXED_NOW).subtract(181, 'day').toDate()
+    const EXACTLY_AT_THRESHOLD = daysBefore(FIXED_NOW, 180)
+    const JUST_BEFORE_THRESHOLD = daysBefore(FIXED_NOW, 179)
+    const JUST_AFTER_THRESHOLD = daysBefore(FIXED_NOW, 181)
 
     beforeAll(() => {
       vi.useFakeTimers()
@@ -1404,7 +1413,7 @@ describe('NorisPaymentSubservice', () => {
       const result = service['isHistoricalPayment']({
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
-        datum_posledni_platby: dayjs(FIXED_NOW).subtract(30, 'day').toDate(),
+        datum_posledni_platby: daysBefore(FIXED_NOW, 30),
       })
       expect(result).toBe(false)
     })

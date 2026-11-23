@@ -32,8 +32,7 @@ describe('CleanupTasksSubservice', () => {
       vi.useFakeTimers()
       vi.setSystemTime(mockDate)
 
-      const oneMonthAgo = new Date(mockDate)
-      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
+      const oneMonthAgo = new Date('2023-12-15T00:00:00.000Z')
 
       await service.deleteOldUserVerificationData()
 

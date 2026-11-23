@@ -36,3 +36,10 @@ export const createAmplifyConfig = ({ clientId }: { clientId?: string }): Resour
 export const amplifyLibraryOptions: LibraryOptions = {
   ssr: true,
 }
+
+/**
+ * Amplify keeps the identity ID in a `com.amplify.Cognito.<identityPoolId>.identityId` cookie. The pool ID is
+ * URL-encoded in the cookie name, so the name is matched by its prefix and suffix.
+ */
+export const isAmplifyIdentityIdCookieName = (cookieName: string) =>
+  cookieName.startsWith('com.amplify.Cognito.') && cookieName.endsWith('.identityId')

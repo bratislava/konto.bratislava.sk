@@ -31,10 +31,7 @@ import {
 } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { usePrepareFormMigration } from '@/src/frontend/hooks/usePrepareFormMigration'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
-import {
-  removeAllCookiesAndClearLocalStorage,
-  removeAmplifyGuestIdentityIdCookies,
-} from '@/src/frontend/utils/amplifyClient'
+import { removeAllCookiesAndClearLocalStorage } from '@/src/frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
 import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
@@ -94,8 +91,6 @@ const LoginPage = ({ general, clientInfo }: AuthPageCommonProps) => {
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
 
-        // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
-        removeAmplifyGuestIdentityIdCookies()
         await prepareFormMigration()
 
         // In order to ensure every user is in City Account BE database it's good to do this on each successful sign-in,

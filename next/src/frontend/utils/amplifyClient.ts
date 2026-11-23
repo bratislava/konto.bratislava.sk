@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import { isAmplifyIdentityIdCookieName } from '@/src/frontend/utils/amplifyConfig'
 import logger from '@/src/frontend/utils/logger'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -20,21 +21,16 @@ export const removeAllCookiesAndClearLocalStorage = () => {
 }
 
 /**
- * Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
- *
- * Removes guest identity cookie, Amplify should remove it after successful sign in but does not.
+ * The guest identity ID Amplify keeps in a cookie, or `null` if there is none. If the browser has several (set on
+ * different paths), this is the first one, the same one Amplify's cookie storage reads.
  */
-export const removeAmplifyGuestIdentityIdCookies = () => {
-  const cookies = document.cookie.split(';').map((cookie) => cookie.trim())
-  cookies.forEach((cookie) => {
-    const cookieName = cookie.split('=')[0]
+export const getAmplifyGuestIdentityId = () => {
+  const cookie = document.cookie
+    .split(';')
+    .map((part) => part.trim())
+    .find((part) => isAmplifyIdentityIdCookieName(part.split('=')[0]))
 
-    if (cookieName.startsWith('com.amplify.Cognito.') && cookieName.endsWith('.identityId')) {
-      // https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript
-      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
-      logger.info(`[AUTH] Removed Cognito identity cookie: ${cookieName}`)
-    }
-  })
+  return cookie ? decodeURIComponent(cookie.split('=').slice(1).join('=')) : null
 }
 
 export const useSignOut = () => {

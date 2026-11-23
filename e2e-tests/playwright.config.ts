@@ -44,7 +44,8 @@ export default defineConfig({
     },
     {
       name: 'mobile',
-      grepInvert: /@smoke/,
+      // `@desktop-only`: behaviour that does not depend on the viewport, so running it twice only costs time.
+      grepInvert: /@smoke|@desktop-only/,
       use: { ...devices['Pixel 5'] },
     },
   ],

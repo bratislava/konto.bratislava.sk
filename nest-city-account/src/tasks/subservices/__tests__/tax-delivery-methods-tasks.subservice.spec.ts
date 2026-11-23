@@ -27,7 +27,7 @@ import { DeliveryMethod } from '../../../noris/types/noris.enums'
 import { PdfGeneratorService } from '../../../pdf-generator/pdf-generator.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import alertReporting from '../../../utils/constants/error.alerts'
-import { BRATISLAVA_TIME_ZONE } from '../../../utils/functions/temporal'
+import { BRATISLAVA_TIME_ZONE, nowInBratislava } from '../../../utils/functions/temporal'
 import { TaxDeliveryMethodsTasksSubservice } from '../tax-delivery-methods-tasks.subservice'
 
 vi.mock('../../../config/ba-config.instance')
@@ -197,7 +197,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith({
         where: { birthNumber: { in: ['1234562020', '1234564848', '1234564649', '1234564521'] } },
-        data: { lastTaxDeliveryMethodsUpdateYear: new Date().getFullYear() },
+        data: { lastTaxDeliveryMethodsUpdateYear: nowInBratislava().year },
       })
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith(
         expectObjectContaining({
@@ -300,7 +300,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       // lastTaxDeliveryMethodsUpdateYear is stamped only for the birth number Noris confirmed.
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith({
         where: { birthNumber: { in: ['1234562020'] } },
-        data: { lastTaxDeliveryMethodsUpdateYear: new Date().getFullYear() },
+        data: { lastTaxDeliveryMethodsUpdateYear: nowInBratislava().year },
       })
     })
   })

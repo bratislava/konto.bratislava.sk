@@ -16,7 +16,7 @@ import { NorisService } from '../../../noris/noris.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { OVERPAYMENTS_LOOKBACK_DAYS } from '../../../utils/constants'
 import alertReporting from '../../../utils/constants/error.alerts'
-import { toDate } from '../../../utils/functions/temporal'
+import { nowInBratislava, toDate } from '../../../utils/functions/temporal'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { RetryService } from '../../../utils-module/retry.service'
 import TasksConfigSubservice from '../config.service'
@@ -66,7 +66,7 @@ describe('TaxImportTasksService', () => {
   })
 
   describe('loadTaxesForUsers', () => {
-    const currentYear = new Date().getFullYear()
+    const currentYear = nowInBratislava().year
 
     beforeEach(() => {
       // Reset the lastLoadedTaxType to a known state before each test

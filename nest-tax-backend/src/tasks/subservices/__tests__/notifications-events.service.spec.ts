@@ -20,7 +20,7 @@ import {
 } from '../../../generated/prisma/client'
 import { PaymentService } from '../../../payment/payment.service'
 import { PrismaService } from '../../../prisma/prisma.service'
-import { BRATISLAVA_TIME_ZONE, toDate } from '../../../utils/functions/temporal'
+import { nowInBratislava } from '../../../utils/functions/temporal'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../../utils/types'
 import NotificationsEventsService from '../notifications-events.service'
@@ -56,9 +56,12 @@ function assertUpdateManyUsesReminderEnums(
   })
 }
 
-/** Midnight of 31 May 2025 in Bratislava, the way installment due dates are stored. */
-const DEFAULT_ELIGIBLE_INSTALLMENT_DUE_DATE = toDate(
-  Temporal.PlainDate.from('2025-05-31').toZonedDateTime(BRATISLAVA_TIME_ZONE),
+/**
+ * UTC midnight of 31 May 2025. Installment due dates are Noris `datum_spl*` values, which mssql
+ * reads as UTC (`useUTC` defaults to true) and which are stored unchanged.
+ */
+const DEFAULT_ELIGIBLE_INSTALLMENT_DUE_DATE = new Date(
+  '2025-05-31T00:00:00.000Z',
 )
 
 function eligibleInstallmentRow(opts: {
@@ -106,7 +109,7 @@ describe('NotificationsEventsSubservice', () => {
   let cityAccountSubservice: Mocked<CityAccountSubservice>
   let logger: LineLoggerService
 
-  const currentYear = Temporal.Now.plainDateISO().year
+  const currentYear = nowInBratislava().year
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

@@ -7,6 +7,7 @@ import { cognitoUserDataFactory } from '../__tests__/factories/cognitoUserData.f
 import { expectAny, expectObjectContaining } from '../__tests__/matchers'
 import BaConfigService from '../config/ba-config.service'
 import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
+import { nowInBratislava } from '../utils/functions/temporal'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { MailgunService } from './mailgun.service'
 import { MailgunMessageBuilder } from './mailgun-message.builder'
@@ -193,7 +194,7 @@ describe('MailgunService', () => {
         template: '2025-delivery-method-changed-notify',
         'h:X-Mailgun-Variables': JSON.stringify({
           firstName: 'John',
-          year: new Date().getFullYear().toString(),
+          year: nowInBratislava().year.toString(),
           deliveryMethod: 'edesk',
         }),
       })
@@ -226,7 +227,7 @@ describe('MailgunService', () => {
         template: '2025-delivery-method-changed-notify',
         'h:X-Mailgun-Variables': JSON.stringify({
           firstName: 'Jane',
-          year: new Date().getFullYear().toString(),
+          year: nowInBratislava().year.toString(),
           deliveryMethod: 'postal',
         }),
       })
@@ -278,7 +279,7 @@ describe('MailgunService', () => {
         template: '2025-delivery-method-changed-notify',
         'h:X-Mailgun-Variables': JSON.stringify({
           firstName: 'Alice',
-          year: new Date().getFullYear().toString(),
+          year: nowInBratislava().year.toString(),
           deliveryMethod: 'email',
         }),
         attachment: mockPdf,
@@ -312,7 +313,7 @@ describe('MailgunService', () => {
         template: '2025-delivery-method-changed-notify',
         'h:X-Mailgun-Variables': JSON.stringify({
           firstName: 'Bob',
-          year: new Date().getFullYear().toString(),
+          year: nowInBratislava().year.toString(),
           deliveryMethod: 'email',
         }),
       })
@@ -341,7 +342,7 @@ describe('MailgunService', () => {
         expectObjectContaining({
           'h:X-Mailgun-Variables': JSON.stringify({
             firstName: null,
-            year: new Date().getFullYear().toString(),
+            year: nowInBratislava().year.toString(),
             deliveryMethod: 'edesk',
           }),
         })

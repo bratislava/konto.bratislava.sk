@@ -8,6 +8,6 @@ import MailgunHelper from './utils/mailgun.helper'
 @Module({
   imports: [StrapiModule],
   providers: [MailgunHelper, MailgunService, OloMailerService],
-  exports: [MailgunHelper, MailgunService, OloMailerService],
+  exports: [MailgunService, OloMailerService],
 })
 export class MailerModule {}

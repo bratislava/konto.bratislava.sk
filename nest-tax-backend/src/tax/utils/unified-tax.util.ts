@@ -219,6 +219,7 @@ export const DUE_DATE_OFFSET = 15
 const isStateHoliday = (date: Temporal.ZonedDateTime): boolean => {
   const { year } = date
   const yearHolidays = stateHolidays[year]
+  const plainDate = date.toPlainDate()
 
   if (!yearHolidays) {
     throw new ErrorFactoryService({
@@ -226,11 +227,10 @@ const isStateHoliday = (date: Temporal.ZonedDateTime): boolean => {
     }).InternalServerErrorException({
       errorEnum: CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
       message: CustomErrorTaxTypesResponseEnum.STATE_HOLIDAY_NOT_EXISTS,
-      console: { year, date: date.toString() },
+      console: { year, date: plainDate.toString() },
     })
   }
 
-  const plainDate = date.toPlainDate()
   return yearHolidays.dates.some((holiday) => holiday.equals(plainDate))
 }
 

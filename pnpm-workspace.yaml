@@ -17,7 +17,7 @@ catalog:
   '@rjsf/core': 6.11.0
   '@rjsf/utils': 6.11.0
   '@rjsf/validator-ajv8': 6.11.0
-  '@tsconfig/node26': 26.0.1
+  '@tsconfig/node26': 26.0.2
   '@types/node': 26.6.6
   '@types/react': 19.3.0
   '@types/react-dom': 19.3.0

@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import FocusTrap from 'focus-trap-react'
+import { FocusTrap } from 'focus-trap-react'
 import { useTranslation } from 'next-i18next/pages'
 import { useContext } from 'react'
 

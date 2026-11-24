@@ -1,0 +1,9 @@
+{
+  "key": "plugin_upload_media_library_default_notice",
+  "value": {
+    "shown": true
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

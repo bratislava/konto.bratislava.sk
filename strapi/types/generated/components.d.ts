@@ -403,7 +403,7 @@ export interface SectionsTowing extends Struct.ComponentSchema {
 }
 
 declare module '@strapi/strapi' {
-  export module Public {
+  export namespace Public {
     export interface ComponentSchemas {
       'blocks.checklist': BlocksChecklist
       'blocks.checklist-item': BlocksChecklistItem

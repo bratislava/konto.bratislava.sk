@@ -922,6 +922,7 @@ input FooterInput {
   facebookUrl: String
   instagramUrl: String
   linkedinUrl: String
+  locale: String
   publishedAt: DateTime
   tiktokUrl: String
   youtubeUrl: String
@@ -982,6 +983,7 @@ input FormInput {
   formSentPage: ComponentBlocksFormSentPageInput
   isTemporarilyDisabled: Boolean
   landingPage: ComponentBlocksFormLandingPageInput
+  locale: String
   moreInformationUrl: String
   municipalService: ID
   publishedAt: DateTime
@@ -1028,6 +1030,7 @@ input GeneralFiltersInput {
 
 input GeneralInput {
   alerts: [ComponentGeneralAlertInput]
+  locale: String
   publishedAt: DateTime
 }
 
@@ -1035,7 +1038,7 @@ type GeneralRelationResponseCollection {
   nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksFormSentPage | ComponentBlocksFormSentPageAlert | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksMunicipalServiceCard | ComponentBlocksMunicipalServiceLink | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksFormSentPage | ComponentBlocksFormSentPageAlert | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksMunicipalServiceCard | ComponentBlocksMunicipalServiceLink | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
@@ -1071,6 +1074,7 @@ input HelpPageFiltersInput {
 
 input HelpPageInput {
   categories: [ComponentBlocksHelpCategoryInput]
+  locale: String
   publishedAt: DateTime
 }
 
@@ -1140,6 +1144,7 @@ input HomepageAnnouncementInput {
   dateTo: DateTime
   description: String
   image: ID
+  locale: String
   primaryButton: ComponentBlocksCommonLinkInput
   publishedAt: DateTime
   title: String
@@ -1179,6 +1184,7 @@ input HomepageFiltersInput {
 input HomepageInput {
   announcements: [ID]
   announcementsLegalPerson: [ID]
+  locale: String
   publishedAt: DateTime
   services: [ID]
   servicesLegalPerson: [ID]
@@ -1228,6 +1234,7 @@ input I18NLocaleFiltersInput {
 
 input I18NLocaleInput {
   code: String
+  locale: String
   name: String
   publishedAt: DateTime
 }
@@ -1392,6 +1399,7 @@ input MunicipalChargeConfigFiltersInput {
 
 input MunicipalChargeConfigInput {
   deliveryMethod: ComponentMunicipalChargeDeliveryMethodInput
+  locale: String
   municipalChargeIdentifier: ComponentMunicipalChargeMunicipalChargeIdentifierInput
   publishedAt: DateTime
 }
@@ -1429,6 +1437,7 @@ input MunicipalChargeFiltersInput {
 
 input MunicipalChargeInput {
   feedbackLink: String
+  locale: String
   publishedAt: DateTime
   slug: String
   title: String
@@ -1502,6 +1511,7 @@ input MunicipalServiceCategoryFiltersInput {
 }
 
 input MunicipalServiceCategoryInput {
+  locale: String
   municipalServices: [ID]
   publishedAt: DateTime
   slug: String
@@ -1562,6 +1572,7 @@ input MunicipalServiceInput {
   href: String
   icon: ENUM_MUNICIPALSERVICE_ICON
   links: [ComponentBlocksMunicipalServiceLinkInput]
+  locale: String
   moreInformationUrl: String
   pageHeaderText: String
   publishedAt: DateTime
@@ -1618,6 +1629,7 @@ input MunicipalServiceTagFiltersInput {
 }
 
 input MunicipalServiceTagInput {
+  locale: String
   municipalServices: [ID]
   publishedAt: DateTime
   slug: String
@@ -1665,6 +1677,7 @@ input MunicipalServicesPageFiltersInput {
 }
 
 input MunicipalServicesPageInput {
+  locale: String
   publishedAt: DateTime
   services: [ID]
   servicesLegalPerson: [ID]
@@ -1818,6 +1831,9 @@ type Query {
   uploadFile(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): UploadFile
   uploadFiles(filters: UploadFileFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UploadFile]!
   uploadFiles_connection(filters: UploadFileFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): UploadFileEntityResponseCollection
+  uploadFolder(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): UploadFolder
+  uploadFolders(filters: UploadFolderFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UploadFolder]!
+  uploadFolders_connection(filters: UploadFolderFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): UploadFolderEntityResponseCollection
   usersPermissionsRole(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): UsersPermissionsRole
   usersPermissionsRoles(filters: UsersPermissionsRoleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UsersPermissionsRole]!
   usersPermissionsRoles_connection(filters: UsersPermissionsRoleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): UsersPermissionsRoleEntityResponseCollection
@@ -1872,6 +1888,7 @@ input ReviewWorkflowsWorkflowFiltersInput {
 
 input ReviewWorkflowsWorkflowInput {
   contentTypes: JSON
+  locale: String
   name: String
   publishedAt: DateTime
   stageRequiredToPublish: ID
@@ -1921,6 +1938,7 @@ input ReviewWorkflowsWorkflowStageFiltersInput {
 
 input ReviewWorkflowsWorkflowStageInput {
   color: String
+  locale: String
   name: String
   publishedAt: DateTime
   workflow: ID
@@ -2050,9 +2068,12 @@ input UploadFileInput {
   caption: String
   ext: String
   focalPoint: JSON
+  folder: ID
+  folderPath: String
   formats: JSON
   hash: String
   height: Int
+  locale: String
   mime: String
   name: String
   previewUrl: String
@@ -2066,6 +2087,57 @@ input UploadFileInput {
 
 type UploadFileRelationResponseCollection {
   nodes: [UploadFile!]!
+}
+
+type UploadFolder {
+  createdAt: DateTime
+  documentId: ID!
+  name: String!
+  namePath: String
+  parent: UploadFolder
+  path: String!
+  updatedAt: DateTime
+}
+
+type UploadFolderEntity {
+  attributes: UploadFolder
+  id: ID
+}
+
+type UploadFolderEntityResponse {
+  data: UploadFolder
+}
+
+type UploadFolderEntityResponseCollection {
+  nodes: [UploadFolder!]!
+  pageInfo: Pagination!
+}
+
+input UploadFolderFiltersInput {
+  and: [UploadFolderFiltersInput]
+  children: UploadFolderFiltersInput
+  createdAt: DateTimeFilterInput
+  documentId: IDFilterInput
+  name: StringFilterInput
+  not: UploadFolderFiltersInput
+  or: [UploadFolderFiltersInput]
+  parent: UploadFolderFiltersInput
+  path: StringFilterInput
+  pathId: IntFilterInput
+  updatedAt: DateTimeFilterInput
+}
+
+input UploadFolderInput {
+  children: [ID]
+  locale: String
+  name: String
+  parent: ID
+  path: String
+  pathId: Int
+}
+
+type UploadFolderRelationResponseCollection {
+  nodes: [UploadFolder!]!
 }
 
 type UsersPermissionsCreateRolePayload {
@@ -2145,6 +2217,7 @@ input UsersPermissionsPermissionFiltersInput {
 
 input UsersPermissionsPermissionInput {
   action: String
+  locale: String
   publishedAt: DateTime
   role: ID
 }
@@ -2204,6 +2277,7 @@ input UsersPermissionsRoleFiltersInput {
 
 input UsersPermissionsRoleInput {
   description: String
+  locale: String
   name: String
   permissions: [ID]
   publishedAt: DateTime
@@ -2264,11 +2338,14 @@ input UsersPermissionsUserFiltersInput {
 
 input UsersPermissionsUserInput {
   blocked: Boolean
+  confirmationToken: String
   confirmed: Boolean
   email: String
+  locale: String
   password: String
   provider: String
   publishedAt: DateTime
+  resetPasswordToken: String
   role: ID
   username: String
 }

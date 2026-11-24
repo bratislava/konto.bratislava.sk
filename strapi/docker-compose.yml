@@ -3,8 +3,9 @@
 
 services:
   postgres:
-    # 17 is the version Strapi recommends. The 18+ images refuse to start with the volume below,
-    # because they expect it mounted at /var/lib/postgresql.
+    # 17 is the version Strapi recommends: https://docs.strapi.io/cms/configurations/database
+    # The 18+ images refuse to start with the volume below, because they expect it mounted at
+    # /var/lib/postgresql.
     image: postgres:17
     restart: unless-stopped
     environment:

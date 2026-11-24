@@ -36,7 +36,6 @@ const FileUploadWidgetRJSF = ({
     labelSize,
     slotId,
   } = options
-  
 
   const supportedFormats = accept?.split(',')
   const constraints = { supportedFormats, maxFileSize: sizeLimit }

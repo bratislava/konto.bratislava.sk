@@ -34,16 +34,6 @@ import type { RequestArgs } from './base'
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
-export interface Activity {
-  priznakAktualnehoZaznamu: boolean
-  platnostOd: string
-  platnostDo: string
-  pozastavenieOd: string
-  pozastavenieDo: string
-  kod: string
-  popis: string
-  klasifikacia: CodelistDto
-}
 export interface ActivityDto {
   /**
    * Predmet činnosti
@@ -201,17 +191,6 @@ export const BadRequestErrorDtoErrorNameEnum = {
 export type BadRequestErrorDtoErrorNameEnum =
   (typeof BadRequestErrorDtoErrorNameEnum)[keyof typeof BadRequestErrorDtoErrorNameEnum]
 
-export interface BankConnectionDto {
-  menoBanky: string
-  menoFyzickejOsoby: PhysicalPersonNameDto
-  plnyNazovPo: string
-  domaceBankoveSpojenie: DomesticBankDto
-  zahranicneBankoveSpojenie: ForeignBankDto
-}
-export interface BirthDto {
-  datumNarodenia: string
-  miestoNarodenia: string
-}
 export interface CodeValueDto {
   /**
    * Hodnota atribútu
@@ -225,17 +204,6 @@ export interface CodeValueDto {
    * Kód číselníka
    */
   codelistCode?: string
-}
-export interface CodelistDto {
-  kodCiselnika: string
-  kod: string
-  nazov: string
-}
-export interface CodelistWithHistory {
-  priznakAktualnehoZaznamu: boolean
-  platnostOd: string
-  platnostDo: string
-  hodnota: CodelistDto
 }
 export interface DcomKNSAddressDto {
   Id: number
@@ -262,27 +230,6 @@ export interface DcomKNSubjectDto {
   FirstNameSearch: string
   SurnameSearch: string
   BirthSurnameSearch: DcomKNSAddressDto
-}
-export interface DeathDto {
-  datum: string
-  miesto: string
-}
-export interface DeliveryAddressDto {
-  psc: string
-  pobox: string
-  prijemca: RecieverDto
-}
-export interface DepositDto {
-  typ: string
-  vyska: string
-  datumSplatnosti: string
-  mena: CodelistDto
-}
-export interface DomesticBankDto {
-  formatovane: string
-  predcislie: string
-  cisloUctu: string
-  kodBanky: string
 }
 export interface EntityIdGet200ResponseDepositsInnerDto {
   /**
@@ -598,15 +545,6 @@ export interface EntityIdGet200ResponseTopManagementsInfoInnerDto {
    */
   kuvInfo?: Array<TimedCodeValueEntryDto>
 }
-export interface Equity {
-  priznakAktualnehoZaznamu: boolean
-  platnostOd: string
-  platnostDo: string
-  hodnota: string
-  splatene: string
-  schvalene: string
-  mena: CodelistDto
-}
 export interface FindOneByIcoFromApiResponse {
   /**
    * Legal person
@@ -617,31 +555,8 @@ export interface FindOneByIcoFromApiResponse {
    */
   detail?: EntityIdGet200ResponseDto
 }
-export interface ForeignBankDto {
-  iban: string
-  bic: string
-}
 export interface HealthCheckResponseDto {
   response: string
-}
-export interface IdDto {
-  identifikator: string
-  typIdentifikatora: CodelistDto
-}
-export interface IdWithHistory {
-  priznakAktualnehoZaznamu: boolean
-  platnostOd: string
-  platnostDo: string
-  externeId: IdDto
-}
-export interface LegalPersonDto {
-  addMissingProps: string
-}
-export interface NamesPropsDto {
-  platnostOd: string
-  platnostDo: string
-  priznakAktualnehoZaznamu: string
-  plnyNazov: string
 }
 export interface NotFoundErrorDto {
   /**
@@ -678,19 +593,6 @@ export const NotFoundErrorDtoErrorNameEnum = {
 export type NotFoundErrorDtoErrorNameEnum =
   (typeof NotFoundErrorDtoErrorNameEnum)[keyof typeof NotFoundErrorDtoErrorNameEnum]
 
-export interface OrganizationUnitDto {
-  externeId: IdDto
-  datumVzniku: string
-  datumZaniku: string
-  typ: CodelistDto
-  adresy: Array<PhysicalAddress>
-  predmetyCinnosti: Array<Activity>
-  zainteresovaneOsoby: Array<StakeholderDto>
-}
-export interface PersonDto {
-  fyzickaOsoba: PhysicalPersonDto
-  pravnickaOsoba: LegalPersonDto
-}
 export interface PersonNameDto {
   /**
    * Formatované meno
@@ -716,67 +618,6 @@ export interface PersonNameDto {
    * Titul za menom (číselníky CL000063 / TIT)
    */
   postfixes?: Array<CodeValueDto>
-}
-export interface PhoneAddressDto {
-  typ: string
-  formatovanieCislo: string
-  medzinarodnyKodKrajiny: string
-  narodneCislo: string
-  miestnaPredvolba: string
-  cisloUcastnika: string
-  klapka: string
-}
-export interface PhysicalAddress {
-  priznakAktualnehoZaznamu: boolean
-  platnostOd: string
-  platnostDo: string
-  formatovanaAdresa: string
-  stat: CodelistDto
-  obec: CodelistDto
-  okres: CodelistDto
-  castObce: CodelistDto
-  regiony: Array<CodelistDto>
-  typAdresy: CodelistDto
-  nazovUlice: string
-  cisloDomu: string
-  supisneCislo: string
-  dodacieAdresy: Array<DeliveryAddressDto>
-  referenciaDoRegistraAdries: string
-}
-export interface PhysicalPersonDto {
-  adresa: PhysicalAddress
-  rodinnyStav: CodelistDto
-  pohlavie: CodelistDto
-  statnaPrislusnost: CodelistDto
-  narodenie: BirthDto
-  umrtie: DeathDto
-  alternativneMena: Array<ValueWithHistory>
-  dodacieAdresy: Array<DeliveryAddressDto>
-  menoFyzickejOsoby: PhysicalPersonNameDto
-  externeIds: Array<IdDto>
-}
-export interface PhysicalPersonNameDto {
-  formatovaneMeno: string
-  ineMeno: string
-  legalneMeno: string
-  rodneMena: Array<string>
-  priezviska: SurnamePropsDto
-  rodnePriezviska: SurnamePropsDto
-  tituly: TitlesPropsDto
-}
-export interface PredecessorSuccessor {
-  priznakAktualnehoZaznamu: boolean
-  platnostOd: string
-  platnostDo: string
-  plnyNazov: string
-  externeId: IdDto
-  adresa: PhysicalAddress
-}
-export interface RecieverDto {
-  dodatocneTexty: string
-  menoOrganizacjnejJednotky: string
-  nazovPo: string
-  menoFyzickejOsoby: string
 }
 export interface ResponseKNGetOwnersDto {
   data: Array<DcomKNSubjectDto>
@@ -2558,41 +2399,6 @@ export interface ResponseRfoSurnamePropsDto {
    */
   poradiePriezviska: number
 }
-export interface ResponseRpoLegalPersonDto {
-  ico?: string
-  dic?: string
-  icDph?: string
-  ipo: string
-  datumVzniku?: string
-  datumZaniku?: string
-  technickyDatumZmenyZaznamu?: string
-  datumCasVytvorenia?: string
-  datumCasZmeny: string
-  essa2010?: CodelistDto
-  skNaceHlavnaCinnost?: CodelistDto
-  pravneFormy?: Array<CodelistWithHistory>
-  mena?: NamesPropsDto
-  alternativneMena?: Array<ValueWithHistory>
-  inePravneSkutocnosti?: Array<CodelistWithHistory>
-  pravneStavy?: Array<CodelistWithHistory>
-  zdroj?: SourcePropsDto
-  telefonneAdresy?: Array<PhoneAddressDto>
-  internetoveAdresy?: Array<string>
-  adresy?: Array<PhysicalAddress>
-  externeIds?: Array<IdWithHistory>
-  statutarneOrgany?: Array<StatutoryPropsDto>
-  zainteresovaneOsoby?: Array<StakeholderDto>
-  vklady?: Array<DepositDto>
-  akcie?: Array<ShareDto>
-  predmetyCinnosti?: Array<Activity>
-  pravnyNastupcovia?: Array<PredecessorSuccessor>
-  pravnyPredchodcovia?: Array<PredecessorSuccessor>
-  opravneniaKonat?: Array<ValueWithHistory>
-  organizacneJednotky?: Array<OrganizationUnitDto>
-  bankoveSpojenia?: Array<BankConnectionDto>
-  zakladneImania?: Equity
-  externeRpoId: string
-}
 export interface ResponseRsdStateDto {
   /**
    * Is found or not found
@@ -2674,27 +2480,6 @@ export interface SearchGet200ResponseResultsInnerSourceRegisterDto {
    */
   registrationNumbers?: Array<TimedValueEntryDto>
 }
-export interface ShareDto {
-  podoba: string
-  forma: string
-  menovitaHodnota: string
-  mnozstvo: string
-  prevoditelnost: string
-  mena: CodelistDto
-  druh: CodelistDto
-}
-export interface SourcePropsDto {
-  zdrojovySystemId?: number
-  zdrojovyRegister?: CodelistDto
-  registratori?: string
-  registracneCisla?: string
-}
-export interface StakeholderDto {
-  osoba: PersonDto
-  typ: CodelistDto
-  vklady: Array<DepositDto>
-  akcie: Array<ShareDto>
-}
 export interface StakeholderSusrDto {
   /**
    * Stakeholder type
@@ -2775,15 +2560,6 @@ export interface StatutaryBodyDto {
    */
   termination?: string
 }
-export interface StatutoryPropsDto {
-  osoba: PersonDto
-  typ: CodelistDto
-}
-export interface SurnamePropsDto {
-  priezvisko: string
-  priznakPrimarnehoPriezviska: boolean
-  prefix: string
-}
 export interface TimedCodeValueEntryDto {
   /**
    * Hodnota s kódom
@@ -2811,11 +2587,6 @@ export interface TimedValueEntryDto {
    * Platnosť hodnoty do
    */
   validTo?: string
-}
-export interface TitlesPropsDto {
-  typ: string
-  titul: string
-  pozicia: string
 }
 export interface UnprocessableEntityErrorDto {
   /**
@@ -2851,155 +2622,6 @@ export const UnprocessableEntityErrorDtoErrorNameEnum = {
 
 export type UnprocessableEntityErrorDtoErrorNameEnum =
   (typeof UnprocessableEntityErrorDtoErrorNameEnum)[keyof typeof UnprocessableEntityErrorDtoErrorNameEnum]
-
-export interface ValueWithHistory {
-  priznakAktualnehoZaznamu: boolean
-  platnostOd: string
-  platnostDo: string
-  hodnota: string
-}
-
-/**
- * AdminApi - axios parameter creator
- */
-export const AdminApiAxiosParamCreator = function (configuration?: Configuration) {
-  return {
-    /**
-     * Update or create data in rpo by file
-     * @summary Load data to RPO
-     * @param {Array<any>} [files] Required array of file/files with RPO (zip) data inside
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerInsertOrUpdateDataInRpo: async (
-      files?: Array<any>,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/admin/rpo/data`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)()
-
-      // authentication Admin required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      if (files) {
-        files.forEach((element) => {
-          localVarFormParams.append('files', element as any)
-        })
-      }
-
-      localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = localVarFormParams
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-  }
-}
-
-/**
- * AdminApi - functional programming interface
- */
-export const AdminApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = AdminApiAxiosParamCreator(configuration)
-  return {
-    /**
-     * Update or create data in rpo by file
-     * @summary Load data to RPO
-     * @param {Array<any>} [files] Required array of file/files with RPO (zip) data inside
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerInsertOrUpdateDataInRpo(
-      files?: Array<any>,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerInsertOrUpdateDataInRpo(files, options)
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['AdminApi.adminControllerInsertOrUpdateDataInRpo']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-  }
-}
-
-/**
- * AdminApi - factory interface
- */
-export const AdminApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance,
-) {
-  const localVarFp = AdminApiFp(configuration)
-  return {
-    /**
-     * Update or create data in rpo by file
-     * @summary Load data to RPO
-     * @param {Array<any>} [files] Required array of file/files with RPO (zip) data inside
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerInsertOrUpdateDataInRpo(
-      files?: Array<any>,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
-      return localVarFp
-        .adminControllerInsertOrUpdateDataInRpo(files, options)
-        .then((request) => request(axios, basePath))
-    },
-  }
-}
-
-/**
- * AdminApi - object-oriented interface
- */
-export class AdminApi extends BaseAPI {
-  /**
-   * Update or create data in rpo by file
-   * @summary Load data to RPO
-   * @param {Array<any>} [files] Required array of file/files with RPO (zip) data inside
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerInsertOrUpdateDataInRpo(
-    files?: Array<any>,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return AdminApiFp(this.configuration)
-      .adminControllerInsertOrUpdateDataInRpo(files, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-}
 
 /**
  * DefaultApi - axios parameter creator
@@ -3108,164 +2730,6 @@ export class DefaultApi extends BaseAPI {
   public appControllerHealth(options?: RawAxiosRequestConfig) {
     return DefaultApiFp(this.configuration)
       .appControllerHealth(options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-}
-
-/**
- * DeveloperApi - axios parameter creator
- */
-export const DeveloperApiAxiosParamCreator = function (configuration?: Configuration) {
-  return {
-    /**
-     * Create new test data exchange for RPO in rabbitMQ
-     * @summary Test RabbitMQ RPO
-     * @param {object} [data]
-     * @param {Array<any>} [files] Required array of file/files with RPO/ RFO/ RA data inside
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    developerControllerPushRpoExchangeData: async (
-      data?: object,
-      files?: Array<any>,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/dev/create-exchange-data-rabbitmq`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)()
-
-      // authentication Developer required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      if (data !== undefined) {
-        localVarFormParams.append(
-          'data',
-          new Blob([JSON.stringify(data, replaceWithSerializableTypeIfNeeded)], {
-            type: 'application/json',
-          }),
-        )
-      }
-      if (files) {
-        files.forEach((element) => {
-          localVarFormParams.append('files', element as any)
-        })
-      }
-
-      localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = localVarFormParams
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-  }
-}
-
-/**
- * DeveloperApi - functional programming interface
- */
-export const DeveloperApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = DeveloperApiAxiosParamCreator(configuration)
-  return {
-    /**
-     * Create new test data exchange for RPO in rabbitMQ
-     * @summary Test RabbitMQ RPO
-     * @param {object} [data]
-     * @param {Array<any>} [files] Required array of file/files with RPO/ RFO/ RA data inside
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async developerControllerPushRpoExchangeData(
-      data?: object,
-      files?: Array<any>,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.developerControllerPushRpoExchangeData(data, files, options)
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['DeveloperApi.developerControllerPushRpoExchangeData']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-  }
-}
-
-/**
- * DeveloperApi - factory interface
- */
-export const DeveloperApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance,
-) {
-  const localVarFp = DeveloperApiFp(configuration)
-  return {
-    /**
-     * Create new test data exchange for RPO in rabbitMQ
-     * @summary Test RabbitMQ RPO
-     * @param {object} [data]
-     * @param {Array<any>} [files] Required array of file/files with RPO/ RFO/ RA data inside
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    developerControllerPushRpoExchangeData(
-      data?: object,
-      files?: Array<any>,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
-      return localVarFp
-        .developerControllerPushRpoExchangeData(data, files, options)
-        .then((request) => request(axios, basePath))
-    },
-  }
-}
-
-/**
- * DeveloperApi - object-oriented interface
- */
-export class DeveloperApi extends BaseAPI {
-  /**
-   * Create new test data exchange for RPO in rabbitMQ
-   * @summary Test RabbitMQ RPO
-   * @param {object} [data]
-   * @param {Array<any>} [files] Required array of file/files with RPO/ RFO/ RA data inside
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public developerControllerPushRpoExchangeData(
-    data?: object,
-    files?: Array<any>,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return DeveloperApiFp(this.configuration)
-      .developerControllerPushRpoExchangeData(data, files, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -6050,15 +5514,11 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
      *
      * @summary Information about a physical person given by birth number
      * @param {string} rodneCislo
-     * @param {RfoControllerGetOneGetFromDatabaseEnum} [getFromDatabase] check if exists in database, if yes, return him
-     * @param {RfoControllerGetOneUpdateInDatabaseEnum} [updateInDatabase] Check if is in persons if interests if not, add him and create in database, if yes, update in database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     rfoControllerGetOne: async (
       rodneCislo: string,
-      getFromDatabase?: RfoControllerGetOneGetFromDatabaseEnum,
-      updateInDatabase?: RfoControllerGetOneUpdateInDatabaseEnum,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'rodneCislo' is not null or undefined
@@ -6082,14 +5542,6 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-      if (getFromDatabase !== undefined) {
-        localVarQueryParameter['getFromDatabase'] = getFromDatabase
-      }
-
-      if (updateInDatabase !== undefined) {
-        localVarQueryParameter['updateInDatabase'] = updateInDatabase
-      }
-
       localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -6109,15 +5561,11 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
      *
      * @summary Information about a physical person given by ifo
      * @param {string} ifo
-     * @param {RfoControllerGetOneByIfoGetFromDatabaseEnum} [getFromDatabase] check if exists in database, if yes, return him
-     * @param {RfoControllerGetOneByIfoUpdateInDatabaseEnum} [updateInDatabase] Check if is in persons if interests if not, add him and create in database, if yes, update in database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     rfoControllerGetOneByIfo: async (
       ifo: string,
-      getFromDatabase?: RfoControllerGetOneByIfoGetFromDatabaseEnum,
-      updateInDatabase?: RfoControllerGetOneByIfoUpdateInDatabaseEnum,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'ifo' is not null or undefined
@@ -6137,14 +5585,6 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      if (getFromDatabase !== undefined) {
-        localVarQueryParameter['getFromDatabase'] = getFromDatabase
-      }
-
-      if (updateInDatabase !== undefined) {
-        localVarQueryParameter['updateInDatabase'] = updateInDatabase
-      }
 
       localVarHeaderParameter['Accept'] = 'application/json'
 
@@ -6237,8 +5677,6 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
      * @param {string} meno
      * @param {string} priezvisko
      * @param {string} datumNarodenia
-     * @param {RfoControllerGetOneByNameGetFromDatabaseEnum} [getFromDatabase] check if exists in database, if yes, return him
-     * @param {RfoControllerGetOneByNameUpdateInDatabaseEnum} [updateInDatabase] Check if is in persons if interests if not, add him and create in database, if yes, update in database
      * @param {string} [rodnePriezvisko]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6247,8 +5685,6 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       meno: string,
       priezvisko: string,
       datumNarodenia: string,
-      getFromDatabase?: RfoControllerGetOneByNameGetFromDatabaseEnum,
-      updateInDatabase?: RfoControllerGetOneByNameUpdateInDatabaseEnum,
       rodnePriezvisko?: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
@@ -6277,14 +5713,6 @@ export const RFORegisterFyzickchOsbApiAxiosParamCreator = function (configuratio
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      if (getFromDatabase !== undefined) {
-        localVarQueryParameter['getFromDatabase'] = getFromDatabase
-      }
-
-      if (updateInDatabase !== undefined) {
-        localVarQueryParameter['updateInDatabase'] = updateInDatabase
-      }
 
       if (rodnePriezvisko !== undefined) {
         localVarQueryParameter['rodnePriezvisko'] = rodnePriezvisko
@@ -6489,21 +5917,15 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
      *
      * @summary Information about a physical person given by birth number
      * @param {string} rodneCislo
-     * @param {RfoControllerGetOneGetFromDatabaseEnum} [getFromDatabase] check if exists in database, if yes, return him
-     * @param {RfoControllerGetOneUpdateInDatabaseEnum} [updateInDatabase] Check if is in persons if interests if not, add him and create in database, if yes, update in database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async rfoControllerGetOne(
       rodneCislo: string,
-      getFromDatabase?: RfoControllerGetOneGetFromDatabaseEnum,
-      updateInDatabase?: RfoControllerGetOneUpdateInDatabaseEnum,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRfoPersonDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rfoControllerGetOne(
         rodneCislo,
-        getFromDatabase,
-        updateInDatabase,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -6523,21 +5945,15 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
      *
      * @summary Information about a physical person given by ifo
      * @param {string} ifo
-     * @param {RfoControllerGetOneByIfoGetFromDatabaseEnum} [getFromDatabase] check if exists in database, if yes, return him
-     * @param {RfoControllerGetOneByIfoUpdateInDatabaseEnum} [updateInDatabase] Check if is in persons if interests if not, add him and create in database, if yes, update in database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async rfoControllerGetOneByIfo(
       ifo: string,
-      getFromDatabase?: RfoControllerGetOneByIfoGetFromDatabaseEnum,
-      updateInDatabase?: RfoControllerGetOneByIfoUpdateInDatabaseEnum,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRfoPersonDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.rfoControllerGetOneByIfo(
         ifo,
-        getFromDatabase,
-        updateInDatabase,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -6596,8 +6012,6 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
      * @param {string} meno
      * @param {string} priezvisko
      * @param {string} datumNarodenia
-     * @param {RfoControllerGetOneByNameGetFromDatabaseEnum} [getFromDatabase] check if exists in database, if yes, return him
-     * @param {RfoControllerGetOneByNameUpdateInDatabaseEnum} [updateInDatabase] Check if is in persons if interests if not, add him and create in database, if yes, update in database
      * @param {string} [rodnePriezvisko]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6606,8 +6020,6 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
       meno: string,
       priezvisko: string,
       datumNarodenia: string,
-      getFromDatabase?: RfoControllerGetOneByNameGetFromDatabaseEnum,
-      updateInDatabase?: RfoControllerGetOneByNameUpdateInDatabaseEnum,
       rodnePriezvisko?: string,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRfoPersonDto>> {
@@ -6615,8 +6027,6 @@ export const RFORegisterFyzickchOsbApiFp = function (configuration?: Configurati
         meno,
         priezvisko,
         datumNarodenia,
-        getFromDatabase,
-        updateInDatabase,
         rodnePriezvisko,
         options,
       )
@@ -6743,38 +6153,30 @@ export const RFORegisterFyzickchOsbApiFactory = function (
      *
      * @summary Information about a physical person given by birth number
      * @param {string} rodneCislo
-     * @param {RfoControllerGetOneGetFromDatabaseEnum} [getFromDatabase] check if exists in database, if yes, return him
-     * @param {RfoControllerGetOneUpdateInDatabaseEnum} [updateInDatabase] Check if is in persons if interests if not, add him and create in database, if yes, update in database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     rfoControllerGetOne(
       rodneCislo: string,
-      getFromDatabase?: RfoControllerGetOneGetFromDatabaseEnum,
-      updateInDatabase?: RfoControllerGetOneUpdateInDatabaseEnum,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseRfoPersonDto> {
       return localVarFp
-        .rfoControllerGetOne(rodneCislo, getFromDatabase, updateInDatabase, options)
+        .rfoControllerGetOne(rodneCislo, options)
         .then((request) => request(axios, basePath))
     },
     /**
      *
      * @summary Information about a physical person given by ifo
      * @param {string} ifo
-     * @param {RfoControllerGetOneByIfoGetFromDatabaseEnum} [getFromDatabase] check if exists in database, if yes, return him
-     * @param {RfoControllerGetOneByIfoUpdateInDatabaseEnum} [updateInDatabase] Check if is in persons if interests if not, add him and create in database, if yes, update in database
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     rfoControllerGetOneByIfo(
       ifo: string,
-      getFromDatabase?: RfoControllerGetOneByIfoGetFromDatabaseEnum,
-      updateInDatabase?: RfoControllerGetOneByIfoUpdateInDatabaseEnum,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseRfoPersonDto> {
       return localVarFp
-        .rfoControllerGetOneByIfo(ifo, getFromDatabase, updateInDatabase, options)
+        .rfoControllerGetOneByIfo(ifo, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -6810,8 +6212,6 @@ export const RFORegisterFyzickchOsbApiFactory = function (
      * @param {string} meno
      * @param {string} priezvisko
      * @param {string} datumNarodenia
-     * @param {RfoControllerGetOneByNameGetFromDatabaseEnum} [getFromDatabase] check if exists in database, if yes, return him
-     * @param {RfoControllerGetOneByNameUpdateInDatabaseEnum} [updateInDatabase] Check if is in persons if interests if not, add him and create in database, if yes, update in database
      * @param {string} [rodnePriezvisko]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6820,21 +6220,11 @@ export const RFORegisterFyzickchOsbApiFactory = function (
       meno: string,
       priezvisko: string,
       datumNarodenia: string,
-      getFromDatabase?: RfoControllerGetOneByNameGetFromDatabaseEnum,
-      updateInDatabase?: RfoControllerGetOneByNameUpdateInDatabaseEnum,
       rodnePriezvisko?: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseRfoPersonDto> {
       return localVarFp
-        .rfoControllerGetOneByName(
-          meno,
-          priezvisko,
-          datumNarodenia,
-          getFromDatabase,
-          updateInDatabase,
-          rodnePriezvisko,
-          options,
-        )
+        .rfoControllerGetOneByName(meno, priezvisko, datumNarodenia, rodnePriezvisko, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -6904,19 +6294,12 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
    *
    * @summary Information about a physical person given by birth number
    * @param {string} rodneCislo
-   * @param {RfoControllerGetOneGetFromDatabaseEnum} [getFromDatabase] check if exists in database, if yes, return him
-   * @param {RfoControllerGetOneUpdateInDatabaseEnum} [updateInDatabase] Check if is in persons if interests if not, add him and create in database, if yes, update in database
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
-  public rfoControllerGetOne(
-    rodneCislo: string,
-    getFromDatabase?: RfoControllerGetOneGetFromDatabaseEnum,
-    updateInDatabase?: RfoControllerGetOneUpdateInDatabaseEnum,
-    options?: RawAxiosRequestConfig,
-  ) {
+  public rfoControllerGetOne(rodneCislo: string, options?: RawAxiosRequestConfig) {
     return RFORegisterFyzickchOsbApiFp(this.configuration)
-      .rfoControllerGetOne(rodneCislo, getFromDatabase, updateInDatabase, options)
+      .rfoControllerGetOne(rodneCislo, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -6924,19 +6307,12 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
    *
    * @summary Information about a physical person given by ifo
    * @param {string} ifo
-   * @param {RfoControllerGetOneByIfoGetFromDatabaseEnum} [getFromDatabase] check if exists in database, if yes, return him
-   * @param {RfoControllerGetOneByIfoUpdateInDatabaseEnum} [updateInDatabase] Check if is in persons if interests if not, add him and create in database, if yes, update in database
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
-  public rfoControllerGetOneByIfo(
-    ifo: string,
-    getFromDatabase?: RfoControllerGetOneByIfoGetFromDatabaseEnum,
-    updateInDatabase?: RfoControllerGetOneByIfoUpdateInDatabaseEnum,
-    options?: RawAxiosRequestConfig,
-  ) {
+  public rfoControllerGetOneByIfo(ifo: string, options?: RawAxiosRequestConfig) {
     return RFORegisterFyzickchOsbApiFp(this.configuration)
-      .rfoControllerGetOneByIfo(ifo, getFromDatabase, updateInDatabase, options)
+      .rfoControllerGetOneByIfo(ifo, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -6968,8 +6344,6 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
    * @param {string} meno
    * @param {string} priezvisko
    * @param {string} datumNarodenia
-   * @param {RfoControllerGetOneByNameGetFromDatabaseEnum} [getFromDatabase] check if exists in database, if yes, return him
-   * @param {RfoControllerGetOneByNameUpdateInDatabaseEnum} [updateInDatabase] Check if is in persons if interests if not, add him and create in database, if yes, update in database
    * @param {string} [rodnePriezvisko]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -6978,21 +6352,11 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
     meno: string,
     priezvisko: string,
     datumNarodenia: string,
-    getFromDatabase?: RfoControllerGetOneByNameGetFromDatabaseEnum,
-    updateInDatabase?: RfoControllerGetOneByNameUpdateInDatabaseEnum,
     rodnePriezvisko?: string,
     options?: RawAxiosRequestConfig,
   ) {
     return RFORegisterFyzickchOsbApiFp(this.configuration)
-      .rfoControllerGetOneByName(
-        meno,
-        priezvisko,
-        datumNarodenia,
-        getFromDatabase,
-        updateInDatabase,
-        rodnePriezvisko,
-        options,
-      )
+      .rfoControllerGetOneByName(meno, priezvisko, datumNarodenia, rodnePriezvisko, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -7036,43 +6400,6 @@ export class RFORegisterFyzickchOsbApi extends BaseAPI {
   }
 }
 
-export const RfoControllerGetOneGetFromDatabaseEnum = {
-  True: 'true',
-  False: 'false',
-} as const
-export type RfoControllerGetOneGetFromDatabaseEnum =
-  (typeof RfoControllerGetOneGetFromDatabaseEnum)[keyof typeof RfoControllerGetOneGetFromDatabaseEnum]
-export const RfoControllerGetOneUpdateInDatabaseEnum = {
-  True: 'true',
-  False: 'false',
-} as const
-export type RfoControllerGetOneUpdateInDatabaseEnum =
-  (typeof RfoControllerGetOneUpdateInDatabaseEnum)[keyof typeof RfoControllerGetOneUpdateInDatabaseEnum]
-export const RfoControllerGetOneByIfoGetFromDatabaseEnum = {
-  True: 'true',
-  False: 'false',
-} as const
-export type RfoControllerGetOneByIfoGetFromDatabaseEnum =
-  (typeof RfoControllerGetOneByIfoGetFromDatabaseEnum)[keyof typeof RfoControllerGetOneByIfoGetFromDatabaseEnum]
-export const RfoControllerGetOneByIfoUpdateInDatabaseEnum = {
-  True: 'true',
-  False: 'false',
-} as const
-export type RfoControllerGetOneByIfoUpdateInDatabaseEnum =
-  (typeof RfoControllerGetOneByIfoUpdateInDatabaseEnum)[keyof typeof RfoControllerGetOneByIfoUpdateInDatabaseEnum]
-export const RfoControllerGetOneByNameGetFromDatabaseEnum = {
-  True: 'true',
-  False: 'false',
-} as const
-export type RfoControllerGetOneByNameGetFromDatabaseEnum =
-  (typeof RfoControllerGetOneByNameGetFromDatabaseEnum)[keyof typeof RfoControllerGetOneByNameGetFromDatabaseEnum]
-export const RfoControllerGetOneByNameUpdateInDatabaseEnum = {
-  True: 'true',
-  False: 'false',
-} as const
-export type RfoControllerGetOneByNameUpdateInDatabaseEnum =
-  (typeof RfoControllerGetOneByNameUpdateInDatabaseEnum)[keyof typeof RfoControllerGetOneByNameUpdateInDatabaseEnum]
-
 /**
  * RPORegisterPrvnickchOsbApi - axios parameter creator
  */
@@ -7112,141 +6439,6 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
       if (fullName !== undefined) {
         localVarQueryParameter['fullName'] = fullName
       }
-
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     *
-     * @summary Information about a legal person
-     * @param {string} ico
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    rpoControllerGetLegalPerson: async (
-      ico: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'ico' is not null or undefined
-      assertParamExists('rpoControllerGetLegalPerson', 'ico', ico)
-      const localVarPath = `/rpo/{ico}`.replace('{ico}', encodeURIComponent(String(ico)))
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     *
-     * @summary Information about a legal person
-     * @param {string} ico
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    rpoControllerGetLegalPersonBase: async (
-      ico: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'ico' is not null or undefined
-      assertParamExists('rpoControllerGetLegalPersonBase', 'ico', ico)
-      const localVarPath = `/rpo/base/{ico}`.replace('{ico}', encodeURIComponent(String(ico)))
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     *
-     * @summary Information about a legal person
-     * @param {string} ico
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    rpoControllerGetLegalPersonBase_1: async (
-      ico: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'ico' is not null or undefined
-      assertParamExists('rpoControllerGetLegalPersonBase_1', 'ico', ico)
-      const localVarPath = `/rpo/base/ico/{ico}`.replace('{ico}', encodeURIComponent(String(ico)))
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Accept'] = 'application/json'
 
@@ -7357,51 +6549,6 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
         options: localVarRequestOptions,
       }
     },
-    /**
-     *
-     * @summary Information about a legal person
-     * @param {string} ico
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    rpoControllerGetLegalPerson_2: async (
-      ico: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'ico' is not null or undefined
-      assertParamExists('rpoControllerGetLegalPerson_2', 'ico', ico)
-      const localVarPath = `/rpo/ico/{ico}`.replace('{ico}', encodeURIComponent(String(ico)))
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
   }
 }
 
@@ -7434,99 +6581,6 @@ export const RPORegisterPrvnickchOsbApiFp = function (configuration?: Configurat
         operationServerMap[
           'RPORegisterPrvnickchOsbApi.rpoControllerFindLegalPersonsByFullNameFromApi'
         ]?.[localVarOperationServerIndex]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     *
-     * @summary Information about a legal person
-     * @param {string} ico
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async rpoControllerGetLegalPerson(
-      ico: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRpoLegalPersonDto>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.rpoControllerGetLegalPerson(
-        ico,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['RPORegisterPrvnickchOsbApi.rpoControllerGetLegalPerson']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     *
-     * @summary Information about a legal person
-     * @param {string} ico
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async rpoControllerGetLegalPersonBase(
-      ico: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRpoLegalPersonDto>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.rpoControllerGetLegalPersonBase(
-        ico,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['RPORegisterPrvnickchOsbApi.rpoControllerGetLegalPersonBase']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     *
-     * @summary Information about a legal person
-     * @param {string} ico
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async rpoControllerGetLegalPersonBase_1(
-      ico: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRpoLegalPersonDto>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.rpoControllerGetLegalPersonBase_1(
-        ico,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['RPORegisterPrvnickchOsbApi.rpoControllerGetLegalPersonBase_1']?.[
-          localVarOperationServerIndex
-        ]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -7597,37 +6651,6 @@ export const RPORegisterPrvnickchOsbApiFp = function (configuration?: Configurat
           configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
-    /**
-     *
-     * @summary Information about a legal person
-     * @param {string} ico
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async rpoControllerGetLegalPerson_2(
-      ico: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRpoLegalPersonDto>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.rpoControllerGetLegalPerson_2(
-        ico,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['RPORegisterPrvnickchOsbApi.rpoControllerGetLegalPerson_2']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
   }
 }
 
@@ -7654,54 +6677,6 @@ export const RPORegisterPrvnickchOsbApiFactory = function (
     ): AxiosPromise<SearchGet200ResponseDto> {
       return localVarFp
         .rpoControllerFindLegalPersonsByFullNameFromApi(fullName, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
-     * @summary Information about a legal person
-     * @param {string} ico
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    rpoControllerGetLegalPerson(
-      ico: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseRpoLegalPersonDto> {
-      return localVarFp
-        .rpoControllerGetLegalPerson(ico, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
-     * @summary Information about a legal person
-     * @param {string} ico
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    rpoControllerGetLegalPersonBase(
-      ico: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseRpoLegalPersonDto> {
-      return localVarFp
-        .rpoControllerGetLegalPersonBase(ico, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
-     * @summary Information about a legal person
-     * @param {string} ico
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    rpoControllerGetLegalPersonBase_1(
-      ico: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseRpoLegalPersonDto> {
-      return localVarFp
-        .rpoControllerGetLegalPersonBase_1(ico, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -7736,22 +6711,6 @@ export const RPORegisterPrvnickchOsbApiFactory = function (
         .rpoControllerGetLegalPersonDetailFromAPI(id, options)
         .then((request) => request(axios, basePath))
     },
-    /**
-     *
-     * @summary Information about a legal person
-     * @param {string} ico
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    rpoControllerGetLegalPerson_2(
-      ico: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseRpoLegalPersonDto> {
-      return localVarFp
-        .rpoControllerGetLegalPerson_2(ico, options)
-        .then((request) => request(axios, basePath))
-    },
   }
 }
 
@@ -7772,48 +6731,6 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
   ) {
     return RPORegisterPrvnickchOsbApiFp(this.configuration)
       .rpoControllerFindLegalPersonsByFullNameFromApi(fullName, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
-   * @summary Information about a legal person
-   * @param {string} ico
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   */
-  public rpoControllerGetLegalPerson(ico: string, options?: RawAxiosRequestConfig) {
-    return RPORegisterPrvnickchOsbApiFp(this.configuration)
-      .rpoControllerGetLegalPerson(ico, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
-   * @summary Information about a legal person
-   * @param {string} ico
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   */
-  public rpoControllerGetLegalPersonBase(ico: string, options?: RawAxiosRequestConfig) {
-    return RPORegisterPrvnickchOsbApiFp(this.configuration)
-      .rpoControllerGetLegalPersonBase(ico, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
-   * @summary Information about a legal person
-   * @param {string} ico
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   */
-  public rpoControllerGetLegalPersonBase_1(ico: string, options?: RawAxiosRequestConfig) {
-    return RPORegisterPrvnickchOsbApiFp(this.configuration)
-      .rpoControllerGetLegalPersonBase_1(ico, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -7845,20 +6762,6 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
   public rpoControllerGetLegalPersonDetailFromAPI(id: number, options?: RawAxiosRequestConfig) {
     return RPORegisterPrvnickchOsbApiFp(this.configuration)
       .rpoControllerGetLegalPersonDetailFromAPI(id, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
-   * @summary Information about a legal person
-   * @param {string} ico
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   */
-  public rpoControllerGetLegalPerson_2(ico: string, options?: RawAxiosRequestConfig) {
-    return RPORegisterPrvnickchOsbApiFp(this.configuration)
-      .rpoControllerGetLegalPerson_2(ico, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

@@ -1,9 +1,7 @@
 import type { AxiosInstance } from 'axios'
 
 import {
-  AdminApiFactory,
   DefaultApiFactory,
-  DeveloperApiFactory,
   KNKatasterNehnutenostApiFactory,
   NEVNrodnEvidenciaVozidielApiFactory,
   RARegisterAdriesApiFactory,
@@ -21,9 +19,7 @@ type ClientConfig = {
 
 export interface MagproxyClient
   extends
-    ReturnType<typeof AdminApiFactory>,
     ReturnType<typeof DefaultApiFactory>,
-    ReturnType<typeof DeveloperApiFactory>,
     ReturnType<typeof KNKatasterNehnutenostApiFactory>,
     ReturnType<typeof NEVNrodnEvidenciaVozidielApiFactory>,
     ReturnType<typeof RARegisterAdriesApiFactory>,
@@ -40,9 +36,7 @@ export const createMagproxyClient = ({
   const args = [configuration, basePath, axios] as const
 
   return {
-    ...AdminApiFactory(...args),
     ...DefaultApiFactory(...args),
-    ...DeveloperApiFactory(...args),
     ...KNKatasterNehnutenostApiFactory(...args),
     ...NEVNrodnEvidenciaVozidielApiFactory(...args),
     ...RARegisterAdriesApiFactory(...args),

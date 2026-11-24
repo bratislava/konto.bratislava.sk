@@ -80,8 +80,7 @@ export type ClientFormDefinitionWebhook = Pick<
 >
 
 export type ClientFormDefinitionSlovenskoSk =
-  | ClientFormDefinitionSlovenskoSkGeneric
-  | ClientFormDefinitionSlovenskoSkTax
+  ClientFormDefinitionSlovenskoSkGeneric | ClientFormDefinitionSlovenskoSkTax
 
 export type ClientFormDefinition =
   | ClientFormDefinitionSlovenskoSkGeneric

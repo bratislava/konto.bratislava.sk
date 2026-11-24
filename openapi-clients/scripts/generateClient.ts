@@ -54,14 +54,14 @@ async function checkOpenApiGeneratorVersion() {
 
   try {
     const res = await fetch(
-      'https://search.maven.org/solrsearch/select?q=g:org.openapitools+AND+a:openapi-generator-cli&rows=1&wt=json',
+      'https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/maven-metadata.xml',
     )
     if (!res.ok) {
       console.warn('Could not fetch latest OpenAPI Generator CLI version.')
       return
     }
-    const data = await res.json()
-    const latestVersion = data.response?.docs?.[0]?.latestVersion
+    const metadata = await res.text()
+    const latestVersion = /<release>([^<]+)<\/release>/.exec(metadata)?.[1]
     if (!latestVersion) {
       console.warn('Could not determine latest OpenAPI Generator CLI version.')
       return

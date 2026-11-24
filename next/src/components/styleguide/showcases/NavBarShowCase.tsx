@@ -1,6 +1,5 @@
 import { Typography } from '@bratislava/component-library'
 import { ClientInfoResponseDto } from 'openapi-clients/city-account'
-import { useRef } from 'react'
 
 import { SsrAuthContext, SsrAuthContextType } from '@/src/components/logic/SsrAuthContext'
 import NavBar from '@/src/components/segments/NavBar/NavBar'
@@ -82,9 +81,6 @@ const NavBarVariant = ({
   hasBackButton = false,
   oauthClientInfo = null,
 }: NavBarVariantProps) => {
-  const desktopNavbarRef = useRef<HTMLDivElement>(null)
-  const mobileNavbarRef = useRef<HTMLDivElement>(null)
-
   return (
     <div className="flex flex-col gap-2">
       <Typography variant="p-default-bold">{title}</Typography>
@@ -103,12 +99,7 @@ const NavBarVariant = ({
       >
         <SsrAuthContext.Provider value={ssrAuth}>
           <AmplifyClientOAuthProvider clientInfo={oauthClientInfo}>
-            <NavBar
-              variant={variant}
-              hasBackButton={hasBackButton}
-              desktopNavbarRef={desktopNavbarRef}
-              mobileNavbarRef={mobileNavbarRef}
-            />
+            <NavBar variant={variant} hasBackButton={hasBackButton} />
           </AmplifyClientOAuthProvider>
         </SsrAuthContext.Provider>
       </div>

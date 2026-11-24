@@ -56,7 +56,6 @@
     "graphql-tag": "2.12.7",
     "i18next": "27.2.5",
     "lodash": "4.18.1",
-    "memoize-one": "7.0.0",
     "mime-types": "3.0.2",
     "next": "16.4.6",
     "next-i18next": "16.5.2",

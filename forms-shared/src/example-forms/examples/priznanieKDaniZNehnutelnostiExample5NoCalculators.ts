@@ -15,6 +15,7 @@ const exampleForm: ExampleForm<TaxFormData> = {
       voSvojomMene: true,
       menoTitul: { meno: 'Lincoln', titul: 'Mgr.' },
       priezvisko: 'Abraham',
+      maRodneCislo: true,
       rodneCislo: '9203146326',
       ulicaCisloFyzickaOsoba: { cislo: '6', ulica: 'Robotnícka' },
       korespondencnaAdresa: {
@@ -161,7 +162,8 @@ const exampleForm: ExampleForm<TaxFormData> = {
       telefon: '+421948417711',
       menoTitul: { meno: 'Petra', titul: 'Bsc' },
       priezvisko: 'Príkladná',
-      rodneCislo: '920314/2634',
+      maRodneCislo: true,
+      rodneCislo: '925314/0006',
       rovnakaAdresa: false,
       stat: '703',
       obecPsc: { psc: '83106', obec: 'Abelova' },

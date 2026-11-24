@@ -66,7 +66,6 @@ describe('testing-tax-mock', () => {
         expect(result.ICO_RC).toBe(mockNorisData.fakeBirthNumber)
         expect(result.subjekt_nazev).toBe(mockNorisData.nameSurname)
         expect(result.dan_spolu).toBe(taxTotal)
-        expect(result.rok).toBe(year)
         expect(result.datum_platnosti).toBe(mockNorisData.dateTaxRuling)
       },
     )
@@ -248,7 +247,6 @@ describe('testing-tax-mock', () => {
         expect(result.ICO_RC).toBe(mockNorisData.fakeBirthNumber)
         expect(result.subjekt_nazev).toBe(mockNorisData.nameSurname)
         expect(result.dan_spolu).toBe(taxTotal)
-        expect(result.rok).toBe(year)
         expect(result.datum_platnosti).toBe(mockNorisData.dateTaxRuling)
       },
     )
@@ -573,7 +571,9 @@ describe('testing-tax-mock', () => {
           mockTaxAdministrator,
           year,
         )
-        expect(result.rok).toBe(year)
+        expect(result.datum_spl1).toEqual(
+          new Date(`${year}-07-19T00:00:00.000Z`),
+        )
       })
     })
   })

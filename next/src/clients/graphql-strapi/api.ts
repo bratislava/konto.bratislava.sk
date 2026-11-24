@@ -1,11 +1,11 @@
+import { GraphQLClient, type RequestOptions } from 'graphql-request'
+import gql from 'graphql-tag'
+type GraphQLClientRequestHeaders = RequestOptions['requestHeaders']
 /** Internal type. DO NOT USE DIRECTLY. */
 type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
 /** Internal type. DO NOT USE DIRECTLY. */
 export type Incremental<T> =
   T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never }
-import { GraphQLClient, type RequestOptions } from 'graphql-request'
-import gql from 'graphql-tag'
-type GraphQLClientRequestHeaders = RequestOptions['requestHeaders']
 export enum Enum_Componentblocksmunicipalservicecard_Color {
   Culture = 'culture',
   Education = 'education',
@@ -1370,7 +1370,6 @@ export const FormBaseFragmentDoc = gql`
     moreInformationUrl
     ...FormTemporarilyDisabled
   }
-  ${FormTemporarilyDisabledFragmentDoc}
 `
 export const FormSentPageFragmentDoc = gql`
   fragment FormSentPage on ComponentBlocksFormSentPage {
@@ -1390,8 +1389,6 @@ export const FormWithSentPageFragmentDoc = gql`
       ...FormSentPage
     }
   }
-  ${FormBaseFragmentDoc}
-  ${FormSentPageFragmentDoc}
 `
 export const MunicipalServiceRedirectFragmentDoc = gql`
   fragment MunicipalServiceRedirect on MunicipalService {
@@ -1405,7 +1402,6 @@ export const MunicipalServiceRedirectFragmentDoc = gql`
       __typename
     }
   }
-  ${FormTemporarilyDisabledFragmentDoc}
 `
 export const CommonLinkFragmentDoc = gql`
   fragment CommonLink on ComponentBlocksCommonLink {
@@ -1416,7 +1412,6 @@ export const CommonLinkFragmentDoc = gql`
     }
     url
   }
-  ${MunicipalServiceRedirectFragmentDoc}
 `
 export const FooterColumnBlockFragmentDoc = gql`
   fragment FooterColumnBlock on ComponentBlocksFooterColumn {
@@ -1425,7 +1420,6 @@ export const FooterColumnBlockFragmentDoc = gql`
       ...CommonLink
     }
   }
-  ${CommonLinkFragmentDoc}
 `
 export const FooterFragmentDoc = gql`
   fragment Footer on Footer {
@@ -1442,8 +1436,6 @@ export const FooterFragmentDoc = gql`
     }
     contactText
   }
-  ${FooterColumnBlockFragmentDoc}
-  ${CommonLinkFragmentDoc}
 `
 export const HelpItemFragmentDoc = gql`
   fragment HelpItem on ComponentBlocksHelpItem {
@@ -1460,7 +1452,6 @@ export const HelpCategoryFragmentDoc = gql`
       ...HelpItem
     }
   }
-  ${HelpItemFragmentDoc}
 `
 export const HelpPageFragmentDoc = gql`
   fragment HelpPage on HelpPage {
@@ -1468,7 +1459,6 @@ export const HelpPageFragmentDoc = gql`
       ...HelpCategory
     }
   }
-  ${HelpCategoryFragmentDoc}
 `
 export const HomepageAnnouncementEntityFragmentDoc = gql`
   fragment HomepageAnnouncementEntity on HomepageAnnouncement {
@@ -1485,7 +1475,6 @@ export const HomepageAnnouncementEntityFragmentDoc = gql`
       alternativeText
     }
   }
-  ${CommonLinkFragmentDoc}
 `
 export const DeliveryMethodFragmentDoc = gql`
   fragment DeliveryMethod on ComponentMunicipalChargeDeliveryMethod {
@@ -1518,8 +1507,6 @@ export const MunicipalChargeConfigFragmentDoc = gql`
       }
     }
   }
-  ${DeliveryMethodFragmentDoc}
-  ${MunicipalChargeFragmentDoc}
 `
 export const MunicipalServiceCardFragmentDoc = gql`
   fragment MunicipalServiceCard on ComponentBlocksMunicipalServiceCard {
@@ -1557,9 +1544,6 @@ export const MunicipalServiceCardEntityFragmentDoc = gql`
       ...MunicipalServiceTagEntity
     }
   }
-  ${MunicipalServiceSlugEntityFragmentDoc}
-  ${MunicipalServiceRedirectFragmentDoc}
-  ${MunicipalServiceTagEntityFragmentDoc}
 `
 export const FormLandingPageLinkCtaFragmentDoc = gql`
   fragment FormLandingPageLinkCta on ComponentBlocksFormLandingPageLinkCta {
@@ -1589,8 +1573,6 @@ export const FormLandingPageFragmentDoc = gql`
       ...FormLandingPageFormCta
     }
   }
-  ${FormLandingPageLinkCtaFragmentDoc}
-  ${FormLandingPageFormCtaFragmentDoc}
 `
 export const FormWithLandingPageFragmentDoc = gql`
   fragment FormWithLandingPage on Form {
@@ -1599,8 +1581,6 @@ export const FormWithLandingPageFragmentDoc = gql`
       ...FormLandingPage
     }
   }
-  ${FormBaseFragmentDoc}
-  ${FormLandingPageFragmentDoc}
 `
 export const MunicipalServiceCategoryEntityFragmentDoc = gql`
   fragment MunicipalServiceCategoryEntity on MunicipalServiceCategory {
@@ -1635,7 +1615,6 @@ export const ChecklistFragmentDoc = gql`
       ...ChecklistItem
     }
   }
-  ${ChecklistItemFragmentDoc}
 `
 export const StepperSectionFragmentDoc = gql`
   fragment StepperSection on ComponentSectionsStepper {
@@ -1645,7 +1624,6 @@ export const StepperSectionFragmentDoc = gql`
       ...Checklist
     }
   }
-  ${ChecklistFragmentDoc}
 `
 export const ContactCardBlockFragmentDoc = gql`
   fragment ContactCardBlock on ComponentBlocksContactCard {
@@ -1708,9 +1686,6 @@ export const ContactsSectionFragmentDoc = gql`
     }
     titleLevelContacts: titleLevel
   }
-  ${ContactCardBlockFragmentDoc}
-  ${ContactPersonCardBlockFragmentDoc}
-  ${ContactDirectionsCardBlockFragmentDoc}
 `
 export const QuestionFragmentDoc = gql`
   fragment Question on ComponentBlocksQuestion {
@@ -1725,7 +1700,6 @@ export const FaqSectionFragmentDoc = gql`
       ...Question
     }
   }
-  ${QuestionFragmentDoc}
 `
 export const ExternalDocumentBlockFragmentDoc = gql`
   fragment ExternalDocumentBlock on ComponentBlocksExternalDocument {
@@ -1742,7 +1716,6 @@ export const DocumentsSectionFragmentDoc = gql`
       ...ExternalDocumentBlock
     }
   }
-  ${ExternalDocumentBlockFragmentDoc}
 `
 export const TowingSectionFragmentDoc = gql`
   fragment TowingSection on ComponentSectionsTowing {
@@ -1772,12 +1745,6 @@ export const MunicipalServiceSectionsFragmentDoc = gql`
       ...TowingSection
     }
   }
-  ${RichtextSectionFragmentDoc}
-  ${StepperSectionFragmentDoc}
-  ${ContactsSectionFragmentDoc}
-  ${FaqSectionFragmentDoc}
-  ${DocumentsSectionFragmentDoc}
-  ${TowingSectionFragmentDoc}
 `
 export const MunicipalServiceEntityFragmentDoc = gql`
   fragment MunicipalServiceEntity on MunicipalService {
@@ -1798,11 +1765,6 @@ export const MunicipalServiceEntityFragmentDoc = gql`
       ...MunicipalServiceSections
     }
   }
-  ${MunicipalServiceCardEntityFragmentDoc}
-  ${FormWithLandingPageFragmentDoc}
-  ${MunicipalServiceCategoryEntityFragmentDoc}
-  ${MunicipalServiceLinkFragmentDoc}
-  ${MunicipalServiceSectionsFragmentDoc}
 `
 export const AlertsDocument = gql`
   query Alerts {
@@ -1822,6 +1784,9 @@ export const FormWithSentPageBySlugDocument = gql`
     }
   }
   ${FormWithSentPageFragmentDoc}
+  ${FormBaseFragmentDoc}
+  ${FormTemporarilyDisabledFragmentDoc}
+  ${FormSentPageFragmentDoc}
 `
 export const FormWithLandingPageBySlugDocument = gql`
   query FormWithLandingPageBySlug($slug: String!) {
@@ -1831,6 +1796,11 @@ export const FormWithLandingPageBySlugDocument = gql`
     }
   }
   ${FormWithLandingPageFragmentDoc}
+  ${FormBaseFragmentDoc}
+  ${FormTemporarilyDisabledFragmentDoc}
+  ${FormLandingPageFragmentDoc}
+  ${FormLandingPageLinkCtaFragmentDoc}
+  ${FormLandingPageFormCtaFragmentDoc}
 `
 export const GeneralDocument = gql`
   query General {
@@ -1839,6 +1809,10 @@ export const GeneralDocument = gql`
     }
   }
   ${FooterFragmentDoc}
+  ${FooterColumnBlockFragmentDoc}
+  ${CommonLinkFragmentDoc}
+  ${MunicipalServiceRedirectFragmentDoc}
+  ${FormTemporarilyDisabledFragmentDoc}
 `
 export const HelpPageDocument = gql`
   query HelpPage {
@@ -1847,6 +1821,8 @@ export const HelpPageDocument = gql`
     }
   }
   ${HelpPageFragmentDoc}
+  ${HelpCategoryFragmentDoc}
+  ${HelpItemFragmentDoc}
 `
 export const HomepageDocument = gql`
   query Homepage {
@@ -1866,7 +1842,12 @@ export const HomepageDocument = gql`
     }
   }
   ${MunicipalServiceCardEntityFragmentDoc}
+  ${MunicipalServiceSlugEntityFragmentDoc}
+  ${MunicipalServiceRedirectFragmentDoc}
+  ${FormTemporarilyDisabledFragmentDoc}
+  ${MunicipalServiceTagEntityFragmentDoc}
   ${HomepageAnnouncementEntityFragmentDoc}
+  ${CommonLinkFragmentDoc}
 `
 export const MunicipalChargeConfigDocument = gql`
   query MunicipalChargeConfig {
@@ -1875,6 +1856,8 @@ export const MunicipalChargeConfigDocument = gql`
     }
   }
   ${MunicipalChargeConfigFragmentDoc}
+  ${DeliveryMethodFragmentDoc}
+  ${MunicipalChargeFragmentDoc}
 `
 export const MunicipalServiceBySlugDocument = gql`
   query MunicipalServiceBySlug($slug: String!) {
@@ -1883,6 +1866,32 @@ export const MunicipalServiceBySlugDocument = gql`
     }
   }
   ${MunicipalServiceEntityFragmentDoc}
+  ${MunicipalServiceCardEntityFragmentDoc}
+  ${MunicipalServiceSlugEntityFragmentDoc}
+  ${MunicipalServiceRedirectFragmentDoc}
+  ${FormTemporarilyDisabledFragmentDoc}
+  ${MunicipalServiceTagEntityFragmentDoc}
+  ${FormWithLandingPageFragmentDoc}
+  ${FormBaseFragmentDoc}
+  ${FormLandingPageFragmentDoc}
+  ${FormLandingPageLinkCtaFragmentDoc}
+  ${FormLandingPageFormCtaFragmentDoc}
+  ${MunicipalServiceCategoryEntityFragmentDoc}
+  ${MunicipalServiceLinkFragmentDoc}
+  ${MunicipalServiceSectionsFragmentDoc}
+  ${RichtextSectionFragmentDoc}
+  ${StepperSectionFragmentDoc}
+  ${ChecklistFragmentDoc}
+  ${ChecklistItemFragmentDoc}
+  ${ContactsSectionFragmentDoc}
+  ${ContactCardBlockFragmentDoc}
+  ${ContactPersonCardBlockFragmentDoc}
+  ${ContactDirectionsCardBlockFragmentDoc}
+  ${FaqSectionFragmentDoc}
+  ${QuestionFragmentDoc}
+  ${DocumentsSectionFragmentDoc}
+  ${ExternalDocumentBlockFragmentDoc}
+  ${TowingSectionFragmentDoc}
 `
 export const MunicipalServicesStaticPathsForSitemapDocument = gql`
   query MunicipalServicesStaticPathsForSitemap($limit: Int = -1) {
@@ -1905,6 +1914,32 @@ export const MunicipalServicesPageDocument = gql`
     }
   }
   ${MunicipalServiceEntityFragmentDoc}
+  ${MunicipalServiceCardEntityFragmentDoc}
+  ${MunicipalServiceSlugEntityFragmentDoc}
+  ${MunicipalServiceRedirectFragmentDoc}
+  ${FormTemporarilyDisabledFragmentDoc}
+  ${MunicipalServiceTagEntityFragmentDoc}
+  ${FormWithLandingPageFragmentDoc}
+  ${FormBaseFragmentDoc}
+  ${FormLandingPageFragmentDoc}
+  ${FormLandingPageLinkCtaFragmentDoc}
+  ${FormLandingPageFormCtaFragmentDoc}
+  ${MunicipalServiceCategoryEntityFragmentDoc}
+  ${MunicipalServiceLinkFragmentDoc}
+  ${MunicipalServiceSectionsFragmentDoc}
+  ${RichtextSectionFragmentDoc}
+  ${StepperSectionFragmentDoc}
+  ${ChecklistFragmentDoc}
+  ${ChecklistItemFragmentDoc}
+  ${ContactsSectionFragmentDoc}
+  ${ContactCardBlockFragmentDoc}
+  ${ContactPersonCardBlockFragmentDoc}
+  ${ContactDirectionsCardBlockFragmentDoc}
+  ${FaqSectionFragmentDoc}
+  ${QuestionFragmentDoc}
+  ${DocumentsSectionFragmentDoc}
+  ${ExternalDocumentBlockFragmentDoc}
+  ${TowingSectionFragmentDoc}
 `
 
 export type SdkFunctionWrapper = <T>(

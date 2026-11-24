@@ -1,10 +1,13 @@
-import dayjs, { Dayjs } from 'dayjs'
-
 import {
   CommunalWasteTaxDetail,
   RealEstateTaxDetail,
   RealEstateTaxPropertyType,
 } from '../../../prisma/json-types'
+import {
+  BRATISLAVA_TIME_ZONE,
+  isAfter,
+  isBefore,
+} from '../../../utils/functions/temporal'
 import {
   ResponseCommunalWasteTaxDetailItemizedDto,
   ResponseRealEstateTaxDetailItemizedDto,
@@ -36,21 +39,24 @@ export const getExistingTaxStatus = (
 }
 
 export const checkTaxDateInclusion = (
-  currentTime: Dayjs,
+  currentTime: Temporal.ZonedDateTime,
   lookingForTaxDate: {
     from: { month: number; day: number }
     to: { month: number; day: number }
   },
 ) => {
-  const displayFrom = dayjs.tz(
-    `${currentTime.year()}-${lookingForTaxDate.from.month}-${lookingForTaxDate.from.day}`,
-    'Europe/Bratislava',
-  )
-  const displayTo = dayjs.tz(
-    `${currentTime.year()}-${lookingForTaxDate.to.month}-${lookingForTaxDate.to.day}`,
-    'Europe/Bratislava',
-  )
-  return currentTime.isAfter(displayFrom) && currentTime.isBefore(displayTo)
+  const { year } = currentTime
+  const displayFrom = Temporal.ZonedDateTime.from({
+    timeZone: BRATISLAVA_TIME_ZONE,
+    year,
+    ...lookingForTaxDate.from,
+  })
+  const displayTo = Temporal.ZonedDateTime.from({
+    timeZone: BRATISLAVA_TIME_ZONE,
+    year,
+    ...lookingForTaxDate.to,
+  })
+  return isAfter(currentTime, displayFrom) && isBefore(currentTime, displayTo)
 }
 
 export const generateItemizedRealEstateTaxDetail = (

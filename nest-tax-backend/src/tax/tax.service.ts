@@ -1,14 +1,17 @@
 import { ErrorEnum, ErrorFactoryService } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
-import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
 
-import { PaymentStatus, Prisma, TaxType } from '../generated/prisma/client'
+import {
+  PaymentStatus,
+  Prisma,
+  TaxImportStatus,
+  TaxType,
+} from '../generated/prisma/client'
 import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { QrCodeService } from '../qrcode/qrcode.service'
 import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
+import { nowInBratislava } from '../utils/functions/temporal'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -32,9 +35,6 @@ import {
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
 } from './utils/unified-tax.util'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
 
 const lookingForTaxDate = {
   from: { month: 2, day: 1 },
@@ -97,6 +97,8 @@ export class TaxService {
       })
     }
 
+    const currentTime = nowInBratislava()
+
     const taxPayer = await this.prisma.taxPayer.findUnique({
       where: {
         birthNumber,
@@ -108,6 +110,15 @@ export class TaxService {
           },
           include: {
             taxAdministrator: true,
+          },
+        },
+        taxImportAttempts: {
+          where: {
+            taxType: type,
+            year: currentTime.year,
+          },
+          select: {
+            status: true,
           },
         },
       },
@@ -133,21 +144,18 @@ export class TaxService {
         isCancelled: true,
       },
     })
-    const currentTime = dayjs().tz('Europe/Bratislava')
-
     const shouldAddCurrentYear = checkTaxDateInclusion(
       currentTime,
       lookingForTaxDate,
     )
 
-    // TaxPayer is updated only if tax was searched for in Noris
-    const taxPayerWasUpdated = taxPayer
-      ? taxPayer.updatedAt.getTime() - taxPayer.createdAt.getTime() > 1000 // 1-second threshold
-      : false
+    // Tax for the current year was searched for in Noris, and it was not found there
+    const currentYearTaxNotFound =
+      taxPayer?.taxImportAttempts[0]?.status === TaxImportStatus.NOT_FOUND
 
     if (taxes.length === 0) {
       const availabilityStatus =
-        shouldAddCurrentYear || !taxPayerWasUpdated
+        shouldAddCurrentYear || !currentYearTaxNotFound
           ? TaxAvailabilityStatus.LOOKING_FOR_YOUR_TAX
           : TaxAvailabilityStatus.TAX_NOT_ON_RECORD
       return {
@@ -177,15 +185,15 @@ export class TaxService {
     })
 
     const currentYearTaxExists = items.some(
-      (item) => item.year === currentTime.year(),
+      (item) => item.year === currentTime.year,
     )
 
     if (
       !currentYearTaxExists &&
-      (shouldAddCurrentYear || !taxPayerWasUpdated)
+      (shouldAddCurrentYear || !currentYearTaxNotFound)
     ) {
       items.unshift({
-        year: currentTime.year(),
+        year: currentTime.year,
         status: TaxStatusEnum.AWAITING_PROCESSING,
         type,
         order: 1,
@@ -270,7 +278,7 @@ export class TaxService {
     order: number,
     logContext?: Record<string, unknown>,
   ): Promise<ResponseAnyTaxSummaryDetailDto> {
-    const today = dayjs().tz('Europe/Bratislava')
+    const today = new Date()
     const taxDefinition = getTaxDefinitionByType(type)
 
     const tax = await this.fetchTaxData(
@@ -310,7 +318,7 @@ export class TaxService {
       {
         type,
         taxYear: year,
-        today: today.toDate(),
+        today,
         overallAmount: tax.amount,
         paymentCalendarThreshold: taxDefinition.paymentCalendarThreshold,
         variableSymbol: tax.variableSymbol,
@@ -420,7 +428,7 @@ export class TaxService {
     taxType: TaxType,
     order: number,
   ): Promise<PaymentGateURLGeneratorDto> {
-    const today = dayjs().tz('Europe/Bratislava').toDate()
+    const today = new Date()
 
     const tax = await this.fetchTaxData(
       taxPayerWhereUniqueInput,

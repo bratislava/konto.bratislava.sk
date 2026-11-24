@@ -22,7 +22,8 @@ const exampleForm: ExampleForm<TaxFormData> = {
         meno: 'Test',
       },
       priezvisko: 'Test',
-      rodneCislo: '1.1.1993',
+      maRodneCislo: false,
+      datumNarodenia: '1993-01-01',
       ulicaCisloFyzickaOsoba: {
         cislo: '15A',
         ulica: 'Ulica ',
@@ -98,7 +99,8 @@ const exampleForm: ExampleForm<TaxFormData> = {
         titul: 'Ing',
       },
       priezvisko: 'Test',
-      rodneCislo: '123232/1234',
+      maRodneCislo: false,
+      datumNarodenia: '1990-05-12',
       rovnakaAdresa: true,
     },
     znizenieAleboOslobodenieOdDane: {

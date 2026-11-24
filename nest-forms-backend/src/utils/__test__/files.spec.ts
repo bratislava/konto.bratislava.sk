@@ -8,6 +8,7 @@ import {
 } from '../../__tests__/factories/form.factory'
 import {
   fileIdIsValid,
+  getContentDispositionType,
   getFileIdsToInfoMap,
   PDF_FORM_FAKE_FILE_ID,
 } from '../files'
@@ -28,6 +29,30 @@ describe('files utils', () => {
       expect(fileIdIsValid('real-file-id')).toBeTruthy()
       expect(fileIdIsValid('123')).toBeTruthy()
       expect(fileIdIsValid('')).toBeTruthy()
+    })
+  })
+
+  describe('getContentDispositionType', () => {
+    it.each([
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+      'image/avif',
+      'image/bmp',
+      'image/heic',
+      'image/heif',
+    ])('should return inline for %s', (contentType) => {
+      expect(getContentDispositionType(contentType)).toBe('inline')
+    })
+
+    it.each([
+      'image/svg+xml',
+      'text/html',
+      'application/pdf',
+      'application/octet-stream',
+    ])('should return attachment for %s', (contentType) => {
+      expect(getContentDispositionType(contentType)).toBe('attachment')
     })
   })
 

@@ -6,7 +6,6 @@ import {
 import { createMock } from '@golevelup/ts-vitest'
 import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import dayjs from 'dayjs'
 import type { MockInstance } from 'vitest'
 
 import prismaMock from '../../../../test/singleton'
@@ -17,6 +16,7 @@ import { NorisService } from '../../../noris/noris.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { OVERPAYMENTS_LOOKBACK_DAYS } from '../../../utils/constants'
 import alertReporting from '../../../utils/constants/error.alerts'
+import { nowInBratislava, toDate } from '../../../utils/functions/temporal'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { RetryService } from '../../../utils-module/retry.service'
 import TasksConfigSubservice from '../config.service'
@@ -66,7 +66,7 @@ describe('TaxImportTasksService', () => {
   })
 
   describe('loadTaxesForUsers', () => {
-    const currentYear = new Date().getFullYear()
+    const currentYear = nowInBratislava().year
 
     beforeEach(() => {
       // Reset the lastLoadedTaxType to a known state before each test
@@ -501,7 +501,9 @@ describe('TaxImportTasksService', () => {
         OVERPAYMENTS_LOOKBACK_DAYS,
       ])
 
-      const expectedFromDate = dayjs().subtract(3, 'day').toDate()
+      const expectedFromDate = toDate(
+        Temporal.Now.zonedDateTimeISO().subtract({ days: 3 }),
+      )
       expect(getOverpaymentsDataMock).toHaveBeenCalledWith({
         fromDate: expectedFromDate,
       })
@@ -535,7 +537,9 @@ describe('TaxImportTasksService', () => {
         OVERPAYMENTS_LOOKBACK_DAYS,
       ])
 
-      const expectedFromDate = dayjs().subtract(7, 'day').toDate()
+      const expectedFromDate = toDate(
+        Temporal.Now.zonedDateTimeISO().subtract({ days: 7 }),
+      )
       expect(getOverpaymentsDataMock).toHaveBeenCalledWith({
         fromDate: expectedFromDate,
       })
@@ -597,7 +601,9 @@ describe('TaxImportTasksService', () => {
         OVERPAYMENTS_LOOKBACK_DAYS,
       ])
 
-      const expectedFromDate = dayjs().subtract(3, 'day').toDate()
+      const expectedFromDate = toDate(
+        Temporal.Now.zonedDateTimeISO().subtract({ days: 3 }),
+      )
       expect(getOverpaymentsDataMock).toHaveBeenCalledWith({
         fromDate: expectedFromDate,
       })

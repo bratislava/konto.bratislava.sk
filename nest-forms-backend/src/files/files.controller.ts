@@ -25,7 +25,7 @@ import {
 } from '@nestjs/swagger'
 import { create as createContentDisposition } from 'content-disposition'
 import { Response } from 'express'
-import { contentType } from 'mime-types'
+import { lookup } from 'mime-types'
 
 import BasicGuard from '../auth/guards/auth-basic.guard'
 import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
@@ -37,6 +37,7 @@ import {
   FormAccessAllowMigrations,
   FormAccessGuard,
 } from '../forms-v2/guards/form-access.guard'
+import { getContentDispositionType } from '../utils/files'
 import { FileUploadInterceptor } from './file-upload.interceptor'
 import {
   BufferedFileDto,
@@ -217,10 +218,14 @@ export default class FilesController {
     const fileId = this.filesService.decodeFileIdFromJwtToken(jwtToken)
     const fileStream = await this.filesService.downloadFile(fileId)
     const file = await this.filesService.getFile(fileId)
+    const fileContentType = lookup(file.fileName) || 'application/octet-stream' // default needed as lookup returns false if not found
     res.set({
-      'Content-Type': contentType(file.fileName) || 'application/octet-stream', // default needed as contentType returns false if not found
+      'Content-Type': fileContentType,
+      'X-Content-Type-Options': 'nosniff', // https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html#x-content-type-options
       'Access-Control-Expose-Headers': 'Content-Disposition',
-      'Content-Disposition': createContentDisposition(file.fileName),
+      'Content-Disposition': createContentDisposition(file.fileName, {
+        type: getContentDispositionType(fileContentType),
+      }),
     })
     return new StreamableFile(fileStream)
   }

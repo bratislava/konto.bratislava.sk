@@ -118,8 +118,7 @@ const NumberField = (
                         'border-border-active-default': !isInvalid && !isFocusWithin,
                         'border-border-active-focused': !isInvalid && isFocusWithin,
                         'border-border-error': isInvalid,
-                        'border-border-active-disabled bg-background-passive-tertiary':
-                          isDisabled,
+                        'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
                       },
                     )}
                   >

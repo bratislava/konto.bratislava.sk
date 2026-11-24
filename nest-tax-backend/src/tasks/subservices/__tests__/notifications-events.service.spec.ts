@@ -1,9 +1,6 @@
 import { ErrorFactoryService, LineLoggerService } from '@bratislava/log-nest'
 import { createMock } from '@golevelup/ts-vitest'
 import { Test, TestingModule } from '@nestjs/testing'
-import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import type { Mocked, MockInstance } from 'vitest'
 
@@ -23,12 +20,10 @@ import {
 } from '../../../generated/prisma/client'
 import { PaymentService } from '../../../payment/payment.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import { nowInBratislava } from '../../../utils/functions/temporal'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../../utils/types'
 import NotificationsEventsService from '../notifications-events.service'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
 
 type TaxInstallmentUpdateManyFn = (
   args: Prisma.TaxInstallmentUpdateManyArgs,
@@ -61,8 +56,13 @@ function assertUpdateManyUsesReminderEnums(
   })
 }
 
-/** Calendar May 31, 2025 in the runner's local TZ — matches service's dueDate.getDate()/getMonth() (not UTC instant from Europe/Bratislava midnight, which is prior UTC day on CI). */
-const DEFAULT_ELIGIBLE_INSTALLMENT_DUE_DATE = new Date(2025, 4, 31)
+/**
+ * UTC midnight of 31 May 2025. Installment due dates are Noris `datum_spl*` values, which mssql
+ * reads as UTC (`useUTC` defaults to true) and which are stored unchanged.
+ */
+const DEFAULT_ELIGIBLE_INSTALLMENT_DUE_DATE = new Date(
+  '2025-05-31T00:00:00.000Z',
+)
 
 function eligibleInstallmentRow(opts: {
   taxId: number
@@ -109,7 +109,7 @@ describe('NotificationsEventsSubservice', () => {
   let cityAccountSubservice: Mocked<CityAccountSubservice>
   let logger: LineLoggerService
 
-  const currentYear = dayjs().year()
+  const currentYear = nowInBratislava().year
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

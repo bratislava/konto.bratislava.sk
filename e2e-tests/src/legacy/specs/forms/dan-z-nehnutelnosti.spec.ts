@@ -135,7 +135,12 @@ const fillUdajeODanovnikovi = async (page: Page, data: TaxFormData) => {
   await pickRadio(page, 'root_udajeODanovnikovi_voSvojomMene', d.voSvojomMene)
   await pickRadio(page, 'root_udajeODanovnikovi_priznanieAko', d.priznanieAko)
 
-  await fillIn(page, 'root_udajeODanovnikovi_rodneCislo', d.rodneCislo)
+  await pickRadio(page, 'root_udajeODanovnikovi_maRodneCislo', d.maRodneCislo)
+  if (d.maRodneCislo) {
+    await fillIn(page, 'root_udajeODanovnikovi_rodneCislo', d.rodneCislo)
+  } else {
+    await pickDate(page, 'root_udajeODanovnikovi_datumNarodenia', d.datumNarodenia)
+  }
   await fillIn(page, 'root_udajeODanovnikovi_priezvisko', d.priezvisko)
   await fillIn(page, 'root_udajeODanovnikovi_menoTitul_meno', d.menoTitul.meno)
   if (d.menoTitul.titul) {
@@ -537,7 +542,16 @@ const fillDanZBytov = async (page: Page, data: TaxFormData, nextKrok: string) =>
 const fillManzel = async (page: Page, data: TaxFormData) => {
   const m = data.bezpodieloveSpoluvlastnictvoManzelov as Any
 
-  await fillIn(page, 'root_bezpodieloveSpoluvlastnictvoManzelov_rodneCislo', m.rodneCislo)
+  await pickRadio(page, 'root_bezpodieloveSpoluvlastnictvoManzelov_maRodneCislo', m.maRodneCislo)
+  if (m.maRodneCislo) {
+    await fillIn(page, 'root_bezpodieloveSpoluvlastnictvoManzelov_rodneCislo', m.rodneCislo)
+  } else {
+    await pickDate(
+      page,
+      'root_bezpodieloveSpoluvlastnictvoManzelov_datumNarodenia',
+      m.datumNarodenia,
+    )
+  }
   await fillIn(page, 'root_bezpodieloveSpoluvlastnictvoManzelov_priezvisko', m.priezvisko)
   await fillIn(page, 'root_bezpodieloveSpoluvlastnictvoManzelov_menoTitul_meno', m.menoTitul.meno)
   if (m.menoTitul.titul) {
@@ -661,17 +675,19 @@ EXAMPLES.forEach((example) => {
         await expectSummaryWithoutErrors(page)
 
         await expectSummaryRow(page, 'root_druhPriznania_rok', String(data.druhPriznania!.rok))
-        await expectSummaryRow(
-          page,
-          'root_udajeODanovnikovi_rodneCislo',
-          (data.udajeODanovnikovi as Any).rodneCislo,
-        )
+        if ((data.udajeODanovnikovi as Any).maRodneCislo) {
+          await expectSummaryRow(
+            page,
+            'root_udajeODanovnikovi_rodneCislo',
+            (data.udajeODanovnikovi as Any).rodneCislo,
+          )
+        }
         await expectSummaryRow(
           page,
           'root_udajeODanovnikovi_priezvisko',
           (data.udajeODanovnikovi as Any).priezvisko,
         )
-        if (hasSpouse) {
+        if (hasSpouse && (data.bezpodieloveSpoluvlastnictvoManzelov as Any).maRodneCislo) {
           await expectSummaryRow(
             page,
             'root_bezpodieloveSpoluvlastnictvoManzelov_rodneCislo',

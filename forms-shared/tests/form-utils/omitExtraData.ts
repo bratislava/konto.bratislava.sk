@@ -1,7 +1,10 @@
+import { ROOT_SCHEMA_PREFIX } from '@rjsf/utils'
+import { Ajv } from 'ajv'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { baOmitExtraData } from '../../src/form-utils/omitExtraData'
+import { createCachedValidatorRegistry } from '../../src/form-utils/validatorRegistry'
 import { conditionalFields } from '../../src/generator/functions/conditionalFields'
 import { input } from '../../src/generator/functions/input'
 import { createCondition } from '../../src/generator/helpers'
@@ -60,6 +63,32 @@ describe('omitExtraData', () => {
       testValidatorRegistry,
     )
     expect(result).toEqual({ typ: 'zmena', noveIco: '22222222' })
+  })
+
+  // The evaluated steps validate on the same validator with the form schema as the root, so omitting extra data must not
+  // swap the root schema, which would discard the compiled form schema each time.
+  test('should keep the root schema of a shared validator', () => {
+    const addSchemaSpy = vi.spyOn(Ajv.prototype, 'addSchema')
+    const validatorRegistry = createCachedValidatorRegistry()
+    const { schema } = object('wrapper', {}, [
+      input('typ', { type: 'text', title: 'Typ', required: true }, {}),
+      conditionalFields(createCondition([[['typ'], { const: 'zmena' }]]), [
+        input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+      ]),
+    ])
+    const validator = validatorRegistry.getValidator(schema)
+
+    validator.isValid(schema, {}, schema)
+    const result = baOmitExtraData(
+      schema,
+      { typ: 'zmena', ico: '1', extra: 'x' },
+      validatorRegistry,
+    )
+    validator.isValid(schema, {}, schema)
+
+    expect(result).toEqual({ typ: 'zmena', ico: '1' })
+    // RJSF `handleSchemaUpdate` adds the root schema with `ROOT_SCHEMA_PREFIX` as the key
+    expect(addSchemaSpy.mock.calls.filter(([, key]) => key === ROOT_SCHEMA_PREFIX)).toHaveLength(1)
   })
 
   // "Údaje o daňovníkovi" step in "Priznanie k dani z nehnuteľnosti" contains a lot of conditional fields, the original

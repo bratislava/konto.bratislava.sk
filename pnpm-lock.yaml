@@ -1351,9 +1351,6 @@ importers:
       lodash:
         specifier: 4.18.1
         version: 4.18.1
-      memoize-one:
-        specifier: 7.0.0
-        version: 7.0.0
       mime-types:
         specifier: 3.0.2
         version: 3.0.2
@@ -13771,9 +13768,6 @@ packages:
 
   memoize-one@6.0.0:
     resolution: {integrity: sha512-rkpe71W0N0c0Xz6QD0eJETuWAJGnJ9afsl1srmwPrI+yBCkge5EycXXbYRyvL29zZVUWQCY7InPRCv3GDXuZNw==}
-
-  memoize-one@7.0.0:
-    resolution: {integrity: sha512-2N/rFuzS9eTTDXVmo/PO86KmapXPCOqDgR3eOnmWW1NVW8YXGzXcTWMKiGq/VAsYVl42Pd8rQ2DMsoYunIATLw==}
 
   memorystream@0.3.1:
     resolution: {integrity: sha512-S3UwM3yj5mtUSEfP41UZmt/0SCoVYUcU1rkXv+BQ5Ig8ndL4sPoJNBUJERafdPb5jjHJGuMgytgKvKIf58XNBw==}
@@ -33041,8 +33035,6 @@ snapshots:
   memoize-one@5.2.1: {}
 
   memoize-one@6.0.0: {}
-
-  memoize-one@7.0.0: {}
 
   memorystream@0.3.1: {}
 

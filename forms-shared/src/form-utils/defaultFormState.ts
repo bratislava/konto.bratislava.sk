@@ -79,20 +79,28 @@ export const baDefaultFormStateBehavior: Experimental_DefaultFormStateBehavior =
   requiredBooleanDefault: 'skip',
 }
 
+/**
+ * @remarks
+ *
+ * `schema` is also passed as the root schema (as in RJSF `Form`). RJSF itself would use a new `{}` for each call, so a
+ * validator shared with code that uses `schema` as the root would swap its root schema back and forth, which discards
+ * its compiled schemas (see `validatorRegistry.ts`).
+ */
 export const baGetDefaultFormState = (
   schema: RJSFSchema,
   formData: GenericObjectType,
   validatorRegistry: BaRjsfValidatorRegistry,
-  rootSchema?: RJSFSchema,
 ) =>
   getDefaultFormState(
     validatorRegistry.getValidator(schema),
     schema,
     formData,
-    rootSchema,
+    schema,
     undefined,
     baDefaultFormStateBehavior,
   )
+
+const MAX_ITERATIONS = 10
 
 /**
  * `getDefaultFormState` adds only properties that can be immediately resolved, e.g. when there's a property that
@@ -101,14 +109,12 @@ export const baGetDefaultFormState = (
  *
  * @remarks
  *
- * `maxIterations` is a safety measure to prevent infinite loops.
+ * `MAX_ITERATIONS` is a safety measure to prevent infinite loops.
  */
 export const baGetDefaultFormStateStable = (
   schema: RJSFSchema,
   formData: GenericObjectType,
   validatorRegistry: BaRjsfValidatorRegistry,
-  rootSchema?: RJSFSchema,
-  maxIterations: number = 10,
 ) => {
   let currentFormData = formData
   let iteration = 0
@@ -118,13 +124,8 @@ export const baGetDefaultFormStateStable = (
     getValidator: () => validator,
   }
 
-  while (iteration < maxIterations) {
-    const newFormData = baGetDefaultFormState(
-      schema,
-      currentFormData,
-      reuseValidatorRegistry,
-      rootSchema,
-    )
+  while (iteration < MAX_ITERATIONS) {
+    const newFormData = baGetDefaultFormState(schema, currentFormData, reuseValidatorRegistry)
 
     if (isEqual(currentFormData, newFormData)) {
       return newFormData

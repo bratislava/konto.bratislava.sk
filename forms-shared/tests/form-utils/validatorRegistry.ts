@@ -4,8 +4,8 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { BAJSONSchema7 } from '../../src/form-utils/ajvKeywords'
 import {
+  createCachedValidatorRegistry,
   createSingleUseValidatorRegistry,
-  createWeakMapRegistry,
 } from '../../src/form-utils/validatorRegistry'
 
 describe('Validator Registry', () => {
@@ -61,9 +61,9 @@ describe('Validator Registry', () => {
     })
   })
 
-  describe('WeakMapRegistry', () => {
+  describe('CachedValidatorRegistry', () => {
     test('should cache validator instances', () => {
-      const registry = createWeakMapRegistry()
+      const registry = createCachedValidatorRegistry()
 
       const validator1 = registry.getValidator(mockSchema1)
       const validator2 = registry.getValidator(mockSchema2)
@@ -74,7 +74,7 @@ describe('Validator Registry', () => {
     })
 
     test('should compile schema only once per unique schema', () => {
-      const registry = createWeakMapRegistry()
+      const registry = createCachedValidatorRegistry()
 
       // First schema validation
       const validator1 = registry.getValidator(mockSchema1)
@@ -91,6 +91,40 @@ describe('Validator Registry', () => {
       validator3.isValid(mockSchema1, {}, mockSchema1)
       // Should reuse already compiled schema
       expect(getHandleSchemaUpdateCalls()).toHaveLength(2)
+    })
+
+    test('should reuse validator for a different schema object with the same content', () => {
+      const registry = createCachedValidatorRegistry()
+
+      const validator1 = registry.getValidator(mockSchema2)
+      validator1.isValid(mockSchema2, {}, mockSchema2)
+      expect(getHandleSchemaUpdateCalls()).toHaveLength(1)
+
+      // e.g. a conditional step evaluated again by `retrieveSchema`
+      const sameContentSchema = structuredClone(mockSchema2)
+      const validator2 = registry.getValidator(sameContentSchema)
+      validator2.isValid(sameContentSchema, {}, sameContentSchema)
+
+      expect(validator2).toBe(validator1)
+      // Should reuse already compiled schema
+      expect(getHandleSchemaUpdateCalls()).toHaveLength(1)
+    })
+
+    test('should keep only the most recently used schema contents', () => {
+      const registry = createCachedValidatorRegistry(2)
+      const mockSchema3: BAJSONSchema7 = { type: 'object', properties: { bar: { type: 'number' } } }
+
+      const validator1 = registry.getValidator(mockSchema1)
+      const validator2 = registry.getValidator(mockSchema2)
+      // Marks the content of `mockSchema1` as the most recently used
+      expect(registry.getValidator(structuredClone(mockSchema1))).toBe(validator1)
+      // Evicts the content of `mockSchema2`
+      registry.getValidator(mockSchema3)
+
+      expect(registry.getValidator(structuredClone(mockSchema1))).toBe(validator1)
+      expect(registry.getValidator(structuredClone(mockSchema2))).not.toBe(validator2)
+      // Schema objects that were already seen are still cached by reference
+      expect(registry.getValidator(mockSchema2)).toBe(validator2)
     })
   })
 })

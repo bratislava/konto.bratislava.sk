@@ -3,7 +3,8 @@ import { SchemaValidateFunction } from 'ajv'
 import traverse from 'neotraverse/legacy'
 
 import { validateBaFileUuid } from './ajvFormats'
-import { getFileValidatorBaRjsf } from './validators'
+import { withFileValidateFn } from './ajvKeywords'
+import { getBaRjsfValidator } from './validators'
 
 /**
  * Extracts used file UUIDs from form data.
@@ -23,9 +24,8 @@ export const getFileUuidsNaive = (formData: GenericObjectType) => {
 /**
  * Extracts used file UUIDs from form data.
  *
- * This uses (or abuses) a possibility to provide a custom validate function for AJV. This is only
- * one of few ways how to traverse the form data for specific values. In this case, we extract the
- * file ids from the form data.
+ * Ajv calls the `baFile` keyword for each file field it validates (see `withFileValidateFn`), which
+ * is used to extract the file ids from the form data.
  */
 export const getFileUuids = (schema: RJSFSchema, formData: GenericObjectType) => {
   const files: string[] = []
@@ -36,8 +36,8 @@ export const getFileUuids = (schema: RJSFSchema, formData: GenericObjectType) =>
     return true
   }
 
-  const validator = getFileValidatorBaRjsf(fileValidateFn)
-  validator.isValid(schema, formData, formData)
+  const validator = getBaRjsfValidator()
+  withFileValidateFn(fileValidateFn, () => validator.isValid(schema, formData, schema))
 
   return files
 }

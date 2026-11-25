@@ -19,8 +19,10 @@ const NORIS_DATABASE = 'noris'
 // Collation of the real Noris database, the queries rely on it being case-insensitive
 const NORIS_COLLATION = 'SQL_Czech_CP1250_CI_AS'
 const NORIS_SCHEMA_PATH = resolve(__dirname, 'noris', 'schema.sql')
+// Same images as the services in `.github/workflows/build-nest.yml`, keep them in sync
+const POSTGRES_IMAGE = 'postgres:16-alpine'
 // SQL Server only publishes amd64 images, on arm64 hosts it runs emulated (Docker Desktop with Rosetta).
-const MSSQL_IMAGE = 'mcr.microsoft.com/mssql/server:2022-latest'
+const MSSQL_IMAGE = 'mcr.microsoft.com/mssql/server:2022-CU28-ubuntu-22.04'
 const MSSQL_PLATFORM = 'linux/amd64'
 
 let postgresContainer: StartedPostgreSqlContainer | null = null
@@ -31,7 +33,7 @@ async function setupPostgres(): Promise<void> {
   if (ciE2eDatabaseUrl) {
     process.env.DATABASE_URL = ciE2eDatabaseUrl
   } else {
-    postgresContainer = await new PostgreSqlContainer('postgres:alpine')
+    postgresContainer = await new PostgreSqlContainer(POSTGRES_IMAGE)
       .withUsername('tax')
       .withPassword('password')
       .withDatabase('tax')
@@ -47,13 +49,15 @@ async function setupPostgres(): Promise<void> {
     env: process.env,
   })
 
-  // Seeded rows without an explicit `validSince` are valid since the migration ran, so a test with `setCurrentTime()` in
-  // the past would not see them. They become valid since ever, rows with an explicit `validSince` keep it.
+  // The migrations seed `Config` rows valid since the migration ran, so tests with `setCurrentTime()` in the past would
+  // not see them. Those rows become valid since ever. A row seeded with an explicit `validSince` keeps it, so a value
+  // planned for a later date still waits for it.
   const prisma = new PrismaClient({
     adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
   })
   try {
     await prisma.config.updateMany({
+      // Without an explicit `validSince`, both columns default to the time of the insert
       where: { validSince: { equals: prisma.config.fields.createdAt } },
       data: { validSince: new Date(0) },
     })
@@ -81,12 +85,27 @@ function splitSqlBatches(script: string): string[] {
 }
 
 async function setupNoris(): Promise<void> {
-  const ciMssqlHost = process.env.CI_E2E_MSSQL_HOST
-  if (ciMssqlHost) {
-    process.env.MSSQL_HOST = ciMssqlHost
-    process.env.MSSQL_PORT = process.env.CI_E2E_MSSQL_PORT
-    process.env.MSSQL_USERNAME = process.env.CI_E2E_MSSQL_USERNAME
-    process.env.MSSQL_PASSWORD = process.env.CI_E2E_MSSQL_PASSWORD
+  const {
+    CI_E2E_MSSQL_HOST,
+    CI_E2E_MSSQL_PORT,
+    CI_E2E_MSSQL_USERNAME,
+    CI_E2E_MSSQL_PASSWORD,
+  } = process.env
+  if (CI_E2E_MSSQL_HOST) {
+    // The port is empty when `.github/workflows/build-nest.yml` does not run the MSSQL service
+    if (
+      !CI_E2E_MSSQL_PORT ||
+      !CI_E2E_MSSQL_USERNAME ||
+      !CI_E2E_MSSQL_PASSWORD
+    ) {
+      throw new Error(
+        'CI_E2E_MSSQL_PORT, CI_E2E_MSSQL_USERNAME or CI_E2E_MSSQL_PASSWORD is not set, enable `e2e_mssql` in the workflow',
+      )
+    }
+    process.env.MSSQL_HOST = CI_E2E_MSSQL_HOST
+    process.env.MSSQL_PORT = CI_E2E_MSSQL_PORT
+    process.env.MSSQL_USERNAME = CI_E2E_MSSQL_USERNAME
+    process.env.MSSQL_PASSWORD = CI_E2E_MSSQL_PASSWORD
   } else {
     mssqlContainer = await new MSSQLServerContainer(MSSQL_IMAGE)
       .withPlatform(MSSQL_PLATFORM)

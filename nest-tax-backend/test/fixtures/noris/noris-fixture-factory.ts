@@ -308,8 +308,7 @@ function generateTaxId(): string {
 }
 
 /**
- * Creates taxes in the Noris stub (`test/noris/schema.sql`) the way they look in Noris, see
- * `test/noris/noris-findings.md`.
+ * Creates taxes in the Noris stub (`test/noris/schema.sql`) the way they look in Noris.
  *
  * Amounts are in cents as in the app and its API, the factory converts them to euros for Noris.
  *

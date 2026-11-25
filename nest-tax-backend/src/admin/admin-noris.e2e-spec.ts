@@ -164,13 +164,18 @@ describe('Admin Noris endpoints', () => {
     adminHeaders = {
       apiKey: testingApp.app.get(BaConfigService).tokens.adminAppSecret,
     }
+    return async () => testingApp.afterAll()
+  })
 
+  beforeAll(async () => {
     norisPool = await connectToNoris()
     norisFixtureFactory = new NorisFixtureFactory(norisPool)
+    return async () => norisPool.close()
   })
 
   beforeEach(async () => {
     setCurrentTime(NOW)
+    cityAccountMock.clearUsers()
     cityAccountMock.install()
     bloomreachMock.install()
     await norisFixtureFactory.clear()
@@ -178,11 +183,6 @@ describe('Admin Noris endpoints', () => {
 
   afterEach(() => {
     testingApp.afterEach()
-  })
-
-  afterAll(async () => {
-    await norisPool.close()
-    await testingApp.afterAll()
   })
 
   /** Registers the taxpayer of the fixture in city account. */
@@ -1550,15 +1550,17 @@ describe('Admin Noris endpoints', () => {
         totalInCents: 9000,
       })
       user = addCityAccountUser(fixture)
-      await testingApp.axiosClient.post(
+      const birthNumber = addSlashToBirthNumber(fixture.birthNumber)
+      const response = await testingApp.axiosClient.post(
         '/admin/create-data-from-noris',
-        {
-          year: YEAR,
-          taxType: TaxType.DZN,
-          birthNumbers: [addSlashToBirthNumber(fixture.birthNumber)],
-        },
+        { year: YEAR, taxType: TaxType.DZN, birthNumbers: [birthNumber] },
         { headers: adminHeaders },
       )
+      expect(response.status).toBe(HttpStatus.OK)
+      expect(response.data).toEqual({
+        birthNumbers: [birthNumber],
+        foundInNoris: [birthNumber],
+      })
     })
 
     it('should import each new payment as the difference to the imported ones', async () => {
@@ -2022,15 +2024,17 @@ describe('Admin Noris endpoints', () => {
         totalInCents: 9000,
       })
       user = addCityAccountUser(fixture)
-      await testingApp.axiosClient.post(
+      const birthNumber = addSlashToBirthNumber(fixture.birthNumber)
+      const response = await testingApp.axiosClient.post(
         '/admin/create-data-from-noris',
-        {
-          year: YEAR,
-          taxType: TaxType.DZN,
-          birthNumbers: [addSlashToBirthNumber(fixture.birthNumber)],
-        },
+        { year: YEAR, taxType: TaxType.DZN, birthNumbers: [birthNumber] },
         { headers: adminHeaders },
       )
+      expect(response.status).toBe(HttpStatus.OK)
+      expect(response.data).toEqual({
+        birthNumbers: [birthNumber],
+        foundInNoris: [birthNumber],
+      })
       await norisFixtureFactory.setPayment(fixture, {
         paidInCents: fixture.totalInCents,
         lastPaymentDate: today,

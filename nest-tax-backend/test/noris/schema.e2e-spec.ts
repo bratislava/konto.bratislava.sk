@@ -39,14 +39,11 @@ describe('Noris stub', () => {
   beforeAll(async () => {
     pool = await connectToNoris()
     norisFixtureFactory = new NorisFixtureFactory(pool)
+    return async () => pool.close()
   })
 
-  afterEach(async () => {
+  beforeEach(async () => {
     await norisFixtureFactory.clear()
-  })
-
-  afterAll(async () => {
-    await pool.close()
   })
 
   async function queryRealEstateTaxes(birthNumbers: string[], year = YEAR) {

@@ -91,7 +91,7 @@ jobs:
           --health-timeout 3s
           --health-retries 15
       mssql:
-        image: ${{ inputs.e2e_tests && inputs.e2e_mssql && !inputs.skip_tests && 'mcr.microsoft.com/mssql/server:2022-latest' || '' }}
+        image: ${{ inputs.e2e_tests && inputs.e2e_mssql && !inputs.skip_tests && 'mcr.microsoft.com/mssql/server:2022-CU28-ubuntu-22.04' || '' }}
         env:
           ACCEPT_EULA: "Y"
           MSSQL_SA_PASSWORD: E2e_password1

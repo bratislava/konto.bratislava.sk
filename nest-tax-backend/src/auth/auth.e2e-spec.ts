@@ -54,6 +54,7 @@ describe('Authentication and authorization', () => {
         Test.createTestingModule({ imports: [AppModule] }),
       ),
     )
+    return async () => testingApp.afterAll()
   })
 
   beforeEach(() => {
@@ -62,10 +63,6 @@ describe('Authentication and authorization', () => {
 
   afterEach(() => {
     testingApp.afterEach()
-  })
-
-  afterAll(async () => {
-    await testingApp.afterAll()
   })
 
   describe('User endpoints', () => {

@@ -93,7 +93,7 @@ export interface CityAccountRequest {
  * `requests` with its status and `errorName`.
  *
  * Interceptors are removed by `TestingApp.afterEach()` (`nock.cleanAll()`), so call `install()` in `beforeEach`.
- * Users survive `install()`, failures and recorded requests do not.
+ * Users survive `install()` (remove them with `clearUsers()`), failures and recorded requests do not.
  */
 export class CityAccountMock {
   private readonly users: CityAccountMockUser[] = []
@@ -131,6 +131,10 @@ export class CityAccountMock {
     if (index !== -1) {
       this.users.splice(index, 1)
     }
+  }
+
+  clearUsers(): void {
+    this.users.length = 0
   }
 
   /** All following requests to the endpoint fail with the status, until the next `install()`. */

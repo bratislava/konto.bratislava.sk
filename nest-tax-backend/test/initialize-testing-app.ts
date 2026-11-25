@@ -19,17 +19,22 @@ import { bootstrap } from '../src/bootstrap'
 export async function initializeTestingApp(
   testingModuleBuilder: TestingModuleBuilder,
 ) {
+  nock.disableNetConnect()
+  nock.enableNetConnect('127.0.0.1')
+
   const testingModuleRef = await testingModuleBuilder
     // The explorer finds the `@Cron` methods and registers them, without it no job is scheduled
     .overrideProvider(ScheduleExplorer)
     .useValue({})
     .compile()
   const app = testingModuleRef.createNestApplication<NestExpressApplication>()
-  bootstrap({ app, testEnvironment: true })
-  await app.listen(0)
-
-  nock.disableNetConnect()
-  nock.enableNetConnect('127.0.0.1')
+  try {
+    bootstrap({ app, testEnvironment: true })
+    await app.listen(0)
+  } catch (error) {
+    await app.close()
+    throw error
+  }
 
   const address = app.getHttpServer().address()
   if (!address || typeof address !== 'object') {

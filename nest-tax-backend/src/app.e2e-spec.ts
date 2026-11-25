@@ -13,14 +13,11 @@ describe('App', () => {
     testingApp = await initializeTestingApp(
       Test.createTestingModule({ imports: [AppModule] }),
     )
+    return async () => testingApp.afterAll()
   })
 
   afterEach(() => {
     testingApp.afterEach()
-  })
-
-  afterAll(async () => {
-    await testingApp.afterAll()
   })
 
   it('should respond to healthcheck', async () => {

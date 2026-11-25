@@ -15,6 +15,7 @@ import {
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
   BloomreachEventNameEnum,
+  BloomreachUnVerificationReasonEnum,
 } from '../bloomreach.types'
 import { BloomreachOutboxWriterService } from '../bloomreach-outbox-writer.service'
 import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
@@ -46,7 +47,7 @@ describe('BloomreachOutboxWriterService', () => {
     commandData: {
       kind: BloomreachCommandDataKind.EVENT as const,
       customer_ids: { city_account_id: externalId },
-      event_type: BloomreachEventNameEnum.CONSENT,
+      event_type: BloomreachEventNameEnum.CONSENT as const,
       properties: {
         action: BloomreachConsentActionEnum.ACCEPT,
         category: 'ESBS-MARKETING',
@@ -385,6 +386,61 @@ describe('BloomreachOutboxWriterService', () => {
         },
         alert: true,
         error: downgradeError,
+      })
+    })
+  })
+
+  describe('queueUnVerificationEvent', () => {
+    const unVerificationCommand = {
+      commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS as const,
+      commandData: {
+        kind: BloomreachCommandDataKind.EVENT as const,
+        customer_ids: { city_account_id: externalId },
+        event_type: BloomreachEventNameEnum.UN_VERIFICATION as const,
+        properties: { reason: BloomreachUnVerificationReasonEnum.IAM_NOT_FOUND },
+        timestamp: NEW_TIMESTAMP,
+      },
+    }
+
+    it('should create a new non-terminal PENDING event entry when none exists', async () => {
+      payloadBuilder.buildUnVerificationEventCommand.mockReturnValue(unVerificationCommand)
+      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
+
+      await service.queueUnVerificationEvent(
+        externalId,
+        BloomreachUnVerificationReasonEnum.IAM_NOT_FOUND
+      )
+
+      expect(payloadBuilder.buildUnVerificationEventCommand).toHaveBeenCalledWith(
+        externalId,
+        BloomreachUnVerificationReasonEnum.IAM_NOT_FOUND
+      )
+      expect(prismaMock.bloomreachOutbox.create).toHaveBeenCalledWith({
+        data: {
+          externalId,
+          commandName: BloomreachCommandName.CUSTOMERS_EVENTS,
+          commandData: unVerificationCommand.commandData,
+          isTerminal: false,
+        },
+      })
+    })
+
+    it('should dedup by event type alone, without a category', async () => {
+      payloadBuilder.buildUnVerificationEventCommand.mockReturnValue(unVerificationCommand)
+      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
+
+      await service.queueUnVerificationEvent(
+        externalId,
+        BloomreachUnVerificationReasonEnum.IAM_NOT_FOUND
+      )
+
+      expect(prismaMock.$executeRaw.mock.calls[0]).toContain(
+        `${externalId}:CUSTOMERS_EVENTS:un_verification`
+      )
+      expect(prismaMock.bloomreachOutbox.findFirst).toHaveBeenCalledWith({
+        where: expectObjectContaining({
+          AND: [{ commandData: { path: ['event_type'], equals: 'un_verification' } }],
+        }),
       })
     })
   })

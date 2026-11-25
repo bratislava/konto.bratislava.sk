@@ -3,11 +3,16 @@ import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '../prisma/prisma.service'
 import {
+  UnverifyUsersWithFailingEdeskUpdateRequestDto,
+  UnverifyUsersWithFailingEdeskUpdateResponseDto,
+} from '../user/dtos/unverify-users-with-failing-edesk-update.dto'
+import {
   DeactivateAccountResponseDto,
   MarkDeceasedAccountResponseDto,
 } from '../user/dtos/user-modification-response.dto'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
 import { UserService } from '../user/user.service'
+import { UserUnverificationService } from '../user/user-unverification.service'
 import { VerificationDataForUserResponseDto } from '../user-verification/dtos/verification-response.dto'
 import { VerificationService } from '../user-verification/verification.service'
 import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
@@ -44,6 +49,7 @@ export class AdminService {
     private errorFactoryService: ErrorFactoryService,
     private prismaService: PrismaService,
     private readonly userService: UserService,
+    private readonly userUnverificationService: UserUnverificationService,
     private readonly verificationService: VerificationService,
     private readonly logger: LineLoggerService
   ) {}
@@ -115,6 +121,12 @@ export class AdminService {
 
   async markAccountsAsDeceased(birthNumberList: string[]): Promise<MarkDeceasedAccountResponseDto> {
     return await this.userService.markAccountsAsDeceased(birthNumberList)
+  }
+
+  async unverifyUsersWithFailingEdeskUpdate(
+    data: UnverifyUsersWithFailingEdeskUpdateRequestDto
+  ): Promise<UnverifyUsersWithFailingEdeskUpdateResponseDto> {
+    return await this.userUnverificationService.unverifyUsersWithFailingEdeskUpdate(data)
   }
 
   async getVerificationDataForUser(email: string): Promise<VerificationDataForUserResponseDto> {

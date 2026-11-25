@@ -12,8 +12,8 @@ import { toDate } from '../utils/functions/temporal'
 import {
   BloomreachConsentActionEnum,
   Consent,
+  isBloomreachConsentEventCommandData,
   isBloomreachCustomerData,
-  isBloomreachEventCommandData,
 } from './bloomreach.types'
 import { BloomreachExportService } from './bloomreach-export.service'
 import { BloomreachOutboxWriterService } from './bloomreach-outbox-writer.service'
@@ -315,7 +315,7 @@ export class BloomreachMergeConsentService {
 
     return rows
       .map((row) => row.commandData)
-      .filter(isBloomreachEventCommandData)
+      .filter(isBloomreachConsentEventCommandData)
       .flatMap((commandData) => {
         const consentType = consentTypeFromCategory(commandData.properties.category)
         if (!consentType) {

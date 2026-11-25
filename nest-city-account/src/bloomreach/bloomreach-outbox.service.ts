@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common'
 
 import BaConfigService from '../config/ba-config.service'
 import { ConsentEnum } from '../generated/prisma/enums'
-import { Consent } from './bloomreach.types'
+import { BloomreachUnVerificationReasonEnum, Consent } from './bloomreach.types'
 import { BloomreachOutboxWriterService } from './bloomreach-outbox-writer.service'
 import { nowUnixSeconds } from './bloomreach-payload.builder'
 
@@ -93,6 +93,35 @@ export class BloomreachOutboxService {
             userType,
             eventCount: consents.length,
           },
+          error,
+        })
+      )
+    }
+  }
+
+  /**
+   * Track that the customer's identity verification was revoked.
+   *
+   * Bloomreach should set/reset its attributes in a scenario based on this event.
+   */
+  async trackUnVerification(
+    externalId: string,
+    reason: BloomreachUnVerificationReasonEnum
+  ): Promise<void> {
+    if (this.baConfigService.bloomreach.integrationState !== 'ACTIVE') {
+      return
+    }
+
+    try {
+      await this.outboxWriter.queueUnVerificationEvent(externalId, reason)
+
+      this.logger.debug(`Queued un_verification event for ${externalId}`)
+    } catch (error) {
+      this.logger.error(
+        this.errorFactoryService.InternalServerErrorException({
+          errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+          message: 'Failed to queue un_verification event',
+          console: { externalId, reason },
           error,
         })
       )

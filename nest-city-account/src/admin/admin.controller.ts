@@ -4,6 +4,10 @@ import { ApiOkResponse, ApiOperation, ApiResponse, ApiSecurity, ApiTags } from '
 
 import { AdminGuard } from '../auth/guards/admin.guard'
 import {
+  UnverifyUsersWithFailingEdeskUpdateRequestDto,
+  UnverifyUsersWithFailingEdeskUpdateResponseDto,
+} from '../user/dtos/unverify-users-with-failing-edesk-update.dto'
+import {
   DeactivateAccountResponseDto,
   MarkDeceasedAccountResponseDto,
 } from '../user/dtos/user-modification-response.dto'
@@ -84,6 +88,23 @@ export class AdminController {
   ): Promise<MarkDeceasedAccountResponseDto> {
     const response = await this.adminService.markAccountsAsDeceased(data.birthNumbers)
     return response
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Un-verify users verified by RFO whose eDesk update keeps failing',
+    description:
+      'One-off operation (#1806). Revokes the verification of users verified by ID card whose linked PhysicalEntity failed the eDesk update at least `minFailCount` times in a row: removes their delivery method from Noris, clears birth number, IFO and delivery methods, unlinks and resets their PhysicalEntity (URI and eDesk status), sets the tier to NEW and sends an un_verification event to Bloomreach. Runs as a dry run unless `dryRun` is false. Checks at most `limit` candidates per call, continue with `nextAfterUserId`.',
+  })
+  @ApiOkResponse({
+    type: UnverifyUsersWithFailingEdeskUpdateResponseDto,
+  })
+  @UseGuards(AdminGuard)
+  @Post('unverify-users-with-failing-edesk-update')
+  async unverifyUsersWithFailingEdeskUpdate(
+    @Body() data: UnverifyUsersWithFailingEdeskUpdateRequestDto
+  ): Promise<UnverifyUsersWithFailingEdeskUpdateResponseDto> {
+    return await this.adminService.unverifyUsersWithFailingEdeskUpdate(data)
   }
 
   @HttpCode(200)

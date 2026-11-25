@@ -383,10 +383,10 @@ describe('Noris stub', () => {
       const realEstateTax = await norisFixtureFactory.createRealEstateTax({
         year: YEAR,
         entrepreneur: true,
-        payment: { paid: 30 },
+        payment: { paidInCents: 3000 },
       })
       const communalWasteTax = await norisFixtureFactory.createCommunalWasteTax(
-        { year: YEAR, entrepreneur: true, payment: { paid: 60.4 } },
+        { year: YEAR, entrepreneur: true, payment: { paidInCents: 6040 } },
       )
 
       expect(
@@ -399,11 +399,11 @@ describe('Noris stub', () => {
         year: YEAR,
         entrepreneur: true,
         payment: {
-          paid: 90,
+          paidInCents: 9000,
           lastPaymentDate: Temporal.PlainDate.from('2026-05-01'),
         },
         overpayments: [
-          { amount: 7, date: Temporal.PlainDate.from('2026-05-01') },
+          { amountInCents: 700, date: Temporal.PlainDate.from('2026-05-01') },
         ],
       })
 
@@ -454,12 +454,12 @@ describe('Noris stub', () => {
     it('should put the remainder of the installments into the last one', async () => {
       const fixture = await norisFixtureFactory.createCommunalWasteTax({
         year: YEAR,
-        total: 79.38,
+        totalInCents: 7938,
       })
 
-      expect(fixture.installments.map(({ amount }) => amount)).toEqual([
-        19.84, 19.84, 19.84, 19.86,
-      ])
+      expect(
+        fixture.installments.map(({ amountInCents }) => amountInCents),
+      ).toEqual([1984, 1984, 1984, 1986])
     })
 
     it('should return a row per container', async () => {
@@ -472,7 +472,7 @@ describe('Noris stub', () => {
             count: 1,
             pickups: 14,
             rate: 4.314,
-            fee: 60.4,
+            feeInCents: 6040,
           },
           {
             type: 'N24',
@@ -480,7 +480,7 @@ describe('Noris stub', () => {
             count: 2,
             pickups: 26,
             rate: 6.9024,
-            fee: 358.92,
+            feeInCents: 35892,
           },
         ],
         // Containers of other waste types are not returned
@@ -501,7 +501,7 @@ describe('Noris stub', () => {
         ]),
       )
       expect(rows).toHaveLength(2)
-      expect(fixture.total).toBe(419.32)
+      expect(fixture.totalInCents).toBe(41932)
     })
 
     it('should not return the tax without address', async () => {
@@ -529,10 +529,10 @@ describe('Noris stub', () => {
     it('should return the payments of both tax types', async () => {
       const realEstateTax = await norisFixtureFactory.createRealEstateTax({
         year: YEAR,
-        payment: { paid: 30 },
+        payment: { paidInCents: 3000 },
       })
       const communalWasteTax = await norisFixtureFactory.createCommunalWasteTax(
-        { year: YEAR, payment: { paid: 60.4 } },
+        { year: YEAR, payment: { paidInCents: 6040 } },
       )
       const unpaidTax = await norisFixtureFactory.createRealEstateTax({
         year: YEAR,
@@ -565,11 +565,11 @@ describe('Noris stub', () => {
       const fixture = await norisFixtureFactory.createRealEstateTax({
         year: YEAR,
         payment: {
-          paid: 90,
+          paidInCents: 9000,
           lastPaymentDate: Temporal.PlainDate.from('2026-05-01'),
         },
         overpayments: [
-          { amount: 7, date: Temporal.PlainDate.from('2026-05-01') },
+          { amountInCents: 700, date: Temporal.PlainDate.from('2026-05-01') },
         ],
       })
 

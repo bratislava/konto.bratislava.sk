@@ -123,6 +123,16 @@ export class CityAccountMock {
     this.users.push({ fixtureUser, verifiedAt, taxDeliveryMethodAtLockDate })
   }
 
+  /** As if the user deleted their account, they are not found by token nor by birth number anymore. */
+  removeUser(fixtureUser: FixtureUser): void {
+    const index = this.users.findIndex(
+      (user) => user.fixtureUser === fixtureUser,
+    )
+    if (index !== -1) {
+      this.users.splice(index, 1)
+    }
+  }
+
   /** All following requests to the endpoint fail with the status, until the next `install()`. */
   failEndpoint(endpoint: CityAccountEndpoint, status: HttpStatus): void {
     this.failures.set(endpoint, status)

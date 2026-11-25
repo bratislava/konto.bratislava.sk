@@ -36,10 +36,10 @@ export interface NorisContainerOptions {
   volume: number
   count: number
   pickups: number
-  /** Rate per pickup (`sadzba_mena`) */
+  /** Rate per pickup (`sadzba_mena`) in euros with up to 4 decimals, the app does not convert it to cents. */
   rate: number
   /** `suma_uhrada_mena` */
-  fee: number
+  feeInCents: number
   /** Container address `Street,City,ZIP` (`subjekty.nazev_subjektu`, at most 40 characters). */
   address?: string
   streetNumber?: string | null
@@ -51,7 +51,7 @@ export const DEFAULT_NORIS_CONTAINER: NorisContainerOptions = {
   count: 1,
   pickups: 14,
   rate: 4.314,
-  fee: 60.4,
+  feeInCents: 6040,
 }
 
 export interface NorisSkippedContainerOptions {
@@ -94,12 +94,12 @@ export interface NorisAdministrator {
 }
 
 export interface NorisOverpaymentOptions {
-  amount: number
+  amountInCents: number
   /**
    * Part of the amount not yet applied to any tax, shown by the saldo view as negative `zbyva_uhradit`. Defaults to
    * the whole amount, i.e. a real overpayment.
    */
-  unappliedAmount?: number
+  unappliedAmountInCents?: number
   /** A refunded overpayment has its saldo `uhrazeno` at 0. */
   refunded?: boolean
   /** Defaults to 1 May of the tax year. */
@@ -108,7 +108,7 @@ export interface NorisOverpaymentOptions {
 
 export interface NorisPaymentOptions {
   /** Saldo `uhrazeno` of the tax document. */
-  paid: number
+  paidInCents: number
   /** Saldo `datum_posledni_platby`, `null` when the tax was paid only by applying an overpayment. */
   lastPaymentDate?: Temporal.PlainDate | null
 }
@@ -121,6 +121,8 @@ interface NorisTaxOptions {
   birthNumber?: string
   /** `podnikatel` `A`, the queries return only `N` (default). */
   entrepreneur?: boolean
+  /** `variabilny_symbol`, 10 random unique digits by default. */
+  variableSymbol?: string
   /** `cislo_konania` (the app's `Tax.taxId`), random in the Noris format by default. */
   taxId?: string
   /** `subjekt_refer` (the app's `TaxPayer.externalId`), 7 random digits by default as in Noris. */
@@ -147,14 +149,17 @@ interface NorisTaxOptions {
   dueDates?: Temporal.PlainDate[]
 }
 
-/** Parts of a real estate tax, named as the query returns them. */
+/**
+ * Parts of a real estate tax, named as the query returns them. Amounts and tax bases (`ZAKLAD`) are in cents, as the
+ * app stores them, areas (`VYMERA`) in m².
+ */
 export type NorisRealEstateTaxDetails = Partial<
   Record<keyof typeof NorisRawRealEstateTaxDetailSchema.shape, number>
 >
 
 export interface NorisRealEstateTaxOptions extends NorisTaxOptions {
   /** `dan_spolu` */
-  total?: number
+  totalInCents?: number
   installmentCount?: 1 | 2 | 3
   /** Parts of the tax, the rest is 0. Defaults to an apartment only (`dan_byty` = total). */
   details?: NorisRealEstateTaxDetails
@@ -162,7 +167,7 @@ export interface NorisRealEstateTaxOptions extends NorisTaxOptions {
 
 export interface NorisCommunalWasteTaxOptions extends NorisTaxOptions {
   /** `dan_spolu_nezaokr`, defaults to the sum of the container fees. */
-  total?: number
+  totalInCents?: number
   installmentCount?: 1 | 2 | 3 | 4
   paymentMethod?: NorisPaymentMethod
   /** Defaults to `[DEFAULT_NORIS_CONTAINER]` */
@@ -182,8 +187,8 @@ export interface NorisTaxFixture {
   taxId: string
   taxpayerExternalId: string
   year: number
-  total: number
-  installments: { amount: number; dueDate: Temporal.PlainDate }[]
+  totalInCents: number
+  installments: { amountInCents: number; dueDate: Temporal.PlainDate }[]
 }
 
 /** Ids of the `dane21_druh_dokladu` rows the queries select by `typ_dokladu` and `typ_dane`. */
@@ -199,10 +204,12 @@ const DOCUMENT_KINDS: Record<
 const MIN_ID = 10_000
 const MAX_ID = 2_000_000_000
 
-const DEFAULT_REAL_ESTATE_TAX_TOTAL = 90
+const DEFAULT_REAL_ESTATE_TAX_TOTAL_IN_CENTS = 9000
 const DEFAULT_REAL_ESTATE_INSTALLMENTS = 3
-const DEFAULT_APARTMENT_TAX_BASE = 72
 const DEFAULT_COMMUNAL_WASTE_INSTALLMENTS = 4
+
+/** 72 m², the app stores the tax base in hundredths like an amount in cents. */
+const DEFAULT_APARTMENT_TAX_BASE = 7200
 
 const DEFAULT_ISSUED_AT = { month: 3, day: 2, hour: 9, minute: 30 }
 const DEFAULT_VALID_FROM = { month: 4, day: 7 }
@@ -210,6 +217,7 @@ const DEFAULT_OVERPAYMENT_DATE = { month: 5, day: 1 }
 
 /** The first installment is due this many days after the tax ruling comes into force. */
 const FIRST_DUE_DATE_DAYS = 15
+
 /** Due dates (month, day) of the following installments, the last ones are used. */
 const LATER_DUE_DATES = [
   [5, 31],
@@ -221,6 +229,7 @@ const VARIABLE_SYMBOL_LENGTH = 10
 const TAXPAYER_EXTERNAL_ID_LENGTH = 7
 
 const DEFAULT_NAME: NorisPersonName = { meno: 'Ján', priezvisko: 'Daňovník' }
+
 const DEFAULT_ADDRESS: NorisAddress = {
   street: 'Testovacia',
   buildingNumber: '9876',
@@ -228,11 +237,13 @@ const DEFAULT_ADDRESS: NorisAddress = {
   zip: '00000',
   city: 'Bratislava',
 }
+
 const DEFAULT_ADMINISTRATOR: NorisAdministrator = {
   name: 'Mgr. Správca Daní',
   phone: '02/0000 0000',
   email: 'spravca@example.com',
 }
+
 const DEFAULT_CONTAINER_ADDRESS = 'Testovacia,Bratislava,00000'
 
 /** Tables cleared by `clear()` */
@@ -253,8 +264,15 @@ const TABLES = [
   'zamestnanci',
 ] satisfies NorisTableName[]
 
-/** Noris dates have no time zone, mssql writes and reads them as UTC. */
-function toNorisDate(date: Temporal.PlainDate | Temporal.PlainDateTime): Date {
+/** Noris stores amounts in euros. */
+function toNorisAmount(amountInCents: number): number {
+  return currency(amountInCents, { fromCents: true }).value
+}
+
+/** Noris dates have no time zone, mssql writes and reads them as UTC. So this is also the date the app reads. */
+export function toNorisDate(
+  date: Temporal.PlainDate | Temporal.PlainDateTime,
+): Date {
   return toDate(Temporal.PlainDateTime.from(date).toZonedDateTime('UTC'))
 }
 
@@ -264,22 +282,18 @@ function toDetailColumn(name: string): string {
 }
 
 /**
- * Splits the total into equal installments rounded down to cents, the remainder goes to the last one (79.38 -> 19.84 +
- * 19.84 + 19.84 + 19.86, as in Noris).
+ * Splits the total into equal installments rounded down to cents, the remainder goes to the last one (7938 -> 1984 +
+ * 1984 + 1984 + 1986, as in Noris).
  */
 function splitIntoInstallments(
-  total: number,
+  totalInCents: number,
   dueDates: Temporal.PlainDate[],
 ): NorisTaxFixture['installments'] {
-  const share = currency(
-    Math.floor(currency(total).intValue / dueDates.length),
-    { fromCents: true },
-  )
-  const remainder = currency(total).subtract(
-    share.multiply(dueDates.length - 1),
-  )
+  const shareInCents = Math.floor(totalInCents / dueDates.length)
+  const remainderInCents = totalInCents - shareInCents * (dueDates.length - 1)
   return dueDates.map((dueDate, index) => ({
-    amount: index === dueDates.length - 1 ? remainder.value : share.value,
+    amountInCents:
+      index === dueDates.length - 1 ? remainderInCents : shareInCents,
     dueDate,
   }))
 }
@@ -297,8 +311,10 @@ function generateTaxId(): string {
  * Creates taxes in the Noris stub (`test/noris/schema.sql`) the way they look in Noris, see
  * `test/noris/noris-findings.md`.
  *
+ * Amounts are in cents as in the app and its API, the factory converts them to euros for Noris.
+ *
  * Defaults are the most common shapes:
- * - real estate tax (DZN): apartment only, 90.00 in 3 installments;
+ * - real estate tax (DZN): apartment only, 90 € in 3 installments;
  * - communal waste (KO): `DEFAULT_NORIS_CONTAINER`, 4 installments.
  *
  * Taxes are unpaid, issued on 2 March and in force from 7 April of the tax year (`issuedAt`, `validFrom`).
@@ -321,17 +337,17 @@ export class NorisFixtureFactory {
     options: NorisRealEstateTaxOptions = {},
   ): Promise<NorisTaxFixture> {
     const {
-      total = DEFAULT_REAL_ESTATE_TAX_TOTAL,
+      totalInCents = DEFAULT_REAL_ESTATE_TAX_TOTAL_IN_CENTS,
       installmentCount = DEFAULT_REAL_ESTATE_INSTALLMENTS,
       details = {
-        dan_byty: total,
+        dan_byty: totalInCents,
         det_zaklad_dane_byt: DEFAULT_APARTMENT_TAX_BASE,
-        det_dan_byty_byt: total,
+        det_dan_byty_byt: totalInCents,
       },
     } = options
     const fixture = await this.createTaxDocument(
       NorisTaxType.RealEstate,
-      total,
+      totalInCents,
       installmentCount,
       options,
     )
@@ -357,12 +373,12 @@ export class NorisFixtureFactory {
     })
     await this.insert('dane_21_sum_dan_prizn_detail', {
       cs_dan_prizn: fixture.podklad,
-      dan_spolu: total,
+      dan_spolu: toNorisAmount(totalInCents),
       dan_stavby_SPOLU: 0,
       ...Object.fromEntries(
         Object.entries(details).map(([column, value]) => [
           toDetailColumn(column),
-          value,
+          column.includes('VYMERA') ? value : toNorisAmount(value),
         ]),
       ),
     })
@@ -384,7 +400,7 @@ export class NorisFixtureFactory {
       pocet_nadob: container.count,
       pocet_odvozov: container.pickups,
       sadzba_mena: container.rate,
-      suma_uhrada_mena: container.fee,
+      suma_uhrada_mena: toNorisAmount(container.feeInCents),
       druh_nadoby: container.type,
       druh_odpadu: null,
       address: container.address ?? DEFAULT_CONTAINER_ADDRESS,
@@ -393,16 +409,13 @@ export class NorisFixtureFactory {
           ? DEFAULT_ADDRESS.streetNumber
           : container.streetNumber,
     }))
-    const total =
-      options.total ??
-      containerRows.reduce(
-        (sum, row) => sum.add(row.suma_uhrada_mena),
-        currency(0),
-      ).value
+    const totalInCents =
+      options.totalInCents ??
+      containers.reduce((sum, container) => sum + container.feeInCents, 0)
 
     const fixture = await this.createTaxDocument(
       NorisTaxType.CommunalWaste,
-      total,
+      totalInCents,
       installmentCount,
       options,
     )
@@ -428,7 +441,7 @@ export class NorisFixtureFactory {
     })
     await this.insert('dane_21_sum_pko_popl_celkom', {
       cs_dan_prizn: fixture.podklad,
-      dan_spolu_nezaokr: total,
+      dan_spolu_nezaokr: toNorisAmount(totalInCents),
     })
 
     await Promise.all([
@@ -455,13 +468,13 @@ export class NorisFixtureFactory {
   /** Sets the saldo of the tax document, e.g. to simulate a payment arriving in Noris. */
   async setPayment(
     fixture: NorisTaxFixture,
-    { paid, lastPaymentDate = null }: NorisPaymentOptions,
+    { paidInCents, lastPaymentDate = null }: NorisPaymentOptions,
   ): Promise<void> {
     await this.pool
       .request()
       .input('id', fixture.documentId)
-      .input('paid', paid)
-      .input('remaining', currency(fixture.total).subtract(paid).value)
+      .input('paid', toNorisAmount(paidInCents))
+      .input('remaining', toNorisAmount(fixture.totalInCents - paidInCents))
       .input('lastPaymentDate', lastPaymentDate && toNorisDate(lastPaymentDate))
       .query(
         `UPDATE lcs.dane21_doklad_sum_saldo
@@ -474,8 +487,8 @@ export class NorisFixtureFactory {
   async addOverpayment(
     fixture: NorisTaxFixture,
     {
-      amount,
-      unappliedAmount = amount,
+      amountInCents,
+      unappliedAmountInCents = amountInCents,
       refunded = false,
       date = Temporal.PlainDate.from({
         year: fixture.year,
@@ -489,7 +502,7 @@ export class NorisFixtureFactory {
       stav_dokladu: 'P',
       datum_platnosti: toNorisDate(date),
       datum_realizacie: toNorisDate(date),
-      suma_mena: amount,
+      suma_mena: toNorisAmount(amountInCents),
       podklad: fixture.podklad,
       pohladavka: this.nextId(),
       druh_dokladu: DOCUMENT_KINDS[fixture.taxType].overpayment,
@@ -497,8 +510,8 @@ export class NorisFixtureFactory {
     })
     await this.insert('dane21_doklad_sum_saldo', {
       cislo_subjektu: id,
-      uhrazeno: refunded ? 0 : amount,
-      zbyva_uhradit: refunded ? 0 : -unappliedAmount,
+      uhrazeno: refunded ? 0 : toNorisAmount(amountInCents),
+      zbyva_uhradit: refunded ? 0 : -toNorisAmount(unappliedAmountInCents),
       datum_posledni_platby: toNorisDate(date),
     })
   }
@@ -506,7 +519,7 @@ export class NorisFixtureFactory {
   /** Creates the tax document with its kind, saldo, subjects, address and overpayments. */
   private async createTaxDocument(
     taxType: NorisTaxType,
-    total: number,
+    totalInCents: number,
     installmentCount: number,
     options: NorisTaxOptions,
   ): Promise<NorisTaxFixture> {
@@ -517,7 +530,7 @@ export class NorisFixtureFactory {
       year = Temporal.Now.plainDateISO().year,
       state = 'P',
       address = DEFAULT_ADDRESS,
-      payment = { paid: 0 },
+      payment = { paidInCents: 0 },
       overpayments = [],
       issuedAt = Temporal.PlainDateTime.from({ year, ...DEFAULT_ISSUED_AT }),
     } = options
@@ -532,14 +545,17 @@ export class NorisFixtureFactory {
         LATER_DUE_DATES.length - installmentCount + 1,
       ).map(([month, day]) => Temporal.PlainDate.from({ year, month, day })),
     ]
-    const installments = splitIntoInstallments(total, dueDates)
+    const installments = splitIntoInstallments(totalInCents, dueDates)
+    const [spl1, spl2, spl3, spl4] = installments.map(({ amountInCents }) =>
+      toNorisAmount(amountInCents),
+    )
 
     await this.ensureDocumentKinds()
 
     const documentId = this.nextId()
     const podklad = this.nextId()
     const taxpayerId = this.nextId()
-    const variableSymbol = this.nextVariableSymbol()
+    const { variableSymbol = this.nextVariableSymbol() } = options
 
     await this.insert('dane21_doklad', {
       cislo_subjektu: documentId,
@@ -547,11 +563,11 @@ export class NorisFixtureFactory {
       datum_platnosti: validFrom && toNorisDate(validFrom),
       variabilny_symbol: variableSymbol,
       datum_realizacie: toNorisDate(issuedAt),
-      suma_mena: total,
-      suma_spl1: installments[0]?.amount,
-      suma_spl2: installments[1]?.amount,
-      suma_spl3: installments[2]?.amount,
-      suma_spl4: installments[3]?.amount,
+      suma_mena: toNorisAmount(totalInCents),
+      suma_spl1: spl1,
+      suma_spl2: spl2,
+      suma_spl3: spl3,
+      suma_spl4: spl4,
       datum_spl1: installments[0] && toNorisDate(installments[0].dueDate),
       datum_spl2: installments[1] && toNorisDate(installments[1].dueDate),
       datum_spl3: installments[2] && toNorisDate(installments[2].dueDate),
@@ -574,7 +590,7 @@ export class NorisFixtureFactory {
     await this.insert('dane21_doklad_sum_saldo', {
       cislo_subjektu: documentId,
       uhrazeno: 0,
-      zbyva_uhradit: total,
+      zbyva_uhradit: toNorisAmount(totalInCents),
       datum_posledni_platby: null,
     })
 
@@ -587,10 +603,10 @@ export class NorisFixtureFactory {
       taxId,
       taxpayerExternalId,
       year,
-      total,
+      totalInCents,
       installments,
     }
-    if (payment.paid > 0) {
+    if (payment.paidInCents > 0) {
       await this.setPayment(fixture, {
         lastPaymentDate: installments[0].dueDate,
         ...payment,
@@ -715,7 +731,8 @@ export class NorisFixtureFactory {
     return id
   }
 
-  private nextVariableSymbol(): string {
+  /** Variable symbol not used by any tax of this factory, also for taxes created without Noris. */
+  nextVariableSymbol(): string {
     let variableSymbol: string
     do {
       variableSymbol = randomDigits(VARIABLE_SYMBOL_LENGTH)

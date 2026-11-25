@@ -41,6 +41,8 @@ export async function initializeTestingApp(testingModuleRef: TestingModule) {
 
   const afterEach = () => {
     nock.cleanAll()
+    // Restores the real time after `setCurrentTime()`
+    vi.useRealTimers()
   }
 
   const afterAll = async () => {

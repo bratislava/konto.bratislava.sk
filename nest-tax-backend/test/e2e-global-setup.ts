@@ -47,12 +47,16 @@ async function setupPostgres(): Promise<void> {
     env: process.env,
   })
 
-  // The seeded rows are valid since the migration ran, so a test with `setCurrentTime()` in the past would not see them
+  // Seeded rows without an explicit `validSince` are valid since the migration ran, so a test with `setCurrentTime()` in
+  // the past would not see them. They become valid since ever, rows with an explicit `validSince` keep it.
   const prisma = new PrismaClient({
     adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
   })
   try {
-    await prisma.config.updateMany({ data: { validSince: new Date(0) } })
+    await prisma.config.updateMany({
+      where: { validSince: { equals: prisma.config.fields.createdAt } },
+      data: { validSince: new Date(0) },
+    })
   } finally {
     await prisma.$disconnect()
   }

@@ -2,6 +2,7 @@ import { execSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
+import { PrismaPg } from '@prisma/adapter-pg'
 import {
   MSSQLServerContainer,
   StartedMSSQLServerContainer,
@@ -11,6 +12,8 @@ import {
   StartedPostgreSqlContainer,
 } from '@testcontainers/postgresql'
 import { ConnectionPool } from 'mssql'
+
+import { PrismaClient } from '../src/generated/prisma/client'
 
 const NORIS_DATABASE = 'noris'
 // Collation of the real Noris database, the queries rely on it being case-insensitive
@@ -43,6 +46,16 @@ async function setupPostgres(): Promise<void> {
     stdio: 'inherit',
     env: process.env,
   })
+
+  // The seeded rows are valid since the migration ran, so a test with `setCurrentTime()` in the past would not see them
+  const prisma = new PrismaClient({
+    adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+  })
+  try {
+    await prisma.config.updateMany({ data: { validSince: new Date(0) } })
+  } finally {
+    await prisma.$disconnect()
+  }
 }
 
 /**

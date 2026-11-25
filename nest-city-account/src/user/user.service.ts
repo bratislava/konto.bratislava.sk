@@ -20,6 +20,10 @@ import {
   GetNewVerifiedUsersBirthNumbersResponseDto,
   ResponseUserByBirthNumberDto,
 } from '../integration/dtos/integration-response.dto'
+import {
+  LEGAL_PERSON_ACCOUNT_IDENTIFIERS_INCLUDE,
+  withLegalPersonAccountIdentifiers,
+} from '../legal-person/legal-person.service'
 import { CustomErrorNorisTypesEnum, CustomErrorNorisTypesResponseEnum } from '../noris/noris.errors'
 import { NorisDeliveryMethodService } from '../noris/services/noris-delivery-method.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
@@ -206,16 +210,17 @@ export class UserService {
     newEmail: string
   ): Promise<ResponseLegalPersonDataSimpleDto> {
     try {
-      const user = await this.prisma.legalPerson.update({
+      const user = await this.prisma.legalPersonAccount.update({
         where: {
           externalId: id,
         },
         data: {
           email: newEmail,
         },
+        include: LEGAL_PERSON_ACCOUNT_IDENTIFIERS_INCLUDE,
       })
 
-      return user
+      return withLegalPersonAccountIdentifiers(user)
     } catch (error) {
       throw this.errorFactoryService.NotFoundException({
         errorEnum: UserErrorsEnum.USER_NOT_FOUND,

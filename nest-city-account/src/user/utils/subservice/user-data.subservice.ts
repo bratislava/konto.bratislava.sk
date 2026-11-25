@@ -14,11 +14,16 @@ import {
   ConsentEnum,
   DeliveryMethodEnum,
   DeliveryMethodUserPreferenceEnum,
-  LegalPerson,
   LoginClientEnum,
   Prisma,
   User,
 } from '../../../generated/prisma/client'
+import {
+  LEGAL_PERSON_ACCOUNT_IDENTIFIERS_INCLUDE,
+  LegalPersonAccountWithIdentifiers,
+  LegalPersonService,
+  withLegalPersonAccountIdentifiers,
+} from '../../../legal-person/legal-person.service'
 import { DPBUserLoginStatistics } from '../../../oauth2-clients/dpb/dtos/user.dto'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
 import {
@@ -38,6 +43,7 @@ export class UserDataSubservice {
     private bloomreachOutboxService: BloomreachOutboxService,
     private errorFactoryService: ErrorFactoryService,
     private userIdentitySubservice: UserIdentitySubservice,
+    private readonly legalPersonService: LegalPersonService,
     private readonly logger: LineLoggerService
   ) {}
 
@@ -176,11 +182,16 @@ export class UserDataSubservice {
    */
   private async createLegalPerson(legalPersonData: CognitoGetUserData) {
     // legal person not found, create a new one
-    const legalPerson = await this.prisma.legalPerson.create({
+    const legalPerson = await this.prisma.legalPersonAccount.create({
       data: this.cognitoDataToDatabaseData(legalPersonData),
+      include: LEGAL_PERSON_ACCOUNT_IDENTIFIERS_INCLUDE,
     })
 
-    return this.postprocessLegalPerson(legalPersonData.sub, legalPerson, true)
+    return this.postprocessLegalPerson(
+      legalPersonData.sub,
+      withLegalPersonAccountIdentifiers(legalPerson),
+      true
+    )
   }
 
   /**
@@ -228,13 +239,12 @@ export class UserDataSubservice {
       registeredAt: cognitoLegalPersonData.UserCreateDate,
     }
 
-    let legalPerson = await this.prisma.legalPerson.findUnique({
+    const legalPersonByEmail = await this.prisma.legalPersonAccount.findUnique({
       where: { email: legalPersonData.email },
     })
-    const foundByEmail = !!legalPerson
-    if (!foundByEmail) {
-      legalPerson = await this.getLegalPersonByExternalId(legalPersonData.externalId)
-    }
+    const foundByEmail = !!legalPersonByEmail
+    const legalPerson =
+      legalPersonByEmail ?? (await this.getLegalPersonByExternalId(legalPersonData.externalId))
 
     if (!legalPerson) {
       return await this.createLegalPerson(cognitoLegalPersonData)
@@ -251,18 +261,26 @@ export class UserDataSubservice {
       )
     }
 
-    legalPerson = await this.prisma.legalPerson.update({
+    const updatedLegalPerson = await this.prisma.legalPersonAccount.update({
       where: foundByEmail
         ? { email: legalPersonData.email }
         : { externalId: legalPersonData.externalId },
       data: legalPersonData,
+      include: LEGAL_PERSON_ACCOUNT_IDENTIFIERS_INCLUDE,
     })
-    return this.postprocessLegalPerson(legalPersonData.externalId, legalPerson)
+    await this.legalPersonService.syncKindFromAccountType(
+      updatedLegalPerson.id,
+      cognitoLegalPersonData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+    )
+    return this.postprocessLegalPerson(
+      legalPersonData.externalId,
+      withLegalPersonAccountIdentifiers(updatedLegalPerson)
+    )
   }
 
   private async postprocessLegalPerson(
     externalId: string,
-    legalPerson: LegalPerson,
+    legalPerson: LegalPersonAccountWithIdentifiers,
     setDefaultConsents = false
   ) {
     if (setDefaultConsents) {
@@ -286,10 +304,14 @@ export class UserDataSubservice {
     })
   }
 
-  async getLegalPersonByExternalId(externalId: string) {
-    return await this.prisma.legalPerson.findUnique({
+  async getLegalPersonByExternalId(
+    externalId: string
+  ): Promise<LegalPersonAccountWithIdentifiers | null> {
+    const legalPerson = await this.prisma.legalPersonAccount.findUnique({
       where: { externalId },
+      include: LEGAL_PERSON_ACCOUNT_IDENTIFIERS_INCLUDE,
     })
+    return legalPerson && withLegalPersonAccountIdentifiers(legalPerson)
   }
 
   // ===========================================================================
@@ -317,11 +339,11 @@ export class UserDataSubservice {
     })
   }
 
-  async recordLegalPersonLoginClient(loginClient: LoginClientEnum, legalPersonId: string) {
+  async recordLegalPersonLoginClient(loginClient: LoginClientEnum, legalPersonAccountId: string) {
     await this.prisma.legalPersonLoginClient.upsert({
       where: {
-        legalPersonId_loginClient: {
-          legalPersonId,
+        legalPersonAccountId_loginClient: {
+          legalPersonAccountId,
           loginClient,
         },
       },
@@ -331,7 +353,7 @@ export class UserDataSubservice {
         },
       },
       create: {
-        legalPersonId,
+        legalPersonAccountId,
         loginClient,
         loginCount: 1,
       },
@@ -413,10 +435,17 @@ export class UserDataSubservice {
         consents.map(async (c) =>
           tx.legalPersonConsents.upsert({
             where: {
-              legalPersonId_consentType: { legalPersonId, consentType: c.consentType },
+              legalPersonAccountId_consentType: {
+                legalPersonAccountId: legalPersonId,
+                consentType: c.consentType,
+              },
             },
             update: { isGranted: c.isGranted },
-            create: { legalPersonId, consentType: c.consentType, isGranted: c.isGranted },
+            create: {
+              legalPersonAccountId: legalPersonId,
+              consentType: c.consentType,
+              isGranted: c.isGranted,
+            },
           })
         )
       )
@@ -426,7 +455,7 @@ export class UserDataSubservice {
 
   async getLegalPersonConsents(legalPersonId: string): Promise<Consent[]> {
     return this.prisma.legalPersonConsents.findMany({
-      where: { legalPersonId },
+      where: { legalPersonAccountId: legalPersonId },
       select: { consentType: true, isGranted: true },
     })
   }
@@ -538,16 +567,7 @@ export class UserDataSubservice {
   }
 
   async removeLegalPersonBirthNumber(externalId: string) {
-    const user = await this.prisma.legalPerson.update({
-      where: {
-        externalId,
-      },
-      data: {
-        birthNumber: null,
-        ico: null,
-      },
-    })
-    return user
+    return this.legalPersonService.unlinkAccount({ externalId })
   }
 
   private async removePhysicalEntityUserIdRelation(userId: string): Promise<void> {
@@ -599,17 +619,18 @@ export class UserDataSubservice {
     const legalPerson = await this.getLegalPersonByExternalId(externalId)
 
     if (legalPerson) {
-      await this.prisma.legalPerson.update({
-        where: {
-          externalId,
-        },
-        data: {
-          email: null,
-          birthNumber: null,
-          ico: null,
-          birthnumberIcoAlreadyExistsCounter: 0,
-          birthnumberIcoAlreadyExistsLast: null,
-        },
+      await this.prisma.$transaction(async (tx) => {
+        await this.legalPersonService.unlinkAccount({ externalId }, tx)
+        await tx.legalPersonAccount.update({
+          where: {
+            externalId,
+          },
+          data: {
+            email: null,
+            birthnumberIcoAlreadyExistsCounter: 0,
+            birthnumberIcoAlreadyExistsLast: null,
+          },
+        })
       })
     }
   }

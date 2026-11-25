@@ -28,6 +28,8 @@ const mockPhysicalEntity: PhysicalEntity = {
   activeEdeskUpdateFailCount: 0,
   edeskStatusChangedAt: null,
   uriPossiblyOutdated: false,
+  upvsIdentityId: null,
+  upvsName: null,
 }
 
 describe('PhysicalEntityService', () => {

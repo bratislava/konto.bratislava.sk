@@ -5,7 +5,12 @@ import {
 } from '@bratislava/log-nest'
 import { Injectable } from '@nestjs/common'
 
-import { LegalPerson, User } from '../../../generated/prisma/client'
+import { LegalPersonAccount, User } from '../../../generated/prisma/client'
+import {
+  CompanyIdentity,
+  LegalPersonService,
+  RepresentativeIdentity,
+} from '../../../legal-person/legal-person.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
 import { VerificationReturnType } from '../../types'
@@ -15,6 +20,7 @@ import { VerificationErrorsEnum } from '../../verification.errors.enum'
 export class VerificationDataSubservice implements HasErrorFactoryService {
   constructor(
     private prisma: PrismaService,
+    private readonly legalPersonService: LegalPersonService,
     public readonly errorFactoryService: ErrorFactoryService
   ) {}
 
@@ -42,15 +48,15 @@ export class VerificationDataSubservice implements HasErrorFactoryService {
   async findLegalPersonByEmailOrExternalId(
     email: string,
     externalId: string
-  ): Promise<LegalPerson | null> {
-    let legalPerson: LegalPerson | null
-    legalPerson = await this.prisma.legalPerson.findUnique({
+  ): Promise<LegalPersonAccount | null> {
+    let legalPerson: LegalPersonAccount | null
+    legalPerson = await this.prisma.legalPersonAccount.findUnique({
       where: {
         email,
       },
     })
     if (!legalPerson) {
-      legalPerson = await this.prisma.legalPerson.findUnique({
+      legalPerson = await this.prisma.legalPersonAccount.findUnique({
         where: {
           externalId,
         },
@@ -142,17 +148,15 @@ export class VerificationDataSubservice implements HasErrorFactoryService {
   @CatchDatabaseError()
   async checkAndCreateLegalPersonIcoAndBirthNumber(
     cognitoUser: CognitoGetUserData,
-    ico: string,
-    birthNumber: string
+    company: CompanyIdentity,
+    representative: RepresentativeIdentity
   ): Promise<VerificationReturnType> {
-    const checkUser = await this.prisma.legalPerson.findUnique({
-      where: {
-        ico_birthNumber: {
-          ico,
-          birthNumber,
-        },
-      },
-    })
+    const { ico } = company
+    const { birthNumber } = representative
+    const checkUser = await this.legalPersonService.findAccountByCompanyAndRepresentative(
+      ico,
+      birthNumber
+    )
     const legalPerson = await this.findLegalPersonByEmailOrExternalId(
       cognitoUser.email,
       cognitoUser.idUser
@@ -160,7 +164,7 @@ export class VerificationDataSubservice implements HasErrorFactoryService {
 
     // TODO this is a weird situation. We should look more into this.
     if (checkUser && legalPerson && checkUser.externalId !== cognitoUser.idUser) {
-      await this.prisma.legalPerson.update({
+      await this.prisma.legalPersonAccount.update({
         where: {
           id: legalPerson.id,
         },
@@ -179,47 +183,34 @@ export class VerificationDataSubservice implements HasErrorFactoryService {
       }
     }
 
+    let accountId: string
     if (checkUser && !legalPerson && checkUser.externalId !== cognitoUser.idUser) {
-      await this.prisma.legalPerson.update({
-        where: {
-          ico_birthNumber: {
-            ico,
-            birthNumber,
-          },
-        },
+      // The (ico, birthNumber) account exists under a different Cognito user: take it over.
+      const account = await this.prisma.legalPersonAccount.update({
+        where: { id: checkUser.id },
         data: {
           externalId: cognitoUser.idUser,
           email: cognitoUser.email,
-          lastVerificationAttempt: new Date(),
         },
       })
-      return { success: true }
-    }
-
-    if (legalPerson) {
-      await this.prisma.legalPerson.update({
-        where: {
-          id: legalPerson.id,
-        },
+      accountId = account.id
+    } else if (legalPerson) {
+      const account = await this.prisma.legalPersonAccount.update({
+        where: { id: legalPerson.id },
+        data: { externalId: cognitoUser.idUser },
+      })
+      accountId = account.id
+    } else {
+      const account = await this.prisma.legalPersonAccount.create({
         data: {
           externalId: cognitoUser.idUser,
-          ico,
-          birthNumber,
-          lastVerificationAttempt: new Date(),
+          email: cognitoUser.email,
         },
       })
-      return { success: true }
+      accountId = account.id
     }
 
-    await this.prisma.legalPerson.create({
-      data: {
-        externalId: cognitoUser.idUser,
-        ico,
-        birthNumber,
-        lastVerificationAttempt: new Date(),
-        email: cognitoUser.email,
-      },
-    })
+    await this.legalPersonService.linkVerifiedAccount(accountId, company, representative)
     return { success: true }
   }
 

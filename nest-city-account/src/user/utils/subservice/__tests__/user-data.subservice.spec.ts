@@ -6,6 +6,7 @@ import type { Mock, Mocked } from 'vitest'
 import prismaMock from '../../../../../test/singleton'
 import { BloomreachOutboxService } from '../../../../bloomreach/bloomreach-outbox.service'
 import { ConsentEnum, DeliveryMethodUserPreferenceEnum } from '../../../../generated/prisma/enums'
+import { LegalPersonService } from '../../../../legal-person/legal-person.service'
 import { PrismaService } from '../../../../prisma/prisma.service'
 import alertReporting from '../../../../utils/constants/error.alerts'
 import { UserIdentitySubservice } from '../../../../utils/subservices/user-identity.subservice'
@@ -26,6 +27,10 @@ describe('UserDataSubservice', () => {
           useValue: createMock<BloomreachOutboxService>(),
         },
         { provide: ErrorFactoryService, useValue: new ErrorFactoryService({ alertReporting }) },
+        {
+          provide: LegalPersonService,
+          useValue: createMock<LegalPersonService>(),
+        },
         {
           provide: UserIdentitySubservice,
           useValue: createMock<UserIdentitySubservice>(),
@@ -123,28 +128,28 @@ describe('UserDataSubservice', () => {
       expect(prismaMock.legalPersonConsents.upsert).toHaveBeenCalledTimes(2)
       expect(prismaMock.legalPersonConsents.upsert).toHaveBeenCalledWith({
         where: {
-          legalPersonId_consentType: {
-            legalPersonId: 'legal-person-id',
+          legalPersonAccountId_consentType: {
+            legalPersonAccountId: 'legal-person-id',
             consentType: ConsentEnum.MARKETING,
           },
         },
         update: { isGranted: false },
         create: {
-          legalPersonId: 'legal-person-id',
+          legalPersonAccountId: 'legal-person-id',
           consentType: ConsentEnum.MARKETING,
           isGranted: false,
         },
       })
       expect(prismaMock.legalPersonConsents.upsert).toHaveBeenCalledWith({
         where: {
-          legalPersonId_consentType: {
-            legalPersonId: 'legal-person-id',
+          legalPersonAccountId_consentType: {
+            legalPersonAccountId: 'legal-person-id',
             consentType: ConsentEnum.GENERAL,
           },
         },
         update: { isGranted: true },
         create: {
-          legalPersonId: 'legal-person-id',
+          legalPersonAccountId: 'legal-person-id',
           consentType: ConsentEnum.GENERAL,
           isGranted: true,
         },

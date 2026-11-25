@@ -5,6 +5,7 @@
     * [Guarantees](#guarantees)
     * [Where it is implemented](#where-it-is-implemented)
     * [How to use in the app code](#how-to-use-in-the-app-code)
+  * [Legal persons: company, representatives, accounts](#legal-persons-company-representatives-accounts)
 <!-- TOC -->
 
 # Prisma / Database notes (nest-city-account)
@@ -60,3 +61,37 @@ The behavior is implemented using Postgres trigger functions and triggers create
 - Treat `edeskStatusChangedAt` as **DB-managed** (read-only).
 - Do not use `updatedAt` as a proxy for eDesk status change time (it changes for unrelated updates).
 
+
+---
+
+## Legal persons: company, representatives, accounts
+
+Introduced in [split_legal_person_account](migrations/20261124120000_split_legal_person_account/migration.sql).
+
+| Table                       | Meaning                                                                                              |
+|:----------------------------|:-----------------------------------------------------------------------------------------------------|
+| `LegalPerson`               | The company, keyed by unique `ico` and (once known) UPVS `upvsIdentityId`. `kind`: PO, FO_P, DEPARTMENT. |
+| `PhysicalEntity`            | Also holds representatives (konatelia / FO-P owners), usually **without** a `User`.                  |
+| `LegalPersonRepresentation` | N:N person - company, with `type`, `validFrom` / `validTo` and `lastVerifiedAt`.                      |
+| `LegalPersonAccount`        | A Cognito login of type `po` / `fo-p` (formerly the `LegalPerson` table, minus `ico` / `birthNumber`). |
+
+### Guarantees (hidden from Prisma)
+
+- `LegalPerson`: a DEPARTMENT has no `upvsIdentityId`, and its `ico` is non-numeric. Every other kind
+  has a numeric `ico` (optionally `_suffix`). A department code therefore never equals a real IČO
+  (forms-backend grants form access by IČO equality).
+- `LegalPersonRepresentation`: PO allows only `STATUTORY_BODY`, FO_P only `OWNER`, and a DEPARTMENT has no
+  representations. This is a **deferred** constraint trigger checked at commit, so `kind` and the
+  representation types can be switched in one transaction.
+- `LegalPersonAccount`:
+  - has no `ico` / `birthNumber` of its own; the API reads them from `legalPerson.ico` and
+    `physicalEntity.birthNumber` (`withLegalPersonAccountIdentifiers`).
+  - unique (`legalPersonId`, `physicalEntityId`): one account per company and representative.
+    Department accounts have no representative (NULL), so any number of them can share a department.
+  - `physicalEntityId` requires `legalPersonId`, and (`physicalEntityId`, `legalPersonId`) must be an
+    existing representation. So a department account can never have a representative.
+
+### How to use in the app code
+
+Write the account ↔ company link only through `LegalPersonService`
+(`linkVerifiedAccount`, `unlinkAccount`, `syncKindFromAccountType`).

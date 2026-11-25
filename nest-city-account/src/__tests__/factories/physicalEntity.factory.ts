@@ -14,5 +14,7 @@ export const physicalEntityFactory = (overrides: Partial<PhysicalEntity> = {}): 
   activeEdeskUpdatedAt: null,
   activeEdeskUpdateFailedAt: null,
   activeEdeskUpdateFailCount: 0,
+  upvsIdentityId: null,
+  upvsName: null,
   ...overrides,
 })

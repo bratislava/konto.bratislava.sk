@@ -95,6 +95,21 @@ export function getUpvsDeathDate(contact: UpvsNaturalPerson | UpvsCorporateBody)
   return contact.natural_person?.death?.date ?? null
 }
 
+const SAML_ATTRIBUTE_REGEX =
+  /<(?:[\w-]+:)?Attribute\b[^>]*?\bName="([^"]+)"[^>]*>\s*<(?:[\w-]+:)?AttributeValue\b[^>]*>([^<]*)</g
+
+/**
+ * Extract `Name` -> first `AttributeValue` pairs from a SAML assertion. UPVS attributes are
+ * flat single-value strings, so a full XML parser is not needed.
+ */
+export function parseSamlAttributes(assertion: string): Record<string, string> {
+  const attributes: Record<string, string> = {}
+  for (const [, name, value] of assertion.matchAll(SAML_ATTRIBUTE_REGEX)) {
+    attributes[name] ??= value.trim()
+  }
+  return attributes
+}
+
 /**
  * The `fault` object the slovensko-sk container attaches to a 400 body when the error
  * originated in UPVS.
@@ -160,6 +175,38 @@ export class NasesService {
         })
       })
     return result
+  }
+
+  /**
+   * Fetch the SAML assertion of the eID login behind the OBO token and return its attributes
+   * (`Name` -> first `AttributeValue`), e.g. `Actor.UPVSIdentityID`, `Actor.PCO`,
+   * `Subject.UPVSIdentityID`.
+   */
+  async getUpvsAssertionAttributes(
+    token: string,
+    logContext?: Record<string, unknown>
+  ): Promise<Record<string, string>> {
+    const assertion = await this.clientsService.slovenskoSkApi
+      .apiUpvsAssertionGet('application/samlassertion+xml', {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'text',
+      })
+      .then((response) => response.data)
+      .catch((error: unknown) => {
+        if (!isAxiosError(error)) {
+          throw this.errorFactoryService.InternalServerErrorException({
+            errorEnum: ErrorEnum.INTERNAL_SERVER_ERROR,
+            message: ErrorResponseEnum.INTERNAL_SERVER_ERROR,
+            console: { message: 'Error is not an instance of AxiosError', ...logContext },
+            error,
+          })
+        }
+        throw this.errorFactoryService.fromAxiosError(error, {
+          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          console: logContext,
+        })
+      })
+    return parseSamlAttributes(assertion)
   }
 
   /**

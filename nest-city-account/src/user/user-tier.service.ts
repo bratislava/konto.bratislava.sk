@@ -59,7 +59,7 @@ export class UserTierService {
         },
       })
     } else {
-      const legalPerson = await this.prisma.legalPerson.findUnique({
+      const legalPerson = await this.prisma.legalPersonAccount.findUnique({
         where: {
           externalId: userId,
         },
@@ -68,7 +68,7 @@ export class UserTierService {
         return
       }
 
-      await this.prisma.legalPerson.update({
+      await this.prisma.legalPersonAccount.update({
         where: {
           externalId: userId,
         },

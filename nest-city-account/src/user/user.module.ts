@@ -3,6 +3,7 @@ import { PassportModule } from '@nestjs/passport'
 
 import { AdminStrategy } from '../auth/strategies/admin.strategy'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
+import { LegalPersonModule } from '../legal-person/legal-person.module'
 import { NorisModule } from '../noris/noris.module'
 import { PrismaModule } from '../prisma/prisma.module'
 import { UserController } from './user.controller'
@@ -12,7 +13,7 @@ import { UserTierService } from './user-tier.service'
 import { UserDataSubservice } from './utils/subservice/user-data.subservice'
 
 @Module({
-  imports: [PassportModule, PrismaModule, BloomreachModule, NorisModule],
+  imports: [PassportModule, PrismaModule, BloomreachModule, NorisModule, LegalPersonModule],
   providers: [UserService, UserDataSubservice, UserTierService, AdminStrategy],
   exports: [UserService, UserTierService],
   controllers: [UserController, UserIntegrationController],

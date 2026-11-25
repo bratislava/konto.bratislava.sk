@@ -6,6 +6,7 @@ import ApiJwtTokensModule from '../api-jwt-tokens/api-jwt-tokens.module'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import BaConfigModule from '../config/ba-config.module'
 import BaConfigService from '../config/ba-config.service'
+import { LegalPersonModule } from '../legal-person/legal-person.module'
 import { MagproxyModule } from '../magproxy/magproxy.module'
 import { MailgunModule } from '../mailgun/mailgun.module'
 import { NasesModule } from '../nases/nases.module'
@@ -44,6 +45,7 @@ import { VerificationService } from './verification.service'
     MailgunModule,
     UserModule,
     ApiJwtTokensModule,
+    LegalPersonModule,
   ],
   providers: [VerificationService, VerificationDataSubservice, VerificationSubservice],
   exports: [VerificationService],

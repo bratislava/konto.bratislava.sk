@@ -169,6 +169,7 @@ model UserIdCardVerify {
 
 // consolidates data from magproxy / NASES
 // a physicalEntity record may or may not be linked to exactly one User record, and vice versa
+// Statutory representatives (konatelia) of a LegalPerson are stored here too, usually without a User.
 model PhysicalEntity {
   id        String   @id @default(uuid()) @db.Uuid
   createdAt DateTime @default(now())
@@ -180,6 +181,11 @@ model PhysicalEntity {
   ifo         String? @unique
   birthNumber String?
 
+  // UPVS identity of the person, from SAML `Actor.UPVSIdentityID` (eID login). Stable across URI changes.
+  upvsIdentityId String? @unique @db.Uuid
+  // Formatted name of the eID actor, from SAML `Actor.FormattedName`.
+  upvsName       String?
+
   uriPossiblyOutdated Boolean @default(false)
 
   activeEdesk                Boolean? // Changing this value updates edeskStatusChangedAt via a trigger.
@@ -189,6 +195,9 @@ model PhysicalEntity {
   activeEdeskUpdateFailCount Int       @default(0)
 
   identityLookupRejection IdentityLookupRejection?
+
+  legalPersonRepresentations LegalPersonRepresentation[]
+  legalPersonAccounts        LegalPersonAccount[]
 }
 
 model IdentityLookupRejection {
@@ -227,15 +236,83 @@ model ExternalEdeskCheck {
   @@index([createdAt])
 }
 
+enum LegalPersonKindEnum {
+  PO // pravnicka osoba
+  FO_P // fyzicka osoba - podnikatel (self-employed); the representative is the owner themselves
+  DEPARTMENT // magistrát department pseudo-company (employee accounts), see docs/runbook/vytvorenie-konta-pre-zamestnancov.md
+}
+
+enum LegalPersonRepresentationTypeEnum {
+  STATUTORY_BODY // konateľ / štatutárny orgán of a PO
+  OWNER // the FO-P person themselves
+}
+
+/**
+ * A company (PO), self-employed person (FO-P), or magistrát department, identified by IČO.
+ * Cognito logins of the company are LegalPersonAccount rows.
+ * Consistency enforced by hidden DB constraints and triggers (not represented here):
+ * - DEPARTMENT: `upvsIdentityId` IS NULL, `ico` is not numeric (so it can never match a real IČO),
+ * and it has no LegalPersonRepresentation rows.
+ * - PO / FO_P: `ico` is numeric (optionally with a `_suffix` of an UPVS organisational unit).
+ * - Representation type must match the kind: PO -> STATUTORY_BODY, FO_P -> OWNER.
+ * - `kind` cannot change while representations exist.
+ */
 model LegalPerson {
+  id             String              @id @default(uuid()) @db.Uuid
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  kind           LegalPersonKindEnum
+  ico            String              @unique
+  // UPVS identity of the company, from SAML `Subject.UPVSIdentityID`. NULL for departments and
+  // for companies migrated from before this was recorded, until their next eID verification.
+  upvsIdentityId String?             @unique @db.Uuid
+
+  representations LegalPersonRepresentation[]
+  accounts        LegalPersonAccount[]
+}
+
+/**
+ * N:N between a PhysicalEntity (konateľ / FO-P owner) and the LegalPerson they represent.
+ * `validTo` IS NULL means the representation is currently valid.
+ */
+model LegalPersonRepresentation {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  physicalEntityId String         @db.Uuid
+  physicalEntity   PhysicalEntity @relation(fields: [physicalEntityId], references: [id], onDelete: Restrict)
+  legalPersonId    String         @db.Uuid
+  legalPerson      LegalPerson    @relation(fields: [legalPersonId], references: [id], onDelete: Restrict)
+
+  type           LegalPersonRepresentationTypeEnum
+  validFrom      DateTime                          @default(now())
+  validTo        DateTime? // CHECK validTo >= validFrom (hidden DB constraint)
+  lastVerifiedAt DateTime                          @default(now())
+
+  accounts LegalPersonAccount[]
+
+  @@unique([physicalEntityId, legalPersonId])
+  @@index([legalPersonId])
+}
+
+/**
+ * Cognito login of a legal-person account type (`po`, `fo-p`). Before #1801 this table was `LegalPerson`.
+ * `legalPersonId` is set once the account is verified (or set up as a department account).
+ * `physicalEntityId` is the representative who verified it; it is NULL for department accounts.
+ * Hidden DB constraints (not represented here):
+ * - (`legalPersonId`, `ico`) references LegalPerson (`id`, `ico`), so the legacy `ico` column
+ * always equals the company's IČO; `ico` and `legalPersonId` are both set or both NULL.
+ * - (`physicalEntityId`, `legalPersonId`) references LegalPersonRepresentation, so the verifying
+ * person actually represents the company.
+ */
+model LegalPersonAccount {
   id                                 String                         @id @default(uuid()) @db.Uuid
   createdAt                          DateTime                       @default(now())
   updatedAt                          DateTime                       @updatedAt
   registeredAt                       DateTime?
   externalId                         String                         @unique
   email                              String?                        @unique
-  ico                                String?
-  birthNumber                        String?
   lastVerificationAttempt            DateTime?
   birthnumberIcoAlreadyExistsLast    String?
   birthnumberIcoAlreadyExistsCounter Int                            @default(0)
@@ -246,22 +323,30 @@ model LegalPerson {
   legalPersonConsents                LegalPersonConsents[]
   legalPersonConsentsHistory         LegalPersonConsentsHistory[]
 
-  @@unique([ico, birthNumber])
+  legalPersonId    String?                    @db.Uuid
+  legalPerson      LegalPerson?               @relation(fields: [legalPersonId], references: [id], onDelete: Restrict)
+  physicalEntityId String?                    @db.Uuid
+  physicalEntity   PhysicalEntity?            @relation(fields: [physicalEntityId], references: [id], onDelete: Restrict)
+  representation   LegalPersonRepresentation? @relation(fields: [physicalEntityId, legalPersonId], references: [physicalEntityId, legalPersonId], onDelete: Restrict)
+
+  // One account per (company, representative); department accounts (no representative) are not limited.
+  @@unique([legalPersonId, physicalEntityId])
+  @@index([physicalEntityId])
 }
 
 /**
- * Current consent state per (legalPerson, consentType).
+ * Current consent state per (legalPersonAccount, consentType).
  * App writes here; trigger maintains LegalPersonConsentsHistory.
  */
 model LegalPersonConsents {
-  id            String      @id @default(uuid()) @db.Uuid
-  createdAt     DateTime    @default(now())
-  legalPersonId String      @db.Uuid
-  legalPerson   LegalPerson @relation(fields: [legalPersonId], references: [id], onDelete: Cascade)
-  consentType   ConsentEnum
-  isGranted     Boolean
+  id                   String             @id @default(uuid()) @db.Uuid
+  createdAt            DateTime           @default(now())
+  legalPersonAccountId String             @db.Uuid
+  legalPersonAccount   LegalPersonAccount @relation(fields: [legalPersonAccountId], references: [id], onDelete: Cascade)
+  consentType          ConsentEnum
+  isGranted            Boolean
 
-  @@unique([legalPersonId, consentType])
+  @@unique([legalPersonAccountId, consentType])
 }
 
 /**
@@ -269,14 +354,14 @@ model LegalPersonConsents {
  * Immutability enforced by trigger.
  */
 model LegalPersonConsentsHistory {
-  id            String      @id @default(uuid()) @db.Uuid
-  createdAt     DateTime    @default(now())
-  legalPersonId String      @db.Uuid
-  legalPerson   LegalPerson @relation(fields: [legalPersonId], references: [id], onDelete: Cascade)
-  consentType   ConsentEnum
-  isGranted     Boolean
+  id                   String             @id @default(uuid()) @db.Uuid
+  createdAt            DateTime           @default(now())
+  legalPersonAccountId String             @db.Uuid
+  legalPersonAccount   LegalPersonAccount @relation(fields: [legalPersonAccountId], references: [id], onDelete: Cascade)
+  consentType          ConsentEnum
+  isGranted            Boolean
 
-  @@index([legalPersonId])
+  @@index([legalPersonAccountId])
 }
 
 /**
@@ -307,14 +392,14 @@ model UserGdprData {
 }
 
 model LegalPersonGdprData {
-  id            String           @id @default(uuid())
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  legalPersonId String           @db.Uuid
-  type          GDPRTypeEnum
-  category      GDPRCategoryEnum
-  subType       GDPRSubTypeEnum?
-  legalPerson   LegalPerson      @relation(fields: [legalPersonId], references: [id])
+  id                   String             @id @default(uuid())
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  legalPersonAccountId String             @db.Uuid
+  type                 GDPRTypeEnum
+  category             GDPRCategoryEnum
+  subType              GDPRSubTypeEnum?
+  legalPersonAccount   LegalPersonAccount @relation(fields: [legalPersonAccountId], references: [id])
 }
 
 model UserLoginClient {
@@ -332,16 +417,16 @@ model UserLoginClient {
 }
 
 model LegalPersonLoginClient {
-  id            String          @id @default(uuid()) @db.Uuid
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  legalPersonId String          @db.Uuid
-  loginClient   LoginClientEnum
-  loginCount    Int             @default(0)
-  legalPerson   LegalPerson     @relation(fields: [legalPersonId], references: [id])
+  id                   String             @id @default(uuid()) @db.Uuid
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  legalPersonAccountId String             @db.Uuid
+  loginClient          LoginClientEnum
+  loginCount           Int                @default(0)
+  legalPersonAccount   LegalPersonAccount @relation(fields: [legalPersonAccountId], references: [id])
 
-  @@unique([legalPersonId, loginClient])
-  @@index([legalPersonId])
+  @@unique([legalPersonAccountId, loginClient])
+  @@index([legalPersonAccountId])
 }
 
 model Config {

@@ -63,19 +63,19 @@ export class UserIdentitySubservice {
 
       case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
       case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
-        const legalPerson = await this.prisma.legalPerson.findUnique({
+        const legalPerson = await this.prisma.legalPersonAccount.findUnique({
           where: {
             externalId,
           },
           select: {
-            birthNumber: true,
-            ico: true,
+            legalPerson: { select: { ico: true } },
+            physicalEntity: { select: { birthNumber: true } },
           },
         })
 
         return {
-          birthNumber: legalPerson?.birthNumber ?? undefined,
-          ico: legalPerson?.ico ?? undefined,
+          birthNumber: legalPerson?.physicalEntity?.birthNumber ?? undefined,
+          ico: legalPerson?.legalPerson?.ico ?? undefined,
         }
       }
 

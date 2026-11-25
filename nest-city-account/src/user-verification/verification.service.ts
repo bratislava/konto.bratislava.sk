@@ -13,7 +13,11 @@ import { getBloomreachContactDatabase } from '../bloomreach/contact-database/blo
 import { BloomreachContactDatabaseService } from '../bloomreach/contact-database/bloomreach-contact-database.service'
 import getBaConfigInstance from '../config/ba-config.instance'
 import BaConfigService from '../config/ba-config.service'
-import { CognitoUserAttributesTierEnum, LegalPerson, User } from '../generated/prisma/client'
+import { CognitoUserAttributesTierEnum, LegalPersonAccount, User } from '../generated/prisma/client'
+import {
+  legalPersonKindFromAccountType,
+  LegalPersonService,
+} from '../legal-person/legal-person.service'
 import { MailgunService } from '../mailgun/mailgun.service'
 import { NasesService } from '../nases/nases.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
@@ -42,7 +46,7 @@ import { VerificationDataForUserResponseDto } from './dtos/verification-response
 import { VerificationReturnType } from './types'
 import { VerificationSubservice } from './utils/subservice/verification.subservice'
 import { VerificationDataSubservice } from './utils/subservice/verification-data.subservice'
-import { extractBirthNumberFromUri, extractIcoFromUri } from './utils/utils'
+import { resolveEidBirthNumber, resolveEidIco } from './utils/utils'
 import {
   SendToQueueErrorsEnum,
   SendToQueueErrorsResponseEnum,
@@ -68,6 +72,7 @@ export class VerificationService {
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly userTierService: UserTierService,
     private readonly baConfigService: BaConfigService,
+    private readonly legalPersonService: LegalPersonService,
     private readonly logger: LineLoggerService
   ) {}
 
@@ -415,21 +420,30 @@ export class VerificationService {
 
     const base64Payload = oboToken.split('.')[1]
     const payloadBuffer = Buffer.from(base64Payload, 'base64')
-    const payload = JSON.parse(payloadBuffer.toString()) as { sub: string; actor: { sub: string } }
+    const payload = JSON.parse(payloadBuffer.toString()) as {
+      sub: string
+      actor: { sub: string }
+    }
     const type = payload.sub.split(':')[0]
 
-    const birthNumber = extractBirthNumberFromUri(payload.actor.sub)
-    if (!birthNumber) {
+    const assertion = await this.getEidAssertionAttributes(jwtToken, eidLogContext)
+
+    const birthNumberResolution = resolveEidBirthNumber(assertion['Actor.PCO'], payload.actor.sub)
+    if (birthNumberResolution.outcome !== 'resolved') {
       throw this.errorFactoryService.UnprocessableEntityException({
         errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
         message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
         console: {
-          message: 'Failed to retrieve birth number from URI',
+          message:
+            birthNumberResolution.outcome === 'mismatch'
+              ? 'SAML Actor.PCO does not match the birth number in ActorID'
+              : 'Failed to retrieve birth number from SAML Actor.PCO or ActorID',
           ...eidLogContext,
           uriType: type,
         },
       })
     }
+    const birthNumber = birthNumberResolution.value
 
     if (
       user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
@@ -476,31 +490,7 @@ export class VerificationService {
     }
 
     if (type === 'ico') {
-      const ico = extractIcoFromUri(payload.sub)
-      if (!ico) {
-        throw this.errorFactoryService.UnprocessableEntityException({
-          errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
-          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          console: { message: 'Failed to retrieve ico from URI', ...eidLogContext, uriType: type },
-        })
-      }
-      const response =
-        await this.verificationDataSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
-          user,
-          ico,
-          birthNumber
-        )
-      if (!response.success) {
-        throw this.errorFactoryService.UnprocessableEntityException({
-          errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
-          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          console: {
-            message: 'Failed to verify PO with ico and birth number',
-            ...eidLogContext,
-            reason: response.reason,
-          },
-        })
-      }
+      await this.verifyLegalPersonWithEid(user, assertion, payload, birthNumber, eidLogContext)
     }
 
     await this.userTierService.changeTier(
@@ -527,6 +517,89 @@ export class VerificationService {
       statusCode: 200,
       status: 'OK',
       message: 'Successfully verified user with EID.',
+    }
+  }
+
+  /** eID subject is a company (`ico://`): record the company, the acting representative and the link. */
+  private async verifyLegalPersonWithEid(
+    user: CognitoGetUserData,
+    assertion: Partial<Record<string, string>>,
+    payload: { sub: string },
+    birthNumber: string,
+    eidLogContext: Record<string, unknown>
+  ): Promise<void> {
+    const icoResolution = resolveEidIco(assertion['Subject.ICO'], payload.sub)
+    if (icoResolution.outcome !== 'resolved') {
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
+        message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+        console: {
+          message:
+            icoResolution.outcome === 'mismatch'
+              ? 'SAML Subject.ICO does not match the ico in SubjectID'
+              : 'Failed to retrieve ico from SAML Subject.ICO or SubjectID',
+          ...eidLogContext,
+          uriType: 'ico',
+        },
+      })
+    }
+    const ico = icoResolution.value
+    const kind = legalPersonKindFromAccountType(user[CognitoUserAttributesEnum.ACCOUNT_TYPE])
+    if (!kind) {
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
+        message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+        console: { message: 'Account type is not a legal person type', ...eidLogContext },
+      })
+    }
+    const response =
+      await this.verificationDataSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
+        user,
+        {
+          ico,
+          kind,
+          upvsIdentityId: assertion['Subject.UPVSIdentityID'],
+        },
+        {
+          birthNumber,
+          upvsIdentityId: assertion['Actor.UPVSIdentityID'],
+          upvsName: assertion['Actor.FormattedName'],
+        }
+      )
+    if (!response.success) {
+      throw this.errorFactoryService.UnprocessableEntityException({
+        errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
+        message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+        console: {
+          message: 'Failed to verify PO with ico and birth number',
+          ...eidLogContext,
+          reason: response.reason,
+        },
+      })
+    }
+  }
+
+  /**
+   * SAML attributes of the eID login. Best effort: the UPVS identity ids are nullable, so a
+   * failure here must not block verification, but it is logged as an error because the new
+   * company / representative records then lack their stable identifiers.
+   */
+  private async getEidAssertionAttributes(
+    jwtToken: string,
+    logContext: Record<string, unknown>
+  ): Promise<Partial<Record<string, string>>> {
+    try {
+      const attributes = await this.nasesService.getUpvsAssertionAttributes(jwtToken, logContext)
+      if (!attributes['Actor.UPVSIdentityID'] || !attributes['Subject.UPVSIdentityID']) {
+        this.logger.error('eID SAML assertion is missing UPVS identity attributes', {
+          ...logContext,
+          attributeNames: Object.keys(attributes),
+        })
+      }
+      return attributes
+    } catch (error) {
+      this.logger.error('Failed to fetch eID SAML assertion', logContext, error)
+      return {}
     }
   }
 
@@ -571,7 +644,7 @@ export class VerificationService {
     }
 
     // Try if this is legal person. If yes go to legal person state.
-    const legalPerson = await this.prisma.legalPerson.findUnique({
+    const legalPerson = await this.prisma.legalPersonAccount.findUnique({
       where: {
         email,
       },
@@ -625,7 +698,7 @@ export class VerificationService {
       isVerified: false,
     }
 
-    const legalPerson = await this.prisma.legalPerson.findUnique({
+    const legalPerson = await this.prisma.legalPersonAccount.findUnique({
       where: {
         email,
       },
@@ -705,7 +778,7 @@ export class VerificationService {
     data: ManuallyVerifyUserRequestDto
   ): Promise<OnlySuccessDto> {
     let isLegalPerson = true
-    let user: LegalPerson | User | null = await this.prisma.legalPerson.findUnique({
+    let user: LegalPersonAccount | User | null = await this.prisma.legalPersonAccount.findUnique({
       where: {
         email,
       },
@@ -744,16 +817,23 @@ export class VerificationService {
         })
       }
 
-      await this.prisma.legalPerson.update({
-        where: {
-          email,
-        },
-        data: {
-          ico: data.ico,
-          birthNumber: data.birthNumber,
-          lastVerificationAttempt: new Date(),
-        },
-      })
+      const cognitoLegalPerson = await this.cognitoSubservice.getDataFromCognito(user.externalId)
+      const kind = legalPersonKindFromAccountType(
+        cognitoLegalPerson[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+      )
+      if (!kind) {
+        throw this.errorFactoryService.UnprocessableEntityException({
+          errorEnum: UserErrorsEnum.COGNITO_TYPE_ERROR,
+          message: UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          console: { legalPersonAccountId: user.id, externalId: user.externalId },
+        })
+      }
+      // No eID here, so no UPVS identity ids; they are filled in on the next eID verification.
+      await this.legalPersonService.linkVerifiedAccount(
+        user.id,
+        { ico: data.ico, kind },
+        { birthNumber: data.birthNumber }
+      )
     } else {
       if (!data.ifo) {
         throw this.errorFactoryService.BadRequestException({

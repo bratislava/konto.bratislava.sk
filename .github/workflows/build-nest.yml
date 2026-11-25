@@ -27,6 +27,11 @@ on:
         type: boolean
         required: false
         default: false
+      e2e_mssql:
+        description: "Start an MSSQL service for the E2E tests (the Noris database of nest-tax-backend)."
+        type: boolean
+        required: false
+        default: false
       skip_tests:
         description: "Skip the validation/test/typecheck/lint/e2e images (used in deploy mode)."
         type: boolean
@@ -75,16 +80,28 @@ jobs:
         # to disable the service when E2E tests are not running.
         image: ${{ inputs.e2e_tests && !inputs.skip_tests && 'postgres:16-alpine' || '' }}
         env:
-          POSTGRES_DB: forms
-          POSTGRES_USER: forms
+          POSTGRES_DB: e2e
+          POSTGRES_USER: e2e
           POSTGRES_PASSWORD: password
         ports:
           - 5432/tcp
         options: >-
-          --health-cmd "pg_isready -U forms -d forms"
+          --health-cmd "pg_isready -U e2e -d e2e"
           --health-interval 2s
           --health-timeout 3s
           --health-retries 15
+      mssql:
+        image: ${{ inputs.e2e_tests && inputs.e2e_mssql && !inputs.skip_tests && 'mcr.microsoft.com/mssql/server:2022-latest' || '' }}
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: E2e_password1
+        ports:
+          - 1433/tcp
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P E2e_password1 -C -Q 'SELECT 1'"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -190,7 +207,11 @@ jobs:
           targets: ${{ inputs.service }}-test-e2e
           allow: network.host
           set: |
-            *.args.CI_E2E_DATABASE_URL=postgresql://forms:password@localhost:${{ job.services.postgres.ports['5432'] }}/forms?schema=public&connect_timeout=30
+            *.args.CI_E2E_DATABASE_URL=postgresql://e2e:password@localhost:${{ job.services.postgres.ports['5432'] }}/e2e?schema=public&connect_timeout=30
+            *.args.CI_E2E_MSSQL_HOST=127.0.0.1
+            *.args.CI_E2E_MSSQL_PORT=${{ job.services.mssql.ports['1433'] }}
+            *.args.CI_E2E_MSSQL_USERNAME=sa
+            *.args.CI_E2E_MSSQL_PASSWORD=E2e_password1
         env:
           CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache)['test-e2e'].from }}
           CACHE_TO: ${{ fromJSON(steps.config.outputs.cache)['test-e2e'].to }}

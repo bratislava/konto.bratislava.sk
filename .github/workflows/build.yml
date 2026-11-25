@@ -58,6 +58,8 @@ jobs:
     with:
       service: nest-tax-backend
       image: harbor.bratislava.sk/standalone/nest-tax-backend
+      e2e_tests: true
+      e2e_mssql: true
     secrets: inherit
 
   build-nest-city-account:

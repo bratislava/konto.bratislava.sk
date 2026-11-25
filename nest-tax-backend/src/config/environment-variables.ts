@@ -110,6 +110,9 @@ export default class EnvironmentVariables {
   @EnvString()
   MSSQL_HOST: string
 
+  @EnvPort()
+  MSSQL_PORT: number
+
   @EnvString()
   MSSQL_DB: string
 

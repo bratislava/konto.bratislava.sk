@@ -43,6 +43,19 @@ RUN pnpm turbo run test --filter=nest-tax-backend
 FROM builder-deps AS typecheck
 RUN pnpm turbo run typecheck --filter=nest-tax-backend
 
+FROM builder-deps AS test-e2e
+ARG CI_E2E_DATABASE_URL
+ARG CI_E2E_MSSQL_HOST
+ARG CI_E2E_MSSQL_PORT
+ARG CI_E2E_MSSQL_USERNAME
+ARG CI_E2E_MSSQL_PASSWORD
+ENV CI_E2E_DATABASE_URL=${CI_E2E_DATABASE_URL} \
+    CI_E2E_MSSQL_HOST=${CI_E2E_MSSQL_HOST} \
+    CI_E2E_MSSQL_PORT=${CI_E2E_MSSQL_PORT} \
+    CI_E2E_MSSQL_USERNAME=${CI_E2E_MSSQL_USERNAME} \
+    CI_E2E_MSSQL_PASSWORD=${CI_E2E_MSSQL_PASSWORD}
+RUN pnpm turbo run test:e2e --filter=nest-tax-backend
+
 FROM builder AS lint
 RUN pnpm turbo run lint --filter=nest-tax-backend
 

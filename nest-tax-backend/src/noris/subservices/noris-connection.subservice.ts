@@ -44,7 +44,7 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
   private async createConnection(): Promise<ConnectionPool> {
     return await connect({
       server: this.baConfigService.noris.host,
-      port: 1433,
+      port: this.baConfigService.noris.port,
       database: this.baConfigService.noris.database,
       user: this.baConfigService.noris.username,
       connectionTimeout: 120_000,

@@ -57,6 +57,17 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
+    "nest-tax-backend#test:e2e": {
+      "dependsOn": ["^build"],
+      "passThroughEnv": [
+        "CI_E2E_DATABASE_URL",
+        "CI_E2E_MSSQL_HOST",
+        "CI_E2E_MSSQL_PORT",
+        "CI_E2E_MSSQL_USERNAME",
+        "CI_E2E_MSSQL_PASSWORD"
+      ],
+      "outputs": []
+    },
     "nest-clamav-scanner#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]

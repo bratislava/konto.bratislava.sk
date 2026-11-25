@@ -230,8 +230,8 @@ target "nest-forms-backend-verify-bootstrap" {
   target   = "verify-bootstrap"
 }
 
-# The only service with E2E tests. CI_E2E_DATABASE_URL points at a database that
-# only exists on the runner, so the workflow passes it as a build arg override.
+# E2E tests. The CI_E2E_* databases only exist on the runner, so the workflow
+# passes them as build arg overrides.
 target "nest-forms-backend-test-e2e" {
   inherits = ["_nest-forms-backend"]
   target   = "test-e2e"
@@ -270,6 +270,12 @@ target "nest-tax-backend-lint" {
 target "nest-tax-backend-verify-bootstrap" {
   inherits = ["_nest-tax-backend"]
   target   = "verify-bootstrap"
+}
+
+# E2E tests, see nest-forms-backend-test-e2e. Also needs the MSSQL (Noris) args.
+target "nest-tax-backend-test-e2e" {
+  inherits = ["_nest-tax-backend"]
+  target   = "test-e2e"
 }
 
 # Bare `docker buildx bake` builds every deployable image.

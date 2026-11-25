@@ -326,11 +326,24 @@ export class NorisFixtureFactory {
 
   constructor(private readonly pool: ConnectionPool) {}
 
-  /** Deletes all data, call it in `beforeEach` or `afterEach`. */
+  /**
+   * Deletes all data and inserts the document kinds the taxes need, in one batch so parallel calls of the factory never
+   * see them missing. Call it in `beforeEach` before creating anything.
+   */
   async clear(): Promise<void> {
-    await this.pool
-      .request()
-      .batch(TABLES.map((table) => `DELETE FROM lcs.${table};`).join('\n'))
+    const deletes = TABLES.map((table) => `DELETE FROM lcs.${table};`)
+    const documentKinds = Object.values(NorisTaxType).flatMap((taxType) => {
+      const { tax, overpayment } = DOCUMENT_KINDS[taxType]
+      return [
+        `(${tax}, 'A', 'V', '${taxType}')`,
+        `(${overpayment}, 'A', 'ZAL', '${taxType}')`,
+      ]
+    })
+    await this.pool.request().batch(
+      `${deletes.join('\n')}
+       INSERT INTO lcs.dane21_druh_dokladu (cislo_subjektu, generovat_pohladavku, typ_dokladu, typ_dane)
+       VALUES ${documentKinds.join(', ')};`,
+    )
   }
 
   async createRealEstateTax(
@@ -550,8 +563,6 @@ export class NorisFixtureFactory {
       toNorisAmount(amountInCents),
     )
 
-    await this.ensureDocumentKinds()
-
     const documentId = this.nextId()
     const podklad = this.nextId()
     const taxpayerId = this.nextId()
@@ -690,21 +701,6 @@ export class NorisFixtureFactory {
     columns: Omit<NorisTableRows['subjekty'], 'cislo_subjektu'>,
   ): Promise<void> {
     await this.insert('subjekty', { cislo_subjektu: id, ...columns })
-  }
-
-  private async ensureDocumentKinds(): Promise<void> {
-    const rows = Object.values(NorisTaxType).flatMap((taxType) => {
-      const { tax, overpayment } = DOCUMENT_KINDS[taxType]
-      return [
-        `(${tax}, 'A', 'V', '${taxType}')`,
-        `(${overpayment}, 'A', 'ZAL', '${taxType}')`,
-      ]
-    })
-    await this.pool.request().batch(
-      `IF NOT EXISTS (SELECT 1 FROM lcs.dane21_druh_dokladu)
-       INSERT INTO lcs.dane21_druh_dokladu (cislo_subjektu, generovat_pohladavku, typ_dokladu, typ_dane)
-       VALUES ${rows.join(', ')}`,
-    )
   }
 
   /** mssql inserts `undefined` as `NULL`. */

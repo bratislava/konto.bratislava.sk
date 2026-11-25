@@ -37,7 +37,7 @@ export const getFileUuids = (schema: RJSFSchema, formData: GenericObjectType) =>
   }
 
   const validator = getBaRjsfValidator()
-  withFileValidateFn(fileValidateFn, () => validator.isValid(schema, formData, formData))
+  withFileValidateFn(fileValidateFn, () => validator.isValid(schema, formData, schema))
 
   return files
 }

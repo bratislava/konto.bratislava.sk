@@ -49,11 +49,11 @@ describe('Authentication and authorization', () => {
     cityAccountMock.addUser(unverifiedUser)
     cityAccountMock.addUser(userWithoutBirthNumber)
 
-    const moduleRef = await userFixtureFactory
-      .setupMockAuth(Test.createTestingModule({ imports: [AppModule] }))
-      .compile()
-
-    testingApp = await initializeTestingApp(moduleRef)
+    testingApp = await initializeTestingApp(
+      userFixtureFactory.setupMockAuth(
+        Test.createTestingModule({ imports: [AppModule] }),
+      ),
+    )
   })
 
   beforeEach(() => {

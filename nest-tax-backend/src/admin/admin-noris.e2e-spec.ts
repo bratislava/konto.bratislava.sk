@@ -155,10 +155,11 @@ describe('Admin Noris endpoints', () => {
     cityAccountMock = new CityAccountMock()
     bloomreachMock = new BloomreachMock()
 
-    const moduleRef = await userFixtureFactory
-      .setupMockAuth(Test.createTestingModule({ imports: [AppModule] }))
-      .compile()
-    testingApp = await initializeTestingApp(moduleRef)
+    testingApp = await initializeTestingApp(
+      userFixtureFactory.setupMockAuth(
+        Test.createTestingModule({ imports: [AppModule] }),
+      ),
+    )
     prismaService = testingApp.app.get(PrismaService)
     adminHeaders = {
       apiKey: testingApp.app.get(BaConfigService).tokens.adminAppSecret,

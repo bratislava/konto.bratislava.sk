@@ -10,11 +10,9 @@ describe('App', () => {
   let testingApp: TestingApp
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile()
-
-    testingApp = await initializeTestingApp(moduleRef)
+    testingApp = await initializeTestingApp(
+      Test.createTestingModule({ imports: [AppModule] }),
+    )
   })
 
   afterEach(() => {

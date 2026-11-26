@@ -4,6 +4,7 @@ import type { Mock, MockedFunction } from 'vitest'
 
 import { RequestAdminCreateTestingTaxNorisData } from '../../../admin/dtos/requests.dto'
 import { TaxAdministrator, TaxType } from '../../../generated/prisma/client'
+import { mapNorisToTaxInstallmentsData } from '../../../noris/utils/mapping.helper'
 import {
   createTestingCommunalWasteTaxMock,
   createTestingRealEstateTaxMock,
@@ -140,6 +141,8 @@ describe('testing-tax-mock', () => {
         { taxTotal: '100.50', expected: 100.5 },
         { taxTotal: '333.33', expected: 333.33 },
         { taxTotal: '1000.00', expected: 1000 },
+        { taxTotal: '100,50', expected: 100.5 },
+        { taxTotal: '333,33', expected: 333.33 },
       ])(
         'should calculate installments correctly for taxTotal=$taxTotal',
         ({ taxTotal, expected }) => {
@@ -159,16 +162,34 @@ describe('testing-tax-mock', () => {
         },
       )
 
-      it('should set SPL1 to total tax amount', () => {
-        mockNorisData.taxTotal = '250,75'
-
+      it('should create 3 installments accepted by the Noris mapping', () => {
         const result = createTestingRealEstateTaxMock(
           mockNorisData,
           mockTaxAdministrator,
           2024,
         )
 
-        expect(result.SPL1).toBe('250,75')
+        expect(result.SPL1).toBe('')
+        expect(mapNorisToTaxInstallmentsData(result, 1)).toEqual([
+          {
+            taxId: 1,
+            amount: 5000,
+            order: 1,
+            dueDate: new Date('2024-07-19T00:00:00.000Z'),
+          },
+          {
+            taxId: 1,
+            amount: 5000,
+            order: 2,
+            dueDate: new Date('2024-09-01T00:00:00.000Z'),
+          },
+          {
+            taxId: 1,
+            amount: 5000,
+            order: 3,
+            dueDate: new Date('2024-11-01T00:00:00.000Z'),
+          },
+        ])
       })
     })
 
@@ -331,6 +352,8 @@ describe('testing-tax-mock', () => {
         { taxTotal: '100.00', expected: 100 },
         { taxTotal: '444.44', expected: 444.44 },
         { taxTotal: '1200.00', expected: 1200 },
+        { taxTotal: '100,00', expected: 100 },
+        { taxTotal: '444,44', expected: 444.44 },
       ])(
         'should calculate installments correctly for taxTotal=$taxTotal',
         ({ taxTotal, expected }) => {
@@ -351,16 +374,40 @@ describe('testing-tax-mock', () => {
         },
       )
 
-      it('should set SPL1 to total tax amount', () => {
-        mockNorisData.taxTotal = '180,60'
-
+      it('should create 4 installments accepted by the Noris mapping', () => {
         const result = createTestingCommunalWasteTaxMock(
           mockNorisData,
           mockTaxAdministrator,
           2024,
         )
 
-        expect(result.SPL1).toBe('180,60')
+        expect(result.SPL1).toBe('')
+        expect(mapNorisToTaxInstallmentsData(result, 1)).toEqual([
+          {
+            taxId: 1,
+            amount: 3750,
+            order: 1,
+            dueDate: new Date('2024-04-11T00:00:00.000Z'),
+          },
+          {
+            taxId: 1,
+            amount: 3750,
+            order: 2,
+            dueDate: new Date('2024-05-31T00:00:00.000Z'),
+          },
+          {
+            taxId: 1,
+            amount: 3750,
+            order: 3,
+            dueDate: new Date('2024-08-31T00:00:00.000Z'),
+          },
+          {
+            taxId: 1,
+            amount: 3750,
+            order: 4,
+            dueDate: new Date('2024-10-31T00:00:00.000Z'),
+          },
+        ])
       })
     })
 

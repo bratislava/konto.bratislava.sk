@@ -34,7 +34,7 @@ import {
 import {
   GetNewVerifiedUsersBirthNumbersResponseDto,
   GetUserDataByBirthNumbersBatchResponseDto,
-  ResponseUserByBirthNumberDto,
+  ResponseUserByBirthNumberDetailDto,
 } from './dtos/integration-response.dto'
 import { IntegrationService } from './integration.service'
 
@@ -65,7 +65,7 @@ export class IntegrationController {
   })
   @ApiOkResponse({
     description: 'User data',
-    type: ResponseUserByBirthNumberDto,
+    type: ResponseUserByBirthNumberDetailDto,
   })
   @LogAllowList({
     externalId: true,
@@ -76,7 +76,7 @@ export class IntegrationController {
   @Get('userdata')
   async getUserDataByBirthNumber(
     @Query() query: RequestQueryUserByBirthNumberDto
-  ): Promise<ResponseUserByBirthNumberDto> {
+  ): Promise<ResponseUserByBirthNumberDetailDto> {
     const result = await this.integrationService.getUserDataByBirthNumber(query.birthNumber)
     return result
   }

@@ -31,18 +31,20 @@ export class ResponseUserByBirthNumberDto {
   userAttribute: string | UserAttributeEnum | null
 
   @ApiPropertyOptional({
-    description: 'Tier from cognito',
-    default: CognitoUserAttributesTierEnum.IDENTITY_CARD,
-  })
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  cognitoAttributes?: CognitoGetUserData | {}
-
-  @ApiPropertyOptional({
     description: 'Delivery method for tax documents at lock date',
     example: DeliveryMethodEnum.EDESK,
     enum: DeliveryMethodEnum,
   })
   taxDeliveryMethodAtLockDate?: DeliveryMethodEnum | null
+}
+
+export class ResponseUserByBirthNumberDetailDto extends ResponseUserByBirthNumberDto {
+  @ApiPropertyOptional({
+    description: 'Tier from cognito',
+    default: CognitoUserAttributesTierEnum.IDENTITY_CARD,
+  })
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  cognitoAttributes?: CognitoGetUserData | {}
 }
 
 export class GetUserDataByBirthNumbersBatchResponseDto {

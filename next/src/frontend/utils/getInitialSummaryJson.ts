@@ -3,7 +3,7 @@ import { ParsedUrlQuery } from 'node:querystring'
 import { GenericObjectType } from '@rjsf/utils'
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { createSingleUseValidatorRegistry } from 'forms-shared/form-utils/validatorRegistry'
-import { getSummaryJsonNode } from 'forms-shared/summary-json/getSummaryJsonNode'
+import { getSummaryJson } from 'forms-shared/summary-json/getSummaryJson'
 
 import { STEP_QUERY_PARAM_KEY } from '@/src/components/forms/useFormCurrentStepIndex'
 import { STEP_QUERY_PARAM_VALUE_SUMMARY } from '@/src/frontend/utils/formState'
@@ -20,5 +20,5 @@ export const getInitialSummaryJson = (
     return null
   }
 
-  return getSummaryJsonNode({ schema: formDefinition.schema, formData, validatorRegistry })
+  return getSummaryJson({ schema: formDefinition.schema, formData, validatorRegistry })
 }

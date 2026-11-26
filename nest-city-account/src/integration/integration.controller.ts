@@ -35,6 +35,7 @@ import {
   GetNewVerifiedUsersBirthNumbersResponseDto,
   GetUserDataByBirthNumbersBatchResponseDto,
   ResponseUserByBirthNumberDetailDto,
+  ResponseUserByBirthNumberDto,
 } from './dtos/integration-response.dto'
 import { IntegrationService } from './integration.service'
 
@@ -48,7 +49,11 @@ import { IntegrationService } from './integration.service'
  */
 @ApiTags('Backend Integration API')
 @ApiSecurity('apiKey')
-@ApiExtraModels(UserContactAndIdInfoResponseDto, LegalPersonContactAndIdInfoResponseDto)
+@ApiExtraModels(
+  UserContactAndIdInfoResponseDto,
+  LegalPersonContactAndIdInfoResponseDto,
+  ResponseUserByBirthNumberDto
+)
 @UseGuards(AdminGuard)
 @Controller('integration')
 export class IntegrationController {

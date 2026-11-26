@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional, getSchemaPath } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 
 import { CognitoUserAttributesTierEnum, DeliveryMethodEnum } from '../../generated/prisma/enums'
@@ -51,7 +51,7 @@ export class GetUserDataByBirthNumbersBatchResponseDto {
   @ApiProperty({
     description: 'A record of users keyed by their birth number',
     type: 'object',
-    additionalProperties: { type: 'ResponseUserByBirthNumberDto' },
+    additionalProperties: { $ref: getSchemaPath(ResponseUserByBirthNumberDto) },
   })
   users: Record<string, ResponseUserByBirthNumberDto>
 }

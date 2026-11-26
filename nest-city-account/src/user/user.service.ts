@@ -378,20 +378,11 @@ export class UserService {
         message: AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND,
       })
     }
-    let cognitoUser = {}
-    if (user.externalId) {
-      try {
-        cognitoUser = await this.cognitoSubservice.getDataFromCognito(user.externalId)
-      } catch {
-        // Intentionally ignore Cognito fetch failure
-      }
-    }
     return {
       email: user.email,
       birthNumber: user.birthNumber,
       externalId: user.externalId,
       userAttribute: user.userAttribute,
-      cognitoAttributes: cognitoUser,
       taxDeliveryMethodAtLockDate: user.taxDeliveryMethodAtLockDate,
     }
   }
@@ -419,22 +410,12 @@ export class UserService {
       if (!user.birthNumber) {
         continue
       }
-      let cognitoUser = {}
-      if (user.externalId) {
-        try {
-          // eslint-disable-next-line no-await-in-loop -- TODO rewrite to use Promise.all
-          cognitoUser = await this.cognitoSubservice.getDataFromCognito(user.externalId)
-        } catch {
-          // Intentionally ignore Cognito fetch failure
-        }
-      }
 
       result[user.birthNumber] = {
         email: user.email,
         birthNumber: user.birthNumber,
         externalId: user.externalId,
         userAttribute: user.userAttribute,
-        cognitoAttributes: cognitoUser,
         taxDeliveryMethodAtLockDate: user.taxDeliveryMethodAtLockDate,
       }
     }

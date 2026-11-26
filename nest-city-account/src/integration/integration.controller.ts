@@ -67,12 +67,7 @@ export class IntegrationController {
     description: 'User data',
     type: ResponseUserByBirthNumberDto,
   })
-  @LogAllowList({
-    externalId: true,
-    cognitoAttributes: {
-      sub: true,
-    },
-  })
+  @LogAllowList({ externalId: true })
   @Get('userdata')
   async getUserDataByBirthNumber(
     @Query() query: RequestQueryUserByBirthNumberDto

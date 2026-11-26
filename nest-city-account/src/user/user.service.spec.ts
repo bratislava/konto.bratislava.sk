@@ -6,6 +6,9 @@ import type { Mocked, MockedFunction } from 'vitest'
 
 import prismaMock from '../../test/singleton'
 import { cognitoUserDataFactory } from '../__tests__/factories/cognitoUserData.factory'
+import { userFactory } from '../__tests__/factories/user.factory'
+import { expectObjectContaining } from '../__tests__/matchers'
+import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
 import {
   ConsentEnum,
@@ -316,6 +319,80 @@ describe('UserService', () => {
       })
 
       expect(userDataSubservice.setDeliveryMethodPreference).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('getUserDataByBirthNumber', () => {
+    it('should return the user data', async () => {
+      const user = userFactory({
+        birthNumber: '9001011234',
+        externalId: 'external-id',
+        userAttribute: 'TAX_USER',
+        taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
+      })
+      prismaMock.user.findUnique.mockResolvedValue(user)
+
+      const result = await service.getUserDataByBirthNumber('9001011234')
+
+      expect(result).toEqual({
+        email: user.email,
+        birthNumber: user.birthNumber,
+        externalId: user.externalId,
+        userAttribute: user.userAttribute,
+        taxDeliveryMethodAtLockDate: user.taxDeliveryMethodAtLockDate,
+      })
+      expect(prismaMock.user.findUnique).toHaveBeenCalledWith(
+        expectObjectContaining({ where: expectObjectContaining({ birthNumber: '9001011234' }) })
+      )
+    })
+
+    it('should throw when no active user has the birth number', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null)
+
+      await expect(service.getUserDataByBirthNumber('9001011234')).rejects.toThrowEqualLogNestError(
+        {
+          status: HttpStatus.NOT_FOUND,
+          errorEnum: AdminErrorsEnum.BIRTH_NUMBER_NOT_FOUND,
+          message: AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND,
+        }
+      )
+    })
+  })
+
+  describe('getUsersDataByBirthNumbers', () => {
+    it('should map found users by birth number', async () => {
+      const user = userFactory({
+        birthNumber: '9001011234',
+        externalId: 'external-id',
+        userAttribute: 'TAX_USER',
+        taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
+      })
+      prismaMock.user.findMany.mockResolvedValue([user])
+
+      const result = await service.getUsersDataByBirthNumbers(['9001011234', '9001015678'])
+
+      expect(result).toEqual({
+        '9001011234': {
+          email: user.email,
+          birthNumber: user.birthNumber,
+          externalId: user.externalId,
+          userAttribute: user.userAttribute,
+          taxDeliveryMethodAtLockDate: user.taxDeliveryMethodAtLockDate,
+        },
+      })
+      expect(prismaMock.user.findMany).toHaveBeenCalledWith(
+        expectObjectContaining({
+          where: expectObjectContaining({ birthNumber: { in: ['9001011234', '9001015678'] } }),
+        })
+      )
+    })
+
+    it('should skip users without birth number', async () => {
+      prismaMock.user.findMany.mockResolvedValue([userFactory({ birthNumber: null })])
+
+      const result = await service.getUsersDataByBirthNumbers(['9001011234'])
+
+      expect(result).toEqual({})
     })
   })
 })

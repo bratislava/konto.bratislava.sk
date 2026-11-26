@@ -671,10 +671,6 @@ export interface ResponseUserByBirthNumberDto {
    */
   userAttribute: object
   /**
-   * Tier from cognito
-   */
-  cognitoAttributes?: object
-  /**
    * Delivery method for tax documents at lock date
    */
   taxDeliveryMethodAtLockDate?: ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum | null

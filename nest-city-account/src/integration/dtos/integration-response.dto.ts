@@ -1,9 +1,8 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional, getSchemaPath } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 
-import { CognitoUserAttributesTierEnum, DeliveryMethodEnum } from '../../generated/prisma/enums'
+import { DeliveryMethodEnum } from '../../generated/prisma/enums'
 import { UserAttributeEnum } from '../../user/dtos/gdpr.user.dto'
-import { CognitoGetUserData } from '../../utils/global-dtos/cognito.dto'
 
 export class ResponseUserByBirthNumberDto {
   @ApiProperty({
@@ -31,13 +30,6 @@ export class ResponseUserByBirthNumberDto {
   userAttribute: string | UserAttributeEnum | null
 
   @ApiPropertyOptional({
-    description: 'Tier from cognito',
-    default: CognitoUserAttributesTierEnum.IDENTITY_CARD,
-  })
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  cognitoAttributes?: CognitoGetUserData | {}
-
-  @ApiPropertyOptional({
     description: 'Delivery method for tax documents at lock date',
     example: DeliveryMethodEnum.EDESK,
     enum: DeliveryMethodEnum,
@@ -49,7 +41,7 @@ export class GetUserDataByBirthNumbersBatchResponseDto {
   @ApiProperty({
     description: 'A record of users keyed by their birth number',
     type: 'object',
-    additionalProperties: { type: 'ResponseUserByBirthNumberDto' },
+    additionalProperties: { $ref: getSchemaPath(ResponseUserByBirthNumberDto) },
   })
   users: Record<string, ResponseUserByBirthNumberDto>
 }

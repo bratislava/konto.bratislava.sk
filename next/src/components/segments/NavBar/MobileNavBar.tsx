@@ -1,7 +1,7 @@
 import { Button } from '@bratislava/component-library'
-import FocusTrap from 'focus-trap-react'
+import { FocusTrap } from 'focus-trap-react'
 import { useTranslation } from 'next-i18next/pages'
-import { RefObject, useContext } from 'react'
+import { useContext } from 'react'
 
 import Icon from '@/src/components/icon-components/Icon'
 import BackButton from '@/src/components/segments/NavBar/BackButton'
@@ -14,18 +14,12 @@ import { AmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClient
 import cn from '@/src/utils/cn'
 
 type Props = {
-  mobileNavbarRef: RefObject<HTMLDivElement | null>
   variant?: 'default' | 'auth'
   hasBackButton?: boolean
   className?: string
 }
 
-export const MobileNavBar = ({
-  mobileNavbarRef,
-  variant,
-  hasBackButton = false,
-  className,
-}: Props) => {
+export const MobileNavBar = ({ variant, hasBackButton = false, className }: Props) => {
   const { t } = useTranslation()
 
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
@@ -35,9 +29,9 @@ export const MobileNavBar = ({
   const isOAuthLogin = useContext(AmplifyClientOAuthContext)?.isOAuthLogin ?? false
 
   return (
-    <div id="mobile-navbar" className={className} ref={mobileNavbarRef}>
+    <div id="mobile-navbar" className={className}>
       <FocusTrap active={isMobileMenuOpen}>
-        <div className="fixed top-0 z-30 flex h-14 w-full items-center justify-between border-b bg-background-passive-base px-4 text-content-passive-primary">
+        <div className="fixed top-0 z-30 flex h-mobile-navbar w-full items-center justify-between border-b bg-background-passive-base px-4 text-content-passive-primary">
           <div className="flex w-full justify-between">
             <div className="flex gap-3">
               {hasBackButton && <BackButton />}
@@ -72,7 +66,7 @@ export const MobileNavBar = ({
         </div>
       </FocusTrap>
       {/* Empty div under header */}
-      <div className={cn('h-14', className)} />
+      <div className={cn('h-mobile-navbar', className)} />
 
       <AlertBanner />
     </div>

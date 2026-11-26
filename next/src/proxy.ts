@@ -87,7 +87,6 @@ export function proxy(request: NextRequest) {
   //  Remove style-src-elem and style-src-attr lines. Remove this lines to see the violations. Probably caused by
   //   - cookiebot floating icon
   //   - react-select uses @emotion/react internally to inject its styles as <style> tags at runtime
-  //   - style={{ '--main-scroll-top-margin': '...' }} in PageLayout.tsx
   //  Remove "data:" from img-src. Now added for cookiebot icon button.
   //  Remove 'unsafe-eval' - added temporarily because a Next.js chunk triggers eval in production.
   //   Root cause to be investigated in a separate session.

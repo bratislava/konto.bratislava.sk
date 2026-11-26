@@ -1,15 +1,8 @@
 import { ReactNode } from 'react'
 
-import { useNavbarHeight } from '@/src/components/layouts/useNavbarHeight'
 import Footer from '@/src/components/segments/Footer/Footer'
 import NavBar from '@/src/components/segments/NavBar/NavBar'
 import cn from '@/src/utils/cn'
-
-declare module 'react' {
-  interface CSSProperties {
-    '--main-scroll-top-margin'?: string
-  }
-}
 
 type Props = {
   children: ReactNode
@@ -23,23 +16,14 @@ type Props = {
  */
 
 const PageLayout = ({ variant = 'default', className, children, hasBackButton = false }: Props) => {
-  const { navbarHeight, desktopNavbarRef, mobileNavbarRef } = useNavbarHeight()
-
   return (
     <div className={cn('flex min-h-dvh flex-col', className)}>
       <header className="relative">
-        <NavBar
-          variant={variant}
-          hasBackButton={hasBackButton}
-          desktopNavbarRef={desktopNavbarRef}
-          mobileNavbarRef={mobileNavbarRef}
-        />
+        <NavBar variant={variant} hasBackButton={hasBackButton} />
       </header>
       <main
-        style={{
-          '--main-scroll-top-margin': `${navbarHeight}px`,
-        }}
-        className={cn('relative flex grow flex-col **:scroll-mt-(--main-scroll-top-margin)', {
+        // Only the mobile navbar is fixed, the desktop one scrolls away with the page
+        className={cn('relative flex grow flex-col **:scroll-mt-mobile-navbar lg:**:scroll-mt-0', {
           'lg:gap-6 lg:bg-background-passive-primary lg:py-8': variant === 'auth',
         })}
       >

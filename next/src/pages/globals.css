@@ -33,6 +33,11 @@
   --breakpoint-xl: 80rem; /* 1280px */
   --breakpoint-2xl: initial;
 
+  /* LAYOUT */
+
+  /* Height of the fixed mobile navbar, use as h-mobile-navbar, top-mobile-navbar, scroll-mt-mobile-navbar, ... */
+  --spacing-mobile-navbar: 3.5rem; /* 56px */
+
   /* COLORS */
 
   --color-white: var(--color-grey-0);

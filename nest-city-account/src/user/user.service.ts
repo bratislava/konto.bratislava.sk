@@ -18,7 +18,6 @@ import {
 } from '../generated/prisma/client'
 import {
   GetNewVerifiedUsersBirthNumbersResponseDto,
-  ResponseUserByBirthNumberDetailDto,
   ResponseUserByBirthNumberDto,
 } from '../integration/dtos/integration-response.dto'
 import { CustomErrorNorisTypesEnum, CustomErrorNorisTypesResponseEnum } from '../noris/noris.errors'
@@ -369,7 +368,7 @@ export class UserService {
     }
   }
 
-  async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDetailDto> {
+  async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
     const user = await this.prisma.user.findUnique({
       where: { birthNumber, ...ACTIVE_USER_FILTER },
     })
@@ -379,20 +378,11 @@ export class UserService {
         message: AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND,
       })
     }
-    let cognitoUser = {}
-    if (user.externalId) {
-      try {
-        cognitoUser = await this.cognitoSubservice.getDataFromCognito(user.externalId)
-      } catch {
-        // Intentionally ignore Cognito fetch failure
-      }
-    }
     return {
       email: user.email,
       birthNumber: user.birthNumber,
       externalId: user.externalId,
       userAttribute: user.userAttribute,
-      cognitoAttributes: cognitoUser,
       taxDeliveryMethodAtLockDate: user.taxDeliveryMethodAtLockDate,
     }
   }
@@ -400,8 +390,6 @@ export class UserService {
   /**
    * Similar to function getUserDataByBirthNumber, returns data about users based on their birth number, but instead of
    * separately, it does it in batch in one request.
-   * Unlike getUserDataByBirthNumber, it does not fetch Cognito attributes - the only consumer (tax backend) doesn't use
-   * them, and fetching them per user made large batches slow and consumed the shared Cognito AdminGetUser quota.
    * @param birthNumbers Array of birth numbers without slash, for which users should be retrieved from database.
    * @returns A map of birth numbers (those which were found in database) to user information.
    */

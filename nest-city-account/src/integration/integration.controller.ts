@@ -34,7 +34,6 @@ import {
 import {
   GetNewVerifiedUsersBirthNumbersResponseDto,
   GetUserDataByBirthNumbersBatchResponseDto,
-  ResponseUserByBirthNumberDetailDto,
   ResponseUserByBirthNumberDto,
 } from './dtos/integration-response.dto'
 import { IntegrationService } from './integration.service'
@@ -49,11 +48,7 @@ import { IntegrationService } from './integration.service'
  */
 @ApiTags('Backend Integration API')
 @ApiSecurity('apiKey')
-@ApiExtraModels(
-  UserContactAndIdInfoResponseDto,
-  LegalPersonContactAndIdInfoResponseDto,
-  ResponseUserByBirthNumberDto
-)
+@ApiExtraModels(UserContactAndIdInfoResponseDto, LegalPersonContactAndIdInfoResponseDto)
 @UseGuards(AdminGuard)
 @Controller('integration')
 export class IntegrationController {
@@ -70,18 +65,13 @@ export class IntegrationController {
   })
   @ApiOkResponse({
     description: 'User data',
-    type: ResponseUserByBirthNumberDetailDto,
+    type: ResponseUserByBirthNumberDto,
   })
-  @LogAllowList({
-    externalId: true,
-    cognitoAttributes: {
-      sub: true,
-    },
-  })
+  @LogAllowList({ externalId: true })
   @Get('userdata')
   async getUserDataByBirthNumber(
     @Query() query: RequestQueryUserByBirthNumberDto
-  ): Promise<ResponseUserByBirthNumberDetailDto> {
+  ): Promise<ResponseUserByBirthNumberDto> {
     const result = await this.integrationService.getUserDataByBirthNumber(query.birthNumber)
     return result
   }

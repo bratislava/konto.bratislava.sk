@@ -653,42 +653,6 @@ export interface ResponseNotFoundErrorVerificationIdentityCardDto {
    */
   errorName: string
 }
-export interface ResponseUserByBirthNumberDetailDto {
-  /**
-   * userBirthNumber
-   */
-  birthNumber: string | null
-  /**
-   * email
-   */
-  email: string | null
-  /**
-   * Cognito Id
-   */
-  externalId: string | null
-  /**
-   * Special user attribute for user segmentation
-   */
-  userAttribute: object
-  /**
-   * Delivery method for tax documents at lock date
-   */
-  taxDeliveryMethodAtLockDate?: ResponseUserByBirthNumberDetailDtoTaxDeliveryMethodAtLockDateEnum | null
-  /**
-   * Tier from cognito
-   */
-  cognitoAttributes?: object
-}
-
-export const ResponseUserByBirthNumberDetailDtoTaxDeliveryMethodAtLockDateEnum = {
-  Edesk: 'EDESK',
-  CityAccount: 'CITY_ACCOUNT',
-  Postal: 'POSTAL',
-} as const
-
-export type ResponseUserByBirthNumberDetailDtoTaxDeliveryMethodAtLockDateEnum =
-  (typeof ResponseUserByBirthNumberDetailDtoTaxDeliveryMethodAtLockDateEnum)[keyof typeof ResponseUserByBirthNumberDetailDtoTaxDeliveryMethodAtLockDateEnum]
-
 export interface ResponseUserByBirthNumberDto {
   /**
    * userBirthNumber
@@ -2228,7 +2192,7 @@ export const BackendIntegrationAPIApiFp = function (configuration?: Configuratio
       birthNumber: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserByBirthNumberDetailDto>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserByBirthNumberDto>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.integrationControllerGetUserDataByBirthNumber(
@@ -2323,7 +2287,7 @@ export const BackendIntegrationAPIApiFactory = function (
     integrationControllerGetUserDataByBirthNumber(
       birthNumber: string,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseUserByBirthNumberDetailDto> {
+    ): AxiosPromise<ResponseUserByBirthNumberDto> {
       return localVarFp
         .integrationControllerGetUserDataByBirthNumber(birthNumber, options)
         .then((request) => request(axios, basePath))

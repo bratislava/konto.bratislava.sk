@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common'
 import { UserService } from '../user/user.service'
 import {
   GetNewVerifiedUsersBirthNumbersResponseDto,
-  ResponseUserByBirthNumberDetailDto,
   ResponseUserByBirthNumberDto,
 } from './dtos/integration-response.dto'
 
@@ -17,7 +16,7 @@ import {
 export class IntegrationService {
   constructor(private readonly userService: UserService) {}
 
-  async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDetailDto> {
+  async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
     return await this.userService.getUserDataByBirthNumber(birthNumber)
   }
 

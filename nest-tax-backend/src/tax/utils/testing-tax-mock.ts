@@ -56,8 +56,8 @@ export const createTestingRealEstateTaxMock = (
     psc_ref_tb: 'test psc',
     obec_nazev_tb: 'test obec',
 
-    // splátky (installments) data
-    SPL1: norisData.taxTotal,
+    // splátky (installments) data, Noris sets SPL1 only for a single installment
+    SPL1: '',
     SPL4_1: spl1.toFixed(2).replace('.', ','),
     SPL4_2: spl2.toFixed(2).replace('.', ','),
     SPL4_3: spl3.toFixed(2).replace('.', ','),
@@ -176,8 +176,8 @@ export const createTestingCommunalWasteTaxMock = (
     cislo_subjektu: 123_456,
     datum_realizacie: new Date(),
 
-    // splátky (installments) data
-    SPL1: norisData.taxTotal,
+    // splátky (installments) data, Noris sets SPL1 only for a single installment
+    SPL1: '',
     SPL4_1: spl1.toFixed(2).replace('.', ','),
     SPL4_2: spl2.toFixed(2).replace('.', ','),
     SPL4_3: spl3.toFixed(2).replace('.', ','),

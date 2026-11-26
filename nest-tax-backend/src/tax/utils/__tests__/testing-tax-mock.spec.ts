@@ -4,6 +4,7 @@ import type { Mock, MockedFunction } from 'vitest'
 
 import { RequestAdminCreateTestingTaxNorisData } from '../../../admin/dtos/requests.dto'
 import { TaxAdministrator, TaxType } from '../../../generated/prisma/client'
+import { mapNorisToTaxInstallmentsData } from '../../../noris/utils/mapping.helper'
 import {
   createTestingCommunalWasteTaxMock,
   createTestingRealEstateTaxMock,
@@ -159,16 +160,15 @@ describe('testing-tax-mock', () => {
         },
       )
 
-      it('should set SPL1 to total tax amount', () => {
-        mockNorisData.taxTotal = '250,75'
-
+      it('should create 3 installments accepted by the Noris mapping', () => {
         const result = createTestingRealEstateTaxMock(
           mockNorisData,
           mockTaxAdministrator,
           2024,
         )
 
-        expect(result.SPL1).toBe('250,75')
+        expect(result.SPL1).toBe('')
+        expect(mapNorisToTaxInstallmentsData(result, 1)).toHaveLength(3)
       })
     })
 
@@ -351,16 +351,15 @@ describe('testing-tax-mock', () => {
         },
       )
 
-      it('should set SPL1 to total tax amount', () => {
-        mockNorisData.taxTotal = '180,60'
-
+      it('should create 4 installments accepted by the Noris mapping', () => {
         const result = createTestingCommunalWasteTaxMock(
           mockNorisData,
           mockTaxAdministrator,
           2024,
         )
 
-        expect(result.SPL1).toBe('180,60')
+        expect(result.SPL1).toBe('')
+        expect(mapNorisToTaxInstallmentsData(result, 1)).toHaveLength(4)
       })
     })
 

@@ -653,7 +653,7 @@ export interface ResponseNotFoundErrorVerificationIdentityCardDto {
    */
   errorName: string
 }
-export interface ResponseUserByBirthNumberDto {
+export interface ResponseUserByBirthNumberDetailDto {
   /**
    * userBirthNumber
    */
@@ -671,9 +671,41 @@ export interface ResponseUserByBirthNumberDto {
    */
   userAttribute: object
   /**
+   * Delivery method for tax documents at lock date
+   */
+  taxDeliveryMethodAtLockDate?: ResponseUserByBirthNumberDetailDtoTaxDeliveryMethodAtLockDateEnum | null
+  /**
    * Tier from cognito
    */
   cognitoAttributes?: object
+}
+
+export const ResponseUserByBirthNumberDetailDtoTaxDeliveryMethodAtLockDateEnum = {
+  Edesk: 'EDESK',
+  CityAccount: 'CITY_ACCOUNT',
+  Postal: 'POSTAL',
+} as const
+
+export type ResponseUserByBirthNumberDetailDtoTaxDeliveryMethodAtLockDateEnum =
+  (typeof ResponseUserByBirthNumberDetailDtoTaxDeliveryMethodAtLockDateEnum)[keyof typeof ResponseUserByBirthNumberDetailDtoTaxDeliveryMethodAtLockDateEnum]
+
+export interface ResponseUserByBirthNumberDto {
+  /**
+   * userBirthNumber
+   */
+  birthNumber: string | null
+  /**
+   * email
+   */
+  email: string | null
+  /**
+   * Cognito Id
+   */
+  externalId: string | null
+  /**
+   * Special user attribute for user segmentation
+   */
+  userAttribute: object
   /**
    * Delivery method for tax documents at lock date
    */
@@ -2196,7 +2228,7 @@ export const BackendIntegrationAPIApiFp = function (configuration?: Configuratio
       birthNumber: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserByBirthNumberDto>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserByBirthNumberDetailDto>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.integrationControllerGetUserDataByBirthNumber(
@@ -2291,7 +2323,7 @@ export const BackendIntegrationAPIApiFactory = function (
     integrationControllerGetUserDataByBirthNumber(
       birthNumber: string,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseUserByBirthNumberDto> {
+    ): AxiosPromise<ResponseUserByBirthNumberDetailDto> {
       return localVarFp
         .integrationControllerGetUserDataByBirthNumber(birthNumber, options)
         .then((request) => request(axios, basePath))

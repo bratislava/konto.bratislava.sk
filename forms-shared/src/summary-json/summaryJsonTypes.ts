@@ -28,15 +28,15 @@ export type SummaryJsonField = {
   type: SummaryJsonType.Field
   id: string
   label: string
+  /** Not present for a field without a value. */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any
+  value?: any
   displayValues: SummaryDisplayValues
 }
 
 export type SummaryJsonArray = {
   type: SummaryJsonType.Array
   id: string
-  length: number
   title: string
   items: SummaryJsonArrayItem[]
 }

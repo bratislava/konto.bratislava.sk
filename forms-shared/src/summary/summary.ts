@@ -3,7 +3,7 @@ import type { GenericObjectType } from '@rjsf/utils'
 import { FormDefinition } from '../definitions/formDefinitionTypes'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 import { renderFormAdditionalInfo } from '../string-templates/renderTemplate'
-import { getSummaryJsonNode } from '../summary-json/getSummaryJsonNode'
+import { getSummaryJson } from '../summary-json/getSummaryJson'
 import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
 
 export interface FormSummary {
@@ -23,7 +23,7 @@ export const getFormSummary = ({
   formDataJson,
   validatorRegistry,
 }: GetFormSummaryParams): FormSummary => {
-  const summaryJson = getSummaryJsonNode({
+  const summaryJson = getSummaryJson({
     schema: formDefinition.schema,
     formData: formDataJson,
     validatorRegistry,

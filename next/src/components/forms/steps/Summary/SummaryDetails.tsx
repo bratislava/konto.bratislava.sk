@@ -1,5 +1,5 @@
 import { Typography } from '@bratislava/component-library'
-import { getSummaryJsonBrowser } from 'forms-shared/summary-json/getSummaryJsonBrowser'
+import { getSummaryJson } from 'forms-shared/summary-json/getSummaryJson'
 import {
   SummaryArrayComponentProps,
   SummaryArrayItemComponentProps,
@@ -162,12 +162,16 @@ const SummaryDetails = () => {
 
   const summaryJson = useMemo(() => {
     if (isSSR) {
-      // Node needs to use a different method to get the summary JSON (see `getSummaryJsonNode`).
-      // No need to check if schema/formData matches the summary JSON as it is rendered only once on the server.
+      // `getSummaryJson` renders the form with React's server renderer. On the server, it would run inside the server
+      // render of this page, which works only while the two use different builds of the renderer (with the same build,
+      // the inner render breaks the hooks of the outer one). Therefore, on the server the summary JSON is computed in
+      // `getServerSideProps` (see `getInitialSummaryJson`), and the first render in the browser (hydration) uses it too,
+      // so it matches the server render. No need to check if schema/formData matches the summary JSON as it is rendered
+      // only once on the server.
       return initialSummaryJson
     }
 
-    return getSummaryJsonBrowser({ schema, formData, validatorRegistry })
+    return getSummaryJson({ schema, formData, validatorRegistry })
   }, [isSSR, initialSummaryJson, schema, formData, validatorRegistry])
 
   if (!summaryJson) {

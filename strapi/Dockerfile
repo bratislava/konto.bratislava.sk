@@ -37,10 +37,7 @@ ENV TURBO_API=$TURBO_API
 ARG TURBO_TEAM
 ENV TURBO_TEAM=$TURBO_TEAM
 
-ARG TURBO_TOKEN
-ENV TURBO_TOKEN=$TURBO_TOKEN
-
-RUN pnpm turbo run build --filter=city-account-strapi
+RUN --mount=type=secret,id=turbo_token,env=TURBO_TOKEN pnpm turbo run build --filter=city-account-strapi
 
 FROM base AS prod-deps
 COPY --from=prepare /app/out/json/ .

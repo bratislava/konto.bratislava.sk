@@ -48,7 +48,7 @@ on:
         required: true
       HARBOR_REGISTRY_PASSWORD:
         required: true
-      TURBOREPO_CACHE_MINIO_SECRET_KEY:
+      TURBOREPO_CACHE_TOKEN:
         required: true
 
 permissions:
@@ -69,6 +69,10 @@ jobs:
     env:
       # Per-cluster deploy tag prefix (empty in CI).
       CLUSTER_PREFIX: ${{ inputs.cluster != '' && format('{0}-', inputs.cluster) || '' }}
+      # Shared Turborepo cache server on the platform cluster. The token
+      # reaches the builds as the `turbo_token` BuildKit secret.
+      TURBO_API: http://turbo-cache-server.turbo-cache.svc.cluster.local:8585
+      TURBO_TOKEN: ${{ secrets.TURBOREPO_CACHE_TOKEN }}
     services:
       postgres:
         # GitHub Actions does not support `if:` on services, so use an empty image
@@ -121,12 +125,6 @@ jobs:
           caches: builder-deps,test,typecheck,lint,test-e2e,verify-bootstrap
           push: ${{ inputs.cluster != '' }}
 
-      - name: Set up Turborepo cache
-        id: turbo-cache
-        uses: ./.github/actions/setup-turborepo-cache
-        with:
-          minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
-
       # Every bake target below sets network=host, which is a gated entitlement,
       # hence `allow: network.host` on each step.
       - name: Build validation image
@@ -140,7 +138,6 @@ jobs:
         env:
           CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache)['builder-deps'].from }}
           CACHE_TO: ${{ fromJSON(steps.config.outputs.cache)['builder-deps'].to }}
-          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Run unit tests
         if: ${{ !inputs.skip_tests }}
@@ -153,7 +150,6 @@ jobs:
         env:
           CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).test.from }}
           CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).test.to }}
-          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Run type check
         if: ${{ !inputs.skip_tests }}
@@ -166,7 +162,6 @@ jobs:
         env:
           CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).typecheck.from }}
           CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).typecheck.to }}
-          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Run ESLint
         if: ${{ !inputs.skip_tests }}
@@ -179,7 +174,6 @@ jobs:
         env:
           CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).lint.from }}
           CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).lint.to }}
-          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Run E2E tests
         if: ${{ !inputs.skip_tests && inputs.e2e_tests }}
@@ -194,7 +188,6 @@ jobs:
         env:
           CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache)['test-e2e'].from }}
           CACHE_TO: ${{ fromJSON(steps.config.outputs.cache)['test-e2e'].to }}
-          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       # CI mode: build the final `runner` image, do not push.
       - name: Build final image
@@ -208,7 +201,6 @@ jobs:
         env:
           CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).main.from }}
           CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).main.to }}
-          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Verify bootstrap
         if: ${{ !inputs.skip_tests }}
@@ -221,7 +213,6 @@ jobs:
         env:
           CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache)['verify-bootstrap'].from }}
           CACHE_TO: ${{ fromJSON(steps.config.outputs.cache)['verify-bootstrap'].to }}
-          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       # Deploy mode only: reuse the commit image across clusters. If it already
       # exists, re-tag it for this cluster and skip the build below.
@@ -247,4 +238,3 @@ jobs:
           CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).main.to }}
           TAGS: ${{ join(fromJSON(steps.config.outputs.meta).tags, ' ') }}
           OUTPUT: ${{ steps.config.outputs.image_output }}
-          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}

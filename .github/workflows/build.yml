@@ -9,7 +9,7 @@ on:
         required: true
       HARBOR_REGISTRY_PASSWORD:
         required: true
-      TURBOREPO_CACHE_MINIO_SECRET_KEY:
+      TURBOREPO_CACHE_TOKEN:
         required: true
 
 jobs:

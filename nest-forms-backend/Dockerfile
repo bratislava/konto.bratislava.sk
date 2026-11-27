@@ -29,27 +29,24 @@ ENV TURBO_API=$TURBO_API
 ARG TURBO_TEAM
 ENV TURBO_TEAM=$TURBO_TEAM
 
-ARG TURBO_TOKEN
-ENV TURBO_TOKEN=$TURBO_TOKEN
-
-RUN pnpm turbo run build --filter=nest-forms-backend^... --filter=!nest-forms-backend
+RUN --mount=type=secret,id=turbo_token,env=TURBO_TOKEN pnpm turbo run build --filter=nest-forms-backend^... --filter=!nest-forms-backend
 
 FROM builder-deps AS builder
-RUN pnpm turbo run build --filter=nest-forms-backend
+RUN --mount=type=secret,id=turbo_token,env=TURBO_TOKEN pnpm turbo run build --filter=nest-forms-backend
 
 FROM builder-deps AS test
-RUN pnpm turbo run test --filter=nest-forms-backend
+RUN --mount=type=secret,id=turbo_token,env=TURBO_TOKEN pnpm turbo run test --filter=nest-forms-backend
 
 FROM builder-deps AS typecheck
-RUN pnpm turbo run typecheck --filter=nest-forms-backend
+RUN --mount=type=secret,id=turbo_token,env=TURBO_TOKEN pnpm turbo run typecheck --filter=nest-forms-backend
 
 FROM builder-deps AS test-e2e
 ARG CI_E2E_DATABASE_URL
 ENV CI_E2E_DATABASE_URL=${CI_E2E_DATABASE_URL}
-RUN pnpm turbo run test:e2e --filter=nest-forms-backend
+RUN --mount=type=secret,id=turbo_token,env=TURBO_TOKEN pnpm turbo run test:e2e --filter=nest-forms-backend
 
 FROM builder AS lint
-RUN pnpm turbo run lint --filter=nest-forms-backend
+RUN --mount=type=secret,id=turbo_token,env=TURBO_TOKEN pnpm turbo run lint --filter=nest-forms-backend
 
 FROM base AS prod-deps
 COPY --from=prepare /app/out/json/ .

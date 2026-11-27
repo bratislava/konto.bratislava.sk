@@ -34,7 +34,7 @@ on:
         required: true
       HARBOR_REGISTRY_PASSWORD:
         required: true
-      TURBOREPO_CACHE_MINIO_SECRET_KEY:
+      TURBOREPO_CACHE_TOKEN:
         required: true
 
 permissions:
@@ -57,6 +57,10 @@ jobs:
       # flavor suffix that keeps each env's image and cache separate.
       CLUSTER_PREFIX: ${{ inputs.cluster != '' && format('{0}-', inputs.cluster) || '' }}
       ENV_SUFFIX: -${{ inputs.build_env }}
+      # Shared Turborepo cache server on the platform cluster. The token
+      # reaches the builds as the `turbo_token` BuildKit secret.
+      TURBO_API: http://turbo-cache-server.turbo-cache.svc.cluster.local:8585
+      TURBO_TOKEN: ${{ secrets.TURBOREPO_CACHE_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -99,12 +103,6 @@ jobs:
           existing_tag: ${{ inputs.image }}:${{ steps.sha.outputs.short_sha }}${{ env.ENV_SUFFIX }}
           new_tag: ${{ inputs.image }}:${{ env.CLUSTER_PREFIX }}${{ steps.sha.outputs.short_sha }}${{ env.ENV_SUFFIX }}
 
-      - name: Set up Turborepo cache
-        id: turbo-cache
-        uses: ./.github/actions/setup-turborepo-cache
-        with:
-          minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
-
       - name: Run ESLint
         uses: docker/bake-action@018cb6412ab401ebaa809aa5f85966b74628600f # v7.4.0
         with:
@@ -115,7 +113,6 @@ jobs:
         env:
           CACHE_FROM: ${{ fromJSON(steps.config.outputs.cache).lint.from }}
           CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).lint.to }}
-          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Build image
         if: ${{ inputs.cluster == '' || steps.existing.outputs.found != 'true' }}
@@ -130,5 +127,4 @@ jobs:
           CACHE_TO: ${{ fromJSON(steps.config.outputs.cache).main.to }}
           TAGS: ${{ join(fromJSON(steps.config.outputs.meta).tags, ' ') }}
           OUTPUT: ${{ steps.config.outputs.image_output }}
-          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
           NEXT_BUILD_ENV: ${{ inputs.build_env }}
